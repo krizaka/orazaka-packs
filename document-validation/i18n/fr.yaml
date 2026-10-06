@@ -1,0 +1,12 @@
+pack.document-validation.name: Validation documentaire
+pack.document-validation.description: >-
+  Contrôlez un document contre un corpus de règles versionné. Chaque constat cite sa règle,
+  sa source et l'extrait du document qui le justifie.
+studio.compliance-check.name: Contrôle de conformité
+studio.compliance-check.description: >-
+  Passe un bail ou un contrat au corpus de règles de sa juridiction, à la date de votre choix.
+input.document: Document à contrôler
+input.jurisdiction: Juridiction
+input.asOf: Règles en vigueur au
+output.report: Rapport de conformité
+output.ruleset: Corpus de règles appliqué

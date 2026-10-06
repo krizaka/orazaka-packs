@@ -1,0 +1,147 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 2800,
+  "changelog": "Le plan d'ambiance est retiré (constat #35, ADR-066) : il était généré, facturé au tarif de diffusion — 3 600 crédits de la réserve — et jamais monté, parce que le monteur ne lit que `photos` et `audio`. Un pack ne facture pas ce qu'il ne fait pas. Le coût déclaré passe de 6 400 à 2 800, la différence étant l'estimation de la génération vidéo au pricebook. Remettre un plan d'ambiance est une décision produit : il faudra que le monteur l'assemble.",
+  "createdBy": "system",
+  "definition": {
+    "studioKey": "realestate-reels",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "describe",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.vision",
+        "dependsOn": [],
+        "forEach": "{{inputs.photos}}",
+        "maxParallel": 4,
+        "inputs": {
+          "assetId": "{{item}}",
+          "prompt": "Décris cette pièce pour une annonce immobilière. Style: {{config.tone}}."
+        },
+        "out": "roomDescriptions",
+        "onError": "SKIP",
+        "maxAttempts": 1,
+        "timeout": "PT2M",
+        "skipRationale": "Un pack produit, pas un fixture : l'agent qui a fourni cinq photos doit repartir avec son Reel même si l'une d'elles ne s'analyse pas. La description manquante se voit dans les artefacts, et le montage utilise les photos décrites. C'est trade-showcase qui doit rougir à sa place."
+      },
+      {
+        "id": "script",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "describe"
+        ],
+        "inputs": {
+          "prompt": "Écris le script d'un Reel immobilier pour {{inputs.platform}}: accroche, voix off, légende et hashtags. Le bien: {{inputs.propertyBrief}}. Les pièces: {{steps.roomDescriptions}}. Ton: {{config.tone}}."
+        },
+        "out": "script",
+        "onError": "RETRY",
+        "maxAttempts": 2,
+        "timeout": "PT3M"
+      },
+      {
+        "id": "approve",
+        "kind": "APPROVAL",
+        "dependsOn": [
+          "script"
+        ],
+        "inputs": {
+          "preview": "{{steps.script.content}}"
+        },
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT30M"
+      },
+      {
+        "id": "assemble",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.studio.media.compose",
+        "dependsOn": [
+          "approve"
+        ],
+        "inputs": {
+          "photos": "{{inputs.photos}}"
+        },
+        "out": "reel",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT30M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "reel",
+        "label": "Votre Reel",
+        "from": "{{steps.reel.url}}",
+        "type": "VIDEO"
+      },
+      {
+        "key": "caption",
+        "label": "Légende et hashtags",
+        "from": "{{steps.script.content}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "rooms",
+        "label": "Descriptions des pièces",
+        "from": "{{steps.roomDescriptions}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "photos",
+      "propertyBrief"
+    ],
+    "properties": {
+      "photos": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 3,
+        "maxItems": 8,
+        "title": "Photos du bien"
+      },
+      "clip": {
+        "type": "string",
+        "title": "Clip vidéo (optionnel)"
+      },
+      "propertyBrief": {
+        "type": "string",
+        "maxLength": 800,
+        "title": "Le bien en 3 lignes"
+      },
+      "platform": {
+        "enum": [
+          "instagram-reel",
+          "tiktok",
+          "youtube-short"
+        ],
+        "default": "instagram-reel",
+        "title": "Plateforme"
+      }
+    }
+  },
+  "configSchema": {
+    "brandName": {
+      "type": "string",
+      "title": "Nom de l'agence"
+    },
+    "tone": {
+      "enum": [
+        "premium",
+        "chaleureux",
+        "direct"
+      ],
+      "default": "premium"
+    },
+    "signature": {
+      "type": "string",
+      "title": "Signature"
+    }
+  }
+}

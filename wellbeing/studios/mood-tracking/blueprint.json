@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 40,
+  "changelog": "Suivi d'humeur — décrit ce que les relevés montrent, sans conclure.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "mood-tracking",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "describe",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "Tu décris ce que montrent des relevés d'humeur, pour qu'une personne puisse les apporter à son ou sa thérapeute. Tu DÉCRIS ce qui est là — ce qui revient, ce qui change, ce qui coïncide — et tu t'arrêtes là. Tu ne poses aucun diagnostic, tu ne nommes aucun trouble, tu n'expliques pas les causes, tu ne prédis rien et tu ne conseilles rien. Quand une lecture est ambiguë, tu le dis au lieu de choisir. Rends un paragraphe descriptif et une courte liste de ce qui pourrait mériter d'être évoqué en séance.\n\nRelevés :\n{{inputs.entries}}"
+        },
+        "out": "summary",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT3M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "summary",
+        "label": "Ce que vos relevés montrent",
+        "from": "{{steps.summary.content}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["entries"],
+    "properties": {
+      "entries": {
+        "type": "string",
+        "maxLength": 8000,
+        "title": "Vos relevés",
+        "description": "Une ligne par jour suffit. Ce Studio décrit ce qu'il y voit ; il n'en tire aucune conclusion."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

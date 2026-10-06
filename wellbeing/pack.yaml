@@ -1,0 +1,161 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# bien-etre — the REGULATED reference pack (phase J, ADR-055).
+#
+# THE NAME IS THE FIRST CONTROL. This pack is never called "thérapie". A system
+# intended for a MEDICAL PURPOSE — diagnosing, treating, alleviating a condition
+# — is a medical device under the EU MDR, with conformity assessment attached,
+# and a product marketed as therapy invites a duty-of-care argument the first
+# time a user is harmed. The same underlying product, named and scoped as guided
+# journaling, session preparation and mood tracking, makes no medical claim.
+#
+# The positioning follows from that, and the Studios say what they DO and never
+# what they treat: this is what a user brings TO their therapist, not instead of
+# one. Which is also the more defensible product.
+#
+# regulatoryClass: REGULATED adds two controls to SENSITIVE's four — versioned
+# consent that blocks installation, and a non-bypassable crisis interceptor.
+# Both are declared here; neither is implemented by this pack.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: bien-etre
+version: 1.0.0
+tier: DATA
+distribution: CLOUD
+regulatoryClass: REGULATED
+
+# The domain this pack refuses. Same mechanism as the validation pack; the engine
+# holds the interceptor and never the subject.
+scopeGuard:
+  refusedTerms:
+    - diagnostic
+    - diagnostiquer
+    - est-ce que j'ai
+    - ordonnance
+    - posologie
+    - dosage
+    - antidépresseur
+    - antidepresseur
+    - anxiolytique
+    - médicament
+    - medicament
+    - arrêter mon traitement
+    - arreter mon traitement
+  refusal: >-
+    Je ne pose pas de diagnostic et je ne parle pas de médicaments ou de posologie — ce sont des
+    questions pour un professionnel de santé, qui vous connaît et qui peut vous examiner. Ce que je
+    peux faire, c'est vous aider à mettre par écrit ce que vous vivez, pour que vous puissiez le lui
+    apporter.
+
+# GDPR Art. 9 / Loi 25: health data is a special category, so the lawful basis must exist BEFORE
+# the processing does. Bumping this version stops every existing installation until its owner
+# agrees again — and that cost is the point.
+consent:
+  version: "1.0"
+  statement: >-
+    Ce Studio enregistre ce que vous y écrivez sur votre humeur et votre vécu. Ce sont des données
+    de santé au sens du RGPD (art. 9) et de la Loi 25. Elles sont chiffrées, conservées 30 jours au
+    plus, jamais utilisées pour entraîner un modèle et jamais incluses dans une statistique. Ce
+    Studio n'est pas un soin : il ne pose aucun diagnostic, ne remplace aucun professionnel, et
+    n'est pas un service d'urgence. Vous pouvez tout supprimer à tout moment. En installant ce
+    Studio, vous consentez explicitement à ce traitement.
+
+# The crisis declaration. The response is FIXED and reviewed by a person: a model asked to compose
+# one will produce a number that looks like a crisis line, and someone will dial it.
+safety:
+  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5)"
+  crisisTerms:
+    - suicide
+    - me suicider
+    - suicider
+    - en finir
+    - mettre fin à mes jours
+    - mettre fin a mes jours
+    - plus envie de vivre
+    - plus vivre
+    - me faire du mal
+    - me tuer
+    - disparaître pour toujours
+    - disparaitre pour toujours
+  response: >-
+    Je m'arrête là, parce que ce que vous venez d'écrire compte plus que l'exercice en cours. Je ne
+    suis pas en mesure de vous accompagner là-dessus, et je ne veux pas vous laisser seul·e avec ça.
+    Des personnes formées écoutent, gratuitement et tout de suite :
+  # Verified at the source on 2026-09-10. A region absent here is a region this pack does not
+  # install in — an approximate number is not a smaller version of a correct one.
+  resources:
+    FR:
+      region: FR
+      label: "3114 — Numéro national de prévention du suicide"
+      contact: "3114"
+      availability: "24h/24 et 7j/7, confidentiel et gratuit"
+      sourceUrl: "https://www.bourgogne-franche-comte.ars.sante.fr/le-3114-numero-national-de-prevention-du-suicide"
+      verifiedOn: "2026-09-10"
+    BE-FR:
+      region: BE-FR
+      label: "Centre de Prévention du Suicide"
+      contact: "0800 32 123"
+      availability: "24h/24 et 7j/7, anonyme et gratuit"
+      sourceUrl: "https://www.preventionsuicide.be/la-ligne-decoute-0800-32-123"
+      verifiedOn: "2026-09-10"
+    BE-NL:
+      region: BE-NL
+      label: "Zelfmoordlijn 1813"
+      contact: "1813"
+      availability: "24 uur op 24, volledig gratis en anoniem"
+      sourceUrl: "https://www.zelfmoord1813.be/ik-heb-hulp-nodig/bellen-met-de-zelfmoordlijn"
+      verifiedOn: "2026-09-10"
+    CA:
+      region: CA
+      label: "9-8-8 : Ligne d'aide en cas de crise de suicide / Suicide Crisis Helpline"
+      contact: "9-8-8 (appel ou texto)"
+      availability: "24/7/365, en français et en anglais"
+      sourceUrl: "https://988.ca/"
+      verifiedOn: "2026-09-10"
+
+requires:
+  capabilities: []
+
+catalog:
+  categoryKey: lifestyle
+  iconKey: sparkles
+  status: PUBLISHED
+  sortWeight: 30
+  # The second shelf of the catalogue, brought by the pack that needs it rather than seeded into
+  # the platform ahead of time — "a new pack is data", including the shelf it stands on.
+  category:
+    iconKey: heart
+    sortWeight: 20
+
+pricing:
+  priceCents: 0
+  includedCredits: 0
+
+studios:
+  # Each says what it DOES. None says what it treats.
+  - key: guided-journaling
+    profession: general
+    iconKey: notebook
+    pricing: FREE
+    entitlementKey: studio.guided-journaling
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 10
+    blueprint: studios/guided-journaling/blueprint.json
+  - key: session-preparation
+    profession: general
+    iconKey: list-checks
+    pricing: FREE
+    entitlementKey: studio.session-preparation
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 20
+    blueprint: studios/session-preparation/blueprint.json
+  - key: mood-tracking
+    profession: general
+    iconKey: chart-line
+    pricing: FREE
+    entitlementKey: studio.mood-tracking
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 30
+    blueprint: studios/mood-tracking/blueprint.json

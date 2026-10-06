@@ -1,0 +1,44 @@
+# The one pack that exists today, moved out of infra/initdb/80-studio.sql and
+# infra/initdb/70-billing.sql without a single value changing. Every field below is a
+# transcription of the row it replaces; the migration is a change of WHERE this lives,
+# never of WHAT it says.
+apiVersion: orazaka.dev/v1
+key: realestate-studio
+version: 1.0.0
+tier: DATA
+distribution: OSS
+regulatoryClass: STANDARD
+
+requires:
+  # Zero contributed capabilities: every featureKey the blueprint names is an
+  # orazaka.core.* row the engine already owns, plus orazaka.studio.media.compose,
+  # which the media worker has drained since phase 4. The installer verifies all of
+  # them are routable, so this empty list is a claim it checks.
+  capabilities: []
+
+catalog:
+  categoryKey: business
+  iconKey: studio
+  status: PUBLISHED
+  sortWeight: 100
+  # Create the shelf if this is the first pack on it. Idempotent: an existing
+  # category is left exactly as it is, never overwritten by a bundle.
+  category:
+    iconKey: briefcase
+    sortWeight: 100
+
+pricing:
+  priceCents: 4900
+  includedCredits: 5000
+  isActive: true
+
+studios:
+  - key: realestate-reels
+    profession: real-estate
+    iconKey: studio
+    pricing: PAID
+    entitlementKey: studio.realestate-reels
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 90
+    blueprint: studios/realestate-reels/blueprint.json

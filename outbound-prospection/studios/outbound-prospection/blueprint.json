@@ -1,0 +1,136 @@
+{
+  "version": "1.1.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 250,
+  "changelog": "1.1.0 — le connecteur nomme un type que la plateforme sait exécuter (SLACK au lieu de CRM, qui n'existe dans aucun dispatcher et aurait levé « Unknown connector type »), il n'est plus conditionnel, et le fan-out chat déclare pourquoi il tolère un échec.",
+  "createdBy": "system",
+  "definition": {
+    "studioKey": "outbound-prospection",
+    "version": "1.1.0",
+    "steps": [
+      {
+        "id": "angle",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "forEach": "{{inputs.prospects}}",
+        "maxParallel": 4,
+        "inputs": {
+          "prompt": "Rédige un angle d'approche pour ce prospect: {{item}}. Notre client idéal: {{inputs.icp:}}. Offre: {{inputs.offer}}. Ton: {{config.tone}}."
+        },
+        "out": "angles",
+        "onError": "SKIP",
+        "maxAttempts": 1,
+        "timeout": "PT2M",
+        "skipRationale": "Un prospect dont l'angle échoue ne doit pas emporter la liste : la séquence reste utile avec les angles produits, et l'utilisateur voit lequel manque. C'est une perte partielle acceptable, pas un run vide."
+      },
+      {
+        "id": "sequence",
+        "kind": "TRANSFORM",
+        "dependsOn": [
+          "angle"
+        ],
+        "inputs": {
+          "body": "{{steps.angles}}",
+          "signature": "{{config.signature:}}",
+          "subject": "{{inputs.offer}}"
+        },
+        "out": "emailSequence",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "approve",
+        "kind": "APPROVAL",
+        "dependsOn": [
+          "sequence"
+        ],
+        "inputs": {
+          "preview": "{{steps.emailSequence.body}}"
+        },
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT30M"
+      },
+      {
+        "id": "push",
+        "kind": "CONNECTOR",
+        "connectorType": "SLACK",
+        "dependsOn": [
+          "approve"
+        ],
+        "inputs": {
+          "action": "send",
+          "subject": "{{steps.emailSequence.subject}}",
+          "body": "{{steps.emailSequence.body}}"
+        },
+        "out": "pushed",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT5M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "sequence",
+        "label": "Séquence d'emails",
+        "from": "{{steps.emailSequence.body}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "angles",
+        "label": "Angles par prospect",
+        "from": "{{steps.angles}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "prospects",
+      "offer"
+    ],
+    "properties": {
+      "prospects": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "maxItems": 50,
+        "title": "Vos prospects"
+      },
+      "offer": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Votre offre en une phrase"
+      },
+      "icp": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Votre client idéal"
+      }
+    }
+  },
+  "configSchema": {
+    "tone": {
+      "enum": [
+        "premium",
+        "chaleureux",
+        "direct"
+      ],
+      "default": "direct"
+    },
+    "signature": {
+      "type": "string",
+      "title": "Signature"
+    },
+    "autoPush": {
+      "type": "string",
+      "default": "false",
+      "title": "Envoyer au CRM automatiquement"
+    }
+  }
+}

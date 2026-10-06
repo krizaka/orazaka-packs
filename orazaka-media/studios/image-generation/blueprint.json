@@ -1,0 +1,64 @@
+{
+  "version": "1.1.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 200,
+  "changelog": "1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "image-generation",
+    "version": "1.1.0",
+    "steps": [
+      {
+        "id": "image",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.image",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "{{inputs.prompt}}",
+          "size": "{{inputs.size}}",
+          "model": "{{inputs.model:}}"
+        },
+        "out": "image",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT5M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "image",
+        "label": "Votre image",
+        "from": "{{steps.image.url}}",
+        "type": "IMAGE"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["prompt"],
+    "properties": {
+      "prompt": {
+        "type": "string",
+        "format": "prose",
+        "minLength": 3,
+        "maxLength": 2000,
+        "title": "Ce que vous voulez voir",
+        "description": "Décrivez l'image en une ou deux phrases : le sujet, le cadrage, la lumière."
+      },
+      "size": {
+        "type": "string",
+        "enum": ["512x512", "768x768", "1024x1024", "1024x1536", "1536x1024"],
+        "default": "1024x1024",
+        "title": "Format",
+        "description": "La taille de l'image produite. 1024x1024 est le carré par défaut."
+      },
+      "model": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Modèle (facultatif)",
+        "description": "Laissez vide : le catalogue choisit le modèle par défaut de la catégorie."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

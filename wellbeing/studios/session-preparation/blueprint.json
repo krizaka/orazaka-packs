@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 40,
+  "changelog": "Préparation de séance — organise ce qu'il y a à dire, sans rien interpréter.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "session-preparation",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "organise",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "Tu prépares une liste de points qu'une personne souhaite aborder lors de sa prochaine séance avec son ou sa thérapeute. Tu ORGANISES ce qu'elle a écrit : tu regroupes, tu hiérarchises, tu formules chaque point comme une phrase qu'elle pourrait dire. Tu n'interprètes rien, tu ne nommes aucun trouble, tu ne suggères aucune piste de traitement, et tu n'ajoutes rien qu'elle n'ait pas écrit. Rends une liste à puces, dans ses mots.\n\nCe qu'elle a noté depuis la dernière fois :\n{{inputs.notes}}"
+        },
+        "out": "agenda",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT3M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "agenda",
+        "label": "Vos points pour la séance",
+        "from": "{{steps.agenda.content}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["notes"],
+    "properties": {
+      "notes": {
+        "type": "string",
+        "maxLength": 8000,
+        "title": "Ce que vous avez noté depuis la dernière séance",
+        "description": "En vrac. C'est ce Studio qui met de l'ordre, sans rien ajouter."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

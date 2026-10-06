@@ -1,0 +1,65 @@
+# The prospection pack (phase E). Three Studios over ONE capability —
+# orazaka.core.chat.completion — plus TRANSFORM, APPROVAL and CONNECTOR steps, which the
+# interpreter executes with no capability at all. Zero new capability, zero worker: this is the
+# pack that tests the thesis that authoring a pack is data, and it holds (ADR-043).
+#
+# It gains a `catalog` block here: three Studios ARE a pack in the sense ADR-036 means — "un pack,
+# ce sont des features" — and one Studio alone never was. INCLUDED pricing is kept on all three:
+# they are granted by the plan the actor already pays for, the mode neither media pack exercises.
+apiVersion: orazaka.dev/v1
+key: outbound-prospection
+version: 1.1.0
+tier: DATA
+distribution: OSS
+regulatoryClass: STANDARD
+
+requires:
+  capabilities: []
+
+catalog:
+  categoryKey: business
+  iconKey: target
+  status: PUBLISHED
+  sortWeight: 90
+  category:
+    iconKey: briefcase
+    sortWeight: 100
+
+pricing:
+  # INCLUDED Studios are granted by a plan, so the pack is not sold separately: price 0, no
+  # bundled credits. The billing row still has to exist — it carries the three entitlement grants,
+  # and a pack_studio row whose grant is missing locks out the buyer (ADR-036 invariant #3).
+  priceCents: 0
+  includedCredits: 0
+  isActive: true
+
+studios:
+  - key: outbound-prospection
+    profession: sales
+    iconKey: studio
+    pricing: INCLUDED
+    entitlementKey: studio.outbound-prospection
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 80
+    blueprint: studios/outbound-prospection/blueprint.json
+
+  - key: lead-research
+    profession: sales
+    iconKey: search
+    pricing: INCLUDED
+    entitlementKey: studio.lead-research
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 79
+    blueprint: studios/lead-research/blueprint.json
+
+  - key: followup-sequences
+    profession: sales
+    iconKey: send
+    pricing: INCLUDED
+    entitlementKey: studio.followup-sequences
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 78
+    blueprint: studios/followup-sequences/blueprint.json

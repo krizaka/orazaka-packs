@@ -1,0 +1,62 @@
+{
+  "version": "1.1.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 90,
+  "changelog": "1.1.0 — `assetId` déclare `format: asset-id` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Analyse vidéo — une étape : la piste audio est transcrite et des images-clés sont extraites. Facturée à la minute de source, sous le tarif `orazaka-video-analysis` et non au tarif de diffusion de la génération (ADR-066).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "video-analysis",
+    "version": "1.1.0",
+    "steps": [
+      {
+        "id": "analysis",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.video.analysis",
+        "dependsOn": [],
+        "inputs": {
+          "assetId": "{{inputs.assetId}}",
+          "model": "{{inputs.model:}}"
+        },
+        "out": "analysis",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT15M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "transcript",
+        "label": "Ce qui est dit dans la vidéo",
+        "from": "{{steps.analysis.transcript}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "keyframes",
+        "label": "Nombre d'images-clés extraites",
+        "from": "{{steps.analysis.keyframeCount}}",
+        "type": "JSON"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["assetId"],
+    "properties": {
+      "assetId": {
+        "type": "string",
+        "format": "asset-id",
+        "minLength": 8,
+        "maxLength": 120,
+        "title": "Votre vidéo",
+        "description": "L'identifiant du fichier envoyé. La facturation suit la durée de cette vidéo."
+      },
+      "model": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Modèle (facultatif)",
+        "description": "Laissez vide : le catalogue choisit le modèle de transcription par défaut."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

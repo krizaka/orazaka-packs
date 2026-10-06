@@ -1,0 +1,599 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orazaka.dev/schemas/pack-1.json",
+  "title": "Orazaka pack manifest",
+  "description": "The unit of distribution (ADR-037 §3.2). One directory, one manifest, one transactional install. Everything a pack contributes to the platform is declared here or in a file this manifest names; nothing about a pack is knowable only from a seed file.",
+  "type": "object",
+  "required": [
+    "apiVersion",
+    "key",
+    "version",
+    "studios"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "description": "Manifest grammar version. Bumped only for a breaking change to this schema, so an installer can refuse a bundle it cannot read rather than mis-reading it.",
+      "const": "orazaka.dev/v1"
+    },
+    "key": {
+      "description": "The bundle's stable identity. When `catalog` is present this is also the pack_key, mirrored opaquely into billing_pack with no FK (SEAM-001).",
+      "$ref": "#/$defs/key"
+    },
+    "version": {
+      "$ref": "#/$defs/semver"
+    },
+    "tier": {
+      "description": "What the pack needs from the platform. DATA reuses existing capabilities and ships no code; CAPABILITY adds in-process executors; WORKER brings its own out-of-process worker. Phase D installs DATA packs; the other two are declared so a manifest written today survives phases H and beyond.",
+      "enum": [
+        "DATA",
+        "CAPABILITY",
+        "WORKER"
+      ],
+      "default": "DATA"
+    },
+    "distribution": {
+      "description": "Where the pack may be obtained. Read by the open-core split (phase G); recorded now so no pack has to be re-licensed later.",
+      "enum": [
+        "OSS",
+        "CLOUD",
+        "PARTNER"
+      ],
+      "default": "OSS"
+    },
+    "regulatoryClass": {
+      "description": "Drives the seven controls of phase I. STANDARD until that phase gives the other two teeth.",
+      "enum": [
+        "STANDARD",
+        "SENSITIVE",
+        "REGULATED"
+      ],
+      "default": "STANDARD"
+    },
+    "kind": {
+      "description": "How the pack reaches the user (ADR-061). VERTICAL: chosen and installed; the installation is a row that pins a version and records consent. TOOLKIT: an entitled actor simply has it; the installation is derived from entitlement and never stored, and a run resolves the latest published version once, at start. Orthogonal to `tier` and `regulatoryClass` — a TOOLKIT implies neither CAPABILITY nor STANDARD — and never read from the key: echo-toolkit is a VERTICAL.",
+      "enum": [
+        "VERTICAL",
+        "TOOLKIT"
+      ],
+      "default": "VERTICAL"
+    },
+    "requires": {
+      "description": "What must already be true of the platform for this pack to run.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "orazakaVersion": {
+          "description": "A semver range. Recorded and reported; not yet enforced, because the platform does not version itself yet.",
+          "type": "string"
+        },
+        "capabilities": {
+          "description": "Capabilities the pack CONTRIBUTES. A DATA pack declares none and reuses orazaka.core.*; the installer verifies every featureKey a blueprint names is routable either way, so an empty list is a claim the installer checks rather than a gap it ignores.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          },
+          "default": []
+        },
+        "workers": {
+          "description": "Workers the pack brings (tier WORKER). Declared for phase H; the installer records nothing from this in phase D and says so rather than half-applying it.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/worker"
+          },
+          "default": []
+        }
+      }
+    },
+    "catalog": {
+      "description": "The shelf entry: a `pack` row, its category and its bundling of Studios. OPTIONAL, and its absence is a real case rather than an oversight — trade-showcase and outbound-prospection are Studios that belong to no pack, and a manifest format that could not express today's catalogue would fail its first test. Without it the bundle ships Studios only, and no pack/pack_i18n/pack_studio/billing_pack row is written.",
+      "type": "object",
+      "required": [
+        "categoryKey",
+        "iconKey"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "categoryKey": {
+          "$ref": "#/$defs/key"
+        },
+        "iconKey": {
+          "$ref": "#/$defs/iconKey"
+        },
+        "status": {
+          "enum": [
+            "DRAFT",
+            "PUBLISHED",
+            "WITHDRAWN"
+          ],
+          "default": "DRAFT"
+        },
+        "sortWeight": {
+          "type": "integer",
+          "default": 0
+        },
+        "category": {
+          "description": "The category to create if it does not exist. Omit to require that the shelf already exists — an install then fails loudly rather than inventing a shelf under a typo.",
+          "type": "object",
+          "required": [
+            "iconKey"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "iconKey": {
+              "$ref": "#/$defs/iconKey"
+            },
+            "sortWeight": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        }
+      }
+    },
+    "pricing": {
+      "description": "What the pack costs and what buying it grants — the billing_pack half. Required when `catalog` is present, because a pack row with no price is unsellable and a PAID Studio with no pack is unreachable.",
+      "type": "object",
+      "required": [
+        "priceCents",
+        "includedCredits"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "priceCents": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "includedCredits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "isActive": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "studios": {
+      "description": "The Studios this bundle ships. At least one: a bundle that ships nothing runnable is a packaging error, not a pack.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/studio"
+      }
+    },
+    "scopeGuard": {
+      "description": "The domain this pack REFUSES to answer in. Required for regulatoryClass SENSITIVE and rejected at install without it, because a control that is optional is not a control (ADR-051). The engine holds the interceptor and never the subject: a legal pack refusing legal advice and a medical pack refusing diagnosis are the same code and two manifests.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refusedTerms",
+        "refusal"
+      ],
+      "properties": {
+        "refusedTerms": {
+          "description": "Terms whose presence in the turn refuses it. Matched case-insensitively on word boundaries, never as substrings.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "refusal": {
+          "description": "The exact answer given instead. Written by the pack's author, never generated — a fixed response is the only kind that can be reviewed before it is given.",
+          "type": "string",
+          "minLength": 20
+        }
+      }
+    },
+    "consent": {
+      "description": "The versioned consent a REGULATED pack requires before it may be installed. Consent is to a STATEMENT, not to a checkbox: bumping the version stops every existing installation until its owner agrees again, and that cost is the point (GDPR Art. 9, Loi 25 — health data is a special category).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "statement"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$",
+          "description": "MAJOR.MINOR. Changing it re-asks every installation."
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 40,
+          "description": "What the user is agreeing to, in plain language."
+        }
+      }
+    },
+    "safety": {
+      "description": "A REGULATED pack's crisis handling. The response is FIXED and reviewed by a person — a model asked to compose a crisis reply produces a number that looks like a crisis line, and someone will dial it. A region with no verified resource is a region the pack does not install in.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "crisisTerms",
+        "response",
+        "safetyReviewRef",
+        "resources"
+      ],
+      "properties": {
+        "crisisTerms": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          },
+          "description": "What this pack treats as crisis content, in its own language."
+        },
+        "response": {
+          "type": "string",
+          "minLength": 40,
+          "description": "The fixed reply. Never generated."
+        },
+        "safetyReviewRef": {
+          "type": "string",
+          "minLength": 8,
+          "description": "What the human review was, so the claim has something behind it."
+        },
+        "resources": {
+          "type": "object",
+          "minProperties": 1,
+          "description": "region → the verified crisis line that answers there.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "region",
+              "label",
+              "contact",
+              "availability",
+              "sourceUrl",
+              "verifiedOn"
+            ],
+            "properties": {
+              "region": {
+                "type": "string",
+                "pattern": "^[A-Z]{2}(-[A-Z]{2})?$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 2
+              },
+              "contact": {
+                "type": "string",
+                "minLength": 2
+              },
+              "availability": {
+                "type": "string",
+                "minLength": 2
+              },
+              "sourceUrl": {
+                "type": "string",
+                "pattern": "^https://",
+                "description": "Where the contact was read. An unsourced crisis number is the one thing this pack must never ship."
+              },
+              "verifiedOn": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "description": "When it was last read there. These change."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "description": "A catalogued pack must carry a price: `billing_pack_entitlement` is what makes the purchase usable, and PackCoherenceRules fails the build when a pack_studio row has no matching grant (ADR-036 invariant #3).",
+      "if": {
+        "required": [
+          "catalog"
+        ]
+      },
+      "then": {
+        "required": [
+          "pricing"
+        ]
+      }
+    },
+    {
+      "description": "A PAID Studio needs a pack to open a checkout for — the same invariant the studio table spells as studio_pricing_needs_package.",
+      "if": {
+        "properties": {
+          "studios": {
+            "contains": {
+              "properties": {
+                "pricing": {
+                  "const": "PAID"
+                }
+              },
+              "required": [
+                "pricing"
+              ]
+            }
+          }
+        },
+        "required": [
+          "studios"
+        ]
+      },
+      "then": {
+        "required": [
+          "catalog"
+        ]
+      }
+    },
+    {
+      "description": "A TOOLKIT is never REGULATED: consent is recorded on an installation, and a TOOLKIT's installation is derived. The database refuses the row too (ck_pack_toolkit_not_regulated).",
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "TOOLKIT"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "regulatoryClass": {
+            "not": {
+              "const": "REGULATED"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "A TOOLKIT declares neither consent nor safety, and has a catalog entry: consent and the region-chosen crisis reply are answered from an installation row it does not have, and its kind is stored on the pack row a catalog entry writes (ck_pack_toolkit_no_installation_controls).",
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "TOOLKIT"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "catalog"
+        ],
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "consent"
+              ]
+            },
+            {
+              "required": [
+                "safety"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "minLength": 2,
+      "maxLength": 50,
+      "description": "kebab-case and stable. It is a primary key in three databases and an opaque join between two of them; renaming one is a migration, not an edit."
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "iconKey": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "maxLength": 60,
+      "description": "Resolves in the design-system Icon registry. Unresolvable keys render nothing, so this is checked by eye, not by the installer."
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
+    "featureKey": {
+      "type": "string",
+      "pattern": "^orazaka\\.[a-z0-9]+(\\.[a-z0-9]+)+$",
+      "description": "A capability key as orazaka_capabilities holds it."
+    },
+    "capability": {
+      "type": "object",
+      "required": [
+        "key",
+        "routingKey",
+        "handlerKey",
+        "inputSchema",
+        "outputSchema"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/featureKey"
+        },
+        "routingKey": {
+          "type": "string",
+          "pattern": "^job\\.[a-z0-9]+\\.[a-z0-9]+$",
+          "description": "WHICH process drains it. The first of the two dispatch discriminants (ADR-038)."
+        },
+        "handlerKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+\\.[a-z0-9]+$",
+          "description": "WHICH code path runs it — the JobExecutor whose handlerKey() equals this. The second discriminant."
+        },
+        "billableUnit": {
+          "description": "Omit where the unit is a property of the MODEL rather than of the capability — credit_pricebook keeps `unit` out of its key for exactly that reason.",
+          "enum": [
+            "OUTPUT_SECOND",
+            "IMAGE_STEP",
+            "KILOCHAR",
+            "AUDIO_MINUTE",
+            "KILOTOKEN",
+            "GPU_SECOND",
+            "CALL"
+          ]
+        },
+        "billableCapability": {
+          "enum": [
+            "CHAT",
+            "IMAGE",
+            "AUDIO",
+            "VIDEO",
+            "AGENT"
+          ]
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "description": "What a CALLER MAY PASS, as a JSON Schema: types, `required`, defaults, and `format: prose | asset-id` where a composer must know which of its two holdings fills the input (ADR-068 §3). This is what payloadTemplate carried as an untyped string of ${placeholders} (ADR-069).",
+          "required": [
+            "type",
+            "properties"
+          ],
+          "properties": {
+            "type": {
+              "const": "object"
+            },
+            "properties": {
+              "type": "object"
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "anyOf": {
+              "type": "array"
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "What a SUCCESSFUL EXECUTION PUBLISHES, with types. Every {{steps.<out>.<field>}} link in every blueprint references one of these fields, and until ADR-069 nothing declared them — so no rule could check a link and the one hand-written table that tried was wrong.",
+          "required": [
+            "type",
+            "properties"
+          ],
+          "properties": {
+            "type": {
+              "const": "object"
+            },
+            "properties": {
+              "type": "object"
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "description": "What a pack CONTRIBUTES to the registry: dispatch (routingKey, handlerKey), contract (inputSchema, outputSchema), billing, and whether it is on. It carried a label, an icon, a uriPath, an httpMethod and a payloadTemplate until ADR-069 §5 — the registry's UI-manifest half, whose endpoints door 1 owned and whose display names now live in the pack's i18n."
+    },
+    "worker": {
+      "type": "object",
+      "required": [
+        "name",
+        "bindings"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/key"
+        },
+        "image": {
+          "type": "string"
+        },
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^job\\.[a-z0-9*]+(\\.[a-z0-9*#]+)*$"
+          }
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      }
+    },
+    "studio": {
+      "type": "object",
+      "required": [
+        "key",
+        "profession",
+        "iconKey",
+        "pricing",
+        "entitlementKey",
+        "blueprint"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "profession": {
+          "type": "string",
+          "maxLength": 60
+        },
+        "iconKey": {
+          "$ref": "#/$defs/iconKey"
+        },
+        "pricing": {
+          "enum": [
+            "FREE",
+            "INCLUDED",
+            "PAID"
+          ]
+        },
+        "entitlementKey": {
+          "type": "string",
+          "pattern": "^studio\\.[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "studio.<studioKey>. Read verbatim by EntitlementSnapshot.allows, which is why adding a Studio needs zero billing code."
+        },
+        "status": {
+          "enum": [
+            "DRAFT",
+            "PUBLISHED",
+            "WITHDRAWN"
+          ],
+          "default": "DRAFT"
+        },
+        "publisherId": {
+          "type": "string",
+          "maxLength": 255,
+          "default": "orazaka"
+        },
+        "sortWeight": {
+          "type": "integer",
+          "default": 0
+        },
+        "blueprint": {
+          "description": "The path, relative to the bundle root, of the blueprint JSON for this Studio's version.",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._/-]+\\.json$"
+        }
+      }
+    }
+  }
+}

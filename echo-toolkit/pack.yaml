@@ -1,0 +1,79 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# echo-toolkit — the Tier-W reference pack (ADR-049).
+#
+# It exists to prove one claim and no more: a pack can bring its OWN capability,
+# executed by its OWN worker process, and the platform needs no edit to run it.
+# The work is deliberately trivial — reversing a string — because a reference for
+# an extension point should be readable in a minute, and every line that is not
+# about the extension point is a line that hides it.
+#
+# What makes this Tier-W rather than Tier-C: `requires.workers`. The worker binds
+# `job.echo.*` itself, declares its own queue on connect, and answers on
+# `job.{jobId}.done`. It links no Orazaka library and implements no Java
+# interface — the broker is the plugin boundary (ADR-037 §6).
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: echo-toolkit
+version: 1.0.0
+tier: WORKER
+distribution: OSS
+regulatoryClass: STANDARD
+
+requires:
+  capabilities:
+    # The pack CONTRIBUTES this capability. `routingKey` picks the queue, `handlerKey`
+    # picks the code path inside whatever drains it — here, a path that exists only in
+    # this pack's own worker [EXEC-001/002].
+    - key: orazaka.echo.text.reverse
+      routingKey: job.echo.reverse
+      handlerKey: echo.reverse
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          text: { type: string, format: prose, description: "Le texte à renverser." }
+        required: [text]
+      outputSchema:
+        type: object
+        properties:
+          text: { type: string, description: "Le texte renversé — la clé que le worker publie." }
+          metrics: { type: object, description: "Ce que l'exécution a consommé." }
+        required: [text]
+  workers:
+    # Recorded by nothing before phase H, and declared anyway: the manifest is the
+    # place a worker pack states what it drains, and a declaration the platform will
+    # read later is better than one invented later.
+    - name: orazaka-worker-echo
+      bindings:
+        - "job.echo.*"
+      concurrency: 1
+
+catalog:
+  categoryKey: business
+  iconKey: repeat
+  status: PUBLISHED
+  sortWeight: 5
+  # Open the shelf if this bundle is the first on it: nothing seeds pack_category, so a
+  # catalogued pack that named one without declaring it could only install into a database
+  # where another bundle had already opened it (ADR-068, #45). Idempotent — an existing
+  # shelf is left exactly as it is, never restyled by a later pack.
+  category:
+    iconKey: briefcase
+    sortWeight: 100
+
+pricing:
+  priceCents: 0
+  includedCredits: 0
+
+studios:
+  - key: echo-reverse
+    profession: general
+    iconKey: studio
+    pricing: FREE
+    entitlementKey: studio.echo-reverse
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 5
+    blueprint: studios/echo-reverse/blueprint.json

@@ -1,0 +1,72 @@
+{
+  "version": "1.1.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 3600,
+  "changelog": "1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "video-generation",
+    "version": "1.1.0",
+    "steps": [
+      {
+        "id": "video",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.video",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "{{inputs.prompt}}",
+          "durationSeconds": "{{inputs.durationSeconds}}",
+          "image": "{{inputs.image:}}",
+          "model": "{{inputs.model:}}"
+        },
+        "out": "video",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT20M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "video",
+        "label": "Votre vidéo",
+        "from": "{{steps.video.url}}",
+        "type": "VIDEO"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["prompt"],
+    "properties": {
+      "prompt": {
+        "type": "string",
+        "format": "prose",
+        "minLength": 3,
+        "maxLength": 2000,
+        "title": "Ce qui doit se passer à l'écran",
+        "description": "Décrivez le plan : le sujet, le mouvement, l'ambiance."
+      },
+      "durationSeconds": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20,
+        "default": 5,
+        "title": "Durée (secondes)",
+        "description": "La vidéo est facturée à la seconde produite : une durée est une dépense, pas un réglage."
+      },
+      "image": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Image d'amorce (facultatif)",
+        "description": "L'identifiant d'un de vos fichiers envoyés, pour partir d'une image plutôt que du vide."
+      },
+      "model": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Modèle (facultatif)",
+        "description": "Laissez vide : le catalogue choisit le modèle par défaut de la catégorie."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

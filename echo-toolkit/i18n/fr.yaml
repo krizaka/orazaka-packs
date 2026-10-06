@@ -1,0 +1,7 @@
+pack:
+  label: "Miroir"
+  tagline: "Votre texte, à l'envers."
+studios:
+  echo-reverse:
+    label: "Miroir"
+    tagline: "Votre texte, à l'envers."

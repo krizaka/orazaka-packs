@@ -1,0 +1,117 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 380,
+  "changelog": "Version initiale : une fiche de qualification par prospect, puis un classement par priorité.",
+  "createdBy": "system",
+  "definition": {
+    "studioKey": "lead-research",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "research",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "forEach": "{{inputs.prospects}}",
+        "maxParallel": 4,
+        "inputs": {
+          "prompt": "Établis une fiche de qualification pour ce prospect : {{item}}. Notre client idéal : {{inputs.icp}}. Réponds en cinq lignes : secteur, taille estimée, déclencheur d'achat probable, objection attendue, angle d'entrée. Ton : {{config.tone}}."
+        },
+        "out": "briefs",
+        "onError": "SKIP",
+        "skipRationale": "Un prospect non documenté ne doit pas emporter la recherche des autres : le dossier reste exploitable avec les fiches produites, et l'utilisateur voit immédiatement laquelle manque. Le score en aval travaille sur ce qui existe.",
+        "maxAttempts": 1,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "score",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "research"
+        ],
+        "inputs": {
+          "prompt": "Voici des fiches de qualification : {{steps.briefs}}. Classe ces prospects du plus au moins prioritaire pour l'offre suivante : {{inputs.offer}}. Pour chacun, une ligne : nom, priorité (haute/moyenne/basse), la raison en six mots."
+        },
+        "out": "ranking",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "dossier",
+        "kind": "TRANSFORM",
+        "dependsOn": [
+          "score"
+        ],
+        "inputs": {
+          "body": "{{steps.briefs}}",
+          "subject": "{{inputs.offer}}",
+          "signature": "{{steps.ranking}}"
+        },
+        "out": "researchDossier",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "ranking",
+        "label": "Vos prospects, par priorité",
+        "from": "{{steps.ranking.content}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "briefs",
+        "label": "Fiches de qualification",
+        "from": "{{steps.briefs}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "prospects",
+      "offer",
+      "icp"
+    ],
+    "properties": {
+      "prospects": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "maxItems": 50,
+        "title": "Vos prospects"
+      },
+      "offer": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Votre offre en une phrase"
+      },
+      "icp": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Votre client idéal"
+      }
+    }
+  },
+  "configSchema": {
+    "tone": {
+      "enum": [
+        "premium",
+        "chaleureux",
+        "direct"
+      ],
+      "default": "direct"
+    },
+    "signature": {
+      "type": "string",
+      "title": "Signature"
+    }
+  }
+}

@@ -1,0 +1,107 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# orazaka-media — the platform's own media capabilities, as a pack (ADR-066, M2).
+#
+# Six capabilities that have always existed and were only ever reachable through
+# buttons in the chat composer: generation (image, video, speech) and analysis
+# (image, audio, video). Each becomes ONE Studio with ONE step, so the same work
+# runs on the run path — measured once, settled once, retained by the run's class —
+# instead of through door 1, where nothing meters it and nothing keeps it.
+#
+# kind: TOOLKIT, and that is what makes it the platform's rather than a product:
+# an entitled actor simply HAS it, the installation is derived from entitlement and
+# never stored, and there is no row to install or revoke (ADR-061). It therefore
+# declares NEITHER consent NOR safety — both are answered from an installation row
+# a TOOLKIT does not have, and the schema and the database both refuse them here.
+#
+# regulatoryClass: STANDARD. These Studios carry whatever the actor brings, and the
+# platform makes no claim about it; a pack that handles health or identity declares
+# that itself, as `wellbeing` and `document-validation` do.
+#
+# It contributes NO capability and NO worker: `requires` is absent because every
+# feature key below is already seeded in 30-jobs-config.sql and already drained by
+# the job service. A pack is a bundle of Studios over capabilities, and only a pack
+# that brings its own executor needs to declare one.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: orazaka-media
+version: 1.0.0
+tier: DATA
+distribution: OSS
+regulatoryClass: STANDARD
+kind: TOOLKIT
+
+catalog:
+  categoryKey: business
+  iconKey: image
+  status: PUBLISHED
+  sortWeight: 90
+  # Open the shelf if this bundle is the first on it: nothing seeds pack_category, so a
+  # catalogued pack that named one without declaring it could only install into a database
+  # where another bundle had already opened it (ADR-068, #45). Idempotent — an existing
+  # shelf is left exactly as it is, never restyled by a later pack.
+  category:
+    iconKey: briefcase
+    sortWeight: 100
+
+# Zero, and included: a TOOLKIT is not bought on this page. The price exists because
+# a catalogued pack must carry one — billing_pack_entitlement is what makes the grant
+# usable, and a catalogue row without it locks out exactly the actor who is entitled.
+pricing:
+  priceCents: 0
+  includedCredits: 0
+
+studios:
+  - key: image-generation
+    profession: general
+    iconKey: image
+    pricing: INCLUDED
+    entitlementKey: studio.image-generation
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 96
+    blueprint: studios/image-generation/blueprint.json
+  - key: video-generation
+    profession: general
+    iconKey: video
+    pricing: INCLUDED
+    entitlementKey: studio.video-generation
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 95
+    blueprint: studios/video-generation/blueprint.json
+  - key: speech-synthesis
+    profession: general
+    iconKey: speech
+    pricing: INCLUDED
+    entitlementKey: studio.speech-synthesis
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 94
+    blueprint: studios/speech-synthesis/blueprint.json
+  - key: image-analysis
+    profession: general
+    iconKey: vision
+    pricing: INCLUDED
+    entitlementKey: studio.image-analysis
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 93
+    blueprint: studios/image-analysis/blueprint.json
+  - key: audio-analysis
+    profession: general
+    iconKey: audio
+    pricing: INCLUDED
+    entitlementKey: studio.audio-analysis
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 92
+    blueprint: studios/audio-analysis/blueprint.json
+  - key: video-analysis
+    profession: general
+    iconKey: video
+    pricing: INCLUDED
+    entitlementKey: studio.video-analysis
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 91
+    blueprint: studios/video-analysis/blueprint.json

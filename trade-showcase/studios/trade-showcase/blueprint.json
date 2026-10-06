@@ -1,0 +1,126 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 210,
+  "changelog": "Vitrine initiale : description des réalisations, légende rédigée et visuel de marque.",
+  "createdBy": "system",
+  "definition": {
+    "studioKey": "trade-showcase",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "describe",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.vision",
+        "dependsOn": [],
+        "forEach": "{{inputs.photos}}",
+        "maxParallel": 3,
+        "inputs": {
+          "assetId": "{{item}}",
+          "prompt": "Décris cette réalisation pour la vitrine d'un artisan {{inputs.trade}}. Ton: {{config.tone}}."
+        },
+        "out": "photoDescriptions",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "caption",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "describe"
+        ],
+        "inputs": {
+          "prompt": "Rédige la légende de vitrine d'un artisan {{inputs.trade}} pour {{config.brandName}}. Réalisations: {{steps.photoDescriptions}}. Ton: {{config.tone}}. {{config.signature:}}"
+        },
+        "out": "caption",
+        "onError": "RETRY",
+        "maxAttempts": 2,
+        "timeout": "PT3M"
+      },
+      {
+        "id": "showcase",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.image",
+        "dependsOn": [
+          "describe"
+        ],
+        "maxParallel": 0,
+        "inputs": {
+          "prompt": "Visuel de vitrine pour {{config.brandName}}, artisan {{inputs.trade}}. Réalisations: {{steps.photoDescriptions}}. Ton: {{config.tone}}.",
+          "size": "{{config.imageSize:1024x1024}}"
+        },
+        "out": "showcaseImage",
+        "onError": "RETRY",
+        "maxAttempts": 2,
+        "timeout": "PT5M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "showcase",
+        "label": "Votre visuel de vitrine",
+        "from": "{{steps.showcaseImage.url}}",
+        "type": "IMAGE"
+      },
+      {
+        "key": "caption",
+        "label": "Votre légende",
+        "from": "{{steps.caption.content}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "descriptions",
+        "label": "Descriptions de vos réalisations",
+        "from": "{{steps.photoDescriptions}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "photos",
+      "trade"
+    ],
+    "properties": {
+      "photos": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "maxItems": 6,
+        "title": "Photos de vos réalisations"
+      },
+      "trade": {
+        "type": "string",
+        "maxLength": 60,
+        "title": "Votre métier"
+      }
+    }
+  },
+  "configSchema": {
+    "brandName": {
+      "type": "string",
+      "title": "Nom de l'entreprise"
+    },
+    "tone": {
+      "enum": [
+        "premium",
+        "chaleureux",
+        "direct"
+      ],
+      "default": "chaleureux"
+    },
+    "imageSize": {
+      "type": "string",
+      "default": "1024x1024"
+    },
+    "signature": {
+      "type": "string",
+      "title": "Signature"
+    }
+  }
+}

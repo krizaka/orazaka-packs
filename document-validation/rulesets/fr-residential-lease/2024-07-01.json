@@ -1,0 +1,161 @@
+{
+  "rulesetId": "fr-residential-lease",
+  "label": "Bail d'habitation — France",
+  "jurisdiction": "FR",
+  "version": "2024-07-01",
+  "effectiveFrom": "2024-07-01",
+  "effectiveTo": "2026-06-30",
+  "source": "Loi n° 89-462 du 6 juillet 1989, décret n° 2015-587",
+  "rules": [
+    {
+      "ruleId": "FR-LEASE-001",
+      "title": "Identification des parties",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Loi 89-462, art. 3, 1°",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)\\b(bailleur|propri[ée]taire)\\b"
+      },
+      "onPass": "Le document nomme le bailleur.",
+      "onFail": "Le document ne nomme aucun bailleur. L'article 3 impose l'identité du bailleur au contrat.",
+      "fixtures": {
+        "pass": "Entre les soussignés : M. Jean Morel, demeurant 8 rue Vauban, 69006 Lyon, bailleur, et Mme Claire Petit, locataire.",
+        "fail": "Le bailleur donne à bail au locataire un appartement de 62 m² situé 14 rue des Lilas."
+      }
+    },
+    {
+      "ruleId": "FR-LEASE-002",
+      "title": "Identification du locataire",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Loi 89-462, art. 3, 1°",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)\\blocataire\\b"
+      },
+      "onPass": "Le document nomme le locataire.",
+      "onFail": "Le document ne nomme aucun locataire.",
+      "fixtures": {
+        "pass": "Le preneur, Mme Claire Petit, née le 3 mars 1991, demeurant 8 rue Vauban, prend à bail le logement désigné.",
+        "fail": "Le bailleur donne à bail le logement désigné à l'article 1er, aux conditions ci-après."
+      }
+    },
+    {
+      "ruleId": "FR-LEASE-003",
+      "title": "Durée du bail",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Loi 89-462, art. 10",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)dur[ée]e\\s+(?:du\\s+)?(?:bail|contrat|location)"
+      },
+      "onPass": "Le document énonce une durée.",
+      "onFail": "Aucune durée n'est énoncée. Un bail d'habitation vide est de trois ans pour un bailleur personne physique.",
+      "fixtures": {
+        "pass": "Article 2. Le présent bail est consenti pour une durée de trois ans à compter du 1er octobre 2026.",
+        "fail": "Article 2. Le présent bail est consenti pour une durée de deux ans à compter du 1er octobre 2026."
+      }
+    },
+    {
+      "ruleId": "FR-LEASE-004",
+      "title": "Montant du loyer",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Loi 89-462, art. 3, 7°",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)loyer[^.\\n]{0,80}?(\\d[\\d\\s.,]*)\\s*(?:€|EUR|eur|[Ee]uros?)"
+      },
+      "onPass": "Le loyer est chiffré au contrat.",
+      "onFail": "Le loyer n'est pas chiffré. L'article 3 impose le montant du loyer et ses modalités de révision.",
+      "fixtures": {
+        "pass": "Le loyer mensuel est fixé à 780 EUR, payable d'avance le 5 de chaque mois.",
+        "fail": "Le loyer sera arrêté d'un commun accord entre les parties avant l'entrée dans les lieux."
+      }
+    },
+    {
+      "ruleId": "FR-LEASE-005",
+      "title": "Dépôt de garantie plafonné à un mois de loyer hors charges",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Loi 89-462, art. 22",
+      "check": {
+        "type": "NUMERIC_RATIO_MAX",
+        "numerator": "(?i)d[ée]p[ôo]t\\s+de\\s+garantie[^.\\n]{0,80}?(\\d[\\d\\s.,]*)\\s*(?:€|EUR|eur|[Ee]uros?)",
+        "denominator": "(?i)loyer[^.\\n]{0,80}?(\\d[\\d\\s.,]*)\\s*(?:€|EUR|eur|[Ee]uros?)",
+        "max": 1.0
+      },
+      "onPass": "Le dépôt de garantie n'excède pas un mois de loyer hors charges.",
+      "onFail": "Le dépôt de garantie excède un mois de loyer hors charges. L'article 22 le plafonne à un mois.",
+      "fixtures": {
+        "pass": "Le loyer mensuel est fixé à 780 EUR. Le locataire verse un dépôt de garantie de 780 EUR.",
+        "fail": "Le loyer mensuel est fixé à 780 EUR. Le locataire verse un dépôt de garantie de 1 560 EUR."
+      }
+    },
+    {
+      "ruleId": "FR-LEASE-006",
+      "title": "Clause de solidarité au-delà du congé — réputée non écrite",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Loi 89-462, art. 4",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)solidarit[ée][^.\\n]{0,120}(?:apr[èe]s|au-del[àa] de)[^.\\n]{0,60}cong[ée]"
+      },
+      "onPass": "Aucune clause de solidarité prolongée détectée.",
+      "onFail": "Une clause prolonge la solidarité au-delà du congé. L'article 4 la répute non écrite.",
+      "fixtures": {
+        "pass": "La solidarité du colocataire prend fin à la date d'effet de son congé régulièrement délivré.",
+        "fail": "La solidarité du colocataire demeure acquise au bailleur pendant vingt-quatre mois après son congé."
+      }
+    },
+    {
+      "ruleId": "FR-LEASE-007",
+      "title": "Interdiction de recevoir des visites — réputée non écrite",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Loi 89-462, art. 4 g)",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)interdi\\w*[^.\\n]{0,60}(?:recevoir|h[ée]berger)[^.\\n]{0,40}(?:visite|invit|proche)"
+      },
+      "onPass": "Aucune interdiction de recevoir détectée.",
+      "onFail": "Une clause interdit au locataire de recevoir. L'article 4 g) la répute non écrite.",
+      "fixtures": {
+        "pass": "Le locataire jouit paisiblement des lieux et peut y recevoir qui bon lui semble.",
+        "fail": "Il est interdit au locataire de recevoir des visites au-delà de vingt-deux heures."
+      }
+    },
+    {
+      "ruleId": "FR-LEASE-008",
+      "title": "Diagnostic de performance énergétique annexé",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "Loi 89-462, art. 3-3",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)\\b(?:DPE|diagnostic\\s+de\\s+performance\\s+[ée]nerg[ée]tique)\\b"
+      },
+      "onPass": "Le DPE est mentionné en annexe.",
+      "onFail": "Aucune mention du diagnostic de performance énergétique.",
+      "fixtures": {
+        "pass": "Sont annexés au présent contrat le diagnostic de performance énergétique et l'état des risques.",
+        "fail": "Sont annexés au présent contrat l'état des lieux et l'attestation d'assurance du locataire."
+      }
+    },
+    {
+      "ruleId": "FR-LEASE-020",
+      "title": "Équilibre des clauses pénales",
+      "severity": "ADVISORY",
+      "method": "JUDGMENT",
+      "citation": "Code civil, art. 1231-5",
+      "question": "Ce bail contient-il une clause pénale ou une indemnité forfaitaire manifestement disproportionnée au regard du préjudice qu'elle sanctionne ?",
+      "onPass": "Aucune clause pénale manifestement disproportionnée relevée.",
+      "onFail": "Une clause pénale paraît disproportionnée ; le juge peut la modérer."
+    }
+  ],
+  "revision": 2,
+  "revisionNote": "r2 : les montants écrits « EUR » n'étaient pas reconnus, ce qui produisait un FAIL sur un bail conforme. Correction du pack, pas du droit."
+}

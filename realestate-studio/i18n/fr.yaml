@@ -1,0 +1,16 @@
+pack:
+  label: Studio Immobilier
+  tagline: Vos biens deviennent des Reels prêts à publier.
+  description: >-
+    Le pack métier de l'agent immobilier : le Studio Reels Immobilier et les crédits
+    pour le faire tourner.
+category:
+  label: Business
+  description: "Les packs qui font le travail : prospecter, valider, produire."
+studios:
+  realestate-reels:
+    label: Reels Immobilier
+    tagline: Cinq photos deviennent un Reel prêt à publier.
+    description: >-
+      Photos du bien, brief en trois lignes, et vous repartez avec un Reel 9:16, sa
+      légende et ses hashtags.

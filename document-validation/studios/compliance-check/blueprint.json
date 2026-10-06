@@ -1,0 +1,111 @@
+{
+  "version": "1.1.1",
+  "status": "PUBLISHED",
+  "estimatedCredits": 120,
+  "changelog": "Contrôle de conformité documentaire — déterministe d'abord, modèle en second. 1.0.1 : la structure traverse l'appel au modèle en JSON explicite. 1.0.2 : jugement en onError=FAIL, faute de pouvoir distinguer un refus d'une panne. 1.1.0 : la distinction existe (ADR-053). SKIP quand le modèle est tombé — un rapport 9/10 déterministe reste utile, et la règle de jugement se rend en INSUFFICIENT_EVIDENCE, ce qui est vrai. FAIL sur GUARD_REFUSAL — un refus doit atteindre l'utilisateur, jamais être avalé dans un rapport qu'il croira complet. 1.1.1 : justification écrite du SKIP, exigée par BlueprintFitnessTest.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "compliance-check",
+    "version": "1.1.1",
+    "steps": [
+      {
+        "id": "screen",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.validation.document.screen",
+        "dependsOn": [],
+        "inputs": {
+          "document": "{{inputs.document}}",
+          "jurisdiction": "{{inputs.jurisdiction}}",
+          "asOf": "{{inputs.asOf}}"
+        },
+        "out": "screened",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "judge",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "screen"
+        ],
+        "inputs": {
+          "prompt": "{{steps.screened.judgmentPrompt}}"
+        },
+        "out": "judgment",
+        "onError": "SKIP",
+        "maxAttempts": 1,
+        "timeout": "PT3M",
+        "onErrorByCause": {
+          "GUARD_REFUSAL": "FAIL"
+        },
+        "skipRationale": "Sans le modèle, le rapport garde ses 9 constats déterministes — chacun avec sa règle, sa citation et son extrait — et la seule règle de jugement se rend en INSUFFICIENT_EVIDENCE, ce qui est exactement vrai : personne ne l'a évaluée. Un rapport amputé qui le dit vaut mieux qu'aucun rapport. Le refus de garde-fou est l'exception explicite ci-dessus : il doit atteindre l'utilisateur (ADR-053)."
+      },
+      {
+        "id": "report",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.validation.document.assemble",
+        "dependsOn": [
+          "judge"
+        ],
+        "inputs": {
+          "screened": "{{steps.screened.screenedJson}}",
+          "judgment": "{{steps.judgment.content}}"
+        },
+        "out": "report",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "report",
+        "label": "Rapport de conformité",
+        "from": "{{steps.report.reportJson}}",
+        "type": "JSON"
+      },
+      {
+        "key": "ruleset",
+        "label": "Corpus de règles appliqué",
+        "from": "{{steps.screened.rulesetVersion}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "document",
+      "jurisdiction"
+    ],
+    "properties": {
+      "document": {
+        "type": "string",
+        "maxLength": 60000,
+        "title": "Document à contrôler",
+        "description": "Le texte du document. Le contrôle porte sur ce texte, jamais sur un résumé."
+      },
+      "jurisdiction": {
+        "type": "string",
+        "enum": [
+          "FR",
+          "BE-WAL"
+        ],
+        "title": "Juridiction",
+        "description": "Le corpus de règles applicable. Une entrée de premier rang : le même document est conforme ici et non conforme là."
+      },
+      "asOf": {
+        "type": "string",
+        "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+        "title": "Règles en vigueur à la date du",
+        "description": "Le corpus appliqué est celui en vigueur à cette date. Par défaut : aujourd'hui. Rejouer un run avec la même date rejoue les mêmes règles."
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

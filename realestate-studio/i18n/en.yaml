@@ -1,0 +1,15 @@
+pack:
+  label: Real-Estate Studio
+  tagline: Your listings become Reels ready to publish.
+  description: >-
+    The real-estate agent's pack: the Real-Estate Reels Studio and the credits to run it.
+category:
+  label: Business
+  description: "The packs that do the job: prospect, validate, produce."
+studios:
+  realestate-reels:
+    label: Real-Estate Reels
+    tagline: Five photos become a Reel ready to publish.
+    description: >-
+      Property photos, a three-line brief, and you leave with a 9:16 Reel, its caption
+      and its hashtags.

@@ -1,0 +1,64 @@
+{
+  "version": "1.2.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 40,
+  "changelog": "1.2.0 — la capacité que cette étape appelle est renommée : une clé qui disait `chat.*` pour de la synthèse AUDIO et une qui disait `media.audio` pour de la transcription mentaient toutes deux sur ce qu'elles font (ADR-069, constat #44). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Synthèse vocale — une étape. Le schéma porte le défaut de payload_template : `voice` alloy. Facturée au millier de caractères envoyés, ce que l'exécuteur rapporte désormais (ADR-066).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "speech-synthesis",
+    "version": "1.2.0",
+    "steps": [
+      {
+        "id": "speech",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.speech",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "{{inputs.text}}",
+          "voice": "{{inputs.voice}}",
+          "model": "{{inputs.model:}}"
+        },
+        "out": "speech",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT3M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "audio",
+        "label": "Votre piste audio",
+        "from": "{{steps.speech.url}}",
+        "type": "AUDIO"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["text"],
+    "properties": {
+      "text": {
+        "type": "string",
+        "format": "prose",
+        "minLength": 1,
+        "maxLength": 20000,
+        "title": "Le texte à lire",
+        "description": "Ce qui sera prononcé. La facturation suit le nombre de caractères."
+      },
+      "voice": {
+        "type": "string",
+        "maxLength": 60,
+        "default": "alloy",
+        "title": "Voix",
+        "description": "La voix du modèle choisi. alloy est celle par défaut."
+      },
+      "model": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Modèle (facultatif)",
+        "description": "Laissez vide : le catalogue choisit la voix de synthèse par défaut."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

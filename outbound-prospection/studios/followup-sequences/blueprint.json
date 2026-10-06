@@ -1,0 +1,152 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 510,
+  "changelog": "Version initiale : une relance multi-temps par prospect, uniformisée puis postée au canal après validation.",
+  "createdBy": "system",
+  "definition": {
+    "studioKey": "followup-sequences",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "touchpoints",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "forEach": "{{inputs.prospects}}",
+        "maxParallel": 4,
+        "inputs": {
+          "prompt": "Écris une relance en {{config.touches}} temps pour ce prospect : {{item}}. Contexte de la première prise de contact : {{inputs.context}}. Offre : {{inputs.offer}}. Pour chaque temps : le délai, l'objet, et trois lignes de corps. Ton : {{config.tone}}."
+        },
+        "out": "ladders",
+        "onError": "SKIP",
+        "skipRationale": "Une relance qui échoue pour un prospect ne rend pas les autres inutilisables : la séquence part pour ceux qui ont abouti, et celui qui manque est visible dans les artefacts plutôt que masqué.",
+        "maxAttempts": 1,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "polish",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "touchpoints"
+        ],
+        "inputs": {
+          "prompt": "Voici des séquences de relance : {{steps.ladders}}. Uniformise le ton ({{config.tone}}) et supprime les répétitions d'une séquence à l'autre, sans changer les délais ni les objets. Rends le texte prêt à envoyer."
+        },
+        "out": "polished",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "assemble",
+        "kind": "TRANSFORM",
+        "dependsOn": [
+          "polish"
+        ],
+        "inputs": {
+          "body": "{{steps.polished.content}}",
+          "subject": "Relances — {{inputs.offer}}",
+          "signature": "{{config.signature:}}"
+        },
+        "out": "sequence",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "approve",
+        "kind": "APPROVAL",
+        "dependsOn": [
+          "assemble"
+        ],
+        "inputs": {
+          "preview": "{{steps.sequence.body}}"
+        },
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT30M"
+      },
+      {
+        "id": "notify",
+        "kind": "CONNECTOR",
+        "connectorType": "SLACK",
+        "dependsOn": [
+          "approve"
+        ],
+        "inputs": {
+          "action": "send",
+          "subject": "{{steps.sequence.subject}}",
+          "body": "{{steps.sequence.body}}"
+        },
+        "out": "notified",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT5M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "sequence",
+        "label": "Votre séquence de relance",
+        "from": "{{steps.sequence.body}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "ladders",
+        "label": "Relances par prospect",
+        "from": "{{steps.ladders}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "prospects",
+      "offer",
+      "context"
+    ],
+    "properties": {
+      "prospects": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "maxItems": 50,
+        "title": "Prospects à relancer"
+      },
+      "offer": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Votre offre en une phrase"
+      },
+      "context": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Ce qui s'est passé au premier contact"
+      }
+    }
+  },
+  "configSchema": {
+    "tone": {
+      "enum": [
+        "premium",
+        "chaleureux",
+        "direct"
+      ],
+      "default": "direct"
+    },
+    "touches": {
+      "type": "string",
+      "default": "3",
+      "title": "Nombre de relances"
+    },
+    "signature": {
+      "type": "string",
+      "title": "Signature"
+    }
+  }
+}

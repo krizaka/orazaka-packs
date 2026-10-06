@@ -1,0 +1,8 @@
+# What this pack's worker declares. Bindings, never capabilities: a worker has no
+# idea which pack asked for the work — it drains a routing key (ADR-037 §5).
+name: orazaka-worker-echo
+family: echo
+bindings:
+  - "job.echo.*"
+version: "1.0.0"
+concurrency: 1

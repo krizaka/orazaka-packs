@@ -1,0 +1,28 @@
+pack:
+  label: Outbound Prospecting
+  tagline: From a prospect list to a sequence that ships.
+  description: >-
+    The salesperson's pack: qualify a list, write each prospect's angle, and get the
+    follow-ups out — three Studios over the same list.
+category:
+  label: Business
+  description: "The packs that do the job: prospect, validate, produce."
+studios:
+  outbound-prospection:
+    label: Outbound Prospecting
+    tagline: Your prospect list becomes a sequence ready to send.
+    description: >-
+      Describe your target and your offer: Orazaka writes a per-prospect angle, then a
+      sequence ready to leave for your channel.
+  lead-research:
+    label: Lead Research
+    tagline: Your raw list becomes a prioritised dossier.
+    description: >-
+      One brief per prospect — sector, buying trigger, expected objection — then a
+      ranking so you know who to call first.
+  followup-sequences:
+    label: Follow-up Sequences
+    tagline: Your first contacts become follow-ups that go out.
+    description: >-
+      A multi-touch follow-up per prospect, unified into one voice, approved by you,
+      then posted to your channel.

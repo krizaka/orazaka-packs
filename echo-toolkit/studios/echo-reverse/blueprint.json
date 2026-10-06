@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 30,
+  "changelog": "Reference Tier-W pack.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "echo-reverse",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "reverse",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.echo.text.reverse",
+        "dependsOn": [],
+        "inputs": {
+          "text": "{{inputs.text}}"
+        },
+        "out": "reversed",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "reversed",
+        "label": "Votre texte, à l'envers",
+        "from": "{{steps.reversed.text}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "text"
+    ],
+    "properties": {
+      "text": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Texte"
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

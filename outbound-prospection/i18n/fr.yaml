@@ -1,0 +1,28 @@
+pack:
+  label: Prospection Outbound
+  tagline: De la liste de prospects à la séquence envoyée.
+  description: >-
+    Le pack du commercial : qualifier une liste, écrire l'angle de chacun, et faire
+    partir les relances — trois Studios sur la même liste de prospects.
+category:
+  label: Business
+  description: "Les packs qui font le travail : prospecter, valider, produire."
+studios:
+  outbound-prospection:
+    label: Prospection Outbound
+    tagline: Votre liste de prospects devient une séquence prête à envoyer.
+    description: >-
+      Décrivez votre cible et votre offre : Orazaka rédige un angle par prospect, puis
+      une séquence prête à partir dans votre canal.
+  lead-research:
+    label: Qualification de Prospects
+    tagline: Votre liste brute devient un dossier priorisé.
+    description: >-
+      Une fiche par prospect — secteur, déclencheur, objection attendue — puis un
+      classement par priorité pour savoir qui appeler en premier.
+  followup-sequences:
+    label: Séquences de Relance
+    tagline: Vos premiers contacts deviennent des relances qui partent.
+    description: >-
+      Une relance en plusieurs temps par prospect, uniformisée en un seul ton, validée
+      par vous, puis postée dans votre canal.

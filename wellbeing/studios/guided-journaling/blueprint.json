@@ -1,0 +1,52 @@
+{
+  "version": "1.1.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 40,
+  "changelog": "Journaling guidé — le texte est écrit à la première personne, à la place de la personne. La 1.0.0 demandait « trois à cinq paragraphes à la première personne » et produisait « Je suis désolé d'apprendre que vous avez… » : deuxième personne, l'assistant qui rassure et qui conseille, exactement le registre qu'ADR-055 écarte pour ne faire aucune allégation de soin. La consigne interdit désormais l'adresse plutôt que de demander une voix (docs/evaluations/first-real-use.md, A5).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "guided-journaling",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "reflect",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "Tu mets au propre l'entrée de journal d'une personne, pour qu'elle puisse l'apporter à son ou sa thérapeute.\n\nTu écris À SA PLACE, à la première personne du singulier, avec ses mots à elle. Tu ne t'adresses jamais à elle : pas de « vous », pas d'impératif, pas de conseil, pas de réconfort, pas de « je suis désolé ». Tu n'es pas un interlocuteur dans ce texte — tu n'y apparais pas du tout.\n\nTu reformules ce qu'elle a écrit en trois à cinq paragraphes, tu précises ce qui est vague en restant dans ce qu'elle a dit, et tu n'ajoutes aucun fait qu'elle n'a pas donné. Tu ne poses aucun diagnostic, tu ne nommes aucun trouble et tu ne proposes aucun traitement.\n\nCommence directement par le texte, sans préambule.\n\nCe qu'elle a écrit :\n{{inputs.entry}}"
+        },
+        "out": "reflection",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT3M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "journal",
+        "label": "Votre entrée, mise au propre",
+        "from": "{{steps.reflection.content}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "entry"
+    ],
+    "properties": {
+      "entry": {
+        "type": "string",
+        "maxLength": 8000,
+        "title": "Ce que vous voulez mettre par écrit",
+        "description": "Vos mots. Rien de ce que vous écrivez ici n'est utilisé pour entraîner un modèle ni compté dans une statistique."
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

@@ -1,0 +1,144 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# document-validation — the flagship Tier-W pack (phase H, ADR-052).
+#
+# It declares `regulatoryClass: SENSITIVE` and receives the four run-time controls
+# of ADR-051 — data class, shortened retention, append-only audit, scope guard —
+# without one line of engine code naming this pack, its Studio, or its subject.
+#
+# What it adds over `echo-toolkit`: the shape of a real product. Rulesets versioned
+# like blueprints, jurisdiction as a first-class input, deterministic evaluation in
+# the pack's own worker, and the model asked only where judgement is genuinely
+# required. The findings are records — (ruleId, severity, verdict, evidenceSpan,
+# explanation) — never prose, because the user forwards them to their counterparty.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: document-validation
+version: 1.0.0
+tier: WORKER
+distribution: CLOUD
+regulatoryClass: SENSITIVE
+
+# The fourth control of SENSITIVE. A compliance pack that also gave legal advice would be the
+# exact product this refuses to be: it reports what a ruleset says about a document, and it does
+# not tell anyone what to do about it.
+scopeGuard:
+  refusedTerms:
+    - conseil juridique
+    - consultation juridique
+    - avocat
+    - plaidoirie
+    - action en justice
+  refusal: >-
+    Je contrôle des documents contre un corpus de règles et je cite mes sources. Je ne donne pas
+    de conseil juridique et je ne dis pas quelle action engager — pour cela, adressez-vous à un
+    professionnel du droit.
+
+requires:
+  capabilities:
+    - key: orazaka.validation.document.screen
+      routingKey: job.validation.screen
+      handlerKey: validation.screen
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          document: { type: string, description: "Le document à contrôler, tel que l'étape amont l'a publié." }
+          jurisdiction: { type: string, description: "Le ruleset applicable." }
+          asOf: { type: string, description: "La date à laquelle les règles sont évaluées." }
+        required: [document, jurisdiction]
+      outputSchema:
+        type: object
+        properties:
+          rulesetId: { type: string }
+          rulesetVersion: { type: string }
+          rulesetRevision: { type: integer }
+          jurisdiction: { type: string }
+          asOf: { type: string }
+          source: { type: string }
+          deterministicFindings: { type: array, items: { type: object } }
+          screenedJson: { type: string, description: "La structure ci-dessus en JSON : un pas de blueprint adresse des CHAMPS, pas une valeur entière (ADR-052 §6)." }
+          judgmentPrompt: { type: string }
+          judgmentCount: { type: integer }
+        required: [rulesetId, rulesetVersion, jurisdiction, asOf, source, screenedJson, judgmentPrompt]
+    - key: orazaka.validation.document.signals
+      routingKey: job.validation.signals
+      handlerKey: validation.signals
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          documentBase64: { type: string, description: "Le PDF encodé. Aucun `format` : une barre de chat ne peut pas remplir cette entrée (ADR-068 §3)." }
+          expectedIssuer: { type: string, description: "L'émetteur attendu, quand le demandeur le connaît." }
+        required: [documentBase64]
+      outputSchema:
+        type: object
+        properties:
+          report: { type: object, description: "Le rapport d'authenticité, signaux et sources." }
+          reportText: { type: string, description: "Le même rapport, rendu pour lecture." }
+          signalCount: { type: integer }
+          actionableCount: { type: integer }
+        required: [report, reportText, signalCount, actionableCount]
+    - key: orazaka.validation.document.assemble
+      routingKey: job.validation.assemble
+      handlerKey: validation.assemble
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          screened: { type: object, description: "Le verdict par règle de l'étape de contrôle." }
+          judgment: { type: string, description: "La lecture rédigée du verdict." }
+        required: [screened, judgment]
+      outputSchema:
+        type: object
+        properties:
+          report: { type: object, description: "Le rapport de conformité assemblé." }
+          reportJson: { type: string, description: "Le même rapport en JSON, pour un pas aval." }
+        required: [report, reportJson]
+  workers:
+    - name: orazaka-worker-validation
+      bindings:
+        - "job.validation.*"
+      concurrency: 2
+
+catalog:
+  categoryKey: business
+  iconKey: shield-check
+  status: PUBLISHED
+  sortWeight: 20
+  # Open the shelf if this bundle is the first on it: nothing seeds pack_category, so a
+  # catalogued pack that named one without declaring it could only install into a database
+  # where another bundle had already opened it (ADR-068, #45). Idempotent — an existing
+  # shelf is left exactly as it is, never restyled by a later pack.
+  category:
+    iconKey: briefcase
+    sortWeight: 100
+
+pricing:
+  priceCents: 4900
+  includedCredits: 500
+
+studios:
+  - key: document-authenticity
+    profession: legal
+    iconKey: search
+    pricing: PAID
+    entitlementKey: studio.document-authenticity
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 20
+    blueprint: studios/document-authenticity/blueprint.json
+  - key: compliance-check
+    profession: legal
+    iconKey: shield-check
+    pricing: PAID
+    entitlementKey: studio.compliance-check
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 10
+    blueprint: studios/compliance-check/blueprint.json

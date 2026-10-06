@@ -1,0 +1,56 @@
+{
+  "version": "1.2.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 60,
+  "changelog": "1.2.0 — la capacité que cette étape appelle est renommée `orazaka.core.media.audio.analysis` : `media.audio` se lisait comme de la génération audio alors que c'est de la transcription (ADR-069, constat #44). 1.1.0 — `assetId` déclare `format: asset-id` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Transcription audio — une étape. Facturée à la minute de source, mesure que le fournisseur de transcription rapporte désormais et que rien ne rapportait avant (ADR-066, constat #22).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "audio-analysis",
+    "version": "1.2.0",
+    "steps": [
+      {
+        "id": "transcription",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.audio.analysis",
+        "dependsOn": [],
+        "inputs": {
+          "assetId": "{{inputs.assetId}}",
+          "model": "{{inputs.model:}}"
+        },
+        "out": "transcription",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT10M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "transcript",
+        "label": "Votre transcription",
+        "from": "{{steps.transcription.analysis}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["assetId"],
+    "properties": {
+      "assetId": {
+        "type": "string",
+        "format": "asset-id",
+        "minLength": 8,
+        "maxLength": 120,
+        "title": "Votre fichier audio",
+        "description": "L'identifiant du fichier envoyé. La facturation suit la durée de cet enregistrement."
+      },
+      "model": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Modèle (facultatif)",
+        "description": "Laissez vide : le catalogue choisit le modèle de transcription par défaut."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

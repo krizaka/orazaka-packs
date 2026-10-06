@@ -1,0 +1,65 @@
+{
+  "version": "1.1.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 30,
+  "changelog": "1.1.0 — `assetId` déclare `format: asset-id`, et la question facultative `format: prose` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Analyse d'image — une étape. Le schéma porte le défaut de payload_template : la consigne vaut « Analyze this image » quand elle n'est pas donnée. L'image est désignée par identifiant, résolu côté serveur contre son propriétaire (ADR-066).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "image-analysis",
+    "version": "1.1.0",
+    "steps": [
+      {
+        "id": "analysis",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.vision",
+        "dependsOn": [],
+        "inputs": {
+          "assetId": "{{inputs.assetId}}",
+          "prompt": "{{inputs.prompt}}",
+          "model": "{{inputs.model:}}"
+        },
+        "out": "analysis",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT5M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "analysis",
+        "label": "Ce que montre l'image",
+        "from": "{{steps.analysis.analysis}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["assetId"],
+    "properties": {
+      "assetId": {
+        "type": "string",
+        "format": "asset-id",
+        "minLength": 8,
+        "maxLength": 120,
+        "title": "Votre image",
+        "description": "L'identifiant du fichier envoyé. Le serveur le résout contre vos propres fichiers et rien d'autre."
+      },
+      "prompt": {
+        "type": "string",
+        "format": "prose",
+        "maxLength": 2000,
+        "default": "Analyze this image",
+        "title": "Ce que vous voulez savoir",
+        "description": "La question posée au modèle sur cette image. Sans elle, il décrit ce qu'il voit."
+      },
+      "model": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Modèle (facultatif)",
+        "description": "Laissez vide : le catalogue choisit le modèle de vision par défaut."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

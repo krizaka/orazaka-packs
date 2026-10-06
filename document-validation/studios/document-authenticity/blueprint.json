@@ -1,0 +1,60 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 30,
+  "changelog": "Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "document-authenticity",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "signals",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.validation.document.signals",
+        "dependsOn": [],
+        "inputs": {
+          "documentBase64": "{{inputs.documentBase64}}",
+          "expectedIssuer": "{{inputs.expectedIssuer:}}"
+        },
+        "out": "signals",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT2M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "report",
+        "label": "Points à éclaircir",
+        "from": "{{steps.signals.reportText}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "signals",
+        "label": "Signaux, sous forme structurée",
+        "from": "{{steps.signals.report}}",
+        "type": "JSON"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["documentBase64"],
+    "properties": {
+      "documentBase64": {
+        "type": "string",
+        "maxLength": 1400000,
+        "title": "Le fichier PDF",
+        "description": "Le PDF lui-même, encodé en base64. L'examen porte sur le fichier — ses métadonnées, sa structure, ses polices — et jamais sur ce que le document raconte."
+      },
+      "expectedIssuer": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Émetteur attendu (facultatif)",
+        "description": "Qui vous pensez être à l'origine de ce document, par exemple le nom de l'agence. Renseigné, il permet de rapprocher le producteur déclaré du fichier de ce que vous attendiez : sans lui il n'y a qu'un fait, avec lui il peut y avoir une contradiction."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

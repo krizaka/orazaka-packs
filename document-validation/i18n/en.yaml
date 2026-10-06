@@ -1,0 +1,12 @@
+pack.document-validation.name: Document validation
+pack.document-validation.description: >-
+  Check a document against a versioned body of rules. Every finding cites its rule, its source
+  and the passage of the document that justifies it.
+studio.compliance-check.name: Compliance check
+studio.compliance-check.description: >-
+  Runs a lease or contract against the rules of its jurisdiction, as they stood on a date you pick.
+input.document: Document to check
+input.jurisdiction: Jurisdiction
+input.asOf: Rules in force on
+output.report: Compliance report
+output.ruleset: Ruleset applied

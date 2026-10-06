@@ -1,0 +1,18 @@
+# What this pack's worker declares. Bindings, never capabilities: a worker has no idea which pack
+# asked for the work — it drains a routing key (ADR-037 §5).
+name: orazaka-worker-validation
+family: validation
+bindings:
+  - "job.validation.*"
+version: "1.0.0"
+concurrency: 2
+
+# How this worker is started (AGENTS.md §12). Its venv is the pack's, one directory up: the pack
+# owns its dependencies, the worker is one process inside it.
+#
+# Nothing started this worker before. A user who installed the pack got a run that stayed RUNNING
+# forever, and the first job command was discarded by the broker because no queue was bound yet
+# (docs/evaluations/first-real-use.md, B3).
+run:
+  python: "../.venv/bin/python3"
+  args: ["validation_worker.py"]

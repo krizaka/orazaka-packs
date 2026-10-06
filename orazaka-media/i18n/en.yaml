@@ -1,0 +1,22 @@
+pack:
+  label: "Media Studios"
+  tagline: "Generate, listen, describe — without leaving a run."
+studios:
+  image-generation:
+    label: "Image generation"
+    tagline: "One sentence, one image."
+  video-generation:
+    label: "Video generation"
+    tagline: "A few seconds of footage, described then rendered."
+  speech-synthesis:
+    label: "Speech synthesis"
+    tagline: "Your text, read aloud."
+  image-analysis:
+    label: "Image analysis"
+    tagline: "What an image shows, in words."
+  audio-analysis:
+    label: "Audio transcription"
+    tagline: "What was said, written down."
+  video-analysis:
+    label: "Video analysis"
+    tagline: "A video's speech, and its keyframes."

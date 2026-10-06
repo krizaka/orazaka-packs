@@ -1,0 +1,27 @@
+# A bundle with no `catalog` block: trade-showcase is a FREE Studio that belongs to no
+# pack, exactly as 80-studio.sql has it. That case is why `catalog` is optional — a
+# manifest format that could not express today's catalogue would fail its first test.
+# No pack, pack_i18n, pack_studio or billing_pack row is written for this bundle.
+apiVersion: orazaka.dev/v1
+key: trade-showcase
+version: 1.0.0
+tier: DATA
+distribution: OSS
+regulatoryClass: STANDARD
+
+requires:
+  # The phase-3 acceptance fixture's defining property, now checkable rather than
+  # stated in a comment: it runs with ZERO new capability. The installer resolves
+  # every featureKey of the blueprint against the live routing table.
+  capabilities: []
+
+studios:
+  - key: trade-showcase
+    profession: trades
+    iconKey: studio
+    pricing: FREE
+    entitlementKey: studio.trade-showcase
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 100
+    blueprint: studios/trade-showcase/blueprint.json

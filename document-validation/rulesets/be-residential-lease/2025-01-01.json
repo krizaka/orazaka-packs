@@ -1,0 +1,75 @@
+{
+  "rulesetId": "be-residential-lease",
+  "label": "Bail de résidence principale — Région wallonne",
+  "jurisdiction": "BE-WAL",
+  "version": "2025-01-01",
+  "effectiveFrom": "2025-01-01",
+  "effectiveTo": null,
+  "source": "Décret wallon du 15 mars 2018 relatif au bail d'habitation",
+  "rules": [
+    {
+      "ruleId": "BE-WAL-001",
+      "title": "Identification des parties",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Décret du 15 mars 2018, art. 3",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)(?:bailleur|propri[ée]taire)[^.\\n]{0,140}?(?:M\\.|Mme|Monsieur|Madame|demeurant|domicili\\w+|SIREN|SIRET|soci[ée]t[ée]|SCI|n[ée]e? le)|(?:M\\.|Mme|Monsieur|Madame|demeurant|domicili\\w+|SIREN|SIRET|soci[ée]t[ée]|SCI|n[ée]e? le)[^.\\n]{0,140}?(?:bailleur|propri[ée]taire)"
+      },
+      "onPass": "Le bailleur est identifié au contrat.",
+      "onFail": "Le document emploie le mot « bailleur » sans identifier personne : la qualité d'une partie n'est pas son identité.",
+      "fixtures": {
+        "pass": "Entre M. Luc Renard, domicilié rue de Namur 22, 5000 Namur, bailleur, et Mme Anne Dupont, preneuse.",
+        "fail": "Le bailleur donne en location au preneur le bien désigné ci-après."
+      }
+    },
+    {
+      "ruleId": "BE-WAL-002",
+      "title": "Garantie locative plafonnée à deux mois",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Décret du 15 mars 2018, art. 8",
+      "check": {
+        "type": "NUMERIC_RATIO_MAX",
+        "numerator": "(?i)(?:garantie\\s+locative|d[ée]p[ôo]t\\s+de\\s+garantie)[^.\\n]{0,80}?(\\d[\\d\\s.,]*)\\s*(?:€|EUR|eur|[Ee]uros?)",
+        "denominator": "(?i)loyer[^.\\n]{0,80}?(\\d[\\d\\s.,]*)\\s*(?:€|EUR|eur|[Ee]uros?)",
+        "max": 2.0
+      },
+      "onPass": "La garantie locative n'excède pas deux mois de loyer.",
+      "onFail": "La garantie locative excède deux mois de loyer. Le décret wallon la plafonne à deux mois.",
+      "fixtures": {
+        "pass": "Le loyer mensuel est fixé à 700 EUR. La garantie locative s'élève à 1 400 EUR.",
+        "fail": "Le loyer mensuel est fixé à 700 EUR. La garantie locative s'élève à 2 100 EUR."
+      }
+    },
+    {
+      "ruleId": "BE-WAL-003",
+      "title": "Attestation de conformité électrique",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "Décret du 15 mars 2018, art. 4",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)(?:attestation|contr[ôo]le)[^.\\n]{0,40}(?:[ée]lectri\\w+)"
+      },
+      "onPass": "Une attestation de conformité électrique est mentionnée.",
+      "onFail": "Aucune attestation de conformité électrique n'est mentionnée.",
+      "fixtures": {
+        "pass": "Est annexée au présent bail l'attestation de contrôle de l'installation électrique.",
+        "fail": "Sont annexés au présent bail l'état des lieux et le certificat PEB."
+      }
+    },
+    {
+      "ruleId": "BE-WAL-020",
+      "title": "Équilibre des clauses pénales",
+      "severity": "ADVISORY",
+      "method": "JUDGMENT",
+      "citation": "Code civil belge, art. 5.88",
+      "question": "Ce bail contient-il une clause pénale manifestement disproportionnée au regard du préjudice sanctionné ?",
+      "onPass": "Aucune clause pénale manifestement disproportionnée relevée.",
+      "onFail": "Une clause pénale paraît disproportionnée."
+    }
+  ],
+  "revision": 1
+}
