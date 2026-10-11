@@ -5,6 +5,31 @@ studios:
   image-generation:
     label: "Image generation"
     tagline: "One sentence, one image."
+  art-golden-hour:
+    label: "Golden-hour editorial"
+    tagline: "Your subject, in warm low light, shot like a magazine spread."
+    description: >-
+      Lifestyle photography at golden hour: raking sunlight, an 85 mm lens wide open, weathered wood,
+      wool and brass, an amber and terracotta palette. Describe who and where — the light, the optics,
+      the materials and the palette are taken care of.
+  art-miniature:
+    label: "Tilt-shift miniature"
+    tagline: "Your scene as a handcrafted diorama, shot in macro."
+    description: >-
+      A 1:24 diorama of figurines and props in felt, embroidered thread and painted resin, a razor-thin
+      plane of focus and soft window light. Describe the scene; it becomes a miniature.
+  art-still-life:
+    label: "Artisanal still life"
+    tagline: "Objects and produce in single-window light."
+    description: >-
+      Chiaroscuro on a weathered table: hand-thrown ceramics, hammered copper, linen and fresh produce,
+      a muted earthy palette. Name the objects; they are arranged and lit.
+  art-montreal-night:
+    label: "Montreal neon night"
+    tagline: "Wet streets, brick and spiral staircases under magenta and teal."
+    description: >-
+      Montreal after rain: cobblestones mirroring window light and neon, light mist, a 35 mm lens wide
+      open, cinematic grading. Describe the place and the moment.
   video-generation:
     label: "Video generation"
     tagline: "A few seconds of footage, described then rendered."
