@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 200,
-  "changelog": "1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
+  "changelog": "1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "image-generation",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "image",
@@ -16,12 +16,14 @@
         "inputs": {
           "prompt": "{{inputs.prompt}}",
           "size": "{{inputs.size}}",
+          "negativePrompt": "{{inputs.negativePrompt:}}",
+          "seed": "{{inputs.seed:}}",
           "model": "{{inputs.model:}}"
         },
         "out": "image",
         "onError": "FAIL",
         "maxAttempts": 1,
-        "timeout": "PT5M"
+        "timeout": "PT15M"
       }
     ],
     "outputs": [
@@ -30,12 +32,32 @@
         "label": "Votre image",
         "from": "{{steps.image.url}}",
         "type": "IMAGE"
+      },
+      {
+        "key": "seed",
+        "label": "Graine (pour refaire cette image)",
+        "from": "{{steps.image.seed}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "model",
+        "label": "Modèle",
+        "from": "{{steps.image.model}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "generationMs",
+        "label": "Temps de génération (ms)",
+        "from": "{{steps.image.generationMs}}",
+        "type": "TEXT"
       }
     ]
   },
   "inputSchema": {
     "type": "object",
-    "required": ["prompt"],
+    "required": [
+      "prompt"
+    ],
     "properties": {
       "prompt": {
         "type": "string",
@@ -47,10 +69,29 @@
       },
       "size": {
         "type": "string",
-        "enum": ["512x512", "768x768", "1024x1024", "1024x1536", "1536x1024"],
+        "enum": [
+          "1024x1024",
+          "1024x1280",
+          "1360x768",
+          "768x1360",
+          "512x512"
+        ],
         "default": "1024x1024",
         "title": "Format",
-        "description": "La taille de l'image produite. 1024x1024 est le carré par défaut."
+        "description": "1024x1024 carré · 1024x1280 portrait 4:5 (réseaux) · 1360x768 paysage 16:9 (bannière) · 768x1360 vertical 9:16 (story) · 512x512 aperçu rapide."
+      },
+      "negativePrompt": {
+        "type": "string",
+        "maxLength": 2000,
+        "title": "À éviter (facultatif)",
+        "description": "Ce que l'image ne doit pas montrer : « texte, logo, flou ». Pris en compte par les modèles à guidage (Stable Diffusion) ; FLUX.2 [klein] l'ignore — dites-le plutôt dans la description."
+      },
+      "seed": {
+        "type": "string",
+        "pattern": "^[0-9]{0,10}$",
+        "maxLength": 10,
+        "title": "Graine (facultatif)",
+        "description": "Laissez vide pour une image nouvelle. Reprenez la graine d'une image avec la même description, le même format et le même modèle : vous obtenez la même image."
       },
       "model": {
         "type": "string",
@@ -60,5 +101,8 @@
       }
     }
   },
-  "configSchema": { "type": "object", "properties": {} }
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
 }

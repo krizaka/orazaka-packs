@@ -17,6 +17,11 @@
 # platform makes no claim about it; a pack that handles health or identity declares
 # that itself, as `wellbeing` and `document-validation` do.
 #
+# The four `art-*` Studios are ART DIRECTION over the same image capability: one step whose
+# structured prompt (light, optics, materials, palette) wraps the actor's subject, a fixed
+# negative prompt, social (4:5) and hero (16:9) formats, and a seed reported with the image so
+# it can be made again. Same capability, same meter — a style is a blueprint, not an engine.
+#
 # It contributes NO capability and NO worker: `requires` is absent because every
 # feature key below is already seeded in 30-jobs-config.sql and already drained by
 # the job service. A pack is a bundle of Studios over capabilities, and only a pack
@@ -24,7 +29,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: orazaka-media
-version: 1.0.0
+version: 1.1.0
 tier: DATA
 distribution: OSS
 regulatoryClass: STANDARD
@@ -60,6 +65,42 @@ studios:
     publisherId: orazaka
     sortWeight: 96
     blueprint: studios/image-generation/blueprint.json
+  - key: art-golden-hour
+    profession: creative
+    iconKey: image
+    pricing: INCLUDED
+    entitlementKey: studio.art-golden-hour
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 89
+    blueprint: studios/art-golden-hour/blueprint.json
+  - key: art-miniature
+    profession: creative
+    iconKey: image
+    pricing: INCLUDED
+    entitlementKey: studio.art-miniature
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 88
+    blueprint: studios/art-miniature/blueprint.json
+  - key: art-still-life
+    profession: creative
+    iconKey: image
+    pricing: INCLUDED
+    entitlementKey: studio.art-still-life
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 87
+    blueprint: studios/art-still-life/blueprint.json
+  - key: art-montreal-night
+    profession: creative
+    iconKey: image
+    pricing: INCLUDED
+    entitlementKey: studio.art-montreal-night
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 86
+    blueprint: studios/art-montreal-night/blueprint.json
   - key: video-generation
     profession: general
     iconKey: video

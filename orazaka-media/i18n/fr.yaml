@@ -5,6 +5,31 @@ studios:
   image-generation:
     label: "Génération d'image"
     tagline: "Une phrase, une image."
+  art-golden-hour:
+    label: "Éditorial lumière dorée"
+    tagline: "Votre sujet dans la lumière basse du soir, cadré comme une double page de magazine."
+    description: >-
+      Photographie lifestyle à l'heure dorée : lumière rasante, objectif de 85 mm grand ouvert, bois
+      patiné, laine et laiton, palette ambre et terre cuite. Dites qui et où — la lumière, l'optique,
+      les matières et la palette sont réglées.
+  art-miniature:
+    label: "Diorama miniature tilt-shift"
+    tagline: "Votre scène en diorama fait main, photographiée en macro."
+    description: >-
+      Un diorama au 1/24 de figurines et d'accessoires en feutre, fil brodé et résine peinte, une zone
+      de netteté très fine et la lumière douce d'une fenêtre. Décrivez la scène : elle devient miniature.
+  art-still-life:
+    label: "Nature morte artisanale"
+    tagline: "Objets et produits dans la lumière d'une seule fenêtre."
+    description: >-
+      Clair-obscur sur une table patinée : céramique tournée, cuivre martelé, lin et produits frais,
+      palette terreuse et sourde. Nommez les objets : ils sont disposés et éclairés.
+  art-montreal-night:
+    label: "Néon de Montréal la nuit"
+    tagline: "Rues mouillées, brique et escaliers en colimaçon sous le magenta et le turquoise."
+    description: >-
+      Montréal après la pluie : pavés qui reflètent les fenêtres et le néon, brume légère, objectif de
+      35 mm grand ouvert, étalonnage cinéma. Décrivez le lieu et le moment.
   video-generation:
     label: "Génération vidéo"
     tagline: "Un plan de quelques secondes, décrit puis rendu."

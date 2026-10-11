@@ -1,0 +1,94 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 200,
+  "changelog": "1.0.0 — Direction artistique « Néon de Montréal la nuit » : une étape de génération d'image dont le prompt structuré (lumière, optique, matières, palette) suit votre sujet. Graine facultative et rapportée, pour refaire l'image ; formats 4:5, 16:9, 1:1, 9:16.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "art-montreal-night",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "image",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.image",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "{{inputs.subject}}. Night street photograph in Montreal after rain: wet cobblestones and asphalt mirroring warm window light and a neon glow of magenta and teal, light mist, 35mm lens at f/1.8, cinematic colour grading, deep blacks, rich textures of old brick, wrought-iron spiral staircases and wet pavement. No readable signs, no lettering, no logos.",
+          "size": "{{inputs.size}}",
+          "negativePrompt": "text, letters, words, watermark, logo, signature, brand, blurry, low quality, deformed hands, extra fingers, distorted face",
+          "seed": "{{inputs.seed:}}"
+        },
+        "out": "image",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT15M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "image",
+        "label": "Votre image",
+        "from": "{{steps.image.url}}",
+        "type": "IMAGE"
+      },
+      {
+        "key": "seed",
+        "label": "Graine (pour refaire cette image)",
+        "from": "{{steps.image.seed}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "model",
+        "label": "Modèle",
+        "from": "{{steps.image.model}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "generationMs",
+        "label": "Temps de génération (ms)",
+        "from": "{{steps.image.generationMs}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "subject"
+    ],
+    "properties": {
+      "subject": {
+        "type": "string",
+        "format": "prose",
+        "minLength": 3,
+        "maxLength": 1200,
+        "title": "Votre sujet",
+        "description": "Qui, quoi, où — la direction artistique s'occupe de la lumière, de l'optique, des matières et de la palette. Exemple : « Une ruelle du Plateau, ses escaliers extérieurs en colimaçon et une cycliste au loin ». Décrivez en anglais pour la meilleure fidélité."
+      },
+      "size": {
+        "type": "string",
+        "enum": [
+          "1024x1280",
+          "1360x768",
+          "1024x1024",
+          "768x1360"
+        ],
+        "default": "1360x768",
+        "title": "Format",
+        "description": "1024x1280 portrait 4:5 (réseaux) · 1360x768 paysage 16:9 (bannière) · 1024x1024 carré · 768x1360 vertical 9:16 (story)."
+      },
+      "seed": {
+        "type": "string",
+        "pattern": "^[0-9]{0,10}$",
+        "maxLength": 10,
+        "title": "Graine (facultatif)",
+        "description": "Vide : une image nouvelle. La graine d'une image déjà faite, avec le même sujet et le même format : la même image."
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}
