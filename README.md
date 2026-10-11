@@ -30,13 +30,13 @@ DAGs) and, optionally, its own worker.
 
 | Pack | Content |
 |:---|:---|
-| `document-validation` | Rule engine + worker for document checks |
-| `echo-toolkit` | Minimal toolkit used by the platform tests |
+| `document-validation` | Document Verification — Compliance Check (rules, sources, passages) and Document Authenticity (a PDF's signals of tampering), with its worker |
+| `echo-toolkit` | The Tier-W reference used by the platform tests — `DRAFT`, never on the marketplace shelf |
 | `orazaka-media` | Media generation studios |
 | `outbound-prospection` | Prospection workflows |
 | `realestate-studio` | Real-estate reels |
 | `trade-showcase` | Trade showcase studio |
-| `wellbeing` | Wellbeing (sensitive / regulated pack example) |
+| `wellbeing` | Wellbeing — guided journaling, session preparation, mood tracking (`REGULATED`; never "therapy": what a person brings to a professional, not a care) |
 
 ```bash
 orazaka pack validate ./orazaka-packs/<bundle> --offline
