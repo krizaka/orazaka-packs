@@ -53,7 +53,10 @@ requires:
 catalog:
   categoryKey: business
   iconKey: repeat
-  status: PUBLISHED
+  # Off the shelf (orazaka-packs#2): a reference for the extension point, not a product a customer
+  # should meet in the marketplace. DRAFT keeps the bundle installable and its worker testable;
+  # the catalogue lists PUBLISHED packs and Studios only.
+  status: DRAFT
   sortWeight: 5
   # Open the shelf if this bundle is the first on it: nothing seeds pack_category, so a
   # catalogued pack that named one without declaring it could only install into a database
@@ -73,7 +76,7 @@ studios:
     iconKey: studio
     pricing: FREE
     entitlementKey: studio.echo-reverse
-    status: PUBLISHED
+    status: DRAFT
     publisherId: orazaka
     sortWeight: 5
     blueprint: studios/echo-reverse/blueprint.json

@@ -1,0 +1,31 @@
+# Each Studio says what it DOES, never what it treats (pack.yaml, ADR-055): this is what a person
+# brings TO their therapist, not instead of one.
+pack:
+  label: Wellbeing
+  tagline: Put into words what you live through, and bring it to your sessions.
+  description: >-
+    Guided journaling, session preparation and mood tracking. Not care: no diagnosis, no
+    advice on treatment, no emergency service — what you bring to a professional, not
+    instead of one. Health data, kept 30 days at most, never used to train a model.
+category:
+  label: Lifestyle
+  description: "The packs for you, not for your work."
+studios:
+  guided-journaling:
+    label: Guided Journaling
+    tagline: Your words, put in order — in your own voice.
+    description: >-
+      Write what you want to set down, as it comes: the Studio tidies it into a clean entry,
+      in the first person, without adding advice or interpretation.
+  session-preparation:
+    label: Session Preparation
+    tagline: Your notes since the last session become the points to raise.
+    description: >-
+      Paste what you noted, in any order: the Studio turns it into the list of points to
+      bring to your next session, without interpreting anything.
+  mood-tracking:
+    label: Mood Tracking
+    tagline: What your daily notes show, described — never concluded.
+    description: >-
+      One line a day is enough: the Studio describes what the entries show over time, and
+      draws no conclusion from them.

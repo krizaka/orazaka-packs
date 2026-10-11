@@ -1,0 +1,32 @@
+# Chaque Studio dit ce qu'il FAIT, jamais ce qu'il soigne (pack.yaml, ADR-055) : ce qu'une personne
+# apporte À son thérapeute, pas à sa place.
+pack:
+  label: Bien-être
+  tagline: Mettre en mots ce que vous vivez, et l'apporter à vos séances.
+  description: >-
+    Journaling guidé, préparation de séance et suivi d'humeur. Pas un soin : aucun diagnostic,
+    aucun conseil de traitement, pas un service d'urgence — ce que vous apportez à un
+    professionnel, pas à sa place. Données de santé, conservées 30 jours au plus, jamais
+    utilisées pour entraîner un modèle.
+category:
+  label: Vie personnelle
+  description: "Les packs pour vous, pas pour votre travail."
+studios:
+  guided-journaling:
+    label: Journaling guidé
+    tagline: Vos mots, mis en ordre — avec votre voix.
+    description: >-
+      Écrivez ce que vous voulez poser, comme ça vient : le Studio le met au propre, à la
+      première personne, sans ajouter de conseil ni d'interprétation.
+  session-preparation:
+    label: Préparation de séance
+    tagline: Vos notes depuis la dernière séance deviennent les points à aborder.
+    description: >-
+      Collez ce que vous avez noté, en vrac : le Studio en fait la liste des points à apporter
+      à votre prochaine séance, sans rien interpréter.
+  mood-tracking:
+    label: Suivi d'humeur
+    tagline: Ce que montrent vos relevés, décrit — jamais conclu.
+    description: >-
+      Une ligne par jour suffit : le Studio décrit ce que les relevés montrent dans le temps,
+      et n'en tire aucune conclusion.

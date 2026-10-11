@@ -1,12 +1,23 @@
-pack.document-validation.name: Validation documentaire
-pack.document-validation.description: >-
-  Contrôlez un document contre un corpus de règles versionné. Chaque constat cite sa règle,
-  sa source et l'extrait du document qui le justifie.
-studio.compliance-check.name: Contrôle de conformité
-studio.compliance-check.description: >-
-  Passe un bail ou un contrat au corpus de règles de sa juridiction, à la date de votre choix.
-input.document: Document à contrôler
-input.jurisdiction: Juridiction
-input.asOf: Règles en vigueur au
-output.report: Rapport de conformité
-output.ruleset: Corpus de règles appliqué
+pack:
+  label: Vérification de documents
+  tagline: Un contrat contrôlé contre les règles, un PDF examiné pour ses retouches.
+  description: >-
+    Contrôlez un document contre un corpus de règles versionné — chaque constat cite sa règle,
+    sa source et l'extrait qui le justifie — et examinez un fichier PDF pour les signes d'une
+    modification. Des rapports, jamais un conseil juridique.
+category:
+  label: Business
+  description: "Les packs qui font le travail : prospecter, valider, produire."
+studios:
+  compliance-check:
+    label: Contrôle de conformité
+    tagline: Votre bail ou votre contrat, passé aux règles de sa juridiction.
+    description: >-
+      Passe un bail ou un contrat au corpus de règles de sa juridiction, à la date de votre
+      choix. Chaque constat donne sa règle, sa source et l'extrait du document.
+  document-authenticity:
+    label: Authenticité de document
+    tagline: Les métadonnées, la structure et les polices d'un PDF, examinées pour ses retouches.
+    description: >-
+      Examine le fichier lui-même — qui l'a produit, quand, avec quoi, et s'il a été modifié
+      ensuite — et liste les points à éclaircir. Il ne juge jamais ce que le document raconte.

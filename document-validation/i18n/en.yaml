@@ -1,12 +1,23 @@
-pack.document-validation.name: Document validation
-pack.document-validation.description: >-
-  Check a document against a versioned body of rules. Every finding cites its rule, its source
-  and the passage of the document that justifies it.
-studio.compliance-check.name: Compliance check
-studio.compliance-check.description: >-
-  Runs a lease or contract against the rules of its jurisdiction, as they stood on a date you pick.
-input.document: Document to check
-input.jurisdiction: Jurisdiction
-input.asOf: Rules in force on
-output.report: Compliance report
-output.ruleset: Ruleset applied
+pack:
+  label: Document Verification
+  tagline: Check a contract against the rules, and a PDF for signs of tampering.
+  description: >-
+    Check a document against a versioned body of rules — every finding cites its rule, its
+    source and the passage that justifies it — and examine a PDF file for the signals that
+    something was altered. Reports, never legal advice.
+category:
+  label: Business
+  description: "The packs that do the job: prospect, validate, produce."
+studios:
+  compliance-check:
+    label: Compliance Check
+    tagline: Your lease or contract, checked against the rules of its jurisdiction.
+    description: >-
+      Runs a lease or a contract against the rules of its jurisdiction, as they stood on a
+      date you pick. Each finding gives its rule, its source and the passage of the document.
+  document-authenticity:
+    label: Document Authenticity
+    tagline: A PDF's metadata, structure and fonts, examined for signs of tampering.
+    description: >-
+      Examines the file itself — who produced it, when, with what, and whether it was edited
+      afterwards — and lists the points worth clearing up. It never judges what the document says.
