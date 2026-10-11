@@ -67,7 +67,9 @@ studios:
 > ⚠ **There is no `i18n:` key.** The `i18n/` directory is found by convention. The manifest rejects
 > unknown properties outright, so an invented key fails validation rather than being ignored.
 >
-> ⚠ **`pricing` is `priceCents` + `includedCredits`.** Not `bundledCredits`.
+> ⚠ **`pricing` is `priceCents` + `includedCredits`.** Not `bundledCredits`. `priceCents` is in cents of the
+> billing service's currency (`billing.currency` — Canadian dollars for Orazaka: `7900` is 79 $ CA); a manifest never
+> names a currency.
 
 Everything else is optional and has a default. `orazaka pack validate` names the exact line when
 something is wrong, so run it before you run anything else.

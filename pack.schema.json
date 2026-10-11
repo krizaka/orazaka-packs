@@ -141,6 +141,7 @@
       "additionalProperties": false,
       "properties": {
         "priceCents": {
+          "description": "List price in minor units (cents) of the billing service's currency (`billing.currency`, CAD for Orazaka). A manifest never names a currency: the deployment does.",
           "type": "integer",
           "minimum": 0
         },

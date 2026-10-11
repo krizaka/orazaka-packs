@@ -28,7 +28,7 @@ catalog:
     sortWeight: 100
 
 pricing:
-  priceCents: 4900
+  priceCents: 7900   # 79 $ CA — in billing.currency (CAD); was 49 EUR
   includedCredits: 5000
   isActive: true
 
