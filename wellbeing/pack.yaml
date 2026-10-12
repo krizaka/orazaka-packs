@@ -15,6 +15,10 @@
 # regulatoryClass: REGULATED adds two controls to SENSITIVE's four — versioned
 # consent that blocks installation, and a non-bypassable crisis interceptor.
 # Both are declared here; neither is implemented by this pack.
+#
+# ADR-076 (the voice turn) adds the pack's system prompt, inside the safety declaration it belongs
+# to: what a CONVERSATIONAL turn of this pack is told first, before anything a caller adds. It says
+# what the assistant is and is not, and the engine puts a caller's context after it, never before.
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: bien-etre
@@ -62,7 +66,7 @@ consent:
 # The crisis declaration. The response is FIXED and reviewed by a person: a model asked to compose
 # one will produce a number that looks like a crisis line, and someone will dial it.
 safety:
-  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5)"
+  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5) ; CA-QC ajoutée et vérifiée à la source le 2026-10-11 (ADR-076)"
   crisisTerms:
     - suicide
     - me suicider
@@ -111,6 +115,36 @@ safety:
       availability: "24/7/365, en français et en anglais"
       sourceUrl: "https://988.ca/"
       verifiedOn: "2026-09-10"
+    # Québec, read at the source on 2026-10-11 (ADR-076). Three ways to reach someone trained, in
+    # the order Québec itself lists them:
+    #   - 1 866 APPELLE (277-3553), texto 535353 — the Québec suicide prevention line, "en tout
+    #     temps, de partout au Québec": quebec.ca, Ressources d'aide et de soutien en santé mentale
+    #     (dernière mise à jour 2026-07-06), the sourceUrl below;
+    #   - 9-8-8 keeps working from Québec: a call or text to 988 "will be redirected to Quebec
+    #     services" (1-866-APPELLE, 535353) — suicide.ca, "Canada implements 988…";
+    #   - Info-Social 811: free, confidential, "24 heures par jour, 365 jours par année" — quebec.ca,
+    #     Info-Social 811 (dernière mise à jour 2020-01-09). Listed by quebec.ca on the same page.
+    # 911 stays the line for immediate danger; the response text above is the pack's, unchanged.
+    CA-QC:
+      region: CA-QC
+      label: "Ligne québécoise de prévention du suicide · 9-8-8 · Info-Social 811"
+      contact: "1 866 APPELLE (1 866 277-3553), texto 535353 · 9-8-8 (appel ou texto, acheminé vers la ligne québécoise) · 811, Info-Social"
+      availability: "En tout temps, de partout au Québec ; Info-Social : 24 heures par jour, 365 jours par année, gratuit et confidentiel"
+      sourceUrl: "https://www.quebec.ca/sante/conseils-et-prevention/sante-mentale/obtenir-aide-en-sante-mentale/ressources-aide-et-soutien-en-sante-mentale"
+      verifiedOn: "2026-10-11"
+  # What a conversational turn of this pack is told first (ADR-076). Reviewed text, like the
+  # response: it carries the disclosure the AI Act (art. 50) and the pack's name both require, and
+  # it never gives a number — the crisis reply is the guard's fixed text, not the model's.
+  systemPrompt: >-
+    Tu es une présence IA. Dès que c'est utile, et chaque fois qu'on te le demande, tu le dis
+    simplement : « Je suis une IA. Je ne suis ni thérapeute ni un service d'urgence. » Tu écoutes,
+    tu reformules, tu aides la personne à mettre des mots sur ce qu'elle vit et à y voir plus
+    clair, et tu poses une seule question à la fois. Tu ne poses aucun diagnostic, tu ne nommes
+    aucun trouble, tu ne parles d'aucun médicament ni d'aucun traitement, tu n'interprètes pas
+    l'humeur de la personne et tu ne promets aucune amélioration. Tu ne te présentes jamais comme
+    une personne, une amie ou quelqu'un de disponible à toute heure, et tu ne donnes jamais de
+    numéro de téléphone. Tu réponds dans la langue de la personne, en deux ou trois phrases
+    courtes : ta réponse sera dite à voix haute.
 
 requires:
   capabilities: []
@@ -159,3 +193,14 @@ studios:
     publisherId: orazaka
     sortWeight: 30
     blueprint: studios/mood-tracking/blueprint.json
+  # What a person keeps of a moment of conversation (ADR-076): themes, what helped, one small
+  # step, what to bring to their therapist. Described, never explained — like mood-tracking.
+  - key: session-summary
+    profession: general
+    iconKey: notebook
+    pricing: FREE
+    entitlementKey: studio.session-summary
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 40
+    blueprint: studios/session-summary/blueprint.json

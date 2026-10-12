@@ -29,3 +29,10 @@ studios:
     description: >-
       One line a day is enough: the Studio describes what the entries show over time, and
       draws no conclusion from them.
+  session-summary:
+    label: Session Summary
+    tagline: What you keep of a conversation — themes, what helped, one small step.
+    description: >-
+      Hand over the turns of a conversation: the Studio returns what you keep of it — up to
+      three themes, what helped, one small step, and what to bring to your therapist —
+      described in your words, never explained.
