@@ -17,3 +17,6 @@
 
 1. Every `pack.yaml` validates against `pack.schema.json` (`orazaka pack validate --offline`).
 2. The workspace build is green (pack coherence rules read this repository).
+3. A new or changed pack ships with its tests — its schema and coherence rules, and the end-to-end journey that
+   runs it; a fix starts with a failing test. CI runs them and must be green; no test = not done (workspace
+   [`AGENTS.md` §9](https://github.com/krizaka/orazaka/blob/main/AGENTS.md#9-testing)).
