@@ -283,6 +283,11 @@
               }
             }
           }
+        },
+        "systemPrompt": {
+          "type": "string",
+          "minLength": 40,
+          "description": "What a CONVERSATIONAL turn of this pack is told first, before anything a caller adds (ADR-076). Reviewed text, like the response: it says what the assistant is and is not. The engine places a caller's context after it, never before."
         }
       }
     }

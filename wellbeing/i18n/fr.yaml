@@ -30,3 +30,10 @@ studios:
     description: >-
       Une ligne par jour suffit : le Studio décrit ce que les relevés montrent dans le temps,
       et n'en tire aucune conclusion.
+  session-summary:
+    label: Résumé de séance
+    tagline: Ce que vous gardez d'un échange — thèmes, ce qui a aidé, un petit pas.
+    description: >-
+      Confiez les tours d'un échange : le Studio en rend ce que vous gardez — au plus trois
+      thèmes, ce qui a aidé, un petit pas, et ce que vous voulez apporter à votre thérapeute —
+      décrit avec vos mots, jamais expliqué.
