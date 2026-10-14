@@ -32,7 +32,7 @@ studios:
       35 mm grand ouvert, étalonnage cinéma. Décrivez le lieu et le moment.
   video-generation:
     label: "Génération vidéo"
-    tagline: "Un plan de quelques secondes, décrit puis rendu."
+    tagline: "Un short vertical (9:16) ou un plan large, décrit puis rendu."
   speech-synthesis:
     label: "Synthèse vocale"
     tagline: "Votre texte, dit à voix haute."

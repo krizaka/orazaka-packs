@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 3600,
-  "changelog": "1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
+  "changelog": "1.2.0 — le format vertical 9:16 (TikTok, Reels, Shorts) devient le défaut : `aspect` (9:16, 16:9, 1:1) choisit une taille sur laquelle le modèle a été entraîné, et `model` propose les modèles du catalogue qui le savent (Wan 2.2 5B en 704×1280 sur le GPU `big`, Wan 2.1 1.3B en 480×832 sur le `small`, AnimateDiff sur le Mac) ; `seed` refait le même plan (ADR-077). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-generation",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "video",
@@ -16,6 +16,8 @@
         "inputs": {
           "prompt": "{{inputs.prompt}}",
           "durationSeconds": "{{inputs.durationSeconds}}",
+          "aspect": "{{inputs.aspect:}}",
+          "seed": "{{inputs.seed:}}",
           "image": "{{inputs.image:}}",
           "model": "{{inputs.model:}}"
         },
@@ -36,7 +38,9 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": ["prompt"],
+    "required": [
+      "prompt"
+    ],
     "properties": {
       "prompt": {
         "type": "string",
@@ -54,6 +58,17 @@
         "title": "Durée (secondes)",
         "description": "La vidéo est facturée à la seconde produite : une durée est une dépense, pas un réglage."
       },
+      "aspect": {
+        "type": "string",
+        "enum": [
+          "9:16",
+          "16:9",
+          "1:1"
+        ],
+        "default": "9:16",
+        "title": "Format",
+        "description": "9:16 : la vidéo verticale (TikTok, Reels, Shorts). Laissez vide pour 9:16."
+      },
       "image": {
         "type": "string",
         "maxLength": 120,
@@ -62,11 +77,24 @@
       },
       "model": {
         "type": "string",
-        "maxLength": 120,
+        "enum": [
+          "wan2.2-ti2v-5b",
+          "wan2.1-t2v-1.3b",
+          "animatediff-lightning-mps"
+        ],
         "title": "Modèle (facultatif)",
-        "description": "Laissez vide : le catalogue choisit le modèle par défaut de la catégorie."
+        "description": "Laissez vide : l'hôte de génération choisit son modèle par défaut. Wan 2.2 5B (GPU big) : 704×1280, 24 i/s ; Wan 2.1 1.3B (GPU small) : 480×832, 16 i/s ; AnimateDiff : le Mac."
+      },
+      "seed": {
+        "type": "string",
+        "maxLength": 20,
+        "title": "Graine (facultatif)",
+        "description": "Le même prompt, le même modèle et la même graine refont le même plan."
       }
     }
   },
-  "configSchema": { "type": "object", "properties": {} }
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
 }
