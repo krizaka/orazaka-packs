@@ -58,6 +58,11 @@ pip install pika pyyaml
 cd worker && python3 validation_worker.py     # reads RABBITMQ_HOST / _USER / _PASS
 ```
 
+A TLS broker (the dev broker of Orazaka is TLS only, 5671): `RABBITMQ_SSL_ENABLED=true` (or the Java services'
+`SPRING_RABBITMQ_SSL_ENABLED`), the private CA in `RABBITMQ_SSL_CA_FILE` (or `SPRING_RABBITMQ_SSL_CA_FILE`), and
+`RABBITMQ_SSL_SERVER_NAME` when the address dialled is not the certificate's name. The certificate and the host name are
+always verified (`worker/broker.py`, tested by `worker/test_broker.py`).
+
 ## Testing the rules
 
 The rule engine is a pure function of `(ruleset, text)` — no broker, no model — so it is testable
