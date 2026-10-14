@@ -30,6 +30,7 @@ import pika
 import yaml
 
 import authenticity
+import broker
 import rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -264,12 +265,10 @@ def _broker_credentials() -> "pika.PlainCredentials":
 
 
 def main() -> None:
-    host = os.environ.get("RABBITMQ_HOST", "localhost")
-    port = int(os.environ.get("RABBITMQ_PORT", "5672"))
-    credentials = _broker_credentials()
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=host, port=port, credentials=credentials)
-    )
+    # TLS when the deployment asks for it (the dev broker is TLS only) — broker.py.
+    params = broker.connection_parameters(_broker_credentials())
+    print(f"[validation] broker {broker.describe(params)}", flush=True)
+    connection = pika.BlockingConnection(params)
     channel = connection.channel()
 
     # (1) Declare your own topology: installing this pack touches no platform configuration.
