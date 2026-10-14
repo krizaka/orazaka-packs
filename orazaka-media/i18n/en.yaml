@@ -32,7 +32,7 @@ studios:
       open, cinematic grading. Describe the place and the moment.
   video-generation:
     label: "Video generation"
-    tagline: "A few seconds of footage, described then rendered."
+    tagline: "A vertical short (9:16) or a wide shot, described then rendered."
   speech-synthesis:
     label: "Speech synthesis"
     tagline: "Your text, read aloud."
