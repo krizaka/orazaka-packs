@@ -33,6 +33,12 @@ studios:
   video-generation:
     label: "Video generation"
     tagline: "A vertical short (9:16) or a wide shot, described then rendered."
+  video-with-sound:
+    label: "Video with sound"
+    tagline: "A video, then its sound: a music bed and optional foley, mixed at -14 LUFS."
+  video-sound:
+    label: "Sound for a video"
+    tagline: "Give any clip sound: music, foley, a voice-over. The silent original is kept."
   speech-synthesis:
     label: "Speech synthesis"
     tagline: "Your text, read aloud."
