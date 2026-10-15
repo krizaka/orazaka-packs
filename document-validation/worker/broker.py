@@ -69,6 +69,9 @@ def connection_parameters(
     if secure:
         cafile = _first(source, "RABBITMQ_SSL_CA_FILE", "SPRING_RABBITMQ_SSL_CA_FILE")
         context = ssl.create_default_context(cafile=cafile)
+        # Python 3.13+ adds VERIFY_X509_STRICT by default, which refuses a CA certificate without an Authority Key
+        # Identifier — the dev CA has none. The chain and the host name are still verified (CERT_REQUIRED, check_hostname).
+        context.verify_flags &= ~getattr(ssl, "VERIFY_X509_STRICT", 0)
         server_name = _first(source, "RABBITMQ_SSL_SERVER_NAME") or host
         options["ssl_options"] = pika.SSLOptions(context, server_hostname=server_name)
     return pika.ConnectionParameters(**options)
