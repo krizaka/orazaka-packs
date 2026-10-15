@@ -35,6 +35,8 @@ def test_tls_on_5671_verifies_the_certificate_and_the_host_name():
     assert context.check_hostname is True
     assert params.ssl_options.server_hostname == "broker-dev.orazaka.com"
     assert broker.describe(params) == "amqps://orazaka@broker-dev.orazaka.com:5671"
+    # A CA without an Authority Key Identifier (the dev CA) is accepted: X509 strict mode is off, verification is not.
+    assert not context.verify_flags & getattr(ssl, "VERIFY_X509_STRICT", 0)
 
 
 def test_the_own_name_wins_over_springs_and_an_explicit_port_is_kept():
