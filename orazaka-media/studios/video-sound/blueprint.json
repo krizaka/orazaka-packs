@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 900,
+  "changelog": "1.0.0 — Du son pour une vidéo : une nappe musicale (ACE-Step 1.5, MIT), des bruitages synchronisés à l'image (MMAudio, non commercial, demandé par son nom) et/ou une voix off (un fichier de Synthèse vocale), mixés avec ducking, ramenés à -14 LUFS et muxés en AAC dans le mp4. La vidéo d'origine, sans son, est conservée (`silent`) pour les boucles muettes. Tourne sur l'hôte du worker média (Mac, Metal).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "video-sound",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "sound",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.studio.media.sound",
+        "dependsOn": [],
+        "inputs": {
+          "video": "{{inputs.video}}",
+          "music": "{{inputs.music:}}",
+          "foley": "{{inputs.foley:}}",
+          "foleyModel": "{{inputs.foleyModel:}}",
+          "voice": "{{inputs.voice:}}",
+          "seed": "{{inputs.seed:}}"
+        },
+        "out": "sound",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT30M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "video",
+        "label": "Votre vidéo avec son",
+        "from": "{{steps.sound.url}}",
+        "type": "VIDEO"
+      },
+      {
+        "key": "silent",
+        "label": "La version sans son",
+        "from": "{{steps.sound.silentUrl}}",
+        "type": "VIDEO"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "video"
+    ],
+    "properties": {
+      "video": {
+        "type": "string",
+        "format": "asset-id",
+        "maxLength": 160,
+        "title": "La vidéo",
+        "description": "L'identifiant d'un de vos fichiers vidéo (une vidéo générée, par exemple)."
+      },
+      "music": {
+        "type": "string",
+        "format": "prose",
+        "maxLength": 500,
+        "title": "La musique",
+        "description": "Une nappe musicale décrite : genre, ambiance, instruments. Sans paroles. Modèle par défaut : ACE-Step 1.5 (MIT, usage commercial)."
+      },
+      "foley": {
+        "type": "string",
+        "format": "prose",
+        "maxLength": 500,
+        "title": "Les bruitages (facultatif)",
+        "description": "Les sons de l'image : une tasse qu'on remplit, la pluie, la foule. Demande un modèle de bruitage : le seul disponible (MMAudio) est non commercial."
+      },
+      "foleyModel": {
+        "type": "string",
+        "enum": [
+          "mmaudio-large-44k-v2"
+        ],
+        "title": "Modèle de bruitage (facultatif)",
+        "description": "mmaudio-large-44k-v2 : poids CC-BY-NC 4.0, évaluation et usage non commercial uniquement. Vide : pas de bruitage."
+      },
+      "seed": {
+        "type": "string",
+        "maxLength": 20,
+        "title": "Graine (facultatif)",
+        "description": "Les mêmes textes, les mêmes modèles et la même graine refont le même son."
+      },
+      "voice": {
+        "type": "string",
+        "format": "asset-id",
+        "maxLength": 160,
+        "title": "Voix off (facultatif)",
+        "description": "L'identifiant d'un fichier audio à poser sur la vidéo, la sortie de Synthèse vocale par exemple (voix Piper). La musique baisse pendant qu'elle parle."
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

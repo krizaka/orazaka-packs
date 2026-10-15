@@ -33,6 +33,12 @@ studios:
   video-generation:
     label: "Génération vidéo"
     tagline: "Un short vertical (9:16) ou un plan large, décrit puis rendu."
+  video-with-sound:
+    label: "Vidéo avec son"
+    tagline: "Une vidéo, puis son son : une nappe musicale et des bruitages en option, mixés à -14 LUFS."
+  video-sound:
+    label: "Du son pour une vidéo"
+    tagline: "Donnez du son à n'importe quel clip : musique, bruitages, voix off. L'original muet est conservé."
   speech-synthesis:
     label: "Synthèse vocale"
     tagline: "Votre texte, dit à voix haute."

@@ -1,0 +1,149 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 4500,
+  "changelog": "1.0.0 — Génération vidéo avec son : la vidéo de Génération vidéo (mêmes entrées, même modèle), puis l'étape Du son pour une vidéo (nappe musicale ACE-Step 1.5, bruitages MMAudio non commercial sur demande), mixée à -14 LUFS en AAC. La version sans son est livrée aussi, pour les boucles muettes.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "video-with-sound",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "video",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.video",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "{{inputs.prompt}}",
+          "durationSeconds": "{{inputs.durationSeconds}}",
+          "aspect": "{{inputs.aspect:}}",
+          "seed": "{{inputs.seed:}}",
+          "image": "{{inputs.image:}}",
+          "model": "{{inputs.model:}}"
+        },
+        "out": "video",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT20M"
+      },
+      {
+        "id": "sound",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.studio.media.sound",
+        "dependsOn": [
+          "video"
+        ],
+        "inputs": {
+          "video": "{{steps.video.url}}",
+          "music": "{{inputs.music:}}",
+          "foley": "{{inputs.foley:}}",
+          "foleyModel": "{{inputs.foleyModel:}}",
+          "seed": "{{inputs.seed:}}"
+        },
+        "out": "sound",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT30M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "video",
+        "label": "Votre vidéo avec son",
+        "from": "{{steps.sound.url}}",
+        "type": "VIDEO"
+      },
+      {
+        "key": "silent",
+        "label": "La version sans son",
+        "from": "{{steps.sound.silentUrl}}",
+        "type": "VIDEO"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "prompt",
+      "music"
+    ],
+    "properties": {
+      "prompt": {
+        "type": "string",
+        "format": "prose",
+        "minLength": 3,
+        "maxLength": 2000,
+        "title": "Ce qui doit se passer à l'écran",
+        "description": "Décrivez le plan : le sujet, le mouvement, l'ambiance."
+      },
+      "durationSeconds": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20,
+        "default": 5,
+        "title": "Durée (secondes)",
+        "description": "La vidéo est facturée à la seconde produite : une durée est une dépense, pas un réglage."
+      },
+      "aspect": {
+        "type": "string",
+        "enum": [
+          "9:16",
+          "16:9",
+          "1:1"
+        ],
+        "default": "9:16",
+        "title": "Format",
+        "description": "9:16 : la vidéo verticale (TikTok, Reels, Shorts). Laissez vide pour 9:16."
+      },
+      "image": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Image d'amorce (facultatif)",
+        "description": "L'identifiant d'un de vos fichiers envoyés, pour partir d'une image plutôt que du vide."
+      },
+      "model": {
+        "type": "string",
+        "enum": [
+          "wan2-2-t2v-a14b",
+          "wan2.2-ti2v-5b",
+          "wan2.1-t2v-1.3b",
+          "animatediff-lightning-mps"
+        ],
+        "title": "Modèle (facultatif)",
+        "description": "Laissez vide : l'hôte de génération choisit son modèle par défaut. Wan 2.2 5B (GPU big) : 704×1280, 24 i/s ; Wan 2.1 1.3B (GPU small) : 480×832, 16 i/s ; AnimateDiff : le Mac. Wan 2.2 A14B (serverless, fournisseur) : 832×480, 16:9 uniquement, 5 s."
+      },
+      "seed": {
+        "type": "string",
+        "maxLength": 20,
+        "title": "Graine (facultatif)",
+        "description": "Les mêmes textes, les mêmes modèles et la même graine refont le même son."
+      },
+      "music": {
+        "type": "string",
+        "format": "prose",
+        "maxLength": 500,
+        "title": "La musique",
+        "description": "Une nappe musicale décrite : genre, ambiance, instruments. Sans paroles. Modèle par défaut : ACE-Step 1.5 (MIT, usage commercial)."
+      },
+      "foley": {
+        "type": "string",
+        "format": "prose",
+        "maxLength": 500,
+        "title": "Les bruitages (facultatif)",
+        "description": "Les sons de l'image : une tasse qu'on remplit, la pluie, la foule. Demande un modèle de bruitage : le seul disponible (MMAudio) est non commercial."
+      },
+      "foleyModel": {
+        "type": "string",
+        "enum": [
+          "mmaudio-large-44k-v2"
+        ],
+        "title": "Modèle de bruitage (facultatif)",
+        "description": "mmaudio-large-44k-v2 : poids CC-BY-NC 4.0, évaluation et usage non commercial uniquement. Vide : pas de bruitage."
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

@@ -29,7 +29,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: orazaka-media
-version: 1.3.0
+version: 1.4.0
 tier: DATA
 distribution: OSS
 regulatoryClass: STANDARD
@@ -110,6 +110,24 @@ studios:
     publisherId: orazaka
     sortWeight: 95
     blueprint: studios/video-generation/blueprint.json
+  - key: video-with-sound
+    profession: general
+    iconKey: video
+    pricing: INCLUDED
+    entitlementKey: studio.video-with-sound
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 93
+    blueprint: studios/video-with-sound/blueprint.json
+  - key: video-sound
+    profession: general
+    iconKey: speech
+    pricing: INCLUDED
+    entitlementKey: studio.video-sound
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 92
+    blueprint: studios/video-sound/blueprint.json
   - key: speech-synthesis
     profession: general
     iconKey: speech
