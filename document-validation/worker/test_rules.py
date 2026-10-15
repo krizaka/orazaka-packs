@@ -289,14 +289,6 @@ def test_quebec_rules_catch_what_the_civil_code_forbids_and_say_they_await_a_law
         assert found[rule_id]["verdict"] == rules.PASS, rule_id
 
 
-def test_a_quebec_report_carries_its_review_status():
-    import validation_worker
-    screened = validation_worker._screen({"document": QC_DEFECTIVE, "jurisdiction": "QC", "asOf": "2026-10-15"})
-    assert screened["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
-    report = validation_worker._assemble({"screened": screened["screenedJson"], "judgment": "[]"})["report"]
-    assert report["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
-
-
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):

@@ -61,6 +61,16 @@ def test_the_password_never_reaches_the_log_line():
     assert "not-a-real-password" not in broker.describe(params)
 
 
+# The worker itself (it imports pika, hence here, after the CI installs it): a ruleset awaiting a lawyer says so.
+def test_a_quebec_report_carries_its_review_status():
+    import test_rules
+    import validation_worker
+    screened = validation_worker._screen({"document": test_rules.QC_DEFECTIVE, "jurisdiction": "QC", "asOf": "2026-10-15"})
+    assert screened["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
+    report = validation_worker._assemble({"screened": screened["screenedJson"], "judgment": "[]"})["report"]
+    assert report["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):
