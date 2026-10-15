@@ -1,0 +1,112 @@
+{
+  "rulesetId": "qc-residential-lease",
+  "label": "Bail de logement — Québec",
+  "jurisdiction": "QC",
+  "version": "2024-02-21",
+  "effectiveFrom": "2024-02-21",
+  "effectiveTo": null,
+  "source": "Code civil du Québec, art. 1851 et suiv. (bail de logement : art. 1892 à 1978), Règlement sur les formulaires de bail obligatoires et sur les mentions de l'avis au nouveau locataire (RLRQ c. T-15.01, r. 3), Tribunal administratif du logement",
+  "revision": 1,
+  "reviewStatus": "TO_REVIEW_BY_LAWYER",
+  "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. À faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration.",
+  "rules": [
+    {
+      "ruleId": "QC-LEASE-001",
+      "title": "Identification du locateur",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1895 ; Règlement sur les formulaires de bail obligatoires, section A",
+      "check": { "type": "REQUIRED_PATTERN", "pattern": "(?i)locat(?:eur|rice)[^.\\n]{0,140}?(?:M\\.|Mme|Monsieur|Madame|inc\\.|soci[ée]t[ée]|domicili\\w+|demeurant|NEQ)" },
+      "onPass": "Le locateur est identifié au bail.",
+      "onFail": "Le locateur n'est pas identifié. Le formulaire obligatoire du bail de logement (section A) exige son nom et son adresse.",
+      "fixtures": { "pass": "Entre le locateur Monsieur Marc Tremblay, domicilié à Montréal.", "fail": "Le présent bail porte sur un logement de quatre pièces et demie." }
+    },
+    {
+      "ruleId": "QC-LEASE-002",
+      "title": "Identification du locataire",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1895 ; Règlement sur les formulaires de bail obligatoires, section A",
+      "check": { "type": "REQUIRED_PATTERN", "pattern": "(?i)locataire[^.\\n]{0,140}?(?:M\\.|Mme|Monsieur|Madame|domicili\\w+|demeurant)" },
+      "onPass": "Le locataire est identifié au bail.",
+      "onFail": "Le locataire n'est pas identifié. Le formulaire obligatoire (section A) exige son nom.",
+      "fixtures": { "pass": "et la locataire Madame Sophie Gagnon.", "fail": "Le présent bail porte sur un logement de quatre pièces et demie." }
+    },
+    {
+      "ruleId": "QC-LEASE-003",
+      "title": "Montant du loyer",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1855 et 1903 ; Règlement sur les formulaires de bail obligatoires, section D",
+      "check": { "type": "REQUIRED_PATTERN", "pattern": "(?i)loyer[^.\\n]{0,80}?\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?)" },
+      "onPass": "Le loyer est chiffré au bail.",
+      "onFail": "Le loyer n'est pas chiffré en dollars. La section D du formulaire obligatoire exige le loyer et ses modalités de paiement.",
+      "fixtures": { "pass": "Le loyer mensuel est de 1 450 $, payable le premier jour du mois.", "fail": "Le loyer sera convenu plus tard entre les parties." }
+    },
+    {
+      "ruleId": "QC-LEASE-004",
+      "title": "Dépôt de garantie interdit — seul le premier mois peut être exigé d'avance",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1904, al. 1",
+      "check": { "type": "FORBIDDEN_PATTERN", "pattern": "(?i)(?:d[ée]p[ôo]t\\s+de\\s+(?:garantie|s[ée]curit[ée])|caution(?:nement)?\\s+(?:de|en\\s+argent)|frais\\s+de\\s+(?:dommages|cl[ée]s?)\\s+remboursables?)[^.\\n]{0,80}?\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?)" },
+      "onPass": "Aucun dépôt de garantie n'est exigé.",
+      "onFail": "Le bail exige un dépôt de garantie. L'article 1904 ne permet au locateur d'exiger d'avance que le premier mois de loyer.",
+      "fixtures": { "pass": "Le premier mois de loyer, 1 450 $, est payable à la signature.", "fail": "Le locataire verse un dépôt de sécurité de 1 450 $ à la signature." }
+    },
+    {
+      "ruleId": "QC-LEASE-005",
+      "title": "Chèques postdatés interdits",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1904, al. 2",
+      "check": { "type": "FORBIDDEN_PATTERN", "pattern": "(?i)(?:ch[èe]ques?|effets?)\\s+postdat[ée]s?" },
+      "onPass": "Aucune remise de chèques postdatés n'est exigée.",
+      "onFail": "Le bail exige des chèques postdatés. L'article 1904 interdit au locateur d'exiger la remise de chèques ou d'autres effets postdatés.",
+      "fixtures": { "pass": "Le loyer est payé par virement Interac le premier du mois.", "fail": "Le locataire remet douze chèques postdatés à la signature." }
+    },
+    {
+      "ruleId": "QC-LEASE-006",
+      "title": "Refus des enfants — sans effet",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1899",
+      "check": { "type": "FORBIDDEN_PATTERN", "pattern": "(?i)(?:interdi\\w*|pas\\s+d['’]|aucun\\w*|ne\\s+(?:peut|doit)\\s+pas[^.\\n]{0,30}?(?:avoir|loger|h[ée]berger))[^.\\n]{0,40}?enfants?" },
+      "onPass": "Aucune clause n'écarte les enfants.",
+      "onFail": "Une clause écarte les enfants. L'article 1899 interdit au locateur de refuser un locataire, ou de maintenir une clause, en raison de la présence d'enfants.",
+      "fixtures": { "pass": "Le logement convient à une famille avec enfants.", "fail": "Il est interdit au locataire d'avoir des enfants dans le logement." }
+    },
+    {
+      "ruleId": "QC-LEASE-007",
+      "title": "Renonciation au droit au maintien dans les lieux — sans effet",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1936 et 1893",
+      "check": { "type": "FORBIDDEN_PATTERN", "pattern": "(?i)renon\\w+[^.\\n]{0,80}?(?:maintien\\s+dans\\s+les\\s+lieux|renouvel\\w+|reconduction)" },
+      "onPass": "Aucune renonciation au maintien dans les lieux.",
+      "onFail": "Le locataire y renonce à son droit au maintien dans les lieux. L'article 1936 lui garantit ce droit et l'article 1893 rend sans effet toute clause qui y déroge.",
+      "fixtures": { "pass": "Le bail se reconduit de plein droit aux mêmes conditions.", "fail": "Le locataire renonce à la reconduction du bail à son échéance." }
+    },
+    {
+      "ruleId": "QC-LEASE-008",
+      "title": "Avis du loyer le plus bas des douze derniers mois",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1896 ; Règlement sur les formulaires de bail obligatoires, section G",
+      "check": { "type": "REQUIRED_PATTERN", "pattern": "(?i)loyer\\s+le\\s+plus\\s+bas" },
+      "onPass": "L'avis du loyer le plus bas payé au cours des douze derniers mois est donné.",
+      "onFail": "Le bail ne mentionne pas le loyer le plus bas payé au cours des douze mois précédant le début du bail (section G). L'article 1896 oblige le locateur à le remettre au nouveau locataire.",
+      "fixtures": { "pass": "Loyer le plus bas payé au cours des douze derniers mois : 1 390 $.", "fail": "Le loyer mensuel est de 1 450 $." }
+    },
+    {
+      "ruleId": "QC-LEASE-020",
+      "title": "Clause abusive",
+      "severity": "ADVISORY",
+      "method": "JUDGMENT",
+      "citation": "C.c.Q., art. 1901",
+      "question": "Ce bail contient-il une clause abusive, c'est-à-dire excessivement et déraisonnablement préjudiciable au locataire (par exemple une pénalité disproportionnée) ?",
+      "onPass": "Aucune clause manifestement abusive relevée.",
+      "onFail": "Une clause paraît abusive ; l'article 1901 permet au Tribunal administratif du logement de l'annuler ou d'en réduire l'obligation."
+    }
+  ]
+}

@@ -15,7 +15,7 @@ The user forwards this output to their counterparty. That single fact decides ev
 | Tier | `WORKER` — it brings its own worker; the deterministic rules are code, not a prompt |
 | `regulatoryClass` | `SENSITIVE` — it receives the five controls of ADR-051 and declares a `scopeGuard` |
 | Studios | `compliance-check` |
-| Jurisdictions | `FR`, `BE-WAL` |
+| Jurisdictions | `QC` (Québec — to be reviewed by a lawyer), `FR`, `BE-WAL` |
 
 ## Deterministic first, model second
 

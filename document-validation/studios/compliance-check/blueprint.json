@@ -1,12 +1,12 @@
 {
-  "version": "1.1.1",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 120,
-  "changelog": "Contrôle de conformité documentaire — déterministe d'abord, modèle en second. 1.0.1 : la structure traverse l'appel au modèle en JSON explicite. 1.0.2 : jugement en onError=FAIL, faute de pouvoir distinguer un refus d'une panne. 1.1.0 : la distinction existe (ADR-053). SKIP quand le modèle est tombé — un rapport 9/10 déterministe reste utile, et la règle de jugement se rend en INSUFFICIENT_EVIDENCE, ce qui est vrai. FAIL sur GUARD_REFUSAL — un refus doit atteindre l'utilisateur, jamais être avalé dans un rapport qu'il croira complet. 1.1.1 : justification écrite du SKIP, exigée par BlueprintFitnessTest.",
+  "changelog": "Contrôle de conformité documentaire — déterministe d'abord, modèle en second. 1.0.1 : la structure traverse l'appel au modèle en JSON explicite. 1.0.2 : jugement en onError=FAIL, faute de pouvoir distinguer un refus d'une panne. 1.1.0 : la distinction existe (ADR-053). SKIP quand le modèle est tombé — un rapport 9/10 déterministe reste utile, et la règle de jugement se rend en INSUFFICIENT_EVIDENCE, ce qui est vrai. FAIL sur GUARD_REFUSAL — un refus doit atteindre l'utilisateur, jamais être avalé dans un rapport qu'il croira complet. 1.1.1 : justification écrite du SKIP, exigée par BlueprintFitnessTest. 1.2.0 : juridiction QC (bail de logement, Code civil du Québec art. 1851 et suiv.), corpus marqué à faire relire par un avocat.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "compliance-check",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "screen",
@@ -90,6 +90,7 @@
       "jurisdiction": {
         "type": "string",
         "enum": [
+          "QC",
           "FR",
           "BE-WAL"
         ],
