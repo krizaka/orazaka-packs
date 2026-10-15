@@ -265,6 +265,30 @@ def test_every_deterministic_rule_distinguishes_its_own_fixtures():
     assert not failures, "rules that do not discriminate their own pair:\n  " + "\n  ".join(failures)
 
 
+QC_DEFECTIVE = """BAIL DE LOGEMENT
+Entre le locateur Monsieur Marc Tremblay, domicilié à Montréal,
+et la locataire Madame Sophie Gagnon.
+Loyer mensuel : 1 450 $, payable le premier jour du mois.
+La locataire verse un dépôt de sécurité de 1 450 $ à la signature.
+La locataire remet douze chèques postdatés.
+Il est interdit d'avoir des enfants dans le logement.
+"""
+
+
+def test_quebec_rules_catch_what_the_civil_code_forbids_and_say_they_await_a_lawyer():
+    ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
+    assert ruleset["jurisdiction"] == "QC"
+    assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
+    for rule in ruleset["rules"]:
+        assert "C.c.Q." in rule["citation"], rule["ruleId"]
+    found = _by_id(rules.screen(ruleset, QC_DEFECTIVE)[0])
+    for rule_id in ("QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-008"):
+        assert found[rule_id]["verdict"] == rules.FAIL, rule_id
+    assert "1 450 $" in found["QC-LEASE-004"]["evidenceSpan"]["quote"]
+    for rule_id in ("QC-LEASE-001", "QC-LEASE-002", "QC-LEASE-003", "QC-LEASE-007"):
+        assert found[rule_id]["verdict"] == rules.PASS, rule_id
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):

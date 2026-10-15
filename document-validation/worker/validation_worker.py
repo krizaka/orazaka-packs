@@ -84,6 +84,10 @@ def _screen(payload: dict) -> tuple:
         "source": ruleset["source"],
         "deterministicFindings": findings,
     }
+    # A ruleset not yet reviewed by a lawyer says so in every report built on it.
+    if ruleset.get("reviewStatus"):
+        screened["reviewStatus"] = ruleset["reviewStatus"]
+        screened["reviewNote"] = ruleset.get("reviewNote", "")
     # `screenedJson` exists because a blueprint can address a step's FIELDS but not its whole
     # output as data: `{{steps.screened}}` interpolates the value's toString, which is a Java map
     # rendering no JSON parser accepts (ADR-052 §6). Carrying the structure across the model call
@@ -126,6 +130,9 @@ def _assemble(payload: dict) -> dict:
         "summary": rules.summarise(findings),
         "findings": findings,
     }
+    if screened.get("reviewStatus"):
+        report["reviewStatus"] = screened["reviewStatus"]
+        report["reviewNote"] = screened.get("reviewNote", "")
     # A JSON string, not a rendered paragraph. The user forwards this to their counterparty; what
     # is forwarded must be diffable against the next run, not re-read for meaning.
     return {"report": report, "reportJson": json.dumps(report, ensure_ascii=False, indent=2)}
