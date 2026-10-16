@@ -466,7 +466,7 @@
         },
         "inputSchema": {
           "type": "object",
-          "description": "What a CALLER MAY PASS, as a JSON Schema: types, `required`, defaults, and `format: prose | asset-id` where a composer must know which of its two holdings fills the input (ADR-068 §3). This is what payloadTemplate carried as an untyped string of ${placeholders} (ADR-069).",
+          "description": "What a CALLER MAY PASS, as a JSON Schema: types, `required`, defaults, and `format: prose | asset-id` where a composer must know which of its two holdings fills the input (ADR-068 §3), and `format: asset:image | asset:video | asset:audio` (with `contentMediaType`) on an input that takes an uploaded file, so a client renders a file picker instead of a text field (an asset id is never typed). This is what payloadTemplate carried as an untyped string of ${placeholders} (ADR-069).",
           "required": [
             "type",
             "properties"

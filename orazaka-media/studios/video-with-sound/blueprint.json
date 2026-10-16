@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 4500,
-  "changelog": "1.0.0 — Génération vidéo avec son : la vidéo de Génération vidéo (mêmes entrées, même modèle), puis l'étape Du son pour une vidéo (nappe musicale ACE-Step 1.5, bruitages MMAudio non commercial sur demande), mixée à -14 LUFS en AAC. La version sans son est livrée aussi, pour les boucles muettes.",
+  "changelog": "1.1.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.0.0 — Génération vidéo avec son : la vidéo de Génération vidéo (mêmes entrées, même modèle), puis l'étape Du son pour une vidéo (nappe musicale ACE-Step 1.5, bruitages MMAudio non commercial sur demande), mixée à -14 LUFS en AAC. La version sans son est livrée aussi, pour les boucles muettes.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-with-sound",
@@ -97,9 +97,11 @@
       },
       "image": {
         "type": "string",
+        "format": "asset:image",
+        "contentMediaType": "image/*",
         "maxLength": 120,
         "title": "Image d'amorce (facultatif)",
-        "description": "L'identifiant d'un de vos fichiers envoyés, pour partir d'une image plutôt que du vide."
+        "description": "Choisissez une photo parmi vos fichiers ou depuis votre appareil pour amorcer la vidéo."
       },
       "model": {
         "type": "string",

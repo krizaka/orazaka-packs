@@ -1,8 +1,8 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 900,
-  "changelog": "1.0.0 — Du son pour une vidéo : une nappe musicale (ACE-Step 1.5, MIT), des bruitages synchronisés à l'image (MMAudio, non commercial, demandé par son nom) et/ou une voix off (un fichier de Synthèse vocale), mixés avec ducking, ramenés à -14 LUFS et muxés en AAC dans le mp4. La vidéo d'origine, sans son, est conservée (`silent`) pour les boucles muettes. Tourne sur l'hôte du worker média (Mac, Metal).",
+  "changelog": "1.1.0 — `video` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: video/*` : les clients affichent un sélecteur de fichier du bon type. 1.0.0 — Du son pour une vidéo : une nappe musicale (ACE-Step 1.5, MIT), des bruitages synchronisés à l'image (MMAudio, non commercial, demandé par son nom) et/ou une voix off (un fichier de Synthèse vocale), mixés avec ducking, ramenés à -14 LUFS et muxés en AAC dans le mp4. La vidéo d'origine, sans son, est conservée (`silent`) pour les boucles muettes. Tourne sur l'hôte du worker média (Mac, Metal).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-sound",
@@ -51,6 +51,7 @@
       "video": {
         "type": "string",
         "format": "asset-id",
+        "contentMediaType": "video/*",
         "maxLength": 160,
         "title": "La vidéo",
         "description": "L'identifiant d'un de vos fichiers vidéo (une vidéo générée, par exemple)."
@@ -86,6 +87,7 @@
       "voice": {
         "type": "string",
         "format": "asset-id",
+        "contentMediaType": "audio/*",
         "maxLength": 160,
         "title": "Voix off (facultatif)",
         "description": "L'identifiant d'un fichier audio à poser sur la vidéo, la sortie de Synthèse vocale par exemple (voix Piper). La musique baisse pendant qu'elle parle."

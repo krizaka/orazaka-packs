@@ -1,8 +1,8 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 60,
-  "changelog": "1.2.0 — la capacité que cette étape appelle est renommée `orazaka.core.media.audio.analysis` : `media.audio` se lisait comme de la génération audio alors que c'est de la transcription (ADR-069, constat #44). 1.1.0 — `assetId` déclare `format: asset-id` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Transcription audio — une étape. Facturée à la minute de source, mesure que le fournisseur de transcription rapporte désormais et que rien ne rapportait avant (ADR-066, constat #22).",
+  "changelog": "1.3.0 — `assetId` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: audio/*` : les clients affichent un sélecteur de fichier du bon type. 1.2.0 — la capacité que cette étape appelle est renommée `orazaka.core.media.audio.analysis` : `media.audio` se lisait comme de la génération audio alors que c'est de la transcription (ADR-069, constat #44). 1.1.0 — `assetId` déclare `format: asset-id` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Transcription audio — une étape. Facturée à la minute de source, mesure que le fournisseur de transcription rapporte désormais et que rien ne rapportait avant (ADR-066, constat #22).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "audio-analysis",
@@ -39,6 +39,7 @@
       "assetId": {
         "type": "string",
         "format": "asset-id",
+        "contentMediaType": "audio/*",
         "minLength": 8,
         "maxLength": 120,
         "title": "Votre fichier audio",
