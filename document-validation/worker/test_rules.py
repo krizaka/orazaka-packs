@@ -289,6 +289,80 @@ def test_quebec_rules_catch_what_the_civil_code_forbids_and_say_they_await_a_law
         assert found[rule_id]["verdict"] == rules.PASS, rule_id
 
 
+# A deposit is forbidden however the lease words it (C.c.Q., art. 1904, al. 1: only the first term of rent may be asked in
+# advance). Written from the requirement — what a landlord actually writes — not from the pattern.
+QC_DEPOSIT_FAIL = [
+    "La locataire verse un dépôt de sécurité de 1 450 $ à la signature.",
+    "Un dépôt de garantie équivalant à un mois de loyer est exigé à la signature.",
+    "Dépôt de garantie : un mois de loyer.",
+    "Un dépôt de 10 % du loyer annuel est requis à la signature.",
+    "Le locataire verse, à titre de garantie, la somme de 500 $ à la signature.",
+    "Le locataire remet un mois de loyer additionnel en garantie.",
+    "Un cautionnement en argent de 800 $ est exigé.",
+    "Des frais de clés remboursables de 50 $ sont exigés.",
+    "Le locataire paie deux mois de loyer d'avance à la signature.",
+    "Dépôt pour dommages : 300 $.",
+]
+QC_DEPOSIT_PASS = [
+    "Le premier mois de loyer, 1 450 $, est payable à la signature.",
+    "Aucun dépôt de garantie n'est exigé.",
+    "Le locateur n'exige aucun dépôt de sécurité.",
+    "Dépôt de garantie : néant.",
+    "Le locateur ne peut exiger de dépôt de garantie (art. 1904).",
+    "Le loyer est payé par dépôt direct dans le compte du locateur.",
+    "Le locataire verse le loyer du premier mois à la signature.",
+    "Le locateur détient une garantie légale de bon état du logement.",
+]
+
+QC_INCREASE_FAIL = [
+    "Le locataire renonce à son droit de refuser toute augmentation de loyer.",
+    "Le locataire accepte d'avance toute hausse du loyer décidée par le locateur.",
+    "Le loyer sera augmenté de 5 % chaque année sans avis.",
+]
+QC_INCREASE_PASS = [
+    "Le loyer pourra être modifié lors de la reconduction, sur avis donné au locataire dans les délais prévus par la loi.",
+    "Le loyer de 1 450 $ est payable le premier jour du mois.",
+    "Le locataire peut refuser toute augmentation de loyer dans le mois de la réception de l'avis.",
+]
+
+
+def _qc_rule(rule_id):
+    ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
+    return next(r for r in ruleset["rules"] if r["ruleId"] == rule_id)
+
+
+def test_qc_deposit_is_caught_however_it_is_worded_and_lawful_wordings_pass():
+    rule = _qc_rule("QC-LEASE-004")
+    check = rules.CHECKS[rule["check"]["type"]]
+    missed = [t for t in QC_DEPOSIT_FAIL if check(rule, t)["verdict"] != rules.FAIL]
+    wrong = [t for t in QC_DEPOSIT_PASS if check(rule, t)["verdict"] != rules.PASS]
+    assert not missed, "deposit wordings not caught:\n  " + "\n  ".join(missed)
+    assert not wrong, "lawful wordings flagged:\n  " + "\n  ".join(wrong)
+
+
+def test_qc_deposit_rule_ships_every_wording_as_a_fixture():
+    fixtures = _qc_rule("QC-LEASE-004")["fixtures"]
+    assert set(QC_DEPOSIT_FAIL) <= set(_as_list(fixtures["fail"]))
+    assert set(QC_DEPOSIT_PASS) <= set(_as_list(fixtures["pass"]))
+
+
+def test_qc_waiver_of_the_rent_increase_regime_is_flagged_and_the_lawful_clauses_pass():
+    rule = _qc_rule("QC-LEASE-009")
+    assert rule["method"] == "DETERMINISTIC" and "1942" in rule["citation"] and "1945" in rule["citation"]
+    check = rules.CHECKS[rule["check"]["type"]]
+    assert [t for t in QC_INCREASE_FAIL if check(rule, t)["verdict"] != rules.FAIL] == []
+    assert [t for t in QC_INCREASE_PASS if check(rule, t)["verdict"] != rules.PASS] == []
+    fixtures = rule["fixtures"]
+    assert set(QC_INCREASE_FAIL) <= set(_as_list(fixtures["fail"]))
+    assert set(QC_INCREASE_PASS) <= set(_as_list(fixtures["pass"]))
+
+
+def test_qc_revision_records_the_correction_and_the_law_is_unchanged():
+    ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
+    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 2
+    assert "dépôt" in ruleset["revisionNote"].lower() and "augmentation" in ruleset["revisionNote"].lower()
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):
