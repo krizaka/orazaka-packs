@@ -27,6 +27,7 @@ test("the version moved and the changelog says what the step is: SeedVR2 3B, Apa
 test("the kit: LTX-Video 0.9.8 is a choice of `model`, and the prompt and image say the rule (motion only, the still at the video's aspect)", () => {
   const props = bp.inputSchema.properties;
   assert.ok(props.model.enum.includes("ltx-video-0.9.8-13b-distilled"));
+  assert.ok(props.model.enum.includes("wan2.2-i2v-a14b-hq"));
   assert.match(props.prompt.description, /MOUVEMENT et la CAMÉRA/);
   assert.match(props.image.description, /1360×768/);
   assert.match(props.image.description, /768×1360/);
