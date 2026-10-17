@@ -86,7 +86,7 @@ test("each Studio is a published blueprint over existing capabilities, labelled 
 test("closed choices are chosen, never typed (no free-text model, languages are an enum)", () => {
   for (const key of STUDIOS) {
     const props = blueprint(key).inputSchema.properties;
-    assert.equal(props.model, undefined, `${key}: no free-text model input`);
+    if (props.model) assert.deepEqual(props.model["x-options"], { source: "models", category: "CHAT" }, `${key}: a model is picked from the catalogue, never typed`);
     assert.deepEqual(props.language.enum, ["en", "fr"]);
   }
 });
@@ -115,10 +115,10 @@ test("data-driven UI (ADR-082): one LLM step that answers in A2UI v0.9 with the 
   const [step] = blueprint("data-driven-ui").definition.steps;
   assert.equal(step.featureKey, "orazaka.core.chat.completion");
   const prompt = step.inputs.prompt;
-  for (const words of ["```a2ui", "\"version\":\"v0.9\"", "krizaka:genui/v1", "createSurface", "updateComponents", "updateDataModel", "\"id\":\"root\""]) {
+  for (const words of ["```a2ui", "\"version\":\"v0.9\"", "krizaka:genui/v1", "createSurface", "updateComponents", "updateDataModel", "\"id\":\"root\"", "ONE line", "complete, valid example"]) {
     assert.ok(prompt.includes(words), words);
   }
-  for (const component of ["Column", "Row", "Text", "Card", "Callout", "KpiStat", "ChartCard", "Table"]) assert.ok(prompt.includes(`- ${component} {`) || prompt.includes(`${component} {`), component);
+  for (const component of ["Column", "Row", "Text", "Callout", "KpiStat", "ChartCard", "Table"]) assert.ok(prompt.includes(`"component":"${component}"`), component);
   for (const rule of ["never invent", "No other component", "no HTML, no URL, no code"]) assert.ok(prompt.includes(rule), rule);
   const props = blueprint("data-driven-ui").inputSchema.properties;
   assert.equal(props.data.maxLength, 20000);

@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.0.0 — Interface pilotée par les données (ADR-082, orazaka#207 tranche 1) : un CSV ou un JSON (par exemple l'export de vos statistiques, ADR-081) et une question deviennent une réponse en prose et un tableau de bord A2UI v0.9 du catalogue krizaka:genui/v1 (KpiStat, ChartCard, Table, Callout, Card, Text, Row, Column), dessiné par @krizaka/ui/genui. Chaque nombre vient des données ; le rendu refuse tout composant ou propriété hors catalogue.",
+  "changelog": "1.0.0 — Interface pilotée par les données (ADR-082, orazaka#207 tranche 1) : un CSV ou un JSON (par exemple l'export de vos statistiques, ADR-081) et une question deviennent une réponse en prose et un tableau de bord A2UI v0.9 du catalogue krizaka:genui/v1 (KpiStat, ChartCard, Table, Callout, Card, Text, Row, Column), dessiné par @krizaka/ui/genui. Chaque nombre vient des données ; le rendu refuse tout composant ou propriété hors catalogue. 1.1.0 — Mesuré sur dev (2026-10-17) : le modèle par défaut écrivait des objets sur plusieurs lignes, oubliait « component » et répétait la clôture ; la consigne donne maintenant la forme exacte des trois lignes, chaque composant avec ses propriétés, et un exemple complet et valide. Le modèle se choisit dans le catalogue (x-options), replié sous « Plus d'options ».",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "data-driven-ui",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "answer",
@@ -14,7 +14,8 @@
         "featureKey": "orazaka.core.chat.completion",
         "dependsOn": [],
         "inputs": {
-          "prompt": "You are a data analyst who answers with an interface. The person's question: {{inputs.question}}\n\nTheir data (CSV or JSON, as they gave it):\n<<<DATA\n{{inputs.data}}\nDATA>>>\n\nAnswer in {{inputs.language}} with: one or two sentences of plain prose that answer the question, then ONE fenced block that starts with ```a2ui on its own line and ends with ``` on its own line. Inside the block write JSON Lines, one A2UI v0.9 message per line, nothing else:\n1. {\"version\":\"v0.9\",\"createSurface\":{\"surfaceId\":\"answer\",\"catalogId\":\"krizaka:genui/v1\"}}\n2. {\"version\":\"v0.9\",\"updateComponents\":{\"surfaceId\":\"answer\",\"components\":[...]}} — one component must have \"id\":\"root\"; children are referenced by id.\n3. {\"version\":\"v0.9\",\"updateDataModel\":{\"surfaceId\":\"answer\",\"path\":\"/rows\",\"value\":[...]}} — the rows a Table or a ChartCard reads.\n\nThe ONLY components you may use, with ONLY these properties:\n- Column {children:[ids]} and Row {children:[ids]} for layout;\n- Text {text, variant: body|heading|caption};\n- Card {title, child: id};\n- Callout {tone: info|success|warning|danger, title, text} for the one thing to remember;\n- KpiStat {label, value: number, previous?: number, format?: number|integer|compact|percent|money, currency?: CAD, good?: up|down} — percent values are fractions (0.25 = 25 %), money values are in cents;\n- ChartCard {title, insight?, kind: line|bar|area|pie, x: column key, series:[{key,label}], data:{\"path\":\"/rows\"}, format?};\n- Table {caption?, columns:[{key,label,format?}], rows:{\"path\":\"/rows\"}}.\nIds and keys use letters, digits, - and _ only. No other component, no other property, no HTML, no URL, no code.\n\nRULES: every number must come from the data or be computed from it (a sum, a mean, a share, a change) — never invent one; if the data cannot answer the question, say so in a Callout with tone warning. Pick at most 4 KpiStat, one or two ChartCard and at most one Table. Keep the data model under 400 rows: aggregate first (per day, per category)."
+          "prompt": "You are a data analyst. You answer with one or two sentences of prose, then a dashboard written in A2UI v0.9 JSON Lines.\n\nThe question: {{inputs.question}}\nThe data (CSV or JSON, as the person gave it):\n<<<DATA\n{{inputs.data}}\nDATA>>>\n\nWrite your answer in {{inputs.language}}, in exactly this shape:\n1. One or two sentences of plain prose that answer the question.\n2. A line with exactly ```a2ui\n3. Exactly three lines, each ONE complete JSON object on ONE line (no line breaks inside an object):\n   line A: {\"version\":\"v0.9\",\"createSurface\":{\"surfaceId\":\"answer\",\"catalogId\":\"krizaka:genui/v1\"}}\n   line B: {\"version\":\"v0.9\",\"updateComponents\":{\"surfaceId\":\"answer\",\"components\":[ ...components... ]}}\n   line C: {\"version\":\"v0.9\",\"updateDataModel\":{\"surfaceId\":\"answer\",\"path\":\"/rows\",\"value\":[ ...rows... ]}}\n4. A line with exactly ```\nNothing after it.\n\nEvery component is an object with \"id\", \"component\" (one of the names below) and only the properties listed for it:\n- {\"id\":\"…\",\"component\":\"Column\",\"children\":[\"id1\",\"id2\"]} and {\"id\":\"…\",\"component\":\"Row\",\"children\":[\"id1\",\"id2\"]}\n- {\"id\":\"…\",\"component\":\"Text\",\"text\":\"…\",\"variant\":\"body|heading|caption\"}\n- {\"id\":\"…\",\"component\":\"Callout\",\"tone\":\"info|success|warning|danger\",\"title\":\"…\",\"text\":\"…\"}\n- {\"id\":\"…\",\"component\":\"KpiStat\",\"label\":\"…\",\"value\":12,\"previous\":10,\"format\":\"integer\"} — value and previous are numbers; format is one of number, integer, compact, percent (a fraction: 0.25 is 25 %); previous is optional\n- {\"id\":\"…\",\"component\":\"ChartCard\",\"title\":\"…\",\"kind\":\"line|bar|area|pie\",\"x\":\"day\",\"series\":[{\"key\":\"views\",\"label\":\"Views\"}],\"data\":{\"path\":\"/rows\"}}\n- {\"id\":\"…\",\"component\":\"Table\",\"caption\":\"…\",\"columns\":[{\"key\":\"day\",\"label\":\"Day\"},{\"key\":\"views\",\"label\":\"Views\",\"format\":\"integer\"}],\"rows\":{\"path\":\"/rows\"}}\nOne component has \"id\":\"root\" — a Column whose children are the others; a Row holds 2 to 4 KpiStat. Ids use letters, digits and - only. The rows of line C are flat objects whose keys are the x and series keys of the ChartCard and the column keys of the Table.\n\nHere is a complete, valid example for other data (a shop's sales per day):\nSales rose on Tuesday and Wednesday; Monday was the quietest day.\n```a2ui\n{\"version\":\"v0.9\",\"createSurface\":{\"surfaceId\":\"answer\",\"catalogId\":\"krizaka:genui/v1\"}}\n{\"version\":\"v0.9\",\"updateComponents\":{\"surfaceId\":\"answer\",\"components\":[{\"id\":\"root\",\"component\":\"Column\",\"children\":[\"figures\",\"trend\",\"note\"]},{\"id\":\"figures\",\"component\":\"Row\",\"children\":[\"total\",\"best\"]},{\"id\":\"total\",\"component\":\"KpiStat\",\"label\":\"Orders\",\"value\":57,\"format\":\"integer\"},{\"id\":\"best\",\"component\":\"KpiStat\",\"label\":\"Best day\",\"value\":24,\"format\":\"integer\"},{\"id\":\"trend\",\"component\":\"ChartCard\",\"title\":\"Orders per day\",\"kind\":\"bar\",\"x\":\"day\",\"series\":[{\"key\":\"orders\",\"label\":\"Orders\"}],\"data\":{\"path\":\"/rows\"}},{\"id\":\"note\",\"component\":\"Callout\",\"tone\":\"info\",\"title\":\"Wednesday leads\",\"text\":\"24 orders, the most of the week.\"}]}}\n{\"version\":\"v0.9\",\"updateDataModel\":{\"surfaceId\":\"answer\",\"path\":\"/rows\",\"value\":[{\"day\":\"Mon\",\"orders\":12},{\"day\":\"Tue\",\"orders\":21},{\"day\":\"Wed\",\"orders\":24}]}}\n```\n\nRules: every number comes from the data or is computed from it (a sum, a mean, a share, a change) — never invent one. Aggregate the data into the rows the chart needs (one row per x value). If the data cannot answer the question, say so in a Callout with tone warning. No other component, no other property, no HTML, no URL, no code, no emoji.",
+          "model": "{{inputs.model:}}"
         },
         "out": "answer",
         "onError": "RETRY",
@@ -63,6 +64,17 @@
         "default": "en",
         "title": "Langue",
         "description": "La langue de la réponse et des libellés."
+      },
+      "model": {
+        "type": "string",
+        "maxLength": 120,
+        "x-options": {
+          "source": "models",
+          "category": "CHAT"
+        },
+        "x-advanced": true,
+        "title": "Modèle de langage (facultatif)",
+        "description": "Le modèle de conversation du catalogue. Vide : le modèle par défaut. Un plus grand modèle compte plus juste."
       }
     }
   },
