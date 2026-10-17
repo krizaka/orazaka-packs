@@ -17,6 +17,16 @@ export function categoryOf(yaml) {
   return { catalogued: true, key: block.match(/^  categoryKey:[ \t]*([^\s#]+)/m)?.[1] ?? null };
 }
 
+/** The `label` under the top-level `category:` of an i18n file — read line by line, no backtracking. */
+export function labelOf(text) {
+  let inside = false;
+  for (const line of text.split("\n")) {
+    if (/^\S/.test(line)) inside = line.startsWith("category:");
+    else if (inside && line.trim().startsWith("label:")) return line.trim().slice("label:".length).trim();
+  }
+  return null;
+}
+
 /** Why a category is refused, or null when the pack is fine. */
 export function refusal(yaml) {
   const { catalogued, key } = categoryOf(yaml);
@@ -64,7 +74,7 @@ test("each shelf is labelled in EN and FR by the packs' i18n, one label per cate
     for (const lang of ["en", "fr"]) {
       const file = join(root, dir, "i18n", `${lang}.yaml`);
       assert.ok(existsSync(file), `${dir}: i18n/${lang}.yaml`);
-      const label = readFileSync(file, "utf8").match(/^category:[ \t]*\n(?:[ \t]+.*\n)*?[ \t]+label:[ \t]*(.+)$/m)?.[1]?.trim();
+      const label = labelOf(readFileSync(file, "utf8"));
       assert.ok(label, `${dir}: category.label in ${lang}`);
       const id = `${key}/${lang}`;
       assert.equal(labels.get(id) ?? label, label, `${dir}: ${id} is labelled differently by another pack`);
