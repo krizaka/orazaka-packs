@@ -1,6 +1,9 @@
 pack:
   label: "Studios média"
   tagline: "Générer, écouter, décrire — sans quitter un run."
+category:
+  label: Création et médias
+  description: "Les packs qui produisent images, vidéo, son et vitrines."
 studios:
   image-generation:
     label: "Génération d'image"

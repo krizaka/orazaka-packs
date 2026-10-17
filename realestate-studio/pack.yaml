@@ -17,15 +17,15 @@ requires:
   capabilities: []
 
 catalog:
-  categoryKey: business
+  categoryKey: creativity-media
   iconKey: studio
   status: PUBLISHED
   sortWeight: 100
   # Create the shelf if this is the first pack on it. Idempotent: an existing
   # category is left exactly as it is, never overwritten by a bundle.
   category:
-    iconKey: briefcase
-    sortWeight: 100
+    iconKey: image
+    sortWeight: 80
 
 pricing:
   priceCents: 7900   # 79 $ CA — in billing.currency (CAD); was 49 EUR

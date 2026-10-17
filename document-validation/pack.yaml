@@ -107,7 +107,7 @@ requires:
       concurrency: 2
 
 catalog:
-  categoryKey: business
+  categoryKey: business-compliance
   iconKey: shield-check
   status: PUBLISHED
   sortWeight: 20

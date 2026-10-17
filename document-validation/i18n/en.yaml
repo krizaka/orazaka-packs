@@ -6,8 +6,8 @@ pack:
     source and the passage that justifies it — and examine a PDF file for the signals that
     something was altered. Reports, never legal advice.
 category:
-  label: Business
-  description: "The packs that do the job: prospect, validate, produce."
+  label: Business & compliance
+  description: "Packs that do the work and keep it in order: validate, prospect, comply."
 studios:
   compliance-check:
     label: Compliance Check
