@@ -1,0 +1,25 @@
+pack:
+  label: Recommandations et statistiques
+  tagline: Un fil par personne et des statistiques par créateur, sur vos propres données.
+  description: >-
+    Le recommandeur que votre produit appelle avec une clé de service : envoyez des événements
+    pseudonymes et vos articles admissibles, lisez un fil « pour vous », des articles semblables
+    et les statistiques d'un créateur — chaque article dit pourquoi il est là. Deux Studios lisent
+    vos vidéos et proposent titres et mots-clés.
+category:
+  label: Données et analyse
+  description: "Les packs qui lisent les données de votre produit : recommandations, statistiques, tableaux de bord."
+studios:
+  video-understanding:
+    label: Compréhension vidéo
+    tagline: De quoi parle une vidéo — sujets, mots-clés et signaux de sécurité, à partir d'une image clé.
+    description: >-
+      Une image clé passe par le modèle de vision, puis une lecture en JSON : un résumé, des
+      sujets, des mots-clés, la langue et des étiquettes de sécurité. Les étiquettes vont à un
+      modérateur humain, jamais à un retrait automatique.
+  creator-suggestions:
+    label: Suggestions pour créateurs
+    tagline: Trois titres, une description et des mots-clés — des propositions que le créateur valide.
+    description: >-
+      À partir des mots du créateur et des mots-clés qui marchent auprès de son audience. Rien
+      n'est inventé, rien n'est publié sans le créateur.

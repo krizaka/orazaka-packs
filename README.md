@@ -33,6 +33,7 @@ DAGs) and, optionally, its own worker.
 
 | Pack | Content |
 |:---|:---|
+| `data-analytics` | Recommendations & insights — the recommender of ADR-078 (API scopes `reco:sync` / `reco:read`, served by the knowledge service), Video understanding and Creator suggestions Studios |
 | `document-validation` | Document Verification — Compliance Check (rules, sources, passages) and Document Authenticity (a PDF's signals of tampering), with its worker |
 | `echo-toolkit` | The Tier-W reference used by the platform tests — `DRAFT`, never on the marketplace shelf |
 | `orazaka-media` | Media generation studios |

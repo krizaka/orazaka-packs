@@ -1,0 +1,24 @@
+pack:
+  label: Recommendations & insights
+  tagline: A feed per person and analytics per creator, on your own data.
+  description: >-
+    The recommender your product calls with a service key: send pseudonymous events and your
+    eligible items, read a "for you" feed, similar items and creator insights — every item says
+    why it is there. Two Studios read your videos and suggest titles and tags.
+category:
+  label: Data & analytics
+  description: "Packs that read your product's data: recommendations, insights, dashboards."
+studios:
+  video-understanding:
+    label: Video understanding
+    tagline: What a video is about — topics, tags and safety signals, from a keyframe.
+    description: >-
+      A keyframe goes through the vision model, then a reading in JSON: a summary, topics, tags,
+      the language and safety labels. The labels go to a human moderator, never to an automatic
+      takedown.
+  creator-suggestions:
+    label: Creator suggestions
+    tagline: Three titles, a description and tags — proposals the creator approves.
+    description: >-
+      From the creator's own words and the tags that perform with their audience. Nothing is
+      invented, nothing is published without the creator.

@@ -82,6 +82,52 @@
             "$ref": "#/$defs/worker"
           },
           "default": []
+        },
+        "api": {
+          "description": "Platform API scopes the pack's buyers use, served by a platform service rather than a Studio run (the recommender of ADR-078 lives in orazaka-knowledge-service). Declared so the catalogue and the docs can say which key scopes the pack opens; the edge's ApiKeyScopes is the authority that enforces them (exact method + path, fail closed), and a test keeps the two identical. The installer records nothing from this block.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "service",
+            "scopes"
+          ],
+          "properties": {
+            "service": {
+              "description": "The platform service that serves these routes.",
+              "type": "string",
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+              "maxLength": 80
+            },
+            "scopes": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "key",
+                  "routes"
+                ],
+                "properties": {
+                  "key": {
+                    "description": "An API-key scope, `<area>:<verb>`.",
+                    "type": "string",
+                    "pattern": "^[a-z]+:[a-z]+$",
+                    "maxLength": 40
+                  },
+                  "routes": {
+                    "description": "`METHOD /path` — the exact requests the scope allows.",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^(GET|POST|PUT|PATCH|DELETE) /api/v[0-9]+/[a-z0-9/-]+$"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },

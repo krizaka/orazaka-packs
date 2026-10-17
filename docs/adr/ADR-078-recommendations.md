@@ -130,3 +130,13 @@ videos perform best, the hour of the week when the creator's audience engages, a
   lever and needs Oussama's yes.
 - The recommender is **explainable** from day one: each item says why it is there, each weight is a row with a reason.
 - A second product (Yasakia, Yomizaka) gets recommendations with a key and its own settings — no code names a product.
+
+## Amendment (2026-10-17) — the pack is `data-analytics`
+
+The `recommendations` pack named above ships as **`data-analytics`** ("Recommendations & insights"), the first pack on
+the Data & Analytics shelf (orazaka-packs#16, RFC orazaka#174): the shelf will also carry the analytics and data-driven
+UI Studios, and a pack key is a primary key in three databases, so it is named once for what it will hold. The serving
+contract of §6 is unchanged; the manifest declares it under `requires.api` (service, scopes, exact routes), kept
+identical to the edge's `ApiKeyScopes` by `tests/data-analytics.test.mjs`. The two deferred Studios of the table above
+— keyframes (`video-understanding`) and title / tag suggestions (`creator-suggestions`) — ship as blueprints over the
+engine's vision and chat capabilities; transcripts (Whisper) stay deferred.
