@@ -29,7 +29,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: orazaka-media
-version: 1.5.0
+version: 1.6.0
 tier: DATA
 distribution: OSS
 regulatoryClass: STANDARD
@@ -110,6 +110,26 @@ studios:
     publisherId: orazaka
     sortWeight: 95
     blueprint: studios/video-generation/blueprint.json
+  # A cinematic short (ADR-080): the script (LLM) and the cut (ffmpeg) of a production driven by `orazaka cinema`;
+  # the keyframes and the shots are runs of image-generation and video-generation, the sound one of video-sound.
+  - key: cinematic-script
+    profession: creative
+    iconKey: video
+    pricing: INCLUDED
+    entitlementKey: studio.cinematic-script
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 94
+    blueprint: studios/cinematic-script/blueprint.json
+  - key: cinematic-cut
+    profession: creative
+    iconKey: video
+    pricing: INCLUDED
+    entitlementKey: studio.cinematic-cut
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 93
+    blueprint: studios/cinematic-cut/blueprint.json
   - key: video-with-sound
     profession: general
     iconKey: video
