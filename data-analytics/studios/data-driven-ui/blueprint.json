@@ -1,0 +1,73 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 30,
+  "changelog": "1.0.0 — Interface pilotée par les données (ADR-082, orazaka#207 tranche 1) : un CSV ou un JSON (par exemple l'export de vos statistiques, ADR-081) et une question deviennent une réponse en prose et un tableau de bord A2UI v0.9 du catalogue krizaka:genui/v1 (KpiStat, ChartCard, Table, Callout, Card, Text, Row, Column), dessiné par @krizaka/ui/genui. Chaque nombre vient des données ; le rendu refuse tout composant ou propriété hors catalogue.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "data-driven-ui",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "answer",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "You are a data analyst who answers with an interface. The person's question: {{inputs.question}}\n\nTheir data (CSV or JSON, as they gave it):\n<<<DATA\n{{inputs.data}}\nDATA>>>\n\nAnswer in {{inputs.language}} with: one or two sentences of plain prose that answer the question, then ONE fenced block that starts with ```a2ui on its own line and ends with ``` on its own line. Inside the block write JSON Lines, one A2UI v0.9 message per line, nothing else:\n1. {\"version\":\"v0.9\",\"createSurface\":{\"surfaceId\":\"answer\",\"catalogId\":\"krizaka:genui/v1\"}}\n2. {\"version\":\"v0.9\",\"updateComponents\":{\"surfaceId\":\"answer\",\"components\":[...]}} — one component must have \"id\":\"root\"; children are referenced by id.\n3. {\"version\":\"v0.9\",\"updateDataModel\":{\"surfaceId\":\"answer\",\"path\":\"/rows\",\"value\":[...]}} — the rows a Table or a ChartCard reads.\n\nThe ONLY components you may use, with ONLY these properties:\n- Column {children:[ids]} and Row {children:[ids]} for layout;\n- Text {text, variant: body|heading|caption};\n- Card {title, child: id};\n- Callout {tone: info|success|warning|danger, title, text} for the one thing to remember;\n- KpiStat {label, value: number, previous?: number, format?: number|integer|compact|percent|money, currency?: CAD, good?: up|down} — percent values are fractions (0.25 = 25 %), money values are in cents;\n- ChartCard {title, insight?, kind: line|bar|area|pie, x: column key, series:[{key,label}], data:{\"path\":\"/rows\"}, format?};\n- Table {caption?, columns:[{key,label,format?}], rows:{\"path\":\"/rows\"}}.\nIds and keys use letters, digits, - and _ only. No other component, no other property, no HTML, no URL, no code.\n\nRULES: every number must come from the data or be computed from it (a sum, a mean, a share, a change) — never invent one; if the data cannot answer the question, say so in a Callout with tone warning. Pick at most 4 KpiStat, one or two ChartCard and at most one Table. Keep the data model under 400 rows: aggregate first (per day, per category)."
+        },
+        "out": "answer",
+        "onError": "RETRY",
+        "maxAttempts": 2,
+        "timeout": "PT3M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "answer",
+        "label": "La réponse et son tableau de bord (A2UI)",
+        "from": "{{steps.answer.content}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "data",
+      "question"
+    ],
+    "properties": {
+      "data": {
+        "type": "string",
+        "format": "prose",
+        "minLength": 10,
+        "maxLength": 20000,
+        "title": "Vos données",
+        "description": "Un CSV (avec sa ligne d'en-tête) ou un JSON, par exemple l'export de vos statistiques. 20 000 caractères au plus."
+      },
+      "question": {
+        "type": "string",
+        "format": "prose",
+        "minLength": 5,
+        "maxLength": 500,
+        "title": "Votre question",
+        "description": "Ce que vous voulez voir : « quelles villes progressent ? », « mon audience revient-elle ? »."
+      },
+      "language": {
+        "type": "string",
+        "enum": [
+          "en",
+          "fr"
+        ],
+        "default": "en",
+        "title": "Langue",
+        "description": "La langue de la réponse et des libellés."
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

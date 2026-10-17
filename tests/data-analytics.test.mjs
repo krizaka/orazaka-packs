@@ -11,7 +11,7 @@ const pack = () => readFileSync(join(dir, "pack.yaml"), "utf8");
 const blueprint = (key) => JSON.parse(readFileSync(join(dir, "studios", key, "blueprint.json"), "utf8"));
 const schema = JSON.parse(readFileSync(join(root, "pack.schema.json"), "utf8"));
 
-const STUDIOS = ["video-understanding", "creator-suggestions"];
+const STUDIOS = ["data-driven-ui", "video-understanding", "creator-suggestions"];
 // The edge's ApiKeyScopes (orazaka-edge): exact method + path, fail closed. Kept identical here.
 const SCOPES = {
   "reco:sync": [
@@ -107,4 +107,18 @@ test("creator suggestions are proposals the creator approves, from the creator's
 test("the pack never handles a raw identity: its docs state the pseudonym rule (Loi 25)", () => {
   const readme = readFileSync(join(dir, "README.md"), "utf8");
   for (const words of ["HMAC-SHA256", "pseudonym", "erasures", "retention"]) assert.ok(readme.includes(words), words);
+});
+
+test("data-driven UI (ADR-082): one LLM step that answers in A2UI v0.9 with the krizaka:genui/v1 catalog only", () => {
+  const [step] = blueprint("data-driven-ui").definition.steps;
+  assert.equal(step.featureKey, "orazaka.core.chat.completion");
+  const prompt = step.inputs.prompt;
+  for (const words of ["```a2ui", "\"version\":\"v0.9\"", "krizaka:genui/v1", "createSurface", "updateComponents", "updateDataModel", "\"id\":\"root\""]) {
+    assert.ok(prompt.includes(words), words);
+  }
+  for (const component of ["Column", "Row", "Text", "Card", "Callout", "KpiStat", "ChartCard", "Table"]) assert.ok(prompt.includes(`- ${component} {`) || prompt.includes(`${component} {`), component);
+  for (const rule of ["never invent", "No other component", "no HTML, no URL, no code"]) assert.ok(prompt.includes(rule), rule);
+  const props = blueprint("data-driven-ui").inputSchema.properties;
+  assert.equal(props.data.maxLength, 20000);
+  assert.deepEqual(blueprint("data-driven-ui").inputSchema.required, ["data", "question"]);
 });

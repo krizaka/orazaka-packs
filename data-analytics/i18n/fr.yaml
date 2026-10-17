@@ -10,6 +10,11 @@ category:
   label: Données et analyse
   description: "Les packs qui lisent les données de votre produit : recommandations, statistiques, tableaux de bord."
 studios:
+  data-driven-ui:
+    label: Interface pilotée par les données
+    tagline: Un CSV et une question deviennent un tableau de bord.
+    description: >-
+      Donnez vos données (un CSV, l'export JSON de vos statistiques) et posez votre question : la réponse arrive en chiffres, graphiques et tableau, lisible d'un coup d'œil. Chaque nombre vient de vos données.
   video-understanding:
     label: Compréhension vidéo
     tagline: De quoi parle une vidéo — sujets, mots-clés et signaux de sécurité, à partir d'une image clé.
