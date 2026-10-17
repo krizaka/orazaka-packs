@@ -1,0 +1,12 @@
+pack:
+  label: Sécurité des médias
+  tagline: Cette photo, cette vidéo ou ce message vocal peut-il être montré sans danger ?
+  description: >-
+    Juge des images (une photo, ou des images d'une vidéo) et la transcription d'un message vocal selon quelques lignes publiques :
+    pas de nudité ni de contenu sexuel, pas de violence graphique, pas de menace ni de harcèlement. Une réponse que personne n'a pu lire n'est jamais un feu vert.
+studios:
+  media-safety:
+    label: Sécurité des médias
+    tagline: Un contrôle de sécurité qui échoue du côté prudent.
+    description: >-
+      Une question de vision par image, une transcription et un jugement du texte pour le son, puis des règles fermées. Illisible veut dire retenu, jamais approuvé.

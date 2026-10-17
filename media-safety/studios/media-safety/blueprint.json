@@ -1,0 +1,89 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 30,
+  "changelog": "1.0.0 — vision par image, transcription et jugement du texte pour le son, règles fermées au worker. Les étapes de modèle échouent PLUTÔT que d'être ignorées : un contrôle de sécurité ne se passe pas d'une réponse.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "media-safety",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "look",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.vision",
+        "dependsOn": [],
+        "forEach": "{{inputs.frames}}",
+        "maxParallel": 2,
+        "inputs": {
+          "assetId": "{{item}}",
+          "prompt": "You check one picture before it is shown to someone in a private conversation. Answer with ONE JSON object and nothing else, with exactly these three boolean keys: \"sexual_or_nudity\" (true if it shows nudity or sexual content), \"graphic_violence\" (true if it shows graphic violence, gore or an injury), \"minor_in_unsafe_context\" (true if a child or young teenager appears in a sexual, violent or dangerous context). Do not describe the picture. Do not name anyone. If unsure, answer true."
+        },
+        "out": "looks",
+        "onError": "FAIL",
+        "timeout": "PT5M"
+      },
+      {
+        "id": "listen",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.audio.analysis",
+        "dependsOn": [],
+        "condition": "{{inputs.audio}} is not null",
+        "inputs": { "assetId": "{{inputs.audio:}}" },
+        "out": "listen",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT10M"
+      },
+      {
+        "id": "read",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": ["listen"],
+        "condition": "{{inputs.audio}} is not null",
+        "inputs": {
+          "prompt": "You check the transcript of a voice message before it is played to someone in a private conversation. Answer with ONE JSON object and nothing else, with exactly these three boolean keys: \"threat_or_harassment\" (true if it threatens, insults or harasses), \"sexual_content\" (true if it is sexually explicit), \"hate\" (true if it attacks people for who they are). If unsure, answer true.\n\nTranscript:\n---\n{{steps.listen.analysis}}\n---"
+        },
+        "out": "read",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT3M"
+      },
+      {
+        "id": "assess",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.safety.media.assess",
+        "dependsOn": ["look", "read"],
+        "inputs": {
+          "looks": "{{steps.looks}}",
+          "frames": "{{inputs.frameCount}}",
+          "heard": "{{steps.read.content}}",
+          "expectsSpeech": "{{inputs.expectsSpeech:false}}"
+        },
+        "out": "assessment",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      }
+    ],
+    "outputs": [{ "key": "report", "label": "Verdict, en codes", "from": "{{steps.assessment.reportJson}}", "type": "JSON" }]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["frames", "frameCount"],
+    "properties": {
+      "frames": {
+        "type": "array",
+        "minItems": 0,
+        "maxItems": 8,
+        "items": { "type": "string", "format": "asset-id", "contentMediaType": "image/*", "minLength": 8, "maxLength": 120 },
+        "title": "Les images à examiner",
+        "description": "Une photo, ou quelques images prises dans une vidéo."
+      },
+      "frameCount": { "type": "integer", "minimum": 0, "maximum": 8, "title": "Le nombre d'images", "description": "Le même nombre que la liste ci-dessus." },
+      "audio": { "type": "string", "format": "asset-id", "contentMediaType": "audio/*", "minLength": 8, "maxLength": 120, "title": "Le son à juger (facultatif)" },
+      "expectsSpeech": { "type": "boolean", "default": false, "title": "Il y a du son à juger" }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

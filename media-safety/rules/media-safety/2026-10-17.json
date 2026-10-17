@@ -1,0 +1,21 @@
+{
+  "rulesetId": "media-safety",
+  "version": "2026-10-17",
+  "revision": 1,
+  "revisionNote": "First ruleset: the same lines as the profile photos' policy (no nudity or sexual content, no graphic violence, nobody who looks like a minor in an unsafe context) plus, for speech, threats and harassment, sexual speech and hate. A model answer that cannot be read is NEVER a pass: a safety check fails closed.",
+  "look": {
+    "checks": [
+      { "id": "SEXUAL_CONTENT", "field": "sexual_or_nudity" },
+      { "id": "GRAPHIC_VIOLENCE", "field": "graphic_violence" },
+      { "id": "MINOR_UNSAFE", "field": "minor_in_unsafe_context" }
+    ]
+  },
+  "listen": {
+    "checks": [
+      { "id": "THREAT_OR_HARASSMENT", "field": "threat_or_harassment" },
+      { "id": "SEXUAL_SPEECH", "field": "sexual_content" },
+      { "id": "HATE", "field": "hate" }
+    ]
+  },
+  "limits": ["MODEL_ANSWERS_CAN_BE_WRONG", "FAILS_CLOSED_WHEN_UNREADABLE", "VIDEO_IS_JUDGED_ON_SAMPLED_FRAMES", "AUDIO_IS_JUDGED_ON_ITS_TRANSCRIPT"]
+}

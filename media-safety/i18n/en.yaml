@@ -1,0 +1,12 @@
+pack:
+  label: Media safety
+  tagline: Is this photo, video or voice message safe to show?
+  description: >-
+    Judges pictures (a photo, or frames of a video) and a voice message's transcript against a short, public set of lines: no nudity
+    or sexual content, no graphic violence, no threats or harassment. An answer nobody could read is never a pass.
+studios:
+  media-safety:
+    label: Media safety
+    tagline: A safety check that fails closed.
+    description: >-
+      A vision question per picture, a transcript and a text judgement for sound, then closed rules. Unreadable means held, never approved.
