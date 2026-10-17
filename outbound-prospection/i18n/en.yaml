@@ -5,8 +5,8 @@ pack:
     The salesperson's pack: qualify a list, write each prospect's angle, and get the
     follow-ups out — three Studios over the same list.
 category:
-  label: Business & compliance
-  description: "Packs that do the work and keep it in order: validate, prospect, comply."
+  label: Business & documents
+  description: "Packs that do the work: check documents, prospect."
 studios:
   outbound-prospection:
     label: Outbound Prospecting
