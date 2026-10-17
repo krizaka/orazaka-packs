@@ -24,6 +24,8 @@ const SCOPES = {
     "GET /api/v1/recommendations/similar",
     "GET /api/v1/recommendations/insights",
   ],
+  "analytics:sync": ["POST /api/v1/analytics/events", "POST /api/v1/analytics/erasures"],
+  "analytics:read": ["GET /api/v1/analytics/insights", "GET /api/v1/analytics/funnel"],
 };
 
 /** The routes a scope lists under `requires.api.scopes` of a pack.yaml — read line by line. */
@@ -61,7 +63,7 @@ test("the schema lets a pack declare the platform API scopes it needs", () => {
   assert.doesNotMatch("Reco Sync", new RegExp(api.properties.scopes.items.properties.key.pattern));
 });
 
-test("the declared scopes are exactly the edge's reco:sync and reco:read", () => {
+test("the declared scopes are exactly the edge's reco:* and analytics:*", () => {
   assert.deepEqual(scopeRoutes(pack()), SCOPES);
 });
 

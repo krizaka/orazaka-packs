@@ -41,6 +41,15 @@ requires:
           - "GET /api/v1/recommendations/for-you"
           - "GET /api/v1/recommendations/similar"
           - "GET /api/v1/recommendations/insights"
+      # Product analytics (ADR-081): a product's own events in; KPIs, cohorts, funnels out.
+      - key: analytics:sync
+        routes:
+          - "POST /api/v1/analytics/events"
+          - "POST /api/v1/analytics/erasures"
+      - key: analytics:read
+        routes:
+          - "GET /api/v1/analytics/insights"
+          - "GET /api/v1/analytics/funnel"
 
 catalog:
   categoryKey: data-analytics
