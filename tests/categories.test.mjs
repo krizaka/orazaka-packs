@@ -82,3 +82,15 @@ test("each shelf is labelled in EN and FR by the packs' i18n, one label per cate
     }
   }
 });
+
+test("no shelf promises legal compliance: no Law 25 / Bill 96 pack exists, and search engines repeat these words", () => {
+  for (const { dir } of packs) {
+    for (const lang of ["en", "fr"]) {
+      const file = join(root, dir, "i18n", `${lang}.yaml`);
+      if (!existsSync(file)) continue;
+      const text = readFileSync(file, "utf8");
+      const block = text.match(/^category:\n((?:[ \t]+.*\n)+)/m)?.[1] ?? "";
+      assert.doesNotMatch(block, /compl(y|iance)|conform|loi 25|law 25/i, `${dir}/${lang}: category words`);
+    }
+  }
+});

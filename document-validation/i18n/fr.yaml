@@ -6,8 +6,8 @@ pack:
     sa source et l'extrait qui le justifie — et examinez un fichier PDF pour les signes d'une
     modification. Des rapports, jamais un conseil juridique.
 category:
-  label: Affaires et conformité
-  description: "Les packs qui font le travail et le mettent en règle : valider, prospecter, se conformer."
+  label: Affaires et documents
+  description: "Les packs qui font le travail : vérifier des documents, prospecter."
 studios:
   compliance-check:
     label: Contrôle de conformité

@@ -5,8 +5,8 @@ pack:
     Le pack du commercial : qualifier une liste, écrire l'angle de chacun, et faire
     partir les relances — trois Studios sur la même liste de prospects.
 category:
-  label: Affaires et conformité
-  description: "Les packs qui font le travail et le mettent en règle : valider, prospecter, se conformer."
+  label: Affaires et documents
+  description: "Les packs qui font le travail : vérifier des documents, prospecter."
 studios:
   outbound-prospection:
     label: Prospection Outbound
