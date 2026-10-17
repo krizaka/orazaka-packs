@@ -1,0 +1,24 @@
+{
+  "rulesetId": "message-authenticity",
+  "version": "2026-10-17",
+  "revision": 1,
+  "revisionNote": "First ruleset. Thresholds from the calibration in calibration/ — a small FR/EN set: they keep false « HIGH » on human texts at 0 of 80 (95% upper bound 4.6%), and at that price the classifier recognises only a minority of generated texts (EN 3/80, FR 10/80). It is a corroborating sign, never a verdict.",
+  "classifier": {
+    "model": "fakespot-ai/roberta-base-ai-text-detection-v1",
+    "revision": "f9cdb14d1f8b105f597d80fa7b56f20c6ea0e9db",
+    "license": "Apache-2.0",
+    "aiLabel": "AI",
+    "maxTokens": 256
+  },
+  "languages": {
+    "en": { "mid": 0.9, "high": 0.998 },
+    "fr": { "mid": 0.98, "high": 0.995 }
+  },
+  "minWords": 12,
+  "limits": [
+    "CAN_BE_WRONG",
+    "UNRELIABLE_ON_SHORT_TEXTS",
+    "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING",
+    "A_SIGNAL_NEVER_A_VERDICT"
+  ]
+}

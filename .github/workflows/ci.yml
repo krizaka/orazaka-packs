@@ -60,3 +60,19 @@ jobs:
           python test_faces.py
           python test_worker.py
           python test_broker.py
+
+  authenticity-worker:
+    # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - run: pip install pika pyyaml
+      - working-directory: message-authenticity/worker
+        run: |
+          python test_authenticity.py
+          python test_broker.py

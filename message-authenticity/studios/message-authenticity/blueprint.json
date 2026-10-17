@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 5,
+  "changelog": "1.0.0 — une seule étape, un petit classifieur local. Aucune étape générative : un modèle qui écrit n'a rien à faire dans un contrôle d'authenticité.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "message-authenticity",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "read",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.message.authenticity.read",
+        "dependsOn": [],
+        "inputs": { "text": "{{inputs.text}}" },
+        "out": "read",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT30S"
+      }
+    ],
+    "outputs": [{ "key": "report", "label": "Niveau, grossier", "from": "{{steps.read.reportJson}}", "type": "JSON" }]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["text"],
+    "properties": {
+      "text": { "type": "string", "format": "prose", "minLength": 1, "maxLength": 5000, "title": "Le message", "description": "Le texte à lire. Il n'est pas conservé par le worker." },
+      "locale": { "type": "string", "enum": ["en", "fr"], "title": "Langue du compte (facultatif)" }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

@@ -1,0 +1,90 @@
+{
+ "model": "fakespot-ai/roberta-base-ai-text-detection-v1",
+ "revision": "f9cdb14d1f8b105f597d80fa7b56f20c6ea0e9db",
+ "set": {
+  "human": {
+   "en": 80,
+   "fr": 80
+  },
+  "generated": {
+   "en": 80,
+   "fr": 80
+  }
+ },
+ "auc": {
+  "en": 0.616,
+  "fr": 0.713
+ },
+ "holdout": {
+  "en": {
+   "high": 0.9975,
+   "mid": 0.8431,
+   "n_tune_human": 40,
+   "n_test_human": 40,
+   "n_test_generated": 40,
+   "mid_test": {
+    "false_positive": "3/40",
+    "fpr_95ci_pct": [
+     2.6,
+     19.9
+    ],
+    "true_positive": "12/40",
+    "tpr_95ci_pct": [
+     18.1,
+     45.4
+    ]
+   },
+   "high_test": {
+    "false_positive": "0/40",
+    "fpr_95ci_pct": [
+     0,
+     8.8
+    ],
+    "true_positive": "2/40",
+    "tpr_95ci_pct": [
+     1.4,
+     16.5
+    ]
+   }
+  },
+  "fr": {
+   "high": 0.9924,
+   "mid": 0.9811,
+   "n_tune_human": 40,
+   "n_test_human": 40,
+   "n_test_generated": 40,
+   "mid_test": {
+    "false_positive": "2/40",
+    "fpr_95ci_pct": [
+     1.4,
+     16.5
+    ],
+    "true_positive": "12/40",
+    "tpr_95ci_pct": [
+     18.1,
+     45.4
+    ]
+   },
+   "high_test": {
+    "false_positive": "0/40",
+    "fpr_95ci_pct": [
+     0,
+     8.8
+    ],
+    "true_positive": "11/40",
+    "tpr_95ci_pct": [
+     16.1,
+     42.8
+    ]
+   }
+  }
+ },
+ "otherModelTried": {
+  "model": "bibbbu/multilingual-ai-human-detector_xlm-roberta-base (MIT)",
+  "auc": {
+   "en": 0.497,
+   "fr": 0.81
+  },
+  "why_not": "chance level in English on this set; its labels are undocumented"
+ }
+}

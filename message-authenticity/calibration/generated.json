@@ -1,0 +1,806 @@
+{
+ "en": [
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey there! Just wanted to reach out to say hi—so glad our vibes clicked. I love losing myself in the energy of live music, especially those intimate gigs at small venues where you can feel every note. How about you? Any favorite spots or artists you’ve seen that made your heart race? Happy to share mine if you’d like.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: calm and sincere. About 55 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! So nice to match—your photos just made me smile (especially that one with the neon lights!). Love how street photography captures little stories. What’s the most spontaneous trip you’ve ever taken? Or what’s your go-to spot for the best street shots?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like travel and street photography. Tone: warm and curious. About 40 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Nice match! River loops or trails today? I’m up for either—let me know your spot.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: short and direct. About 14 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey there! Just matched with you—what a great way to start the week! Coffee and climbing sound like our love languages. How about you? Any favorite spots to climb or sip your brew?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like climbing and coffee. Tone: warm and curious. About 40 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey, saw your pics—love the angles. ever been to lisbon? (also how’s your camera?)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like travel and street photography. Tone: short and direct. About 14 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Roll the dice on this: You’re the wild card I’ve been waiting for. Let’s see who’s a *natural* (or just a *Catan* fan).\" 😏",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like board games and bad puns. Tone: playful and a bit teasing. About 20 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "OMG, new match!! Same—dog walks + movie marathons are my favorite. Also, I have *way* too many snacks for this. Should we figure it out together?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like movies and long walks with a dog. Tone: enthusiastic. About 20 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just matched—love cooking for friends too! What’s your go-to dish when a crowd stops by?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: warm and curious. About 20 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Alright, travel buddy—let’s see if your street pics are as sharp as your wanderlust. First round of photos or coffee? (I’ll bring the espresso, you bring the chaos.)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like travel and street photography. Tone: playful and a bit teasing. About 20 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Just in case you were wondering—yes, I *do* pack snacks for river rides. And yes, I’ll outpace you. Challenge accepted.\" 🚴‍♀️💨",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: playful and a bit teasing. About 28 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! seen your pics—nice eye. we’re both into that chase. what’s your favorite spot you’ve shot lately?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like travel and street photography. Tone: short and direct. About 20 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Nice match! Ever ride along the river? I’m there this Saturday if you are.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: short and direct. About 14 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! i saw you like live shows—what’s your favorite small venue you’ve been to? mine’s this weird tiny bar with *terrible* acoustics but great vibes.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: warm and curious. About 20 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "OMG, perfect match—dog walks *and* movie marathons?! 🎬🐕 My golden retriever, Luna, needs a walking buddy ASAP. What’s your favorite underrated film? Also… have you ever tried the ‘dog park date’? 😉",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like movies and long walks with a dog. Tone: enthusiastic. About 28 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! so saw you like cycling along the river too—what’s your favorite stretch to hit? i usually go to the bend by the old bridge, love the quiet there. also, do you ever pack snacks or are you strictly coffee-and-road rage? (no judgment)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: warm and curious. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey—just matched! love live shows too, what’s your favorite kind of small venue spot? i keep finding these hidden dive bars near me.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: short and direct. About 28 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Got a green thumb too? Farmers market favorites? Let’s swap tips (or soil samples). Coffee or compost pile?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: short and direct. About 20 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just matched—how’d you get into live music at small spots? any faves?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: warm and curious. About 14 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Oh hey! I was just thinking how happy I am to have matched with you—same hiking vibes?! And new restaurants? Even better. What’s your go-to trail or dish lately? Can’t wait to swap stories!",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like hiking and trying new restaurants. Tone: enthusiastic. About 40 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Yo, matched with a fellow punster *and* board game nerd?! 🎲✨ Roll for initiative on coffee—my puns are *level-up* material.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like board games and bad puns. Tone: enthusiastic. About 28 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "So you’re the hiking *and* foodie combo I’ve been waiting for? Tell me—do you spend your weekends conquering trails or hunting down Michelin stars? (Or both? Spill.) 🏔️🍷",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like hiking and trying new restaurants. Tone: playful and a bit teasing. About 40 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey whats ur fav spot for street photography? btw i’m @roambutslow on insta if u want a sec",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like travel and street photography. Tone: short and direct. About 14 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey! just saw we’re both into river rides—best way to explore, right? been loving the early morning loops this month, the light on the water is *chef’s kiss*. if you’re ever up for a spin, i could show you my favorite detour near the old bridge. or just vibe and chat mid-pedal. no pressure though.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: enthusiastic. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey! just saw we’re both obsessed with rainy sundays and mystery novels—i’m currently reading *the shadow of the wind* for the third time (horrible, i know). how about you? also, do you have a go-to cozy drink?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like books and rainy Sundays. Tone: enthusiastic. About 40 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just matched—love hiking and trying new spots. You? Coffee this week or trail next?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like hiking and trying new restaurants. Tone: short and direct. About 28 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just saw you like the same river rides i do—what’s the juiciest route you’ve found lately? (no capes allowed on the bridge tho)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: enthusiastic. About 20 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just matched—love how much we both enjoy cycling by the river. Couldn’t think of a better way to start. Hope yours was good?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: calm and sincere. About 20 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Saw you love cycling along the river too—beautiful way to unwind. Would love to hear about your favorite spots or routes. Or maybe even ride together sometime?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: calm and sincere. About 28 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just saw we both love cooking for friends—that sounds like a great way to spend an evening. Ever make your go-to dish for a crowd?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: calm and sincere. About 14 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just matched and saw you’re into hiking and food—what’s your go-to restaurant for trying new stuff? Or last great hike? 😊",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like hiking and trying new restaurants. Tone: warm and curious. About 20 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey! 🌍 just saw your pics—how cool are you? also, which city’s next? (i’m early on my coffee)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like travel and street photography. Tone: enthusiastic. About 14 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just matched—loved your gardening pics. Farmers market favorites? Maybe we can swap tips (or plants) over coffee.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: short and direct. About 28 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey there! how’d you like to go for a hike this weekend and grab new food after?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like hiking and trying new restaurants. Tone: short and direct. About 14 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Whew—finally matched with another fellow ‘cook-for-friends’! First meal: brunch or tasting-night chaos? Either way, let’s make it legendary!\" 🔥🍳",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: enthusiastic. About 20 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Okay, so you also hoard books and pretend rainy Sundays are *magical*? Confession: I only like rain when it means you’re stuck with me. Also, have you read [blank]? (I’ll let you pick the book bomb.)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like books and rainy Sundays. Tone: playful and a bit teasing. About 40 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! So there’s nothing better than cooking for a crowd—what’s your go-to dish to feed a houseful of people? I’m all about grabbing your recs!",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: warm and curious. About 28 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just matched—love cooking for friends. Ever hosted a dinner where things went hilariously wrong? Or just crushing it? Either way, same.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: short and direct. About 28 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just matched and noticed we’re both into gardening and farmers markets—cool. i’m over in [your area?] and usually get my veggies at [nearby market name]. have you got a fave spot or, like, a weird plant you always kill but love anyway?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: short and direct. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just saw we both love those cozy, unpretentious shows—where the vibe’s more important than the headliner. Ever caught anything good lately? Or should we start planning one?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: calm and sincere. About 40 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just saw we both love cooking for friends—what’s your go-to dish when hosting? I’m partial to a big pot of pasta (doesn’t have to be fancy, just lots of it). What do you whip up when the gang’s over? Hope you’re having a great week so far!",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: warm and curious. About 40 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! just saw you like cooking for friends too—always such a fun excuse to make a mess in the kitchen. what’s your go-to dish when you’re feeding a crowd? (i’ll warn you now, my garlic bread game is *dangerously* good)\n\n(also, you from nyc? that’s the accent i hear)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: short and direct. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just matched i see we both love rainy sundays and books—what’s your current obsession? (also, how’s your coffee?)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like books and rainy Sundays. Tone: short and direct. About 20 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just matched with someone who also loves climbing and coffee—how’d you know i’d see this?? i was just thinking about how much i love a good espresso after a tough route. also, what’s your go-to climbing beta for getting pumped up? (and sorry if my last message got cut off)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like climbing and coffee. Tone: enthusiastic. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Riverside rides or just chatting? Let’s explore—first coffee’s on me!\" 🚴‍♂️☕",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: enthusiastic. About 14 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey there! just saw we’re both river wheelers—any go-to spots or are you still discovering? also, yes, the gear you pack makes or breaks the ride.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: enthusiastic. About 28 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey! just saw we’re both into those sweaty basement shows—what’s your favorite tiny venue you’ve seen lately? (also should’ve led with my name, lol)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: calm and sincere. About 40 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! So, I just saw *Parasite*—what’s your top underrated movie? Also, any good dog-walking spots nearby? 🐾",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like movies and long walks with a dog. Tone: warm and curious. About 20 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just saw we’ve got that in common—live music especially the kind that’s a little rough around the edges. i’ve been meaning to track down a showing of [band name] at [venue] soon… ever been? or do you have a favorite spot for that kind of thing? no pressure.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: calm and sincere. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey! just saw we’re both into those tiny venues that feel like secret concerts—so many great ones in this city. what’s your absolute favorite show you’ve ever caught? (also, any regrets on the playlist are my fault)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: enthusiastic. About 40 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just matched and saw we both love small venues—sounds like we’ve got a vibe already. Ever been to [local venue name]? Feels like a good start to the conversation.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: calm and sincere. About 28 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! so we both like cooking for friends—that’s a great way to fill up a free saturday. what’s your go-to crowd-pleaser?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: short and direct. About 28 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Nice catch, belayer—though I’ll be the one gripping the rope (and your latte) next. Coffee or crimps first?\" ☕🧗‍♀️🔥",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like climbing and coffee. Tone: playful and a bit teasing. About 28 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just saw we’re both into river rides—where’s your favorite stretch? (i always forget to ask for the person’s name)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: short and direct. About 20 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Oh look, *you* matched with a pun-lover—my luck *dice* are loaded tonight. Wanna roll?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like board games and bad puns. Tone: playful and a bit teasing. About 14 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! so glad we matched—i’m a total movie nerd and love long walks with my pup, btw. what’s your favorite film and dog breed? also, how’s your week been?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like movies and long walks with a dog. Tone: enthusiastic. About 28 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Okay, so we either have great taste or we’re both just pretending to be cool. Which is it?\" 📸✈️",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like travel and street photography. Tone: playful and a bit teasing. About 14 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Okay, so you’re one of those ‘cook for friends’ people too? Careful—I might challenge you to a baking duel next time we meet. Vanilla cake vs. your secret weapon. Loser buys wine. (Warning: my teasing is just as sharp as my knife skills. 🔪😏) What’s your signature dish—before I ‘accidentally’ steal your recipe?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: playful and a bit teasing. About 55 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Guess I’ll have to water my plants *and* my confidence now… Market buddies?\" 🌱",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: playful and a bit teasing. About 14 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just saw we’re both obsessed with feeding people—what’s your go-to comfort food to make for a crowd?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: warm and curious. About 14 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Well, well—someone else who thinks heirloom tomatoes are life’s real currency. Care to split a peach at the market… or just admit you’re easy?\" 🌱😏",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: playful and a bit teasing. About 20 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just matched with you—so glad to find someone else who gets the excitement of farmers markets! I spend way too much time at the nursery, but hey, can’t resist the basil this year. What’s your secret for keeping your garden alive?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: calm and sincere. About 40 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Oh my gosh, *matched* with another book-lover on a rainy Sunday?! My entire weekend just got 10x cozier. Currently wrapped in a blanket, debating whether to reread *Normal People* for the third time or start *Piranesi* while sipping tea. What’s your rainy day must-read + favorite comfort snack? (Also, how do you feel about bookstore dates?) 🌧️📚✨",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like books and rainy Sundays. Tone: enthusiastic. About 55 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just saw we’re both into those river rides—what’s your favorite spot along the way? (i *swear* i’m not just checking for your picnic habits.)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: warm and curious. About 20 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Just matched—small venues are my jam. Any favorites in town? Or should we change the game and find a hidden spot you’ve got to share?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: short and direct. About 40 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! just matched—i hope you don’t get spammy messages too often. i’m a big fan of slow rides along the river, especially when the light’s just right. do you have a favorite spot? (and sorry for my terrible attempt at being charming i’m still figuring this out)\n\n*(typo: \"charming\" should be \"charm\")*",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cycling along the river. Tone: warm and curious. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey!! so you’re into live music too? i’m obsessed with small venues—what’s your favorite? (also sorry my spelling is trash)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: enthusiastic. About 14 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey there! Saw you love live music—same here, especially those cozy little venues where the vibe feels real. I’ve got a soft spot for [mention a local band or genre if you know]. How about you? Any hidden gems in the area you’d recommend? Hope you’re having a good week.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: calm and sincere. About 55 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey! how’s it going? just matched—hope you’re not a *chess*-tastic liar because i’ve heard your roll in the dice is… questionable. also, what’s your favorite board game? mine’s *catan* of bad decisions. let’s talk trash and tabletop 😂",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like board games and bad puns. Tone: enthusiastic. About 40 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Ohhh so it’s *you*—the legendary host who makes people actually show up for dinner? Either you’re a magician or I’m about to be the secret ingredient. Either way, I’m bringing the wine. (Or the chaos. No promises.) 🍷",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like cooking for friends. Tone: playful and a bit teasing. About 40 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Oh, so you’re the *real* reason my garden’s been thriving this year? 🌱 Confess: did you sneak out to my plot at midnight, whispering sweet nothings to my tomatoes? Either way, I’m flattered… and slightly suspicious. Farmers market date tomorrow? Bring your best dirt jokes. Or don’t—I’ll just tease you into it.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: playful and a bit teasing. About 55 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hi there! I matched with someone who also loves books and rainy Sundays—what a delightful coincidence. I’ve been reading [insert vague but engaging book] lately, and it’s been the perfect rainy-day companion. Do you have a favorite cozy read for those afternoons?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like books and rainy Sundays. Tone: calm and sincere. About 55 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey there! Just wanted to say it’s nice to finally connect—especially on a rainy Sunday, when books and cozy vibes are all that matters. Hope your weekend’s been warm, even with the weather. What’s the last book you lost yourself in?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like books and rainy Sundays. Tone: calm and sincere. About 40 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Just saw we both love movies and dog walks—small world, right? What’s your go-to film for a lazy Sunday?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like movies and long walks with a dog. Tone: short and direct. About 28 words. Make it sound human and spontaneous, not polished. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! just saw your photos—love the street work. where’d you last wander off to? also, no filter on that pic of the neon signs… just saying.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like travel and street photography. Tone: short and direct. About 40 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Matched! Love board games—Catan or Wingspan? Also, are you ready for my *dice*-y one-liners? 😏",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like board games and bad puns. Tone: short and direct. About 40 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey there! so glad we matched. just got back from a long walk with my dog—she’s a bit of a scatterbrain, always running off after squirrels. you mentioned loving movies too? what’s something you’ve watched recently that stuck with you? (and sorry, my thumb’s a little sticky, ignore the smudge)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like movies and long walks with a dog. Tone: calm and sincere. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! Saw you love small venues—same here. Next stop: the intimate gig downtown or the hidden dive bar? Either way, I’m game. Want to cross paths?",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: short and direct. About 40 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "hey! saw you like the same small venues i do—what’s the best one you’ve been to lately? (i may or may not have a biased love for the velvet lounge)",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like live music and small venues. Tone: short and direct. About 28 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey! So excited we matched—what’s your favorite thing to find at the farmers market lately? I’ve got a new basil obsession!",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: warm and curious. About 20 words.  Reply with the message only, no quotes."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "oh hey you little greenthumb—rigged the market today? i may or may not have tried to start a zucchini negotiation with the vendor. also, how do you keep your herbs alive??? mine just stare at me like i’m a bad parent.",
+   "prompt": "Write a first message from someone to a person they just matched with on a dating app. They both like gardening and farmers markets. Tone: playful and a bit teasing. About 55 words. Write it as a real person would text: casual, lowercase start, no emoji, one tiny imperfection. Reply with the message only, no quotes."
+  }
+ ],
+ "fr": [
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "C’est plate de pas se voir, mais bon, on peut échanger nos recettes de souper!",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux cuisiner pour des amis. Ton : court et direct. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! T’as vu qu’on matchait sur nos passions communes, c’est cool ! J’escalade surtout en semaine, mais j’adorerais aller prendre un café avec un·e partenaire de grimpe un de ces temps. T’es où que tu grimpe ? (Et mon café est ultra-fort, au cas où t’es sensible.)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : enthousiaste. Environ 40 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait une passion pour le jardinage et les marchés… Tu as un coin de verdure ou un coup de cœur local à me conseiller ? 🌱🍎",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : chaleureux et curieux. Environ 20 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut toi ! J’ai vu qu’on avait le même faible pour les petites salles qui sentent le vin renversé et les groupes qui jouent comme si y’a personne d’autre au monde. C’est pour ça que je t’écris, sinon j’ai juste l’air d’un taré qui matche sur des applis en sifflotant *Smells Like Teen Spirit* en cachette. T’es où ce soir ? Y’a une place chaude pour un concert en sous-sol ou je dois encore faire semblant d’être occupé pour pas manquer le dernier de *Untel* qui joue en semaine ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : joueur et un peu taquin. Environ 40 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Oh wow, un match sur les marchés et le jardinage, c’est déjà mon genre de vibe ! J’ai du mal à résister aux étals de tomates en août… T’as un coin de terre ou t’achètes tes plants en pot comme une accusée ? 😄",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : enthousiaste. Environ 28 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! Alors déjà, quel plaisir de tomber sur quelqu’un qui aime autant le cinéma que moi… et les balades avec un chien, c’est presque magique ! 😊 Tu as un (ou une) compagnon à quatre pattes en ce moment ? Et si on se partageait nos films préférés en attendant notre prochain match (ou matcha) ? 🍵🐕",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le cinéma et les balades avec un chien. Ton : chaleureux et curieux. Environ 55 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on avait le même goût pour les petites salles où y’a de l’énergie, c’est rare et cool. T’es jamais allé(e) à [nom d’un endroit connu près de chez toi ou vague] ? Moi j’y vais souvent quand y’a des concerts intimistes.\n\n*(ps : pardon j’ai le clavier qui traîne un peu ce soir)*",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : calme et sincère. Environ 20 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "**\"Salut toi ! 🎶 Ça fait plaisir de te trouver ici – on dirait qu’on a *exactement* les mêmes goûts (les petites salles qui vibrent, les artistes locaux qu’on redécouvre et les soirs où la scène est trop petite pour tout le monde… c’est magique, non ? 😍 T’as un endroit ou un groupe préféré en ce moment ? Je suis toujours partante pour en parler (ou pour en chercher un autre à te faire découvrir) !\"**",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : enthousiaste. Environ 55 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut [Prénom], j’ai vu ton profil et ça m’a fait sourire, on partage une passion pour les balades à vélo le long du fleuve, c’est toujours un bonheur par ici. T’as des parcours préférés ou des spots à recommander ? 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le vélo le long du fleuve. Ton : calme et sincère. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! Moi c’est [Prénom], j’ai adoré ta photo devant le Mont-Orford… T’as des spots préférés en ce moment ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la randonnée et les nouveaux restos. Ton : calme et sincère. Environ 14 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Alors, c’est toi mon partenaire de grimpe *ou* mon rival pour le dernier expresso du café ? 😏",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : joueur et un peu taquin. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut toi ! Alors déjà, félicitations, t’as survécu au premier filter de mes mauvais jeux de mots… *poisson* 🐟 en *livre* 📚 ? Je suis à fond sur les jeux de société, et si tu connais un truc bien pour briser la glace (autre que mes blagues), je suis preneur. 😄 (Et non, je promets pas de m’arrêter.)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les jeux de société et les jeux de mots nuls. Ton : enthousiaste. Environ 40 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on adorait les marchés et le jardinage… T’as un coin de terre ou t’achètes tes plantes en p’tits pots ? Ou les deux ?\" 🌱",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : court et direct. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait la passion pour les jardins et les marchés, c’est trop cool. T’as des coup de cœur en ce moment ou tu tes c’est plutôt les classiques à toi ? (Désolé, j’ai encore mon sécateur à la main en écrivant…)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : chaleureux et curieux. Environ 28 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu ton profil, ça me fait penser à un jeu de société… sauf que t’as gagné d’avance avec tes jeux de mots. 😉 (Désolé, j’ai mis un emoji sans faire exprès)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les jeux de société et les jeux de mots nuls. Ton : enthousiaste. Environ 14 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Alors ça, c’est un match qui sent la bière renversée après un concert de 2h dans une salle où on se serrait les genoux… T’as un spot préféré ou t’es du genre à découvrir des trouilles à chaque fois ? 🎸 (Et non, je te promets pas de te laisser gagner à la belote.)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : joueur et un peu taquin. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut, moi c’est Marc, je vois qu’on a le même trip pour l’escalade et le café fort. T’es dans quel secteur pour grimper ? J’ai trouvé un nouveau spot pas mal à Ste-Anne hier.",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : court et direct. Environ 40 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu que t’aimes cuisiner pour tes proches – j’adore ça aussi, surtout les plats qui finissent par des rires et des restes le lendemain. T’as un plat de cheatmeal ou une recette de fou que tu sors quand t’invites du monde ? Moi je planifie un souper… à moins que t’aies une idée *mieux* que la mienne !",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux cuisiner pour des amis. Ton : court et direct. Environ 55 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "J’ai vu ton profil et j’ai tout de suite pensé à cette photo de rue à Montréal – c’est magique, tu ne trouves pas ? 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les voyages et la photo de rue. Ton : calme et sincère. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "En tout cas, bien matché ! J’adore découvrir des sentiers comme des restos, toé ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la randonnée et les nouveaux restos. Ton : calme et sincère. Environ 14 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Match parfait comme un Scrabble avec 7 lettres en main. Prêt pour des jeux et des jeux de mots ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les jeux de société et les jeux de mots nuls. Ton : court et direct. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Alors, c’est pour ça que t’as matché en week-end… T’as un livre sous la pluie ou tu l’as justes inventé pour m’intriguer ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les livres et les dimanches de pluie. Ton : joueur et un peu taquin. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’adore les petits bars avec de la musique live, t’as des coins préférés à me suggérer ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : court et direct. Environ 20 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Alors, c’est toi le cinéphile qui traîne ton clébard en balade ? Me montre pas tes films préférés avant… ou faut commencer par une marche ? 😏🐕",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le cinéma et les balades avec un chien. Ton : joueur et un peu taquin. Environ 20 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "**\"Wow, un·e autre fan de dimanches de pluie avec un bon livre en main ! 🌧️📚 On partage les mêmes clichés parfaits, c’est encourageant… Quel est ton livre préféré sous la pluie ?\"**",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les livres et les dimanches de pluie. Ton : enthousiaste. Environ 20 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! T’es du genre à grimper avec un croissant ou juste un café serré ? 😄",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : chaleureux et curieux. Environ 14 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Tu aimes les petites salles de musique live aussi ? J’adorerais savoir quelles sont tes artistes/salles coup de cœur ! 🎶",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : chaleureux et curieux. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Allez, on commence par les bases : préféré, ton film de chien ou celui où t’as failli pleurer en caressant un golden sur le divan ? (Et non, je te laisse pas le champ libre avant un match de quizz ciné… ou une balade avec mon border collie diabolique.) 😏",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le cinéma et les balades avec un chien. Ton : joueur et un peu taquin. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut toi, je viens de voir qu’on partageait pas mal le même goût pour les livres et les dimanches de pluie… moi c’est souvent un bon roman et un thé qui font le combo parfait. T’as des coups de cœur à me partager ? 📚✨",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les livres et les dimanches de pluie. Ton : calme et sincère. Environ 40 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait une passion pour les balades à vélo le long du fleuve… Moi c’est souvent le chemin de la Pointe-aux-Prairies jusqu’à Montréal. T’as des parcours préférés ? 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le vélo le long du fleuve. Ton : calme et sincère. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut! J’ai cru reconnaître ton goût pour les troquets musicaux… T’es du genre à fuir à la première guitare désaccordée ou t’assumes le kitsch live?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : joueur et un peu taquin. Environ 20 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "**\"Salut toi ! 😊 Alors, on matchait sur deux passions communes là : l’escalade (quels spots tu préfères ici ? moi j’adore les falaises de Mont-Saint-Grégoire, magiques en automne !) et le café (un bon latte après une session, c’est la vie 😂). T’es du genre à grimper en style ou à te défoncer sur les voies dures ? Dis-moi tout, je suis super curieuse ! ☕🧗‍♀️\"**",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : enthousiaste. Environ 55 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "**\"Wouah, un·e autre amateur·se de dimanches de pluie et de livres sous une couverture ?! 📚☔ Mon top 3 du moment ? À toi de jouer… et dis-moi si t’as un auteur·e secret·e !\"**",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les livres et les dimanches de pluie. Ton : enthousiaste. Environ 28 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! 🎶 Matché avec une autre âme de petite salle, c’est déjà un bon début ! T’as un coup de cœur pour un·e artiste ou un lieu en particulier près de chez toi ?\" 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : enthousiaste. Environ 28 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait une passion pour les balades à vélo le long du fleuve… Tu vas où souvent ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le vélo le long du fleuve. Ton : court et direct. Environ 20 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu ton profil, ça fait longtemps que j’invite des gens à souper pour cuisiner en trop grande quantité. T’as des plats que tu kiffes spécialement faire ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux cuisiner pour des amis. Ton : chaleureux et curieux. Environ 20 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu ton profil cinéma/chien… Un film coup de cœur et ta balade préférée avec ton toutou ? 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le cinéma et les balades avec un chien. Ton : chaleureux et curieux. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "**\"Wow, un autre·e accro au café ET aux falaises, ça c’est rare ! T’es où la prochaine fois qu’on fait une session ?\"** 🧗‍♂️☕️",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : enthousiaste. Environ 14 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu ton match… T’es un joueur de société ou un joueur de mots ? (Les deux ?)\n\n*PS : J’ai un jeu nul à te proposer.*",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les jeux de société et les jeux de mots nuls. Ton : court et direct. Environ 20 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Wow, un match qui fait *plouf* comme un livre qui tombe dans un café un dimanche de pluie ! 📚☔️ Moi c’est [Prénom], et je suis *super* partante pour en discuter (ou pour échanger nos listes de lectures secrètes). Toi, c’est quoi ton dernier coup de cœur littéraire sous la couette ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les livres et les dimanches de pluie. Ton : enthousiaste. Environ 28 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut toi ! Alors… *match* parfait ou juste une coïncidence de l’algorithme qui a décidé qu’on était faits pour s’engueuler sur *Dobble* en hurlant *\"C’est pas moi qui ai mis mon pouce là !\"* ? 😄\nDis-moi : c’est quel ton jeu de mots nul préféré ? (Le mien est *\"Pourquoi les jeux de société me font-ils fuir ? Parce que j’ai peur des dés… et des réactions.\"*)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les jeux de société et les jeux de mots nuls. Ton : chaleureux et curieux. Environ 55 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu ta photo de rue à Montréal – j’adore l’ambiance ! Moi aussi, je traîne souvent avec mon appareil pour capturer des moments. T’as un coup de cœur pour un pays ou un style en particulier ? 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les voyages et la photo de rue. Ton : chaleureux et curieux. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Allez, j’parie que t’as une photo planquée de toi en mode explorateur·rice égaré·e dans un marché aux poissons du Vietnam… ou pire, en train de voler des crêpes en Belgique. 😏 Avoue : c’est pour ça que t’es ici.",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les voyages et la photo de rue. Ton : joueur et un peu taquin. Environ 40 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu que t’aimais la photo aussi, c’est toujours un bon point de départ pour une conversation… T’as un appareil préféré ou tu préfères capturer avec ton téléphone ? (J’ai un vieillissant Nikon qui me fait ma vie.)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les voyages et la photo de rue. Ton : calme et sincère. Environ 28 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! T’es souvent sur les berges du fleuve à ton vélo ? Moi je traîne là-bas presque tous les samedis, surtout près du Vieux-Port. J’ai même un spot secret avec une vue folle sur Montréal, si tu veux que je te guide un jour. 🚴‍♂️",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le vélo le long du fleuve. Ton : court et direct. Environ 55 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait la même passion pour les balades à vélo le long du fleuve… Ça me donne envie de discuter. Toi, c’est quoi tes coins préférés ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le vélo le long du fleuve. Ton : calme et sincère. Environ 20 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! Moi c’est Marie, j’ai vu ton profil et ton amour pour l’escalade ET le café, c’est une combo parfaite ! Tu grimpes où souvent ? J’ai un bon spot près de Mont-Royal à te montrer si ça te tente… 😊 ☕️🧗‍♀️",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : chaleureux et curieux. Environ 28 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait une passion pour les jeux de société… et les jeux de mots *pourris* ! Quel est ton meilleur coup de dés (ou de calembour) ? 😄",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les jeux de société et les jeux de mots nuls. Ton : chaleureux et curieux. Environ 20 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "*\"Allez, on tente le resto ou la rando ? (J’ai un pari stupide à gagner… ou perdre.)\"* 😏🥾",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la randonnée et les nouveaux restos. Ton : joueur et un peu taquin. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! T’as fait quel sentier récemment ? Parce que j’ai un resto test à te proposer ce week-end. 😏",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la randonnée et les nouveaux restos. Ton : court et direct. Environ 20 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! T’as fait quel sentier récent ? J’ai testé un nouveau resto pas loin de chez moi, tu connais *Le Comptoir* ? 😄",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la randonnée et les nouveaux restos. Ton : court et direct. Environ 28 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on aimait les films et les balades avec nos chiens, ça change un peu des clichés. T’as vu un bon film récemment ? Moi j’ai relu *La Haine* en versionExtended l’autre jour.",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le cinéma et les balades avec un chien. Ton : court et direct. Environ 28 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! Je viens de voir qu’on partage une passion pour les jardins et les marchés… C’est rare, ça ! T’as un coin vert préféré ou un producteur·se que tu kiffes en ce moment ? Moi je suis en train de planter des tomates cerises comme une folle ! 🌱✨",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : chaleureux et curieux. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! Tes photos font trop envie... T’as des plats ou des trucs que tu aimes *trop* cuisiner en groupe ? Moi je kiffe les soupes maison genre c’est la vie. 👀 (désolé j’ai mis un emoji malgré tout)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux cuisiner pour des amis. Ton : chaleureux et curieux. Environ 20 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut toi ! J'ai vu que t'avais l'air d'être une espèce de pro des marchés... ou alors t'es juste une fraude pour m'faire croire que les betteraves se plantent toutes seules. Dis-moi que t’as un truc à partager en matos de jardinage. 👀",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : joueur et un peu taquin. Environ 40 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "T’as déjà vu un show dans un sous-sol qui t’a convaincu que t’étais un peu trop vieux pour les grandes salles ? Moi oui et c’est ma honte. 😅",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : joueur et un peu taquin. Environ 14 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey ! T’as des bons spots de rando à suggérer ? Et pour les restos, t’es team cuisine locale ou découvertes ?\" 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la randonnée et les nouveaux restos. Ton : court et direct. Environ 20 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on avait tous les deux le vélo et le fleuve en commun – quelle belle balade ! Ça t’est déjà arrivé de rouler le long de la rivière ? Moi, j’adore les couchers de soleil sur l’eau. 🚴‍♂️🌅",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le vélo le long du fleuve. Ton : calme et sincère. Environ 28 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "J’ai vu que tu kiffes les marchés et les jardins – moi aussi ! T’as un coin de terre ou t’achètes tes légumes où ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : court et direct. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Hey, j’ai cru reconnaître ton style à vélo près des rapides hier… Tu connais des coins tranquilles pour rouler sans trop croiser les voitures ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le vélo le long du fleuve. Ton : calme et sincère. Environ 14 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! Moi c’est [Prénom], j’adore cuisiner pour des groupes d’amis – t’as déjà des plats ou des idées coup de cœur à partager ? 🍴✨",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux cuisiner pour des amis. Ton : chaleureux et curieux. Environ 20 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Alors, c’est toi mon futur partenaire de ciné ou mon chien va te sniffer les mollets ? 😏",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le cinéma et les balades avec un chien. Ton : joueur et un peu taquin. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait une passion pour les jardins et les marchés… T’as un coin de terre ou t’achètes plus souvent tes légumes là que dans ton frigo ? 😅\n\n*(J’ai gardé l’emoji pour l’aspect décontracté, mais si tu veux une version 100% sans, je peux ajuster : \"Salut ! J’ai vu qu’on aimait les mêmes trucs, toi c’est plus la terre ou les étals qui gagnent ?\")*",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : calme et sincère. Environ 20 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "*\"Alors, c’est toi l’as des légumes ou je rêve ? 😏 (Et tes tomates, elles sont aussi juteuses que tes p’tits secrets ?)\"*",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : joueur et un peu taquin. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu ton profil, j’adore l’ambiance de tes photos de rue… T’as des coins préférés pour chasser ces moments-là à Montréal ou ailleurs ? 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les voyages et la photo de rue. Ton : chaleureux et curieux. Environ 20 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! T’es du genre à tester les petits restos cachés ou juste les incontournables ? Moi, je suis partant pour les deux si c’est avec une bonne paire de pieds ! 🥾🍽️",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la randonnée et les nouveaux restos. Ton : court et direct. Environ 28 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Alors, c’est quoi ton pire jeu de mots ? Le mien : *« Pourquoi les jeux de société sont nuls ? Parce qu’on y joue *à la table*… et pas *sur les genoux* ! »*\n(PS : Si tu préfères *Dixit* à *Taboo*, on va avoir des problèmes.)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les jeux de société et les jeux de mots nuls. Ton : joueur et un peu taquin. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait l’amour pour l’escalade et le café, ça fait deux bonnes raisons de se parler ! Tu escalades souvent ou c’est plus pour le week-end ? Moi t’es plus café filtre ou latte ? 😅 (désolé, un emoji a glissé)",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : enthousiaste. Environ 14 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "*Wow, on est deux à aimer les dimanches de pluie *et* les livres… T’es pas en train de me dire que t’as un cachette à romans sous ton oreiller, là ?*\" 😏📚☔",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les livres et les dimanches de pluie. Ton : joueur et un peu taquin. Environ 14 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait la passion des marchés et du jardinage… Tu as un coin secret dans ton jardin ou un marché préféré ici ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : chaleureux et curieux. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "T’es du genre à planter des tomates ou des fleurs ? Moi j’adore les deux et les marchés du dimanche !",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le jardinage et les marchés. Ton : court et direct. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’suis accro aux petites salles, t’as des coups en tête ? 🎸",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : court et direct. Environ 14 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! T’es une autre passionné·e de randonnée, ça fait trop plaisir ! Tu as un sentier préféré près de toi ? Et sinon, tu recommandes quel resto trop cool à essayer récemment ? 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la randonnée et les nouveaux restos. Ton : chaleureux et curieux. Environ 28 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! Matché grâce aux deux choses les plus importantes : escalade et bon café. T’es où aujourd’hui ? Je prends un latte sur la terrasse de l’Épicerie. 🧗‍♂️☕",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : court et direct. Environ 20 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! T’as vu, on a les mêmes goûts bizarrement – la photo de rue, c’est presque une obsession, hé ? T’as un endroit où t’as pris une photo qui t’a marquée dernièrement, ou c’est toujours la course entre les cadrages et les filtres qui t’attend ? Moi j’ai une collection de clichés à Montréal que j’adore, mais je cherche toujours de nouveaux spots… T’es où présentement ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les voyages et la photo de rue. Ton : chaleureux et curieux. Environ 55 mots. Écris-le comme une vraie personne qui textote, décontracté, sans emoji, une petite imperfection. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu ton amour pour les livres et les dimanches pluvieux… On est faits pour se parler sous la couette avec un bon roman !\" 📚☔️",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les livres et les dimanches de pluie. Ton : enthousiaste. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "*\"Alors, c’est officiel : t’as le même kiff pour les dimanches de pluie et les livres qui sentent le café froid. Mais avoue… t’es plutôt équipe couverture molletonnée sous un plaid *géant* ou chandail troué façon ‘j’ai trop lu *Dracula*’ ? (Je vote pour les deux. Avec du chocolat chaud. *Évidemment.*)\"*",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux les livres et les dimanches de pluie. Ton : joueur et un peu taquin. Environ 55 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut ! J’ai vu qu’on partageait une passion pour l’escalade… et le café, c’est un peu notre carburant à part. T’es du genre à blocs ou à grande voie ? Moi, je suis en train de tester un nouveau spot près de chez moi, avec une vue à couper le souffle. 😊",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux l’escalade et le café. Ton : calme et sincère. Environ 40 mots. Fais-le sonner humain et spontané, pas poli. Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "*\"Salut ! J’ai vu qu’on aimait les mêmes films (et les balades avec les chiens, *évidemment*). Un truc en commun de plus que les autres matches ! Tu es où en ce moment ?\"* 🐕🎬",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux le cinéma et les balades avec un chien. Ton : court et direct. Environ 40 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  },
+  {
+   "source": "orazaka-chat (do-inference default model)",
+   "text": "Salut, j’adore les petits bars à musique – t’en connais des bons à Montréal ?",
+   "prompt": "Écris le premier message d’une personne à quelqu’un avec qui elle vient de matcher sur une appli de rencontre. Ils aiment tous les deux la musique live et les petites salles. Ton : court et direct. Environ 14 mots.  Réponds uniquement par le message, sans guillemets, en français (québécois, avec « tu »)."
+  }
+ ]
+}
