@@ -1,0 +1,14 @@
+pack:
+  label: Profile photo check
+  tagline: Are these photos one real adult's profile?
+  description: >-
+    Checks a set of profile photos: enough of them, enough with a face, the same person from one face photo to the
+    next, nothing written over the picture, no screenshots. It answers in codes, identifies no one and recognises no
+    celebrity.
+studios:
+  profile-photo-check:
+    label: Profile photo check
+    tagline: Faces present, the same person throughout, nothing written on the photo.
+    description: >-
+      Finds the faces in each photo, asks a vision model three yes/no questions about it, and gives a verdict made of
+      codes. The face vectors live for one job and are never kept; a model answer that cannot be read blocks nothing.

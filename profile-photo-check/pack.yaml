@@ -1,0 +1,100 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# profile-photo-check — does a set of profile photos look like one real adult's profile?
+#
+# Written for Yasakia (a dating product where one rule is « real people »), usable by any product that wants it.
+# The pack states how many photos and how many faces it was asked for — a product's numbers are its own inputs, never
+# this pack's — and answers in CODES (the product words them in its language and register).
+#
+# Why SENSITIVE: a photo of a face is as personal as an input gets, and the check compares faces. So the pack receives
+# the controls of ADR-051 — data class, shortened retention (30 days at most), append-only audit, scope guard — and adds
+# its own promise: the face vectors exist for one job, in memory, and are never returned, logged or stored.
+#
+# What it does not do, said where it can be read: it does not identify anyone (no celebrity recognition, no search of
+# any face against anything), it does not estimate an age (a vision model is asked a yes/no question about a minor, and
+# its answer is only ever one reason to look again), and it is wrong sometimes — see the README.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: profile-photo-check
+version: 1.0.0
+tier: WORKER
+distribution: CLOUD
+regulatoryClass: SENSITIVE
+
+scopeGuard:
+  refusedTerms:
+    - reconnaître cette personne
+    - identifier cette personne
+    - qui est cette personne
+    - recognize this person
+    - identify this person
+    - who is this person
+    - célébrité
+    - celebrity
+  refusal: >-
+    Je vérifie qu'un ensemble de photos de profil est exploitable : des visages présents, la même personne d'une photo à
+    l'autre, rien qui cache le visage ni coordonnées incrustées. Je n'identifie personne et je ne reconnais aucune
+    célébrité.
+
+requires:
+  capabilities:
+    - key: orazaka.photo.profile.inspect
+      routingKey: job.photo.inspect
+      handlerKey: photo.inspect
+      billableCapability: IMAGE
+      billableUnit: CALL
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          photosBase64:
+            type: array
+            minItems: 1
+            maxItems: 12
+            items: { type: string, maxLength: 1300000 }
+            description: "Les photos, en JPEG de 512 px environ, encodées en base64. Rien n'en est conservé par le worker."
+        required: [photosBase64]
+      outputSchema:
+        type: object
+        properties:
+          photos: { type: array, items: { type: object }, description: "Par photo : son rang, sa nature (FACE, GROUP, NO_FACE) et le nombre de visages." }
+          identity: { type: object, description: "CONSISTENT, MISMATCH ou NOT_COMPARABLE, et les rangs des photos à écarter." }
+          factsJson: { type: string, description: "Les deux champs ci-dessus en JSON : un pas de blueprint adresse des CHAMPS, pas une valeur entière." }
+        required: [photos, identity, factsJson]
+    - key: orazaka.photo.profile.assess
+      routingKey: job.photo.assess
+      handlerKey: photo.assess
+      billableCapability: IMAGE
+      billableUnit: CALL
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          facts: { type: string, description: "La sortie JSON de l'étape d'inspection." }
+          looks: { type: array, description: "Les réponses du modèle de vision, dans l'ordre des photos." }
+          minPhotos: { type: integer, minimum: 1, maximum: 12 }
+          maxPhotos: { type: integer, minimum: 1, maximum: 12 }
+          minFacePhotos: { type: integer, minimum: 0, maximum: 12 }
+        required: [facts, minPhotos, maxPhotos, minFacePhotos]
+      outputSchema:
+        type: object
+        properties:
+          report: { type: object, description: "Le verdict : photos, constats, identité, comptes, blockers (des codes), limites." }
+          reportJson: { type: string }
+          passes: { type: boolean }
+        required: [report, reportJson, passes]
+  workers:
+    - name: orazaka-worker-photo
+      bindings:
+        - "job.photo.*"
+      concurrency: 1
+
+studios:
+  - key: profile-photo-check
+    profession: general
+    iconKey: vision
+    pricing: FREE
+    entitlementKey: studio.profile-photo-check
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 40
+    blueprint: studios/profile-photo-check/blueprint.json

@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 40,
+  "changelog": "1.0.0 — inspection des visages (déterministe, worker), lecture de chaque photo par un modèle de vision (une consigne stricte, réponse JSON), puis verdict en codes. Le modèle ne décide de rien seul : une réponse illisible vaut « non vérifié » et ne bloque pas.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "profile-photo-check",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "faces",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.photo.profile.inspect",
+        "dependsOn": [],
+        "inputs": { "photosBase64": "{{inputs.photosBase64}}" },
+        "out": "faces",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "look",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.vision",
+        "dependsOn": [],
+        "forEach": "{{inputs.photos}}",
+        "maxParallel": 2,
+        "inputs": {
+          "assetId": "{{item}}",
+          "prompt": "You check one profile photo for a dating app. Answer with ONE JSON object and nothing else, with exactly these three boolean keys: \"appears_under_18\" (true only if the person in the photo clearly looks like a child or a young teenager), \"text_or_contact_overlay\" (true only if the image carries written text, a phone number, a username, a QR code or a watermark added on top of the picture), \"screenshot_or_photo_of_screen\" (true only if this is a screenshot or a photo of a screen). Do not describe the photo. Do not name anyone. If unsure, answer false."
+        },
+        "out": "looks",
+        "onError": "SKIP",
+        "timeout": "PT5M"
+      },
+      {
+        "id": "assess",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.photo.profile.assess",
+        "dependsOn": ["faces", "look"],
+        "inputs": {
+          "facts": "{{steps.faces.factsJson}}",
+          "looks": "{{steps.looks}}",
+          "minPhotos": "{{inputs.minPhotos:4}}",
+          "maxPhotos": "{{inputs.maxPhotos:6}}",
+          "minFacePhotos": "{{inputs.minFacePhotos:2}}"
+        },
+        "out": "assessment",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      }
+    ],
+    "outputs": [
+      { "key": "report", "label": "Verdict, en codes", "from": "{{steps.assessment.reportJson}}", "type": "JSON" },
+      { "key": "passes", "label": "L'ensemble passe", "from": "{{steps.assessment.passes}}", "type": "TEXT" }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["photos", "photosBase64"],
+    "properties": {
+      "photos": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 12,
+        "items": { "type": "string", "format": "asset-id", "contentMediaType": "image/*", "minLength": 8, "maxLength": 120 },
+        "title": "Les photos (fichiers envoyés)",
+        "description": "Les identifiants des photos envoyées, pour la lecture par le modèle de vision."
+      },
+      "photosBase64": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 12,
+        "items": { "type": "string", "maxLength": 1300000 },
+        "title": "Les mêmes photos, en base64",
+        "description": "Les mêmes photos dans le même ordre, en JPEG d'environ 512 px, pour la détection des visages."
+      },
+      "minPhotos": { "type": "integer", "minimum": 1, "maximum": 12, "default": 4, "title": "Photos au moins" },
+      "maxPhotos": { "type": "integer", "minimum": 1, "maximum": 12, "default": 6, "title": "Photos au plus" },
+      "minFacePhotos": { "type": "integer", "minimum": 0, "maximum": 12, "default": 2, "title": "Photos de visage au moins" }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}
