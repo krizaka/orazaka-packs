@@ -44,6 +44,11 @@ document-validation rulesets): a new file is a new version, never an edit.
 
 ## Privacy, said plainly
 
+* **Comparing faces is biometric processing** (Québec Law 25, GDPR art. 9). The caller decides with `compareFaces`: `false` — the
+  product has not the person's explicit, separate consent, or has not had the processing reviewed — and faces are only
+  *counted*: no vector is even computed and the identity is `NOT_COMPARED`. The consent, its wording and its withdrawal are the
+  product's to hold; the pack only refuses to compare when it is told not to.
+
 * A face vector is a biometric template. Here it exists **for one job, in memory**, to answer « could these photos be of
   different people? », and is dropped when the job ends. It is never returned, logged, stored or sent anywhere — the
   report holds counts and codes, and a test fails if a vector-shaped value appears in an output.

@@ -89,6 +89,21 @@ def test_inspect_returns_counts_and_codes_never_a_vector_or_a_box():
     assert set(facts) == {"photos", "identity"} and set(facts["photos"][0]) == {"index", "kind", "faceCount"}
 
 
+def test_without_the_consent_faces_are_counted_and_no_vector_is_ever_computed():
+    class Spy(FakeEngine):
+        embedded = 0
+
+        def embed(self, image, f):
+            Spy.embedded += 1
+            return super().embed(image, f)
+
+    engine = Spy({"a": ([face(0.5)], [1.0, 0.0]), "b": ([face(0.5)], [0.0, 1.0])})
+    facts = faces.inspect_photos([b64("a"), b64("b")], engine, RULESET, compare=False)
+    assert Spy.embedded == 0
+    assert [p["kind"] for p in facts["photos"]] == ["FACE", "FACE"]
+    assert facts["identity"] == {"status": "NOT_COMPARED", "mismatch": [], "compared": 0}
+
+
 def test_unreadable_input_is_a_named_error():
     for bad in ["", "not base64!!", None, 12, base64.b64encode(b"x" * (faces.MAX_IMAGE_BYTES + 1)).decode()]:
         try:

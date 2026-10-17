@@ -135,8 +135,13 @@ def decode_base64(encoded: object) -> bytes:
     return data
 
 
-def inspect_photos(photos_base64: Sequence[object], engine: FaceEngine, ruleset: dict) -> dict:
-    """The facts of each photo and the identity verdict — counts and codes only."""
+def inspect_photos(photos_base64: Sequence[object], engine: FaceEngine, ruleset: dict, compare: bool = True) -> dict:
+    """The facts of each photo and the identity verdict — counts and codes only.
+
+    ``compare`` is the caller's: comparing faces with each other is biometric processing, so a product that has not the
+    person's explicit consent (or has not had the processing reviewed) passes False — faces are then only *counted*, no face
+    vector is computed at all, and the identity is ``NOT_COMPARED``.
+    """
     detector, recognizer = ruleset["detector"], ruleset["recognizer"]
     facts: list[PhotoFacts] = []
     vectors: dict[int, Sequence[float]] = {}
@@ -146,9 +151,9 @@ def inspect_photos(photos_base64: Sequence[object], engine: FaceEngine, ruleset:
         kind, subject = classify(faces, detector)
         counted = sum(1 for f in faces if f.score >= detector["scoreThreshold"] and f.height_ratio >= detector["minFaceHeightRatio"])
         facts.append(PhotoFacts(index=index, kind=kind, face_count=counted))
-        if subject is not None:
+        if subject is not None and compare:
             vectors[index] = engine.embed(image, subject)
-    verdict = identity(vectors, recognizer)
+    verdict = identity(vectors, recognizer) if compare else {"status": "NOT_COMPARED", "mismatch": [], "compared": 0}
     vectors.clear()  # the templates end here
     return {
         "photos": [{"index": f.index, "kind": f.kind, "faceCount": f.face_count} for f in facts],

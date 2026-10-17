@@ -72,9 +72,15 @@ def _inspect(payload: dict, engine=None) -> dict:
         raise InvalidJobPayload("'photosBase64' must be a non-empty list")
     if len(photos) > MAX_PHOTOS_PER_JOB:
         raise InvalidJobPayload(f"at most {MAX_PHOTOS_PER_JOB} photos per check")
+    # A blueprint renders a lone boolean placeholder as text: "true" / "false" are read as the booleans they stand for.
+    compare = payload.get("compareFaces", True)
+    if isinstance(compare, str) and compare.strip().lower() in ("true", "false"):
+        compare = compare.strip().lower() == "true"
+    if not isinstance(compare, bool):
+        raise InvalidJobPayload("'compareFaces' must be true or false")
     ruleset = rules.load_ruleset()
     try:
-        facts = faces.inspect_photos(photos, engine or _engine(ruleset), ruleset)
+        facts = faces.inspect_photos(photos, engine or _engine(ruleset), ruleset, compare)
     except faces.UnreadableImage as bad:
         raise InvalidJobPayload(str(bad)) from bad
     # `factsJson` exists because a blueprint addresses a step's FIELDS, not its whole output as data (ADR-052 §6).

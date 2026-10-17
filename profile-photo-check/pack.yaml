@@ -52,12 +52,13 @@ requires:
             maxItems: 12
             items: { type: string, maxLength: 1300000 }
             description: "Les photos, en JPEG de 512 px environ, encodées en base64. Rien n'en est conservé par le worker."
+          compareFaces: { type: boolean, default: true, description: "Comparer les visages entre eux (traitement biométrique : à n'activer qu'avec le consentement explicite de la personne). Faux : les visages sont seulement comptés, aucun vecteur n'est calculé." }
         required: [photosBase64]
       outputSchema:
         type: object
         properties:
           photos: { type: array, items: { type: object }, description: "Par photo : son rang, sa nature (FACE, GROUP, NO_FACE) et le nombre de visages." }
-          identity: { type: object, description: "CONSISTENT, MISMATCH ou NOT_COMPARABLE, et les rangs des photos à écarter." }
+          identity: { type: object, description: "CONSISTENT, MISMATCH, NOT_COMPARABLE ou NOT_COMPARED (comparaison non demandée), et les rangs des photos à écarter." }
           factsJson: { type: string, description: "Les deux champs ci-dessus en JSON : un pas de blueprint adresse des CHAMPS, pas une valeur entière." }
         required: [photos, identity, factsJson]
     - key: orazaka.photo.profile.assess

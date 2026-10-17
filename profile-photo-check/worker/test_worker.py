@@ -41,6 +41,19 @@ def test_inspect_answers_counts_and_a_json_copy_for_the_next_step():
     assert json.loads(out["factsJson"]) == {"photos": out["photos"], "identity": out["identity"]}
 
 
+def test_compare_faces_false_or_the_text_false_means_no_comparison():
+    for flag in (False, "false", "False"):
+        out = worker._inspect({"photosBase64": photos("face-a", "face-b"), "compareFaces": flag}, engine=Engine())
+        assert out["identity"]["status"] == "NOT_COMPARED", flag
+    assert worker._inspect({"photosBase64": photos("face-a", "face-b")}, engine=Engine())["identity"]["status"] == "MISMATCH"
+    assert worker._inspect({"photosBase64": photos("face-a", "face-b"), "compareFaces": "true"}, engine=Engine())["identity"]["status"] == "MISMATCH"
+    try:
+        worker._inspect({"photosBase64": photos("face-a"), "compareFaces": "maybe"}, engine=Engine())
+    except worker.InvalidJobPayload:
+        return
+    raise AssertionError("a flag that is not a boolean must be refused")
+
+
 def test_inspect_refuses_an_unusable_payload_by_name():
     for payload in [{}, {"photosBase64": []}, {"photosBase64": "x"}, {"photosBase64": ["!!"]}, {"photosBase64": ["QQ=="] * 13}]:
         try:
