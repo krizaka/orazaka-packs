@@ -44,6 +44,18 @@ Two numbers, and they answer different questions:
 
 Both appear in every report.
 
+## Québec lease — what the ruleset covers, and what it does not (revision 2)
+
+`QC-LEASE-004` catches a forbidden deposit however the lease words it — « dépôt de garantie / de sécurité / pour
+dommages », « équivalant à un mois de loyer », a percentage, « deux mois de loyer d'avance », a surety in cash, refundable
+key fees — with or without an amount (C.c.Q., art. 1904 al. 1). Negations pass (« aucun dépôt », « néant », « ne peut
+exiger de dépôt »). Every wording is a fixture (ADR-072). `QC-LEASE-009` flags a clause that waives in advance the notice of,
+or the tenant's right to refuse, a rent increase (art. 1942, 1943, 1945 ; 1893).
+
+Not encoded, on purpose: the notice periods of art. 1942 and the content of the mandatory form's section F — their text could
+not be checked at the source, and a compliance rule written from memory is worse than none. They wait for a lawyer's review
+(`reviewStatus: TO_REVIEW_BY_LAWYER`).
+
 ## Adding a jurisdiction
 
 Add `rulesets/<id>/<effectiveFrom>.json` and its code to the blueprint's `jurisdiction` enum. No
