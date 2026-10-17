@@ -1,0 +1,26 @@
+{
+  "$comment": "What the crisis guard must catch in a spoken turn, and what it must leave alone. Run by tests/wellbeing-listening.test.mjs with the guard's own folding (accents and case dropped, then the term looked for inside the turn). These are invented sentences, never a person's.",
+  "mustTrigger": [
+    { "locale": "fr-CA", "text": "Parfois j'ai envie de mourir" },
+    { "locale": "fr-CA", "text": "Je ne veux plus vivre comme ça" },
+    { "locale": "fr-FR", "text": "J’en peux plus de vivre, honnêtement" },
+    { "locale": "fr-FR", "text": "Je pense à m’enlever la vie" },
+    { "locale": "fr-FR", "text": "Je vais me pendre" },
+    { "locale": "fr-CA", "text": "J'AI PLUS LA FORCE DE VIVRE" },
+    { "locale": "fr-CA", "text": "Je pense à me suicider ce soir" },
+    { "locale": "fr-CA", "text": "J’ai décidé d’en finir" },
+    { "locale": "en", "text": "Sometimes I want to die" },
+    { "locale": "en", "text": "I keep thinking I should kill myself" },
+    { "locale": "en", "text": "I don’t want to be alive anymore" },
+    { "locale": "en", "text": "Everyone would be BETTER OFF DEAD without me" },
+    { "locale": "en", "text": "I want to hurt myself" }
+  ],
+  "mustNotTrigger": [
+    { "locale": "fr-CA", "text": "Cette semaine a été lourde au travail, et ce soir je me sens fatiguée avec les enfants." },
+    { "locale": "fr-CA", "text": "Mon patron m'a fait mourir de rire avec sa blague" },
+    { "locale": "fr-FR", "text": "J'ai besoin de prendre du recul sur ma situation" },
+    { "locale": "en", "text": "Work was heavy this week and I am tired tonight" },
+    { "locale": "en", "text": "This heat is killing me, I need a coffee" },
+    { "locale": "en", "text": "I want to dye my hair blue" }
+  ]
+}
