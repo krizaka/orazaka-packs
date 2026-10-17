@@ -1,0 +1,12 @@
+pack:
+  label: Authenticité des messages
+  tagline: Ce message ressemble-t-il à un texte écrit par une personne ? Un signal, jamais un verdict.
+  description: >-
+    Lit un message avec un petit classifieur ouvert et répond un niveau grossier — jamais un score. Il peut se tromper, surtout sur
+    les textes courts et sur une écriture non native ou en français. Il n'écrit aucun message à la place de quiconque.
+studios:
+  message-authenticity:
+    label: Authenticité des messages
+    tagline: Un signal grossier sur un texte, jamais un verdict.
+    description: >-
+      Une seule étape, aucun modèle génératif. Le texte est lu puis oublié ; la réponse est bas, moyen, haut ou indisponible.

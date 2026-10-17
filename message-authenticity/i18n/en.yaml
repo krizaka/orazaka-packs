@@ -1,0 +1,12 @@
+pack:
+  label: Message authenticity
+  tagline: Does this message read like a person wrote it? A signal, never a verdict.
+  description: >-
+    Reads one message with a small open classifier and answers a coarse level — never a score. It can be wrong, above all on
+    short texts and on non-native or French writing. It never writes a message for anyone.
+studios:
+  message-authenticity:
+    label: Message authenticity
+    tagline: A coarse signal on a text, never a verdict.
+    description: >-
+      One step, no generative model. The text is read and forgotten; the answer is low, mid, high or unavailable.

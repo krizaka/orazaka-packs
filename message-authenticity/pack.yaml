@@ -1,0 +1,71 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# message-authenticity — does this message read like a person wrote it? A SIGNAL, never a verdict.
+#
+# Written for a dating product whose rule is « real people » (the pack names no product). It reads ONE message's text with a small
+# open classifier and answers a coarse level (LOW · MID · HIGH · UNAVAILABLE) — never a score. The product combines it with what it
+# alone can measure (how the message arrived: typing time, paste) and shows a signal with a tooltip saying it can be wrong.
+#
+# It never WRITES: it judges a text it is handed, and forgets it. SENSITIVE: a private message is as personal as an input gets, so
+# the pack receives the controls of ADR-051 (data class, 30-day retention at most, append-only audit, scope guard).
+#
+# AI-text detectors are unreliable — above all on short texts and on non-native or French writing. The thresholds come from a small
+# FR/EN calibration (calibration/) chosen to keep false « HIGH » on human texts at zero in that set, and at that price the
+# classifier recognises only a minority of generated texts: see the README.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: message-authenticity
+version: 1.0.0
+tier: WORKER
+distribution: CLOUD
+regulatoryClass: SENSITIVE
+
+scopeGuard:
+  refusedTerms:
+    - écris à ma place
+    - rédige mon message
+    - réponds à ma place
+    - write it for me
+    - write my message
+    - reply for me
+    - draft my reply
+  refusal: >-
+    Je lis un message pour dire s'il ressemble à un texte écrit par une personne, et seulement cela, sous forme d'un signal qui peut
+    se tromper. Je n'écris aucun message à la place de quiconque.
+
+requires:
+  capabilities:
+    - key: orazaka.message.authenticity.read
+      routingKey: job.authenticity.read
+      handlerKey: authenticity.read
+      billableCapability: CHAT
+      billableUnit: CALL
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          text: { type: string, minLength: 1, maxLength: 5000, description: "Le message à lire. Rien n'en est conservé par le worker." }
+          locale: { type: string, enum: [en, fr], description: "La langue du compte (un indice : le moteur lit la langue du texte)." }
+        required: [text]
+      outputSchema:
+        type: object
+        properties:
+          report: { type: object, description: "Le niveau grossier (detector), la langue lue, la version des règles et les limites. Jamais un score." }
+          reportJson: { type: string }
+          detector: { type: string, enum: [LOW, MID, HIGH, UNAVAILABLE] }
+        required: [report, reportJson, detector]
+  workers:
+    - name: orazaka-worker-authenticity
+      bindings:
+        - "job.authenticity.*"
+      concurrency: 1
+
+studios:
+  - key: message-authenticity
+    profession: general
+    iconKey: shield-check
+    pricing: FREE
+    entitlementKey: studio.message-authenticity
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 50
+    blueprint: studios/message-authenticity/blueprint.json

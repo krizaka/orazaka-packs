@@ -1,0 +1,11 @@
+# Bindings, never capabilities: the worker drains a routing key (ADR-037 §5).
+name: orazaka-worker-authenticity
+family: authenticity
+bindings:
+  - "job.authenticity.*"
+version: "1.0.0"
+concurrency: 1
+
+run:
+  python: "../.venv/bin/python3"
+  args: ["authenticity_worker.py"]

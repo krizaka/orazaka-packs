@@ -1,0 +1,806 @@
+{
+ "en": [
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "0a4a8b52ea8713bd89fb0ec36661ccc6a3bf63fa10d529ad13bf0fb8d45063dc",
+   "words": 24
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "49774369e417bac2e4033a1be3f1c296d9d7f116168ffdb7ec229befc9d6b257",
+   "words": 29
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "46b5b41b1451c573c3d9d131821f2375c1bb1c6c66514857dd72e95723275989",
+   "words": 56
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "d352e8b153d03c9786214891cbed043ff8afd8778eb42d21a559aad6f95edeba",
+   "words": 40
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "7050a4052a3f49dc07673cb395216b6ac8c9efd38bd7faf5576d508340fa3ae2",
+   "words": 32
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "21e4ac5555bd1df456f7a3283ecc6a8fb8ff0270406efeaed5d219e50f4833a9",
+   "words": 44
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "fc419680916eb4f73934bfdf2708154ffacdc0c5e1c50accc9d0ab9801f5089c",
+   "words": 39
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "ae483e510263865419273780fd3a138e004f529dff1f5cabccaef2b557b30a61",
+   "words": 22
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "3a4a7637f1b8cc9691c293e7e3d6bbaa4e366ae80297ffec38e1da24b0fdb289",
+   "words": 27
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "aee96b3bf5c64e78a2914d34ee7310b15a6784ef1a9688430420e9c4be1f6e47",
+   "words": 34
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "bbc59e5a591da897eeaf5de55746d3aeb703f0fc3c8ddcd139dc2afaaf3fa2c6",
+   "words": 31
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "b3fcc5778730db3075ac1e3e48f09e693ac2134fc471243c52812a3e44608027",
+   "words": 25
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "3154021d656e5f68cb670df1c875f5c9c9bebc32d9083f1f941bffdf5edb10bb",
+   "words": 24
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "f1411d52437344228c7d764b8c6c6714a41d7c5df34843bb39bb3f4ee24248fc",
+   "words": 49
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "875480c6f7e786300654825c37f9c73c85f72369add3e2cef0e64561dbc0f9db",
+   "words": 57
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "35d4ff20cf4cfdb23d60f02819497eb5c9cba9a7e50024d04703432c873646a8",
+   "words": 37
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "77ba08692d03334c5c4ada74d9c6b043dbaa9e36e4084706a149490805148cd3",
+   "words": 32
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "0668c9de4402332c2de89b805e40b01120012edc6fcea644e3b5884b27aa185d",
+   "words": 41
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "3c63f105067eeae90d69e453c59dbe214651ce162840b4c7158a7f32ca2a0497",
+   "words": 42
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "90511cdb070941b1a0439f3ffc59b6148231d1aa1fa211ebeeec3570e8402be4",
+   "words": 32
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "e8e776a4c33e9ef77dee8bf52dad4124d5604b0ea2f6184420fe32b05dca459b",
+   "words": 24
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "471624ac3214691fb718f0d3a093beab538a65d9b31504a6b849c76c70423477",
+   "words": 18
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "3cd3ad8008c2e4ae5621f3153e367c54470a01525098f8359bb1a2ccb516b20e",
+   "words": 21
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "bd237e6849423110478051f01ab0e82cc9881bfbd650f6e8c0aabfa9e831764b",
+   "words": 53
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "18c00db64c6f160a583fb731043a94fbfc5e2cb1a0c7b556eea98c96e068e052",
+   "words": 46
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "df5b3637ee97f94c212384125108628a04b56032464ca6384f2c0f81dc270aad",
+   "words": 15
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "bce285e02cc05c6893acda8154a67897e54b0ce792190492574314d6c24cd827",
+   "words": 46
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "4fce98e3808edcf3556189ebb1fc274c4eb7debc2e8d2d1af97e0d79a0dbf93f",
+   "words": 37
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "6bf985a79160cc0325500495692071a3fb3b5faf37ea80fc358899de263ccf44",
+   "words": 22
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "b89be3ffa50ff9e7e073df3010c2a5dd5c747fe2e44deae891a05082fb705603",
+   "words": 15
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "d7cf58ff1a286cfbaf9879c22402975d352a4f3d033065daddfd236f7edd1fcc",
+   "words": 50
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "3c313534dcdc8e28ada96bb42c86ae43bf262794e91ed1da95a8d6dcd0de8043",
+   "words": 36
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "7d8f48b6106f900bb9d3bdb1359515ca246eb3dd3c5dfde302b45154c697ff76",
+   "words": 50
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "0747ef857f50f583e0953d989cb018a989f8ec722dc6afe9401ccd9900a17b2e",
+   "words": 41
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "95b264373b1fabb1bc21a6c49cb1c57b358d6a98b2c5ce3da3b1604010fe9e85",
+   "words": 18
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "5147b8ab80e2dc75d98927c108adc5d0c032dfb56e0f9bbf1caa9a22e0e1bf6e",
+   "words": 30
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "03e4da8561924df583dfc88726b6475ba6d62948968163753b73c83b0d6ca80c",
+   "words": 30
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "5d1468cbcfef0d32e86a84b8df79e450156a747d97bf03e80142e38e8bda96c6",
+   "words": 28
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "9072214e72f035c78335730e086c9a6df0ebe38214e963108830d56f8748749c",
+   "words": 47
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "08b320cc855ed148f1103afbba0e95da0caf1614d2fbd45e9be61d223fc84db5",
+   "words": 41
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "591842723ef557a608add76471f54b43f8dbc545f78b6cea11f7379936bff02e",
+   "words": 36
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "7d72c56ca1f5c0d7bbfe218ce255aa48b4e2ab1e5424fc70ebab3c719feff9e2",
+   "words": 23
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "ed608f032a41951a3798a0523da28d036faeb81b2caa7196c6285d43e9fb9bd3",
+   "words": 34
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "82f37ee2893284fedc4acb1c959a5405d3627f8256f1fb1d06a51da0a6d8d145",
+   "words": 29
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "f8cf87ec0db0e766df02de38dfae3f01ceef8b07aa9a7fa045b34d560e4c6697",
+   "words": 33
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "528e27e8e17c14596e8752672f1f06c9064d9d60bdb15d3cec999f94cbdbddb0",
+   "words": 33
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "d24b4df695b60d51a407aa67b78617cfce9ff090c483e18d19d6988e62b58247",
+   "words": 36
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "30eb22347f2cbb71e70aaa292fc9ce49bfd789853e39b8255e5dabf034cba8ce",
+   "words": 20
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "ffa2672f4048deeefab6c457f9f5a0a768f2f6c2205d517c0dd3723456894f34",
+   "words": 37
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "c3a766901a83a51afa128a7ae1c0181434f0e821ee12ab9bb7cf4f8ac80ee820",
+   "words": 45
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "c145fa039eb34fef643f842386a2cd1dd559f71dfcaeab73c66737c7bd837be0",
+   "words": 50
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "6679659d57a9948672d95aa186f24b79829aef92046794b9cc5890e8a7551eaa",
+   "words": 30
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "6f6f3a6f2615f2fa33fa10dc991613a8f9b7895b863e3c5655be87509f663907",
+   "words": 52
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "b19217e638747107fc483d4049866e7b838c675f1acd88eb919dc81a31bb310f",
+   "words": 29
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "94345dbc03013a7b64d3b49d00ecf58e121635ef1ec056aba61a45e54499afea",
+   "words": 28
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "2dfe507b12cdd90eee5c25e5dab265a9d9eb4ebfd5883f7bf3d03ae67b7fc351",
+   "words": 57
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "f5fb7be17fd76545588cd0966fc37382f3864f2f494f8e265cec89e64c52d39c",
+   "words": 58
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "987f6efa00f97ed6bcd35ff28040146a84337e52099fd4957e224cd368a83750",
+   "words": 25
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "3673bb107cecb437ea121c641c09687acd17b6f39fe0f8ed0e0bdd496de4736e",
+   "words": 54
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "5726dcba4fe6c7819dbc924c6ff8707d5cb9447ecf822ce92832643526e898ea",
+   "words": 39
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "a66568df352f084000345be094361a3f9727be7934bbece1b17806e7f349acab",
+   "words": 31
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "6aa459232079d01be4218bd26f47ff9150c43ad481b6d93e1d05b03dc215a228",
+   "words": 51
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "8609aba4e3e39fd308e7703edddb4055a1b4c52d0a80301abc65f5d8eea99f7a",
+   "words": 19
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "cf0b6a5f2e441e63cbe750c456f879798a9dfebe65965f7df680a4561537129f",
+   "words": 57
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "78f415155e64e0786c35778f0d873a33981f0ab40643b7bc74d0c309946313e9",
+   "words": 37
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "129c1b6999b1ec6385eeb6485f8421b52b1cb81571a9b750ed6f224a855a23b9",
+   "words": 31
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "9a14472e3688d05b9040defbfce6ad1163b2acb120ff2f8e2bf150c5a7420498",
+   "words": 24
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "613213cfc5d0f91fbb9c36b7b5de5354b4d029f2266c3982afe28cee398fddeb",
+   "words": 55
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "317ac747bb80e5e4865f20935f5a0dc5f6ac14bdf766cdb2bb832cc5604e3cee",
+   "words": 19
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "60a26d604e7aa20f911cb07f15437666d047e01afe47d7d8d0c6768eea9c6cd4",
+   "words": 17
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "d818cbd00c9f0add4dd0f4dcfaf9a56de0fea75adfdad36568f1caa1d41fa539",
+   "words": 28
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "2eb213728f1d9537ffdd7e214c02e5e7d946b47537a847768c42a1ec0b3dfd83",
+   "words": 32
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "5d684b1466ccc40e9b9d684b74fc663e27cbce68bf705a456c1867eb9e7fc211",
+   "words": 26
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "db3e9bb04040f02e4e58dc2502ffdc50b3a792a0ba7038fa81038a91ff6e2fda",
+   "words": 39
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "886cb4b0ad39bb3b4863854425f0ad2d71688460d63f7fd256d701a3e9785875",
+   "words": 46
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "5efa4348d12363556d4318ce3ff2c91e07c91e575ce7318ea6da5a5e4d925302",
+   "words": 21
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "87abf8ea21384c4c8b079a68426d97310d9635e6a1fc39aa09b7168a039524f0",
+   "words": 21
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "40a5da878cd2353c6e2744fad01921b094bbac2cf2b7913b5418a659cf6674ca",
+   "words": 23
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "736c7fcae5664fd8d47eeb025dea55819652efc4a831f2b8f07ffbee1f90f6f4",
+   "words": 39
+  },
+  {
+   "source": "stanfordnlp/imdb",
+   "sha256": "a87ef6d172b5a5083f281ad6de74404dd15df36fca0633b0d8edf8bb886e41dd",
+   "words": 25
+  }
+ ],
+ "fr": [
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "5a445830e546f735a1512711872834c6353dcbc1d71a853d11dd4a700c53bb53",
+   "words": 16
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "afdb2bbe92f495c8c5fff33044a6e3fd404b04c97d083ad8f9380b547e37d5e1",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "fd4d8b36894c2bfc555948abc3b6495235263958a4ee1344dd0d08fcde7d4f87",
+   "words": 24
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "04cd370c460ddc4a4775d4e86835f9e0bfaebca4a0ab1128f833cc5cf5b058c7",
+   "words": 30
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "d0fc2ef7a665f582f173bfd60a26e51c40dd01f39a0f6a9ace91eedcb56af5ca",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "69a030ef026993efed0cb58c89bc5315d005dc2576cb8538684e4675060d95cf",
+   "words": 14
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "84a31bf9076561551a1691bf52ddf9db06da54bcd347454b1745810ca1103f4f",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "fb15b82b44872f94952420b242ed411248c0e7ccbb0a9bd0ccc91778af6bc651",
+   "words": 23
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "4aeb4058295b341a39630bb001334bd09cc9e3a49c89e57c4004073f05e4931a",
+   "words": 15
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "3ed8af8734f9ac301d8aae6d2d5561c0c1266c5f3c20de573d9c9b274a89896e",
+   "words": 21
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "5d2665b0d1eeaf6a49aabdaecf6be94dd726265535fd405a84c9bc628fd3ed29",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "8111eaebd9705afc59c86e5291b0fa9812782cadaa72e21b3dbebadbd4a02ed6",
+   "words": 21
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "3d46bd406b8d002b96ec1e0da552d46a7f02ff5cf3f631fd4618a68dd0d92843",
+   "words": 16
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "f89a1aa3fdefab841b74ab59ca9dad1fc75184215624eff013c447758c306e47",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "02d867b33cca1142a2ba33339b71a59814cd5724fffcbc970a39a08cfffeb52f",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "80955a371d356e9d789fbbfd1d70b7edb861e85da557da4dd05dd1478af68d75",
+   "words": 17
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "852e64b5464e3bc05f7c329464f6829e32f68b266eee048278aa7f72a75b0424",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "7a51cb8fd1d3d9fcd8522b3cad8e99990d84f16640264254bc3686636fd63276",
+   "words": 17
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "e8c58d3149f91c940b4557d3065a6e0e8bb8afc535ec2c96198a0ce9ede47766",
+   "words": 21
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "39f85191545ea5eaddbb6035c9ac33f20487ac9485bc586e934d3288d389d4b6",
+   "words": 24
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "02462b4b3598670874cfe01e7439c9c8b466ac9854986d18ee77cf370f83f70d",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "07a4fc46e0080a4b646c4b4fc22047a034767dc26339123138b4b674a7e5d8c9",
+   "words": 14
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "a208bcddace1807aba0b1793421249291ed7999b3fdac40c683d93c8c1034e47",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "d271c08a2db31ed1d74be23c68e9d0fabed050a4e56415bfe84d64adce683b69",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "3801fe15b0564f5ba613a47cba6b524adeacb4731e6a329be23707271d2d0f48",
+   "words": 19
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "e97f0d7766e250d7ad00bab8e4f176cbcee28cb7f315a010f64446bb75075b7d",
+   "words": 21
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "526b59522dbe6ad302bf2a849e238bed879f437bb31af34a7413d02f1e765767",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "b0a56f3ae65dba4e267d6466c215bb7adae2bc57be8feab2b47f095dbb544472",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "99ae77c816d6e2e2240632fd795cf63a96d96f3ba87bfd32a6364773ebd751a8",
+   "words": 20
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "2f963f07c2e35ca0e722948eeddd544759aab03fcd8c129168907a8ee5dffa18",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "fb3f21cede2a039173f23e93bc06e6a0968722877f758f68758569666c7bcdb1",
+   "words": 20
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "0f8b1d5c211ad3b961af6441695900e2d0af6792edcd0bc014bd6f12c25171aa",
+   "words": 21
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "9e9c8cf48e53f7f07b0fdb4a56cd5d94b379c8677430ca33475166f52aa04d92",
+   "words": 14
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "cf06d386724c254a00c61af156874390f7fc7b7d0891ada13c959c9fe21b7276",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "ab080a15d0a90018250390223b532091d5249b0e8843ea8d81d5f9215ea9be15",
+   "words": 15
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "d7c8b489a9d9cc0835707c852a6586daceab5d9ad3da72500f1685c3da4da54d",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "312996a543f66e1f8a7d11a44a6f13c4a9e93e417637e2b0c6ad80a88fa15086",
+   "words": 19
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "c78251f2128bad1a590a189dfbcab4c1f4762d7bc4cacbda8426015ca295b02c",
+   "words": 28
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "45f071e57123b7a97d484e63e1d24fff12098107ef806eb1fee6aa10ecb81c14",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "27a37b8c598ff961432d8a308fb12eb6d2557895487d977122a684aa34bc06a4",
+   "words": 15
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "5b68feab9608ecc141f44b97f5d7d4ab2f6104bdaa221578c0358534e4027111",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "0d8689618e2563241ee6f644533ec8124d9b2f61ed315b360a486ea22693bc89",
+   "words": 17
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "74af5e69401ed1317b717fcc29d4e28e18fd666c0158901939621571bdeb3060",
+   "words": 17
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "59e012fa0d8ca663e7b0f28b5fb463955adcd598a37bd7a512deddbdadb906f0",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "2850a6d22582b77bbe1067382c89b9aa7952a37f38dde172d8309a9b6474b26b",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "8e604e626cc0efd13ca65ccf3bb7f7aa5c08ed93f381aadaa588110910d430c0",
+   "words": 16
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "dc88c12ea6a12ad596bed34f81890980da79cb59b2de7cae80fc6bc8b9395976",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "10d7c2e11dea149da23e93e51a9529ead2b1474246f3f0629cb4405614b6f973",
+   "words": 24
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "c2f0e7c18193a285baac601f559eeec98228ef4fc10cbba93cadc19551f6573a",
+   "words": 18
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "49f2887a4428b5f48f2c3472fc1859b3e25f9f6af0a25a79708efc395e349960",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "d3e64c2bbcc89729945065959efa64c1a8b0b0f177c866039ad71d1aeb1c7efc",
+   "words": 23
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "81b4667247a4477e3467d566e80a8a722f05ce49d73ba04cd9aaecb4760b10dc",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "7defe51d74ec7edb05ac976a32777458f8cc77a4d9bf3e1520e23cca26cf0413",
+   "words": 14
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "c9ccef934edb34c069a0f8af7eb68e8fbbd1c9d62398102758549b47a26c9624",
+   "words": 15
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "a6b36843196b0c0c1d62b5e3566721b5818d181534f9cff3a94b6430d817c304",
+   "words": 19
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "52303e2b0eb29e60a8ef5320cad93902da3776182a82dfcbd8ce23cf98c2fe36",
+   "words": 18
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "27d4ec404c81c23d87c0a479fc147343aba912093e2bee68d9ec10a69d2f04ce",
+   "words": 21
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "09ca88e0e8d77d29433cf0c60fcbd40494b2a8ccee19716a4b831c963346c513",
+   "words": 21
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "b49b67e44d435c68c593e959f218e3461b9a6885bb26294744a8431354782701",
+   "words": 16
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "26d15ed2f3739006dfbe4c13b8d2bb55bf64624f1cd4fa44eea2a71606196767",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "d7dcb74114f6f5f67fd0eb37b87db846440471946ee97e5a9aec95cce0c6b727",
+   "words": 23
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "421fda1d935e0321e10f4a43acca28dd57a040e896629bdf44fca69d965aad48",
+   "words": 27
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "c9fefd5295ecdf6330cf83a4bcafa6cee4a4c663450919815b8595a9230096c6",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "f853f90335413f5d176730c4868f0a0bc9f25f504b00fb53e7123c66b6db260e",
+   "words": 15
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "1cdf7e01084cee56522cc340685c9b2d6935680792a226620d24abdcd46bfe67",
+   "words": 21
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "39a177a87b6c3aac1f64315ab8744399fadf3d542e7cd85f15e57c174cee84ff",
+   "words": 15
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "e3f35c7a23517b1956324e1667fb30fa59aedd331a265d101e083f018e10be36",
+   "words": 25
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "7d843162910d2e5110d3ce2a9eb2e1377f2c94495dd5ebc5aa00dfc4d5db72cc",
+   "words": 21
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "f5307db8ec278d41cd891c14e472ca1f5059a2f74747358439a6ecfccdeaba83",
+   "words": 16
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "3128f4168173c2ad3a9f29ecee07f9e6919187f66e09f894239c5caec07eebfd",
+   "words": 20
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "a61902159c945e5a3ebb3daa9bae33c9610ef776fd2bfa1cee3e56ec96ccaf27",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "4d2e26819676b93165cdf514212429b8f5e5dcaa5a422a774b41b7583c141020",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "3d1a12f6d2af498e004f3ed6ccafc3c0c9d167390aed56e6c5c0368c551af32b",
+   "words": 15
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "c6c00ab110ebbc7cb04961c92d5736c9e5818940cc98063f6ca7b2fe89f45192",
+   "words": 16
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "a44c83188c63a301aa17496899fec2a5b7e96c7e7e1fea23c482afe025f7961e",
+   "words": 37
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "cf8d75348caa61fad9e9e330977a1c30cbede33d056ff6c26bbc835759b88b3a",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "9e0da4c0f9cbeb76ffb379e16c81d0094e13729471d5ba788d4de5055d487fba",
+   "words": 22
+  },
+  {
+   "source": "FrancophonIA/french_tweets",
+   "sha256": "da63204086c39213313580c15f6a471e8f9c5efe53a27b45227568a94f08aad0",
+   "words": 24
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "25f988394056d8ca0dc2cb2e65fd585e3701153e805d62cfc555d746b68d84bc",
+   "words": 18
+  },
+  {
+   "source": "GwendalTsang/French_Youtube_Comments",
+   "sha256": "b18db340bc9ea2025ca85fd8aab032afa9dc283b3a6f2866072b2205941b9b3b",
+   "words": 19
+  }
+ ]
+}
