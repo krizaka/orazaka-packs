@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 4500,
-  "changelog": "1.1.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.0.0 — Génération vidéo avec son : la vidéo de Génération vidéo (mêmes entrées, même modèle), puis l'étape Du son pour une vidéo (nappe musicale ACE-Step 1.5, bruitages MMAudio non commercial sur demande), mixée à -14 LUFS en AAC. La version sans son est livrée aussi, pour les boucles muettes.",
+  "changelog": "1.2.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.1.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.0.0 — Génération vidéo avec son : la vidéo de Génération vidéo (mêmes entrées, même modèle), puis l'étape Du son pour une vidéo (nappe musicale ACE-Step 1.5, bruitages MMAudio non commercial sur demande), mixée à -14 LUFS en AAC. La version sans son est livrée aussi, pour les boucles muettes.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-with-sound",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "video",
@@ -105,20 +105,22 @@
       },
       "model": {
         "type": "string",
-        "enum": [
-          "wan2-2-t2v-a14b",
-          "wan2.2-ti2v-5b",
-          "wan2.1-t2v-1.3b",
-          "animatediff-lightning-mps"
-        ],
-        "title": "Modèle (facultatif)",
-        "description": "Laissez vide : l'hôte de génération choisit son modèle par défaut. Wan 2.2 5B (GPU big) : 704×1280, 24 i/s ; Wan 2.1 1.3B (GPU small) : 480×832, 16 i/s ; AnimateDiff : le Mac. Wan 2.2 A14B (serverless, fournisseur) : 832×480, 16:9 uniquement, 5 s."
+        "maxLength": 120,
+        "title": "Modèle",
+        "description": "Le catalogue propose les modèles disponibles ; le plus adapté est choisi pour vous.",
+        "x-options": {
+          "source": "models",
+          "category": "video"
+        },
+        "x-advanced": true
       },
       "seed": {
         "type": "string",
         "maxLength": 20,
         "title": "Graine (facultatif)",
-        "description": "Les mêmes textes, les mêmes modèles et la même graine refont le même son."
+        "description": "Les mêmes textes, les mêmes modèles et la même graine refont le même son.",
+        "x-control": "seed",
+        "x-advanced": true
       },
       "music": {
         "type": "string",
@@ -140,7 +142,8 @@
           "mmaudio-large-44k-v2"
         ],
         "title": "Modèle de bruitage (facultatif)",
-        "description": "mmaudio-large-44k-v2 : poids CC-BY-NC 4.0, évaluation et usage non commercial uniquement. Vide : pas de bruitage."
+        "description": "mmaudio-large-44k-v2 : poids CC-BY-NC 4.0, évaluation et usage non commercial uniquement. Vide : pas de bruitage.",
+        "x-advanced": true
       }
     }
   },

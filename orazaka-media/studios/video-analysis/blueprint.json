@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 90,
-  "changelog": "1.2.0 — `assetId` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: video/*` : les clients affichent un sélecteur de fichier du bon type. 1.1.0 — `assetId` déclare `format: asset-id` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Analyse vidéo — une étape : la piste audio est transcrite et des images-clés sont extraites. Facturée à la minute de source, sous le tarif `orazaka-video-analysis` et non au tarif de diffusion de la génération (ADR-066).",
+  "changelog": "1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — `assetId` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: video/*` : les clients affichent un sélecteur de fichier du bon type. 1.1.0 — `assetId` déclare `format: asset-id` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Analyse vidéo — une étape : la piste audio est transcrite et des images-clés sont extraites. Facturée à la minute de source, sous le tarif `orazaka-video-analysis` et non au tarif de diffusion de la génération (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-analysis",
-    "version": "1.1.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "analysis",
@@ -40,7 +40,9 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": ["assetId"],
+    "required": [
+      "assetId"
+    ],
     "properties": {
       "assetId": {
         "type": "string",
@@ -54,10 +56,18 @@
       "model": {
         "type": "string",
         "maxLength": 120,
-        "title": "Modèle (facultatif)",
-        "description": "Laissez vide : le catalogue choisit le modèle de transcription par défaut."
+        "title": "Modèle",
+        "description": "Le catalogue propose les modèles de transcription disponibles ; le plus adapté est choisi pour vous.",
+        "x-options": {
+          "source": "models",
+          "category": "audio"
+        },
+        "x-advanced": true
       }
     }
   },
-  "configSchema": { "type": "object", "properties": {} }
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
 }

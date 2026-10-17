@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 900,
-  "changelog": "1.1.0 — `video` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: video/*` : les clients affichent un sélecteur de fichier du bon type. 1.0.0 — Du son pour une vidéo : une nappe musicale (ACE-Step 1.5, MIT), des bruitages synchronisés à l'image (MMAudio, non commercial, demandé par son nom) et/ou une voix off (un fichier de Synthèse vocale), mixés avec ducking, ramenés à -14 LUFS et muxés en AAC dans le mp4. La vidéo d'origine, sans son, est conservée (`silent`) pour les boucles muettes. Tourne sur l'hôte du worker média (Mac, Metal).",
+  "changelog": "1.2.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.1.0 — `video` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: video/*` : les clients affichent un sélecteur de fichier du bon type. 1.0.0 — Du son pour une vidéo : une nappe musicale (ACE-Step 1.5, MIT), des bruitages synchronisés à l'image (MMAudio, non commercial, demandé par son nom) et/ou une voix off (un fichier de Synthèse vocale), mixés avec ducking, ramenés à -14 LUFS et muxés en AAC dans le mp4. La vidéo d'origine, sans son, est conservée (`silent`) pour les boucles muettes. Tourne sur l'hôte du worker média (Mac, Metal).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-sound",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "sound",
@@ -76,13 +76,16 @@
           "mmaudio-large-44k-v2"
         ],
         "title": "Modèle de bruitage (facultatif)",
-        "description": "mmaudio-large-44k-v2 : poids CC-BY-NC 4.0, évaluation et usage non commercial uniquement. Vide : pas de bruitage."
+        "description": "mmaudio-large-44k-v2 : poids CC-BY-NC 4.0, évaluation et usage non commercial uniquement. Vide : pas de bruitage.",
+        "x-advanced": true
       },
       "seed": {
         "type": "string",
         "maxLength": 20,
         "title": "Graine (facultatif)",
-        "description": "Les mêmes textes, les mêmes modèles et la même graine refont le même son."
+        "description": "Les mêmes textes, les mêmes modèles et la même graine refont le même son.",
+        "x-control": "seed",
+        "x-advanced": true
       },
       "voice": {
         "type": "string",

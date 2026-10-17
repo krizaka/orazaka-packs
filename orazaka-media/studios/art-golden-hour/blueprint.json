@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 200,
-  "changelog": "1.0.0 — Direction artistique « Éditorial lumière dorée » : une étape de génération d'image dont le prompt structuré (lumière, optique, matières, palette) suit votre sujet. Graine facultative et rapportée, pour refaire l'image ; formats 4:5, 16:9, 1:1, 9:16.",
+  "changelog": "1.1.0 — la graine est un nombre avec « au hasard », rangée sous « Plus d'options ». 1.0.0 — Direction artistique « Éditorial lumière dorée » : une étape de génération d'image dont le prompt structuré (lumière, optique, matières, palette) suit votre sujet. Graine facultative et rapportée, pour refaire l'image ; formats 4:5, 16:9, 1:1, 9:16.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "art-golden-hour",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "image",
@@ -83,7 +83,9 @@
         "pattern": "^[0-9]{0,10}$",
         "maxLength": 10,
         "title": "Graine (facultatif)",
-        "description": "Vide : une image nouvelle. La graine d'une image déjà faite, avec le même sujet et le même format : la même image."
+        "description": "Vide : une image nouvelle. La graine d'une image déjà faite, avec le même sujet et le même format : la même image.",
+        "x-control": "seed",
+        "x-advanced": true
       }
     }
   },
