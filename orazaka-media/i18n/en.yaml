@@ -33,6 +33,12 @@ studios:
     description: >-
       Montreal after rain: cobblestones mirroring window light and neon, light mist, a 35 mm lens wide
       open, cinematic grading. Describe the place and the moment.
+  cinematic-script:
+    label: "Cinematic short — script"
+    tagline: "A brief becomes a shot list: 8–12 shots, original characters, music, voice-over."
+  cinematic-cut:
+    label: "Cinematic short — cut"
+    tagline: "Your shots edited into one film: cuts, ramps, grade, titles, the AI label."
   video-generation:
     label: "Video generation"
     tagline: "A vertical short (9:16) or a wide shot, described then rendered."

@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 900,
+  "changelog": "1.0.0 — Le montage d'un court métrage cinématographique (ADR-080) : les plans vidéo d'une production et une liste de décisions de montage (coupes, fondus, flash, ralentis et rampes de vitesse, poussée de caméra, étalonnage par LUT, titres, sous-titres) deviennent un film en 1080p à 30 i/s. Les plans de 16 i/s sont interpolés par compensation de mouvement. La mention « AI-generated » est incrustée et écrite dans les métadonnées du fichier.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "cinematic-cut",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "cut",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.studio.media.compose",
+        "dependsOn": [],
+        "inputs": {
+          "clips": "{{inputs.clips}}",
+          "edit": "{{inputs.edit}}"
+        },
+        "out": "cut",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT40M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "film",
+        "label": "Votre film monté",
+        "from": "{{steps.cut.url}}",
+        "type": "VIDEO"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "clips",
+      "edit"
+    ],
+    "properties": {
+      "clips": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "minItems": 1,
+        "maxItems": 24,
+        "title": "Les plans",
+        "description": "Les vidéos des plans, dans l'ordre : les sorties de vos runs de Génération vidéo."
+      },
+      "edit": {
+        "type": "string",
+        "maxLength": 20000,
+        "title": "La liste de décisions de montage (JSON)",
+        "description": "aspect, grade, shots [{clip, in, out, speed, rampAt, rampSpeed, zoom, transition, transitionSeconds, caption}], titles [{text, start, end, style}], label. Écrite par `orazaka cinema` à partir du script."
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

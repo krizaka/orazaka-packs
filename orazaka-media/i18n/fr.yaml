@@ -33,6 +33,12 @@ studios:
     description: >-
       Montréal après la pluie : pavés qui reflètent les fenêtres et le néon, brume légère, objectif de
       35 mm grand ouvert, étalonnage cinéma. Décrivez le lieu et le moment.
+  cinematic-script:
+    label: "Court métrage — script"
+    tagline: "Un brief devient une liste de plans : 8 à 12 plans, personnages originaux, musique, voix off."
+  cinematic-cut:
+    label: "Court métrage — montage"
+    tagline: "Vos plans montés en un film : coupes, ralentis, étalonnage, titres, la mention IA."
   video-generation:
     label: "Génération vidéo"
     tagline: "Un short vertical (9:16) ou un plan large, décrit puis rendu."
