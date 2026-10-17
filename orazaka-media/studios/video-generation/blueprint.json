@@ -1,12 +1,12 @@
 {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "status": "PUBLISHED",
   "estimatedCredits": 3600,
-  "changelog": "1.6.0 — `model` propose Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`) : 720p (1280×720 ou 720×1280), 5 s à 16 i/s, à partir d'une image d'amorce seulement (l'image clé d'un plan), en quatre pas distillés (LoRA lightx2v, Apache-2.0) — les plans d'un court métrage cinématographique (ADR-080). 1.5.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.4.0 — `model` propose Wan 2.2 A14B en 720p (`wan2.2-t2v-a14b`), exécuté sur notre propre GPU de 80 Go (1280×720 ou 720×1280, 5 s à 16 i/s, deux experts, la graine refait le même plan) ; l'A14B serverless (832×480) garde son nom `wan2-2-t2v-a14b`. 1.3.0 — `model` propose aussi Wan 2.2 A14B (`wan2-2-t2v-a14b`), servi par l'inférence serverless de DigitalOcean et routé par Orazaka : 832×480 en 16:9, 5 s à 16 i/s, la graine refait le même plan. 1.2.0 — le format vertical 9:16 (TikTok, Reels, Shorts) devient le défaut : `aspect` (9:16, 16:9, 1:1) choisit une taille sur laquelle le modèle a été entraîné, et `model` propose les modèles du catalogue qui le savent (Wan 2.2 5B en 704×1280 sur le GPU `big`, Wan 2.1 1.3B en 480×832 sur le `small`, AnimateDiff sur le Mac) ; `seed` refait le même plan (ADR-077). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
+  "changelog": "1.7.0 — le kit cinématographique Krizaka : `model` propose Wan 2.2 I2V A14B en 40 pas (`wan2.2-i2v-a14b-hq`, personnes et animaux en 9:16) et LTX-Video 0.9.8 13B distilled (`ltx-video-0.9.8-13b-distilled`, GPU 80 Go) — un plan de 5 s en 1216×704 ou 704×1216, 24 i/s, en une quinzaine de secondes, depuis une image ou un texte (licence Open Weights, usage commercial) ; `upscale` (none · 1080p · 2160p, éteint par défaut) porte le plan fini en 1080p ou en 4K par SeedVR2 3B (Apache-2.0) sur le même GPU ; `prompt` et `image` disent la règle : avec une image, le texte décrit le MOUVEMENT et la CAMÉRA (l'image montre déjà la scène), et l'image est faite au format de la vidéo (image-generation 1360×768 en 16:9, 768×1360 en 9:16), jamais recadrée. 1.6.0 — `model` propose Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`) : 720p (1280×720 ou 720×1280), 5 s à 16 i/s, à partir d'une image d'amorce seulement (l'image clé d'un plan), en quatre pas distillés (LoRA lightx2v, Apache-2.0) — les plans d'un court métrage cinématographique (ADR-080). 1.5.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.4.0 — `model` propose Wan 2.2 A14B en 720p (`wan2.2-t2v-a14b`), exécuté sur notre propre GPU de 80 Go (1280×720 ou 720×1280, 5 s à 16 i/s, deux experts, la graine refait le même plan) ; l'A14B serverless (832×480) garde son nom `wan2-2-t2v-a14b`. 1.3.0 — `model` propose aussi Wan 2.2 A14B (`wan2-2-t2v-a14b`), servi par l'inférence serverless de DigitalOcean et routé par Orazaka : 832×480 en 16:9, 5 s à 16 i/s, la graine refait le même plan. 1.2.0 — le format vertical 9:16 (TikTok, Reels, Shorts) devient le défaut : `aspect` (9:16, 16:9, 1:1) choisit une taille sur laquelle le modèle a été entraîné, et `model` propose les modèles du catalogue qui le savent (Wan 2.2 5B en 704×1280 sur le GPU `big`, Wan 2.1 1.3B en 480×832 sur le `small`, AnimateDiff sur le Mac) ; `seed` refait le même plan (ADR-077). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-generation",
-    "version": "1.4.0",
+    "version": "1.7.0",
     "steps": [
       {
         "id": "video",
@@ -19,7 +19,8 @@
           "aspect": "{{inputs.aspect:}}",
           "seed": "{{inputs.seed:}}",
           "image": "{{inputs.image:}}",
-          "model": "{{inputs.model:}}"
+          "model": "{{inputs.model:}}",
+          "upscale": "{{inputs.upscale:}}"
         },
         "out": "video",
         "onError": "FAIL",
@@ -48,7 +49,7 @@
         "minLength": 3,
         "maxLength": 2000,
         "title": "Ce qui doit se passer à l'écran",
-        "description": "Décrivez le plan : le sujet, le mouvement, l'ambiance."
+        "description": "Décrivez le plan. Sans image : le sujet, le mouvement, l'ambiance. Avec une image d'amorce : décrivez seulement le MOUVEMENT et la CAMÉRA (travelling avant lent, la cabine se balance, la brume dérive, parallaxe discrète) — l'image montre déjà la scène, ne la répétez pas."
       },
       "durationSeconds": {
         "type": "integer",
@@ -75,7 +76,7 @@
         "contentMediaType": "image/*",
         "maxLength": 120,
         "title": "Image d'amorce (facultatif)",
-        "description": "Choisissez une photo parmi vos fichiers ou depuis votre appareil pour amorcer la vidéo."
+        "description": "Choisissez une photo parmi vos fichiers ou depuis votre appareil pour amorcer la vidéo. Faite au format de la vidéo (1360×768 pour du 16:9, 768×1360 pour du 9:16 avec image-generation) : une image portrait recadrée en 16:9 perd les deux tiers de ses pixels."
       },
       "model": {
         "type": "string",
@@ -85,16 +86,29 @@
           "wan2.2-i2v-a14b",
           "wan2.2-ti2v-5b",
           "wan2.1-t2v-1.3b",
-          "animatediff-lightning-mps"
+          "animatediff-lightning-mps",
+          "ltx-video-0.9.8-13b-distilled",
+          "wan2.2-i2v-a14b-hq"
         ],
         "title": "Modèle (facultatif)",
-        "description": "Laissez vide : l'hôte de génération choisit son modèle par défaut. Wan 2.2 5B (GPU big) : 704×1280, 24 i/s ; Wan 2.1 1.3B (GPU small) : 480×832, 16 i/s ; AnimateDiff : le Mac. Wan 2.2 A14B (serverless, fournisseur) : 832×480, 16:9 uniquement, 5 s. Wan 2.2 A14B 720p (`wan2.2-t2v-a14b`, GPU 80 Go) : 1280×720 en 16:9 ou 720×1280 en 9:16, 5 s, 16 i/s — le plan de présentation. Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`, GPU 80 Go) : part d'une image d'amorce (obligatoire), 720p, 5 s, 16 i/s, quatre pas distillés — les plans d'un court métrage."
+        "description": "Laissez vide : l'hôte de génération choisit son modèle par défaut. Wan 2.2 5B (GPU big) : 704×1280, 24 i/s ; Wan 2.1 1.3B (GPU small) : 480×832, 16 i/s ; AnimateDiff : le Mac. Wan 2.2 A14B (serverless, fournisseur) : 832×480, 16:9 uniquement, 5 s. Wan 2.2 A14B 720p (`wan2.2-t2v-a14b`, GPU 80 Go) : 1280×720 en 16:9 ou 720×1280 en 9:16, 5 s, 16 i/s — le plan de présentation. Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`, GPU 80 Go) : part d'une image d'amorce (obligatoire), 720p, 5 s, 16 i/s, quatre pas distillés — les plans d'un court métrage. LTX-Video 0.9.8 13B distilled (`ltx-video-0.9.8-13b-distilled`, GPU 80 Go) : depuis une image ou un texte, 1216×704 (16:9) ou 704×1216 (9:16), 5 s, 24 i/s, huit pas — environ quinze secondes ; le modèle rapide de l'atelier. Wan 2.2 I2V A14B en 40 pas (`wan2.2-i2v-a14b-hq`, GPU 80 Go) : le même modèle que le plan distillé, au programme complet — environ 18 minutes un plan 720p ; le meilleur pour les personnes et les animaux en 9:16."
       },
       "seed": {
         "type": "string",
         "maxLength": 20,
         "title": "Graine (facultatif)",
         "description": "Le même prompt, le même modèle et la même graine refont le même plan."
+      },
+      "upscale": {
+        "type": "string",
+        "enum": [
+          "none",
+          "1080p",
+          "2160p"
+        ],
+        "default": "none",
+        "title": "Netteté (facultatif)",
+        "description": "none : le plan tel que le modèle le fait. 1080p ou 2160p (4K) : le plan est ensuite porté à cette taille par SeedVR2 3B ; l'exécution dure plus longtemps (environ 2 min en 1080p, 5 min en 4K)."
       }
     }
   },
