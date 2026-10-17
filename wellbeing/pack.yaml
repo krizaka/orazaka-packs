@@ -66,7 +66,7 @@ consent:
 # The crisis declaration. The response is FIXED and reviewed by a person: a model asked to compose
 # one will produce a number that looks like a crisis line, and someone will dial it.
 safety:
-  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5) ; CA-QC ajoutée et vérifiée à la source le 2026-10-11 (ADR-076)"
+  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5) ; CA-QC ajoutée et vérifiée à la source le 2026-10-11 (ADR-076) ; crisisTerms étendus au 2026-10-17 pour la voix (variantes parlées FR et EN) — termes seulement, texte de réponse et lignes inchangés ; à relire par une personne avant toute personne extérieure"
   crisisTerms:
     - suicide
     - me suicider
@@ -80,6 +80,35 @@ safety:
     - me tuer
     - disparaître pour toujours
     - disparaitre pour toujours
+    # The listening moment (Yororis) is spoken, so the cues are the ways a person says it aloud, in
+    # both languages the presences speak. The guard folds accents and case and then looks for the
+    # term inside the turn (SafetyInterceptor.fold), so each term is a phrase, never a lone word
+    # that also lives in "mourir de rire". An apostrophe is written both ways: a keyboard types
+    # ' and a phone types the typographic one, and the fold does not unify them.
+    - envie de mourir
+    - veux mourir
+    - voudrais mourir
+    - veux plus vivre
+    - veux pas vivre
+    - plus la force de vivre
+    - m'enlever la vie
+    - m’enlever la vie
+    - j'en peux plus de vivre
+    - j’en peux plus de vivre
+    - me pendre
+    - kill myself
+    - end my life
+    - take my own life
+    - want to die
+    - wanna die
+    - hurt myself
+    - harm myself
+    - better off dead
+    - no reason to live
+    - don't want to live
+    - don’t want to live
+    - don't want to be alive
+    - don’t want to be alive
   response: >-
     Je m'arrête là, parce que ce que vous venez d'écrire compte plus que l'exercice en cours. Je ne
     suis pas en mesure de vous accompagner là-dessus, et je ne veux pas vous laisser seul·e avec ça.

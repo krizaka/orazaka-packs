@@ -1,0 +1,63 @@
+{
+  "$comment": "The listening moment of the wellbeing pack (ADR-076, Yororis). Data only: what a presence is, which voice speaks for it, which ear hears the person. The words, the guards and the crisis lines are the pack's (pack.yaml); a client draws a face and plays a voice, it never calls a model.",
+  "pack": "bien-etre",
+  "door": {
+    "endpoint": "/api/v1/voice/turns",
+    "under": "installation",
+    "note": "A turn is a chat turn with an ear and a mouth, answered over SSE. The crisis guard and the scope guard run on it, non-bypassable; their replies are the pack's fixed text."
+  },
+  "conversation": {
+    "systemPrompt": "safety.systemPrompt",
+    "reflects": true,
+    "questionsPerTurn": 1,
+    "sentencesPerReply": { "min": 1, "max": 3 },
+    "never": ["diagnosis", "medication", "mood inference", "a phone number given by the model", "a claim to be a person"],
+    "momentMinutes": { "default": 25, "max": 25 },
+    "closesWith": "session-summary"
+  },
+  "ear": {
+    "stt": { "model": "whisper-base", "licence": "MIT", "maxSeconds": 30, "synchronous": true },
+    "pushToTalk": true
+  },
+  "voices": {
+    "piper-fr-siwis-medium": { "locale": "fr-FR", "licence": "CC-BY 4.0", "timings": false },
+    "piper-fr-medium": { "locale": "fr-FR", "licence": "CC-BY-SA 4.0", "timings": false },
+    "piper-fr-tom-medium": { "locale": "fr-FR", "licence": "AGPL-3.0", "licenceReview": "weights used unmodified, never redistributed; a lawyer confirms before a commercial deployment", "timings": false },
+    "piper-en-low": { "locale": "en", "licence": "CC-BY 4.0", "timings": false },
+    "piper-en-medium-ryan": { "locale": "en", "licence": "CC-BY 4.0", "timings": false }
+  },
+  "planned": {
+    "kokoro": { "licence": "Apache-2.0", "why": "a warmer voice per presence; not in the catalogue yet, so no presence names it" }
+  },
+  "face": {
+    "kind": "stylised",
+    "aiMark": "permanent",
+    "photorealistic": false,
+    "ofARealPerson": false,
+    "lipSync": { "source": "ENERGY", "why": "the voice turn returns no word timings (ADR-076 section 2); a track computed from the characters would lie" },
+    "idle": ["breathing", "blink", "gaze"]
+  },
+  "presences": [
+    {
+      "id": "lea",
+      "name": "Léa",
+      "style": "reflects",
+      "voices": { "fr-FR": "piper-fr-siwis-medium", "en": "piper-en-low" },
+      "portrait": { "kind": "stylised", "hue": "sage" }
+    },
+    {
+      "id": "samuel",
+      "name": "Samuel",
+      "style": "opens",
+      "voices": { "fr-FR": "piper-fr-tom-medium", "en": "piper-en-medium-ryan" },
+      "portrait": { "kind": "stylised", "hue": "sand" }
+    },
+    {
+      "id": "noor",
+      "name": "Noor",
+      "style": "steps",
+      "voices": { "fr-FR": "piper-fr-medium", "en": "piper-en-low" },
+      "portrait": { "kind": "stylised", "hue": "sage" }
+    }
+  ]
+}

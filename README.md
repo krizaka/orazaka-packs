@@ -40,7 +40,7 @@ DAGs) and, optionally, its own worker.
 | `outbound-prospection` | Prospection workflows |
 | `realestate-studio` | Real-estate reels |
 | `trade-showcase` | Trade showcase studio |
-| `wellbeing` | Wellbeing — guided journaling, session preparation, mood tracking (`REGULATED`; never "therapy": what a person brings to a professional, not a care) |
+| `wellbeing` | Wellbeing — guided journaling, session preparation, mood tracking (`REGULATED`; never "therapy": what a person brings to a professional, not a care); `wellbeing/listening/` holds the listening moment's data — presences, voices, the ear — and the risk fixtures the crisis guard is tested with) |
 
 ```bash
 orazaka pack validate ./orazaka-packs/<bundle> --offline
