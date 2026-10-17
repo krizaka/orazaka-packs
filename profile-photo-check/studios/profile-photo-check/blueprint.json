@@ -32,6 +32,7 @@
         },
         "out": "looks",
         "onError": "SKIP",
+        "skipRationale": "The face counts, the identity check and the product's own counts do not depend on the vision answers. A photo the model could not read is reported UNVERIFIED — never guessed, never blocked on — so the report says plainly what was not examined; failing the whole check for one unreadable answer would stop a person who did nothing wrong.",
         "timeout": "PT5M"
       },
       {
