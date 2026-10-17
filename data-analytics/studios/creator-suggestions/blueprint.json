@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 15,
+  "changelog": "1.0.0 — Suggestions pour un créateur (ADR-078, différé « suggestions ») : à partir du titre, de la description et des mots-clés qu'il a écrits — et, s'il les donne, des mots-clés qui marchent auprès de son audience (GET /api/v1/recommendations/insights) — trois titres, une description et des mots-clés. Ce sont des propositions : le créateur choisit, rien n'est publié sans lui.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "creator-suggestions",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "suggest",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "You help a video creator present a video. Their own words — title: {{inputs.title}}; description: {{inputs.description:}}; tags: {{inputs.tags:}}. Tags that perform with their audience: {{inputs.audienceTags:}}.\n\nAnswer with ONE JSON object and nothing else, in {{inputs.language}}, of this shape: {\"titles\": 3 alternative titles of at most 70 characters, \"description\": one description of at most 300 characters, \"tags\": 5 to 10 lowercase tags without #, \"why\": one sentence on what changed}. Stay true to what the creator wrote: never invent a fact, a place, a person or a promise that is not in their text, no clickbait, no emoji spam. These are proposals the creator approves or ignores."
+        },
+        "out": "suggestions",
+        "onError": "RETRY",
+        "maxAttempts": 2,
+        "timeout": "PT2M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "suggestions",
+        "label": "Titres, description et mots-clés proposés (JSON)",
+        "from": "{{steps.suggestions.content}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["title"],
+    "properties": {
+      "title": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 200,
+        "title": "Votre titre",
+        "description": "Le titre actuel de la vidéo."
+      },
+      "description": {
+        "type": "string",
+        "format": "prose",
+        "maxLength": 2000,
+        "default": "",
+        "title": "Votre description (facultative)",
+        "description": "Le texte actuel de la vidéo."
+      },
+      "tags": {
+        "type": "string",
+        "maxLength": 400,
+        "default": "",
+        "title": "Vos mots-clés (facultatif)",
+        "description": "Séparés par des virgules."
+      },
+      "audienceTags": {
+        "type": "string",
+        "maxLength": 400,
+        "default": "",
+        "title": "Ce qui marche auprès de votre audience (facultatif)",
+        "description": "Les mots-clés les plus performants de vos statistiques, séparés par des virgules."
+      },
+      "language": {
+        "type": "string",
+        "enum": ["en", "fr"],
+        "default": "en",
+        "title": "Langue",
+        "description": "La langue des propositions."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}

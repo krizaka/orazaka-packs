@@ -1,0 +1,77 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# data-analytics — the first pack on the Data & Analytics shelf (orazaka-packs#16,
+# orazaka discussion #174). It packages the recommender of ADR-078.
+#
+# Two halves with two clocks (ADR-078 §1):
+# - SERVING is synchronous and lives in orazaka-knowledge-service: events, items and
+#   erasures in, feeds and creator insights out, < 150 ms. That is not a Studio run (a
+#   run is an asynchronous, metered saga), so the pack declares it as the API scopes a
+#   buyer's service key opens — `requires.api` — and the edge enforces them.
+# - UNDERSTANDING is asynchronous and metered, so it is Studios: what a video is about
+#   (a keyframe through vision, then a JSON reading) and creator suggestions the
+#   creator approves.
+#
+# tier DATA: every featureKey the blueprints name is an orazaka.core.* row the engine
+# already owns. Users are pseudonyms (HMAC-SHA256 by the product, Loi 25): the pack
+# never receives an e-mail, a name or a user id (README).
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: data-analytics
+version: 1.0.0
+tier: DATA
+distribution: OSS
+regulatoryClass: STANDARD
+
+requires:
+  # Zero contributed capabilities: vision and chat completion are the engine's own.
+  capabilities: []
+  # The recommender's serving contract (ADR-078 §6). Identical to the edge's ApiKeyScopes
+  # (tests/data-analytics.test.mjs): a scope the edge does not know grants nothing.
+  api:
+    service: orazaka-knowledge-service
+    scopes:
+      - key: reco:sync
+        routes:
+          - "POST /api/v1/recommendations/events"
+          - "POST /api/v1/recommendations/items"
+          - "POST /api/v1/recommendations/erasures"
+      - key: reco:read
+        routes:
+          - "GET /api/v1/recommendations/for-you"
+          - "GET /api/v1/recommendations/similar"
+          - "GET /api/v1/recommendations/insights"
+
+catalog:
+  categoryKey: data-analytics
+  iconKey: chart
+  status: PUBLISHED
+  sortWeight: 40
+  # The first pack on this shelf opens it (ADR-068, #45). Idempotent: an existing shelf is
+  # left exactly as it is.
+  category:
+    iconKey: chart
+    sortWeight: 70
+
+pricing:
+  priceCents: 4900   # 49 $ CA — in billing.currency (CAD)
+  includedCredits: 300
+
+studios:
+  - key: video-understanding
+    profession: general
+    iconKey: vision
+    pricing: PAID
+    entitlementKey: studio.video-understanding
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 20
+    blueprint: studios/video-understanding/blueprint.json
+  - key: creator-suggestions
+    profession: creative
+    iconKey: sparkles
+    pricing: PAID
+    entitlementKey: studio.creator-suggestions
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 10
+    blueprint: studios/creator-suggestions/blueprint.json

@@ -1,0 +1,92 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 40,
+  "changelog": "1.0.0 — Ce que montre une vidéo, pour le recommandeur (ADR-078, différé « keyframes ») : une image clé passe par le modèle de vision, puis le modèle de conversation rend une lecture JSON — résumé, sujets, mots-clés, langue, étiquettes de sécurité. Le produit réécrit ces facettes dans l'article (POST /api/v1/recommendations/items), que le service de connaissances ré-encode. Les étiquettes de sécurité alimentent une file de modération humaine, jamais un retrait automatique.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "video-understanding",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "see",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.vision",
+        "dependsOn": [],
+        "inputs": {
+          "assetId": "{{inputs.assetId}}",
+          "prompt": "Describe this video frame precisely and neutrally: the setting, the people (no names, no guesses about identity), the objects, the actions, any visible text, the mood, the light. Plain sentences."
+        },
+        "out": "frame",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT5M"
+      },
+      {
+        "id": "read",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": ["see"],
+        "inputs": {
+          "prompt": "You index a short video for a recommender. Its creator wrote — title: {{inputs.title}}; description: {{inputs.description:}}. A keyframe shows: {{steps.frame.analysis}}\n\nAnswer with ONE JSON object and nothing else, in {{inputs.language}}, of this shape: {\"summary\": one sentence, \"topics\": 3 to 6 short topics, \"tags\": 5 to 10 lowercase tags without #, \"language\": the spoken or written language if any is visible (ISO 639-1) or null, \"safetyLabels\": an array drawn only from [\"nudity\", \"sexual\", \"violence\", \"weapon\", \"minor-visible\", \"self-harm\", \"hate-symbol\", \"drugs\", \"none\"]}. Use only what the title, the description and the frame support; never invent a person's name. Safety labels are signals for a human moderator: you never decide whether the video stays online."
+        },
+        "out": "reading",
+        "onError": "RETRY",
+        "maxAttempts": 2,
+        "timeout": "PT3M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "reading",
+        "label": "Ce que montre la vidéo (JSON)",
+        "from": "{{steps.reading.content}}",
+        "type": "TEXT"
+      },
+      {
+        "key": "frame",
+        "label": "Ce que montre l'image clé",
+        "from": "{{steps.frame.analysis}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": ["assetId", "title"],
+    "properties": {
+      "assetId": {
+        "type": "string",
+        "format": "asset-id",
+        "contentMediaType": "image/*",
+        "minLength": 8,
+        "maxLength": 120,
+        "title": "L'image clé",
+        "description": "Une image tirée de la vidéo. Le serveur la résout contre vos propres fichiers et rien d'autre."
+      },
+      "title": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 200,
+        "title": "Le titre de la vidéo",
+        "description": "Tel que le créateur l'a écrit."
+      },
+      "description": {
+        "type": "string",
+        "format": "prose",
+        "maxLength": 2000,
+        "default": "",
+        "title": "La description (facultative)",
+        "description": "Le texte qui accompagne la vidéo."
+      },
+      "language": {
+        "type": "string",
+        "enum": ["en", "fr"],
+        "default": "en",
+        "title": "Langue de la lecture",
+        "description": "La langue du résumé, des sujets et des mots-clés."
+      }
+    }
+  },
+  "configSchema": { "type": "object", "properties": {} }
+}
