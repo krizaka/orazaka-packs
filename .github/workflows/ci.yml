@@ -63,6 +63,9 @@ jobs:
 
   authenticity-worker:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
+
+  safety-worker:
+    # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -75,4 +78,8 @@ jobs:
       - working-directory: message-authenticity/worker
         run: |
           python test_authenticity.py
+
+      - working-directory: media-safety/worker
+        run: |
+          python test_safety.py
           python test_broker.py

@@ -1,0 +1,10 @@
+name: orazaka-worker-safety
+family: safety
+bindings:
+  - "job.safety.*"
+version: "1.0.0"
+concurrency: 1
+
+run:
+  python: "../.venv/bin/python3"
+  args: ["safety_worker.py"]

@@ -1,0 +1,67 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# media-safety — is this photo, this video (sampled frames) or this voice message safe to show to the person it is sent to?
+#
+# For a dating product's conversations (the pack names no product). The blueprint asks a vision model three yes/no questions about each
+# picture, and — for sound — has the audio transcribed and a chat model judge the transcript on three more; the worker applies the
+# rules. A SAFETY check FAILS CLOSED: an answer nobody could read is never a pass; the product holds the media for a person to see.
+#
+# SENSITIVE: private media are as personal as an input gets (30-day retention at most, append-only audit, data class, scope guard).
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: media-safety
+version: 1.0.0
+tier: WORKER
+distribution: CLOUD
+regulatoryClass: SENSITIVE
+
+scopeGuard:
+  refusedTerms:
+    - identifier cette personne
+    - reconnaître cette personne
+    - identify this person
+    - recognize this person
+    - qui est cette personne
+    - who is this person
+  refusal: >-
+    Je vérifie qu'une photo, une vidéo ou un message vocal peut être montré sans danger : pas de nudité ni de contenu sexuel, pas de
+    violence graphique, pas de menace ni de harcèlement. Je n'identifie personne.
+
+requires:
+  capabilities:
+    - key: orazaka.safety.media.assess
+      routingKey: job.safety.assess
+      handlerKey: safety.assess
+      billableCapability: IMAGE
+      billableUnit: CALL
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          looks: { type: array, description: "Les réponses du modèle de vision, une par image, dans l'ordre." }
+          frames: { type: integer, minimum: 0, maximum: 8, description: "Le nombre d'images examinées." }
+          heard: { type: string, description: "Le jugement du modèle de chat sur la transcription (JSON), s'il y avait du son." }
+          expectsSpeech: { type: boolean, description: "Il y avait du son à juger." }
+        required: [frames, expectsSpeech]
+      outputSchema:
+        type: object
+        properties:
+          report: { type: object, description: "Le verdict en codes : APPROVED, REJECTED (avec les motifs et les images) ou UNREADABLE." }
+          reportJson: { type: string }
+          verdict: { type: string, enum: [APPROVED, REJECTED, UNREADABLE] }
+        required: [report, reportJson, verdict]
+  workers:
+    - name: orazaka-worker-safety
+      bindings:
+        - "job.safety.*"
+      concurrency: 1
+
+studios:
+  - key: media-safety
+    profession: general
+    iconKey: shield-check
+    pricing: FREE
+    entitlementKey: studio.media-safety
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 60
+    blueprint: studios/media-safety/blueprint.json
