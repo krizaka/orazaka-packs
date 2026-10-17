@@ -1,0 +1,15 @@
+pack:
+  label: Vérification des photos de profil
+  tagline: Ces photos forment-elles le profil d'une vraie personne adulte ?
+  description: >-
+    Vérifie un ensemble de photos de profil : assez de photos, assez de photos de visage, la même personne d'une photo
+    de visage à l'autre, rien d'écrit sur l'image, pas de capture d'écran. Elle répond en codes, n'identifie personne et
+    ne reconnaît aucune célébrité.
+studios:
+  profile-photo-check:
+    label: Vérification des photos de profil
+    tagline: Des visages présents, la même personne partout, rien d'écrit sur la photo.
+    description: >-
+      Trouve les visages de chaque photo, pose à un modèle de vision trois questions par oui ou non, et rend un verdict
+      fait de codes. Les vecteurs de visage vivent le temps d'un travail et ne sont jamais gardés ; une réponse
+      illisible du modèle ne bloque rien.

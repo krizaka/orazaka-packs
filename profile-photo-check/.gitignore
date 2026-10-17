@@ -1,0 +1,3 @@
+.venv/
+worker/__pycache__/
+worker/models/

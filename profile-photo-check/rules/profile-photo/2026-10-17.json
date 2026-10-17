@@ -1,0 +1,32 @@
+{
+  "rulesetId": "profile-photo",
+  "version": "2026-10-17",
+  "revision": 1,
+  "revisionNote": "First ruleset. Thresholds are the models' published operating points, made stricter on the side of not accusing: a photo is called a mismatch only when the faces are clearly different.",
+  "detector": {
+    "model": "YuNet 2023mar (OpenCV Zoo, MIT)",
+    "scoreThreshold": 0.85,
+    "nmsThreshold": 0.3,
+    "topK": 20,
+    "minFaceHeightRatio": 0.1,
+    "dominanceRatio": 2.0,
+    "maxEdge": 960
+  },
+  "recognizer": {
+    "model": "SFace 2021dec (OpenCV Zoo, Apache-2.0)",
+    "sameCosine": 0.363,
+    "mismatchCosine": 0.25
+  },
+  "look": {
+    "checks": [
+      { "id": "MINOR_LIKELY", "field": "appears_under_18", "severity": "BLOCK" },
+      { "id": "TEXT_OR_CONTACT", "field": "text_or_contact_overlay", "severity": "BLOCK" },
+      { "id": "SCREENSHOT", "field": "screenshot_or_photo_of_screen", "severity": "BLOCK" }
+    ]
+  },
+  "limits": [
+    "FACE_IDENTITY_IS_A_MISMATCH_DETECTOR",
+    "NO_CELEBRITY_RECOGNITION",
+    "MODEL_ANSWERS_CAN_BE_WRONG"
+  ]
+}
