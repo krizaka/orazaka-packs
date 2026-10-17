@@ -61,6 +61,8 @@ def _engine(ruleset: dict) -> "faces.FaceEngine":
 
 def _count(payload: dict, key: str, low: int, high: int) -> int:
     value = payload.get(key)
+    if isinstance(value, str) and value.strip().isdigit():  # a blueprint renders a lone number as text
+        value = int(value)
     if isinstance(value, bool) or not isinstance(value, int) or not low <= value <= high:
         raise InvalidJobPayload(f"'{key}' must be an integer between {low} and {high}")
     return value

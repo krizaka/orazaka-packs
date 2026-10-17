@@ -81,9 +81,17 @@ def test_assess_refuses_facts_that_are_not_the_inspection_output():
         raise AssertionError(f"{facts!r} must be refused")
 
 
+def test_assess_reads_counts_a_blueprint_rendered_as_text():
+    facts = worker._inspect({"photosBase64": photos("face-a", "face-a", "none", "none")}, engine=Engine())["factsJson"]
+    out = worker._assess({"facts": facts, "looks": [], "minPhotos": "4", "maxPhotos": "6", "minFacePhotos": "2"})
+    assert out["passes"] is True
+    out = worker._assess({"facts": facts, "looks": [], "minPhotos": "5", "maxPhotos": "6", "minFacePhotos": "2"})
+    assert out["report"]["blockers"][0]["code"] == "TOO_FEW_PHOTOS"
+
+
 def test_assess_refuses_counts_out_of_range():
     facts = json.dumps({"photos": [], "identity": {"status": "NOT_COMPARABLE", "mismatch": [], "compared": 0}})
-    for counts in [{"minPhotos": 0, "maxPhotos": 6, "minFacePhotos": 2}, {"minPhotos": "4", "maxPhotos": 6, "minFacePhotos": 2}, {"minPhotos": 4, "maxPhotos": 99, "minFacePhotos": 2}, {"minPhotos": True, "maxPhotos": 6, "minFacePhotos": 2}]:
+    for counts in [{"minPhotos": 0, "maxPhotos": 6, "minFacePhotos": 2}, {"minPhotos": "four", "maxPhotos": 6, "minFacePhotos": 2}, {"minPhotos": "-4", "maxPhotos": 6, "minFacePhotos": 2}, {"minPhotos": 4, "maxPhotos": 99, "minFacePhotos": 2}, {"minPhotos": True, "maxPhotos": 6, "minFacePhotos": 2}]:
         try:
             worker._assess(dict(counts, facts=facts))
         except worker.InvalidJobPayload:
