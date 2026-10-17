@@ -17,7 +17,7 @@ requires:
   capabilities: []
 
 catalog:
-  categoryKey: business
+  categoryKey: business-compliance
   iconKey: target
   status: PUBLISHED
   sortWeight: 90

@@ -9,7 +9,7 @@ pack:
     professionnel, pas à sa place. Données de santé, conservées 30 jours au plus, jamais
     utilisées pour entraîner un modèle.
 category:
-  label: Vie personnelle
+  label: Bien-être
   description: "Les packs pour vous, pas pour votre travail."
 studios:
   guided-journaling:

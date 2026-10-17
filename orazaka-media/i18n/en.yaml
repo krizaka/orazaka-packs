@@ -1,6 +1,9 @@
 pack:
   label: "Media Studios"
   tagline: "Generate, listen, describe — without leaving a run."
+category:
+  label: Creativity & media
+  description: "Packs that produce images, video, sound and showcases."
 studios:
   image-generation:
     label: "Image generation"

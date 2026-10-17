@@ -4,8 +4,8 @@ pack:
   description: >-
     The real-estate agent's pack: the Real-Estate Reels Studio and the credits to run it.
 category:
-  label: Business
-  description: "The packs that do the job: prospect, validate, produce."
+  label: Creativity & media
+  description: "Packs that produce images, video, sound and showcases."
 studios:
   realestate-reels:
     label: Real-Estate Reels

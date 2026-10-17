@@ -150,7 +150,7 @@ requires:
   capabilities: []
 
 catalog:
-  categoryKey: lifestyle
+  categoryKey: wellbeing
   iconKey: sparkles
   status: PUBLISHED
   sortWeight: 30
@@ -158,7 +158,7 @@ catalog:
   # the platform ahead of time — "a new pack is data", including the shelf it stands on.
   category:
     iconKey: heart
-    sortWeight: 20
+    sortWeight: 60
 
 pricing:
   priceCents: 0

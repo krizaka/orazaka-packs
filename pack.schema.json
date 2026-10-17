@@ -95,7 +95,13 @@
       "additionalProperties": false,
       "properties": {
         "categoryKey": {
-          "$ref": "#/$defs/key"
+          "description": "The shelf the pack stands on: a CLOSED list, so a typo fails here and not on a buyer's screen. Its label is the `category:` block of the pack's i18n (EN and FR); the catalogue and the sites group by it, read from the generated data.",
+          "enum": [
+            "business-compliance",
+            "creativity-media",
+            "wellbeing",
+            "data-analytics"
+          ]
         },
         "iconKey": {
           "$ref": "#/$defs/iconKey"

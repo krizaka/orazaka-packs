@@ -8,8 +8,8 @@ pack:
     advice on treatment, no emergency service — what you bring to a professional, not
     instead of one. Health data, kept 30 days at most, never used to train a model.
 category:
-  label: Lifestyle
-  description: "The packs for you, not for your work."
+  label: Wellbeing
+  description: "Packs for you, not for your work."
 studios:
   guided-journaling:
     label: Guided Journaling

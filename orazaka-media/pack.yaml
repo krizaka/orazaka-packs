@@ -36,7 +36,7 @@ regulatoryClass: STANDARD
 kind: TOOLKIT
 
 catalog:
-  categoryKey: business
+  categoryKey: creativity-media
   iconKey: image
   status: PUBLISHED
   sortWeight: 90
@@ -45,8 +45,8 @@ catalog:
   # where another bundle had already opened it (ADR-068, #45). Idempotent — an existing
   # shelf is left exactly as it is, never restyled by a later pack.
   category:
-    iconKey: briefcase
-    sortWeight: 100
+    iconKey: image
+    sortWeight: 80
 
 # Zero, and included: a TOOLKIT is not bought on this page. The price exists because
 # a catalogued pack must carry one — billing_pack_entitlement is what makes the grant

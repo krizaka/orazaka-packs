@@ -41,7 +41,7 @@ requires:
   capabilities: []                    # empty for DATA: you reuse orazaka.core.*
 
 catalog:
-  categoryKey: business
+  categoryKey: business-compliance     # business-compliance | creativity-media | wellbeing | data-analytics (closed list)
   iconKey: sparkles
 
 pricing:

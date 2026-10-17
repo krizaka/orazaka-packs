@@ -51,7 +51,7 @@ requires:
       concurrency: 1
 
 catalog:
-  categoryKey: business
+  categoryKey: business-compliance
   iconKey: repeat
   # Off the shelf (orazaka-packs#2): a reference for the extension point, not a product a customer
   # should meet in the marketplace. DRAFT keeps the bundle installable and its worker testable;
