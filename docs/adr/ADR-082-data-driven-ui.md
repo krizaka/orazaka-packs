@@ -74,3 +74,14 @@ scope).
 - Cost: zero infrastructure; tokens of the answer (a dashboard is ~1–3 k tokens).
 - What would make us revisit: A2UI v1.0 stabilising its action messages (slice 2 aligns with it), or AG-UI becoming the
   transport our clients already speak.
+
+## Proof (2026-10-17, dev)
+
+- Renderer: `@krizaka/ui` 3.22.0 `genui` + `@krizaka/charts` 0.6.0 `genui` (krizaka/krizaka-ui#314); chat:
+  krizaka/orazaka-web-client#139; Studio: `data-driven-ui` 1.2.0 (#46, #47, #48), launchable from the chat bar.
+- Measured: with the first prompt, the default model wrote objects over several lines and forgot `"component"` — the
+  renderer refused the surface and the chat fell back to the text, as designed. The prompt now gives the exact three
+  lines and a complete example; a stray closing brace is tolerated (krizaka/krizaka-ui#317).
+- Recording: run `186125cd-f9f3-47ed-8976-db52e9ac3d06`, the chat answering with a live dashboard over Orochia's real
+  activity — [video](https://krizaka-assets.b-cdn.net/site/products/orazaka/video/genui-chat.fa80de9821.mp4)
+  ([webm](https://krizaka-assets.b-cdn.net/site/products/orazaka/video/genui-chat.fe6a22927c.webm)).
