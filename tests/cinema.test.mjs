@@ -20,7 +20,7 @@ test("the script is one LLM step whose prompt carries the content rules", () => 
   const [step] = read("cinematic-script").definition.steps;
   assert.equal(step.featureKey, "orazaka.core.chat.completion");
   const prompt = step.inputs.prompt;
-  for (const rule of ["ORIGINAL", "Marvel", "no real person", "clearly an AI presenter", "Nothing sexual", "No text", "KRIZAKA CINEMATIC KIT", "LENS in mm", "speed ramp", '"lens": focal length', '"lighting"', '"atmosphere"']) {
+  for (const rule of ["ORIGINAL", "Marvel", "no real person", "clearly an AI presenter", "Nothing sexual", "No text", "KRIZAKA CINEMATIC KIT", "LENS in mm", "speed ramp", '"lens": focal length', '"lighting"', '"atmosphere"', '"ambience": the sound bed']) {
     assert.ok(prompt.includes(rule), `the prompt must say: ${rule}`);
   }
   const props = read("cinematic-script").inputSchema.properties;
