@@ -9,6 +9,11 @@ category:
   label: Data & analytics
   description: "Packs that read your product's data: recommendations, insights, dashboards."
 studios:
+  data-driven-ui:
+    label: Data-driven UI
+    tagline: A CSV and a question become a live dashboard.
+    description: >-
+      Give your data (a CSV, a JSON export of your analytics) and ask: the answer comes as figures, charts and a table you can read at a glance. Every number comes from your data.
   video-understanding:
     label: Video understanding
     tagline: What a video is about — topics, tags and safety signals, from a keyframe.

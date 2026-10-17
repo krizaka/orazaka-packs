@@ -7,6 +7,7 @@
 #   erasures in, feeds and creator insights out, < 150 ms. That is not a Studio run (a
 #   run is an asynchronous, metered saga), so the pack declares it as the API scopes a
 #   buyer's service key opens — `requires.api` — and the edge enforces them.
+# - DATA-DRIVEN UI (ADR-082): a CSV or JSON and a question become an A2UI v0.9 dashboard.
 # - UNDERSTANDING is asynchronous and metered, so it is Studios: what a video is about
 #   (a keyframe through vision, then a JSON reading) and creator suggestions the
 #   creator approves.
@@ -17,7 +18,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: data-analytics
-version: 1.0.0
+version: 1.1.0
 tier: DATA
 distribution: OSS
 regulatoryClass: STANDARD
@@ -40,6 +41,15 @@ requires:
           - "GET /api/v1/recommendations/for-you"
           - "GET /api/v1/recommendations/similar"
           - "GET /api/v1/recommendations/insights"
+      # Product analytics (ADR-081): a product's own events in; KPIs, cohorts, funnels out.
+      - key: analytics:sync
+        routes:
+          - "POST /api/v1/analytics/events"
+          - "POST /api/v1/analytics/erasures"
+      - key: analytics:read
+        routes:
+          - "GET /api/v1/analytics/insights"
+          - "GET /api/v1/analytics/funnel"
 
 catalog:
   categoryKey: data-analytics
@@ -57,6 +67,15 @@ pricing:
   includedCredits: 300
 
 studios:
+  - key: data-driven-ui
+    profession: general
+    iconKey: chart
+    pricing: PAID
+    entitlementKey: studio.data-driven-ui
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 30
+    blueprint: studios/data-driven-ui/blueprint.json
   - key: video-understanding
     profession: general
     iconKey: vision
