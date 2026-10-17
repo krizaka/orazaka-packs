@@ -121,6 +121,10 @@ test("data-driven UI (ADR-082): one LLM step that answers in A2UI v0.9 with the 
   for (const component of ["Column", "Row", "Text", "Callout", "KpiStat", "ChartCard", "Table"]) assert.ok(prompt.includes(`"component":"${component}"`), component);
   for (const rule of ["never invent", "No other component", "no HTML, no URL, no code"]) assert.ok(prompt.includes(rule), rule);
   const props = blueprint("data-driven-ui").inputSchema.properties;
-  assert.equal(props.data.maxLength, 20000);
-  assert.deepEqual(blueprint("data-driven-ui").inputSchema.required, ["data", "question"]);
+  assert.equal(props.question.maxLength, 20000);
+  // Launchable from the chat bar: one step, one required prose input — the message, data pasted in it or not.
+  assert.deepEqual(blueprint("data-driven-ui").inputSchema.required, ["question"]);
+  assert.equal(props.question.format, "prose");
+  assert.equal(props.data.format, undefined, "a single prose input, so the chat bar knows where the message goes");
+  assert.ok(prompt.includes("{{inputs.data:}}"), "the data block may be empty");
 });
