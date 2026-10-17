@@ -60,3 +60,15 @@ tenants.
    a slow engine never empties a page.
 
 Orochia is the first consumer (krizaka/orochia#226): For you, More like this, and the creator's `/insights` page.
+
+## Seen running (dev, 2026-10-17)
+
+In Orazaka's chat, the QA account picks **Data-driven UI**, pastes Orochia's real activity per day (aggregated from
+Orazaka's analytics, ADR-081) and asks how the audience is doing; the answer arrives as figures, a chart and a callout,
+drawn by `@krizaka/ui/genui` (ADR-082). Run `186125cd-f9f3-47ed-8976-db52e9ac3d06` (blueprint 1.2.0, default chat model).
+
+[![The chat answering with a dashboard](https://krizaka-assets.b-cdn.net/site/products/orazaka/video/genui-chat-poster.64cb1eafca.webp)](https://krizaka-assets.b-cdn.net/site/products/orazaka/video/genui-chat.fa80de9821.mp4)
+
+What the recording also shows, honestly: the figures (15 → 27 interactions, 15 saves) come from the data, but the
+default model mislabels the days (« Day 15 », « Day 17 ») and rounds a ratio (« 5x » for 15x) — the renderer checks
+shapes, not truth. A larger catalogue model (`model`, under « More options ») reads them better.
