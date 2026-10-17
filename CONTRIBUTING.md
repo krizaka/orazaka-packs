@@ -152,6 +152,20 @@ human), `CONNECTOR` (calls out), `KNOWLEDGE`. **`onError`**: `FAIL` | `SKIP` | `
 template that is *exactly one placeholder* over a list stays a list; anywhere else it renders as
 text. That is what lets a step take a list of asset ids.
 
+**Closed sets are chosen, never typed.** A field whose values are a known set is a list in every client
+(web, phone), so a person cannot type a value that does not exist (`tests/closed-sets.test.mjs` refuses it):
+
+| You write | The client draws |
+| :--- | :--- |
+| `"enum": ["9:16", "16:9"]` | a select (readable names come from the client's messages) |
+| `"oneOf": [{ "const": "9:16", "title": "Vertical" }, …]` | a select with your labels |
+| `"x-options": { "source": "models", "category": "image" }` | a searchable picker fed by the model catalogue (`orazaka_models`): label, local or cloud, speed, typical time, price, availability and the default that will run. **Never list the models yourself** — a hand-kept `enum` drifts from the catalogue. |
+| `"x-control": "seed"` | a number with a « random » switch (nothing is sent while it is on) |
+| `"x-advanced": true` | folded under « More options » — model, seed and things to avoid are advanced; the field the Studio is about is not |
+
+The Studio service writes the catalogue's list into the schema it serves (`oneOf` of `const`/`title`, the facts in
+`x-meta`) and refuses, before any credit is held, a value that is not in it.
+
 **`estimatedCredits` is a hold, not a price.** Size it for your blueprint's *worst legal input* —
 the maximum `forEach` fan-out, every optional step firing. It is released, not charged: a run
 settles what it measured.
