@@ -86,10 +86,14 @@ test("a presence is stylised, says it is an AI, and has a catalogued voice for e
   }
 });
 
+test("each presence has its own voice in each language", () => {
+  for (const lang of ["fr-FR", "en"]) assert.equal(new Set(listening.presences.map((p) => p.voices[lang])).size, listening.presences.length, `two presences share a ${lang} voice`);
+});
+
 test("every voice names a licence, and a copyleft one is flagged for review", () => {
   for (const [name, v] of Object.entries(listening.voices)) {
     assert.ok(v.licence, `${name}: no licence`);
-    if (/AGPL|GPL/.test(v.licence)) assert.ok(v.licenceReview, `${name}: copyleft without a review note`);
+    if (/AGPL|GPL|non-commercial/.test(v.licence)) assert.ok(v.licenceReview, `${name}: copyleft without a review note`);
   }
   assert.equal(listening.ear.stt.model, "whisper-base");
   assert.ok(listening.ear.stt.maxSeconds <= 30);
