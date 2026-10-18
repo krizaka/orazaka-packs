@@ -110,3 +110,43 @@ test("the words of the data stay clear of the care vocabulary", () => {
   const strings = JSON.stringify({ ...listening, voices: undefined, conversation: { ...listening.conversation, never: undefined } });
   assert.ok(!never.test(strings), `care vocabulary in listening.json: ${strings.match(never)?.[0]}`);
 });
+
+// ── The English path (2026-10-18): one prompt and one fixed reply that serve both languages ──
+const block = (key) => {
+  const m = pack.match(new RegExp(`^  ${key}: >-\\n((?:    .*\\n|\\n)+)`, "m"));
+  return m ? m[1].replace(/\n\s*/g, " ").trim() : "";
+};
+
+test("the system prompt tells the model to answer in the person's language, in both languages", () => {
+  const prompt = block("systemPrompt");
+  assert.match(prompt, /If they speak English, answer in English from start to\s+finish|answer in English from start to finish/);
+  assert.match(prompt, /si elle t'écrit ou te parle en anglais, tu réponds en anglais/);
+  assert.match(prompt, /I'm an AI\. I'm neither a therapist nor an emergency service/);
+  assert.match(prompt, /You never diagnose/);
+  assert.match(prompt, /never give a phone number/);
+});
+
+test("the English half of the prompt keeps every refusal of the French half", () => {
+  const en = block("systemPrompt").split("You are an AI presence.")[1] ?? "";
+  for (const rule of [/never diagnose/, /medication/, /never interpret the person's mood/, /never promise an improvement/, /never present yourself as a person/, /never give a phone number/, /one question at a time/]) assert.match(en, rule);
+  assert.ok(!/\d{3}[- ]?\d{3,4}|\b988\b|\b811\b/.test(en), "the prompt never carries a number");
+});
+
+test("the fixed crisis reply speaks both languages: the original French first, then the English, then the region's line", () => {
+  const reply = block("response");
+  assert.ok(reply.startsWith("Je m'arrête là, parce que ce que vous venez d'écrire compte plus que l'exercice en cours."));
+  assert.match(reply, /Des personnes formées écoutent, gratuitement et tout de suite :/);
+  assert.match(reply, /I'm stopping here, because what you just wrote matters more than the exercise we were doing\./);
+  assert.match(reply, /Trained people listen, for free and right away:$/);
+  assert.ok(reply.indexOf("Je m'arrête") < reply.indexOf("I'm stopping here"));
+  assert.ok(!/\d{3}/.test(reply), "the reply carries no number: the line is the region's, verified at its source");
+});
+
+test("the English reply says no more than the French one: no advice, no diagnosis, no promise", () => {
+  const en = block("response").split("I'm stopping here")[1] ?? "";
+  assert.ok(!/(diagnos|treat|therap|medic|will be fine|get better|everything will)/i.test(en), en);
+});
+
+test("the review note says the English is not yet read by a person", () => {
+  assert.match(pack, /traduction anglaise à relire par une personne/);
+});

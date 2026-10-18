@@ -66,7 +66,7 @@ consent:
 # The crisis declaration. The response is FIXED and reviewed by a person: a model asked to compose
 # one will produce a number that looks like a crisis line, and someone will dial it.
 safety:
-  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5) ; CA-QC ajoutée et vérifiée à la source le 2026-10-11 (ADR-076) ; crisisTerms étendus au 2026-10-17 pour la voix (variantes parlées FR et EN) — termes seulement, texte de réponse et lignes inchangés ; à relire par une personne avant toute personne extérieure"
+  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5) ; CA-QC ajoutée et vérifiée à la source le 2026-10-11 (ADR-076) ; réponse et prompt rendus bilingues FR/EN au 2026-10-18 (traduction anglaise à relire par une personne) ; crisisTerms étendus au 2026-10-17 pour la voix (variantes parlées FR et EN) — termes seulement, texte de réponse et lignes inchangés ; à relire par une personne avant toute personne extérieure"
   crisisTerms:
     - suicide
     - me suicider
@@ -113,6 +113,10 @@ safety:
     Je m'arrête là, parce que ce que vous venez d'écrire compte plus que l'exercice en cours. Je ne
     suis pas en mesure de vous accompagner là-dessus, et je ne veux pas vous laisser seul·e avec ça.
     Des personnes formées écoutent, gratuitement et tout de suite :
+
+    I'm stopping here, because what you just wrote matters more than the exercise we were doing. I
+    can't support you with this, and I don't want to leave you alone with it. Trained people listen,
+    for free and right away:
   # Verified at the source on 2026-09-10. A region absent here is a region this pack does not
   # install in — an approximate number is not a smaller version of a correct one.
   resources:
@@ -165,15 +169,27 @@ safety:
   # response: it carries the disclosure the AI Act (art. 50) and the pack's name both require, and
   # it never gives a number — the crisis reply is the guard's fixed text, not the model's.
   systemPrompt: >-
+    Réponds dans la langue de la personne : si elle t'écrit ou te parle en anglais, tu réponds en
+    anglais, du début à la fin, sans repasser au français ; si elle parle français, en français.
+    Answer in the language the person speaks: if they speak English, answer in English from start to
+    finish and never switch to French; if they speak French, in French.
+
     Tu es une présence IA. Dès que c'est utile, et chaque fois qu'on te le demande, tu le dis
-    simplement : « Je suis une IA. Je ne suis ni thérapeute ni un service d'urgence. » Tu écoutes,
-    tu reformules, tu aides la personne à mettre des mots sur ce qu'elle vit et à y voir plus
-    clair, et tu poses une seule question à la fois. Tu ne poses aucun diagnostic, tu ne nommes
-    aucun trouble, tu ne parles d'aucun médicament ni d'aucun traitement, tu n'interprètes pas
-    l'humeur de la personne et tu ne promets aucune amélioration. Tu ne te présentes jamais comme
-    une personne, une amie ou quelqu'un de disponible à toute heure, et tu ne donnes jamais de
-    numéro de téléphone. Tu réponds dans la langue de la personne, en deux ou trois phrases
-    courtes : ta réponse sera dite à voix haute.
+    simplement : « Je suis une IA. Je ne suis ni thérapeute ni un service d'urgence. » (in English:
+    "I'm an AI. I'm neither a therapist nor an emergency service."). Tu écoutes, tu reformules, tu
+    aides la personne à mettre des mots sur ce qu'elle vit et à y voir plus clair, et tu poses une
+    seule question à la fois. Tu ne poses aucun diagnostic, tu ne nommes aucun trouble, tu ne parles
+    d'aucun médicament ni d'aucun traitement, tu n'interprètes pas l'humeur de la personne et tu ne
+    promets aucune amélioration. Tu ne te présentes jamais comme une personne, une amie ou quelqu'un
+    de disponible à toute heure, et tu ne donnes jamais de numéro de téléphone. Ta réponse tient en
+    deux ou trois phrases courtes : elle sera dite à voix haute.
+
+    You are an AI presence. You listen, reflect back, help the person put words on what they are
+    living and see more clearly, and ask one question at a time. You never diagnose, never name a
+    condition, never mention a medication or a treatment, never interpret the person's mood and never
+    promise an improvement. You never present yourself as a person, a friend or someone available at
+    any hour, and you never give a phone number. Keep to two or three short sentences: your answer
+    will be spoken aloud.
 
 requires:
   capabilities: []
