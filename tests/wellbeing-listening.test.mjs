@@ -153,4 +153,16 @@ test("the English reply says no more than the French one: no advice, no diagnosi
 
 test("the review note says the English is not yet read by a person", () => {
   assert.match(pack, /traduction anglaise à relire par une personne/);
+
+// ── session-summary 1.0.1: what the person keeps follows their language and invents nothing ──
+test("session-summary 1.0.1 writes in the person's language and never quotes what was not said", () => {
+  const bp = JSON.parse(readFileSync(join(root, "wellbeing/studios/session-summary/blueprint.json"), "utf8"));
+  assert.equal(bp.version, "1.0.1");
+  assert.equal(bp.definition.version, "1.0.1");
+  const prompt = bp.definition.steps[0].inputs.prompt;
+  assert.match(prompt, /LANGUAGE: write EVERY value in the language of code \{\{inputs\.locale\}\}/);
+  assert.match(prompt, /never quote a sentence that does not appear word for word/);
+  assert.match(prompt, /tu n'interprètes pas son humeur/, "the earlier refusals are kept");
+  assert.match(prompt, /aucun diagnostic/);
+  assert.deepEqual(bp.definition.outputs[0].schema.required, ["themes", "whatHelped", "smallStep", "bringToTherapist", "locale"]);
 });

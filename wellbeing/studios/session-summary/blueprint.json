@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "Résumé d'un moment d'échange — ce que la personne garde : thèmes, ce qui a aidé, un petit pas, ce qu'elle veut apporter à sa thérapeute. Décrit, jamais expliqué. La sortie est un objet JSON tenu à son contrat (ADR-076).",
+  "changelog": "1.0.1 — la langue des valeurs suit la langue de la personne (anglais pour « en »), et rien n'est cité qui n'ait pas été dit : une phrase entre guillemets doit figurer mot pour mot dans le moment, sinon elle est omise. Décrit, jamais expliqué.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "session-summary",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "steps": [
       {
         "id": "summarise",
@@ -14,7 +14,7 @@
         "featureKey": "orazaka.core.chat.completion",
         "dependsOn": [],
         "inputs": {
-          "prompt": "Tu écris ce qu'une personne garde d'un moment d'échange qu'elle vient d'avoir, pour elle-même et pour ce qu'elle voudra apporter à sa ou son thérapeute. Tu DÉCRIS ce qui a été dit, avec ses mots autant que possible, et tu t'arrêtes là : tu n'expliques rien, tu ne poses aucun diagnostic, tu ne nommes aucun trouble, tu ne parles d'aucun médicament ni d'aucun traitement, et tu n'interprètes pas son humeur — les deux notes d'humeur ci-dessous sont celles qu'elle a déclarées elle-même, tu ne les commentes pas. Quand quelque chose est ambigu, tu restes au plus près de ce qu'elle a dit.\n\nRéponds UNIQUEMENT par un objet JSON, sans aucun texte avant ni après, exactement de cette forme :\n{\"themes\": [au plus 3 thèmes courts], \"whatHelped\": \"ce qui a aidé, en une phrase\", \"smallStep\": \"un petit pas qu'elle a envisagé, en une phrase\", \"bringToTherapist\": [ce qu'elle voudrait apporter à sa thérapeute, 0 à 3 points], \"locale\": \"{{inputs.locale}}\"}\nÉcris les valeurs dans la langue {{inputs.locale}}.\n\nLe fil des fois précédentes (peut être vide) :\n{{inputs.thread}}\n\nHumeur déclarée avant : {{inputs.moodBefore}} — après : {{inputs.moodAfter}} (sur 5, auto-déclarée).\n\nLe moment :\n{{inputs.turns}}"
+          "prompt": "Tu écris ce qu'une personne garde d'un moment d'échange qu'elle vient d'avoir, pour elle-même et pour ce qu'elle voudra apporter à sa ou son thérapeute. Tu DÉCRIS ce qui a été dit, avec ses mots autant que possible, et tu t'arrêtes là : tu n'expliques rien, tu ne poses aucun diagnostic, tu ne nommes aucun trouble, tu ne parles d'aucun médicament ni d'aucun traitement, et tu n'interprètes pas son humeur — les deux notes d'humeur ci-dessous sont celles qu'elle a déclarées elle-même, tu ne les commentes pas. Quand quelque chose est ambigu, tu restes au plus près de ce qu'elle a dit.\n\nRéponds UNIQUEMENT par un objet JSON, sans aucun texte avant ni après, exactement de cette forme :\n{\"themes\": [au plus 3 thèmes courts], \"whatHelped\": \"ce qui a aidé, en une phrase\", \"smallStep\": \"un petit pas qu'elle a envisagé, en une phrase\", \"bringToTherapist\": [ce qu'elle voudrait apporter à sa thérapeute, 0 à 3 points], \"locale\": \"{{inputs.locale}}\"}\nLANGUE : écris TOUTES les valeurs dans la langue de code {{inputs.locale}} (« en » = anglais, « fr »/« fr-CA » = français), quelle que soit la langue de ces consignes. LANGUAGE: write EVERY value in the language of code {{inputs.locale}} (\"en\" = English, \"fr\"/\"fr-CA\" = French), whatever the language of these instructions.\nCITATIONS : ne cite jamais une phrase qui ne figure pas mot pour mot dans le moment ci-dessous ; au moindre doute, reformule sans guillemets ou omets. QUOTES: never quote a sentence that does not appear word for word in the moment below; when in doubt, paraphrase without quotation marks or leave it out. N'invente rien, ne parle pas de toi (la présence) à la première personne.\n\nLe fil des fois précédentes (peut être vide) :\n{{inputs.thread}}\n\nHumeur déclarée avant : {{inputs.moodBefore}} — après : {{inputs.moodAfter}} (sur 5, auto-déclarée).\n\nLe moment :\n{{inputs.turns}}"
         },
         "out": "summary",
         "onError": "FAIL",
@@ -31,21 +31,50 @@
         "schema": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["themes", "whatHelped", "smallStep", "bringToTherapist", "locale"],
+          "required": [
+            "themes",
+            "whatHelped",
+            "smallStep",
+            "bringToTherapist",
+            "locale"
+          ],
           "properties": {
             "themes": {
               "type": "array",
               "maxItems": 3,
-              "items": { "type": "string", "minLength": 1, "maxLength": 200 }
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              }
             },
-            "whatHelped": { "type": "string", "maxLength": 600 },
-            "smallStep": { "type": "string", "maxLength": 600 },
+            "whatHelped": {
+              "type": "string",
+              "maxLength": 600
+            },
+            "smallStep": {
+              "type": "string",
+              "maxLength": 600
+            },
             "bringToTherapist": {
               "type": "array",
               "maxItems": 3,
-              "items": { "type": "string", "minLength": 1, "maxLength": 400 }
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400
+              }
             },
-            "locale": { "type": "string", "enum": ["fr-CA", "fr-FR", "fr", "en", "nl"] }
+            "locale": {
+              "type": "string",
+              "enum": [
+                "fr-CA",
+                "fr-FR",
+                "fr",
+                "en",
+                "nl"
+              ]
+            }
           }
         }
       }
@@ -53,7 +82,10 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": ["turns", "locale"],
+    "required": [
+      "turns",
+      "locale"
+    ],
     "properties": {
       "turns": {
         "type": "string",
@@ -81,10 +113,19 @@
       },
       "locale": {
         "type": "string",
-        "enum": ["fr-CA", "fr-FR", "fr", "en", "nl"],
+        "enum": [
+          "fr-CA",
+          "fr-FR",
+          "fr",
+          "en",
+          "nl"
+        ],
         "title": "Langue du résumé"
       }
     }
   },
-  "configSchema": { "type": "object", "properties": {} }
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
 }
