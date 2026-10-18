@@ -153,6 +153,7 @@ test("the English reply says no more than the French one: no advice, no diagnosi
 
 test("the review note says the English is not yet read by a person", () => {
   assert.match(pack, /traduction anglaise à relire par une personne/);
+});
 
 // ── session-summary 1.0.1: what the person keeps follows their language and invents nothing ──
 test("session-summary 1.0.1 writes in the person's language and never quotes what was not said", () => {
