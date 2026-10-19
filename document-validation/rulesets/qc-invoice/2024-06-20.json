@@ -1,0 +1,215 @@
+{
+  "rulesetId": "qc-invoice",
+  "label": "Facture — Québec (TPS et TVQ)",
+  "jurisdiction": "QC",
+  "version": "2024-06-20",
+  "effectiveFrom": "2024-06-20",
+  "effectiveTo": null,
+  "optIn": true,
+  "documentType": "invoice",
+  "source": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (version en vigueur depuis le 2024-06-20, à jour au 2026-09-30 : seuils de 100 $ et de 500 $) ; numéro de compte de la TPS/TVH (ARC) ; numéro d'inscription au fichier de la TVQ (Revenu Québec)",
+  "revision": 1,
+  "reviewStatus": "TO_REVIEW_BY_LAWYER",
+  "reviewNote": "Corpus rédigé à partir du texte du règlement fédéral lu sur le site de la législation du Canada (le 2026-10-19). Non encodé, faute d'avoir pu lire la source : l'exigence propre à la TVQ (règlement québécois, page de Revenu Québec inaccessible à la lecture automatisée), le nom du fournisseur, le nom de l'acheteur et la description des biens ou services (aucune règle lexicale honnête), le taux et le calcul des taxes. Les règles de seuil (100 $, 500 $) ne lisent pas le montant : le constat le dit. Le numéro n'est pas vérifié auprès de l'ARC ni de Revenu Québec : seule sa forme l'est. À faire relire par un comptable ou un avocat avant tout usage autre que la démonstration.",
+  "rules": [
+    {
+      "ruleId": "QC-INV-001",
+      "title": "Date de la facture",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (la date de la facture, quel que soit le montant)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)(?:\\bdate\\b(?!\\s*(?:d['’]\\s*)?(?:[ée]ch[ée]ance|limite|de\\s+paiement|due))|[ée]mise?\\s+le|factur[ée]e?\\s+le)[^.\\n]{0,30}?(?:\\b20\\d{2}[-/.]\\d{1,2}[-/.]\\d{1,2}\\b|\\b\\d{1,2}[-/.]\\d{1,2}[-/.]20\\d{2}\\b|\\b\\d{1,2}(?:er)?\\s+(?:janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[uû]t|septembre|octobre|novembre|d[ée]cembre|january|february|march|april|may|june|july|august|september|october|november|december)\\s+20\\d{2}\\b|\\b(?:janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[uû]t|septembre|octobre|novembre|d[ée]cembre|january|february|march|april|may|june|july|august|september|october|november|december)\\s+\\d{1,2},?\\s+20\\d{2}\\b)"
+      },
+      "onPass": "La facture porte une date.",
+      "onFail": "Aucune date de facture n'est indiquée. Elle fait partie des renseignements exigés de toute pièce justificative, quel que soit le montant.",
+      "fixtures": {
+        "pass": [
+          "Date de la facture : 2026-10-12",
+          "Facture émise le 12 octobre 2026",
+          "Invoice date: 12/10/2026"
+        ],
+        "fail": [
+          "Facture n° 2041. Total : 575,00 $",
+          "Date d'échéance : 2026-11-11",
+          "Date à confirmer."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-INV-002",
+      "title": "Montant total de la facture",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (le total payé ou à payer, quel que soit le montant)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)(?<!sous-)(?<!sous )\\btotal\\b(?!\\s+(?:des\\s+)?tax)[^.\\n]{0,40}?(?:\\$\\s*\\d[\\d\\s.,]*|\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?))"
+      },
+      "onPass": "Le total à payer est chiffré.",
+      "onFail": "Le total à payer n'est pas chiffré en dollars. Il fait partie des renseignements exigés de toute pièce justificative.",
+      "fixtures": {
+        "pass": [
+          "Total : 1 149,75 $",
+          "TOTAL $ 1149.75",
+          "Total à payer 575 CAD"
+        ],
+        "fail": [
+          "Sous-total : 1 000,00 $",
+          "Total à venir",
+          "Total des taxes : 149,75 $"
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-INV-003",
+      "title": "Numéro de TPS du fournisseur",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (le numéro d'inscription du fournisseur, dès 100 $) ; format : ARC, numéro de compte de la TPS/TVH (numéro d'entreprise à 9 chiffres, RT, 4 chiffres)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?<!\\d)(?:\\d{9}|\\d{3}[  -]\\d{3}[  -]\\d{3})\\s?RT\\s?\\d{4}(?!\\d)"
+      },
+      "onPass": "Un numéro de TPS bien formé figure sur la facture.",
+      "onFail": "Aucun numéro de TPS bien formé (9 chiffres, RT, 4 chiffres). Pour une facture de 100 $ ou plus, le numéro d'inscription du fournisseur est exigé pour que l'acheteur réclame son crédit de taxe sur les intrants ; il n'est pas exigé en dessous.",
+      "fixtures": {
+        "pass": [
+          "TPS : 123456789 RT0001",
+          "N° de TPS 123 456 789RT 0001",
+          "Numéro de TPS/TVH : 123456789RT0002"
+        ],
+        "fail": [
+          "TPS : 52,50 $",
+          "TPS : 12345678RT0001",
+          "Numéro de TPS à venir"
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-INV-004",
+      "title": "Numéro de TPS mal formé",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "Format : ARC, numéro de compte de la TPS/TVH (numéro d'entreprise à 9 chiffres, RT, 4 chiffres)",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?<!\\d)(?<!\\d[  -])(?!(?:\\d{9}|\\d{3}[  -]\\d{3}[  -]\\d{3})\\s?RT\\s?\\d{4}(?!\\d))\\d[\\d  -]{2,}\\s?RT\\s?\\d+"
+      },
+      "onPass": "Aucun numéro de TPS mal formé.",
+      "onFail": "Un numéro de TPS est mal formé : il doit compter 9 chiffres, les lettres RT et 4 chiffres. Un numéro faux empêche l'acheteur de réclamer son crédit de taxe sur les intrants.",
+      "fixtures": {
+        "pass": [
+          "TPS : 123456789 RT0001",
+          "N° de TPS 123 456 789RT 0001",
+          "Aucun numéro à indiquer."
+        ],
+        "fail": [
+          "TPS : 12345678RT0001",
+          "TPS : 123456789 RT001",
+          "TPS 1234567890RT0001"
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-INV-005",
+      "title": "Numéro de TVQ mal formé",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "Format : Revenu Québec, format du numéro d'inscription au fichier de la TVQ (10 chiffres, TQ, 4 chiffres) (l'exigence de le porter sur la facture n'est pas encodée : texte non lu à la source)",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?<!\\d)(?<!\\d[  -])(?!\\d{10}\\s?TQ\\s?\\d{4}(?!\\d))\\d{1,}\\s?TQ\\s?\\d+"
+      },
+      "onPass": "Aucun numéro de TVQ mal formé.",
+      "onFail": "Un numéro de TVQ est mal formé : il doit compter 10 chiffres, les lettres TQ et 4 chiffres. Il peut être vérifié auprès de Revenu Québec.",
+      "fixtures": {
+        "pass": [
+          "TVQ : 1234567890 TQ0001",
+          "N° de TVQ 1234567890TQ0001",
+          "TPS : 123456789 RT0001"
+        ],
+        "fail": [
+          "TVQ : 123456789 TQ0001",
+          "TVQ : 1234567890 TQ001",
+          "TVQ 12345678901TQ0001"
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-INV-006",
+      "title": "Numéro de TVQ du fournisseur",
+      "severity": "ADVISORY",
+      "method": "DETERMINISTIC",
+      "citation": "Format : Revenu Québec, format du numéro d'inscription au fichier de la TVQ (10 chiffres, TQ, 4 chiffres) (l'exigence de le porter sur la facture n'est pas encodée : texte non lu à la source)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?<!\\d)\\d{10}\\s?TQ\\s?\\d{4}(?!\\d)"
+      },
+      "onPass": "Un numéro de TVQ bien formé figure sur la facture.",
+      "onFail": "Aucun numéro de TVQ bien formé (10 chiffres, TQ, 4 chiffres). Un fournisseur inscrit à la TVQ le porte d'ordinaire : à demander à qui a émis la facture. Cette règle informe, elle ne conclut pas.",
+      "fixtures": {
+        "pass": [
+          "TVQ : 1234567890 TQ 0001",
+          "N° de TVQ 1234567890TQ0001"
+        ],
+        "fail": [
+          "TVQ : 52,50 $",
+          "TVQ : 123456789 TQ0001",
+          "Numéro de TVQ à venir"
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-INV-007",
+      "title": "Taxes indiquées, ou mention qu'elles sont incluses",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (le montant de la taxe, ou la mention qu'elle est incluse, dès 100 $)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)(?:\\b(?:TPS|TVQ|TVH|GST|QST|HST)\\b(?:\\s*\\(?\\d+(?:[.,]\\d+)?\\s*%\\)?)?\\s*:?\\s*(?:\\$\\s*\\d[\\d\\s.,]*|\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?))|taxes?\\s+(?:incluses?|comprises?)|\\b(?:TPS|TVQ)\\s+incluses?|taxes?\\s+included)"
+      },
+      "onPass": "Les taxes sont indiquées, ou dites incluses.",
+      "onFail": "Ni le montant des taxes ni la mention « taxes incluses » ne figurent sur la facture. Pour une facture de 100 $ ou plus, l'un ou l'autre est exigé pour que l'acheteur réclame son crédit de taxe sur les intrants.",
+      "fixtures": {
+        "pass": [
+          "TPS (5 %) : 52,50 $",
+          "TVQ 9,975 % : 104,74 $",
+          "Prix, taxes incluses.",
+          "TPS $ 52.50"
+        ],
+        "fail": [
+          "Total : 1 050,00 $",
+          "TPS : 123456789 RT0001",
+          "Taxes à calculer."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-INV-008",
+      "title": "Conditions de paiement",
+      "severity": "ADVISORY",
+      "method": "DETERMINISTIC",
+      "citation": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (les conditions de paiement, dès 500 $)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)(?:conditions?\\s+de\\s+paiement|modalit[ée]s?\\s+de\\s+paiement|payable\\s+(?:dans|sous|au\\s+plus|[àa]\\s+\\d|[àa]\\s+r[ée]ception|d[èe]s|le\\b)|\\bnet\\s*\\d+|[ée]ch[ée]ance|payment\\s+terms|due\\s+(?:date|on|upon))"
+      },
+      "onPass": "Les conditions de paiement sont indiquées.",
+      "onFail": "Aucune condition de paiement n'est indiquée. Pour une facture de 500 $ ou plus, elles font partie des renseignements exigés ; en dessous, la règle informe seulement.",
+      "fixtures": {
+        "pass": [
+          "Conditions de paiement : net 30 jours",
+          "Payable dans les 30 jours.",
+          "Date d'échéance : 2026-11-11"
+        ],
+        "fail": [
+          "Merci de votre confiance.",
+          "Total : 575,00 $"
+        ]
+      }
+    }
+  ]
+}

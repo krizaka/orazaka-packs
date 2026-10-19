@@ -363,6 +363,63 @@ def test_qc_revision_records_the_correction_and_the_law_is_unchanged():
     assert "dépôt" in ruleset["revisionNote"].lower() and "augmentation" in ruleset["revisionNote"].lower()
 
 
+# --- qc-invoice: the mentions a supplier's invoice carries, from the federal regulation DORS/91-45 art. 3 -------------
+
+QC_INVOICE_CLEAN = """FACTURE n° 2041
+Date de la facture : 12 octobre 2026
+Fournisseur : Atelier Boréal inc.
+TPS : 123456789 RT0001
+TVQ : 1234567890 TQ0001
+Conception du site, 10 heures : 1 000,00 $
+TPS (5 %) : 50,00 $
+TVQ (9,975 %) : 99,75 $
+Total : 1 149,75 $
+Conditions de paiement : net 30 jours
+"""
+
+QC_INVOICE_DEFECTIVE = """FACTURE
+Conception du site, 10 heures : 1 000,00 $
+TPS : 12345678RT0001
+TVQ : 123456789 TQ0001
+Sous-total : 1 000,00 $
+"""
+
+
+def _invoice(text):
+    return _by_id(rules.screen(rules.resolve("qc-invoice", "2026-10-19"), text)[0])
+
+
+def test_a_complete_quebec_invoice_passes_every_rule():
+    findings = _invoice(QC_INVOICE_CLEAN)
+    assert all(f["verdict"] == rules.PASS for f in findings.values()), {k: v["verdict"] for k, v in findings.items()}
+
+
+def test_a_defective_quebec_invoice_is_flagged_rule_by_rule():
+    findings = _invoice(QC_INVOICE_DEFECTIVE)
+    failed = {k for k, v in findings.items() if v["verdict"] == rules.FAIL}
+    assert failed == {"QC-INV-001", "QC-INV-002", "QC-INV-003", "QC-INV-004", "QC-INV-005", "QC-INV-006", "QC-INV-007", "QC-INV-008"}
+    assert findings["QC-INV-004"]["evidenceSpan"]["quote"].startswith("12345678RT0001")
+
+
+def test_an_invoice_without_a_number_is_not_accused_of_a_malformed_one():
+    findings = _invoice(QC_INVOICE_CLEAN.replace("TPS : 123456789 RT0001\n", "").replace("TVQ : 1234567890 TQ0001\n", ""))
+    assert findings["QC-INV-004"]["verdict"] == rules.PASS and findings["QC-INV-005"]["verdict"] == rules.PASS
+    assert findings["QC-INV-003"]["verdict"] == rules.FAIL
+
+
+def test_every_invoice_rule_cites_its_source_and_says_it_awaits_review():
+    ruleset = rules.resolve("qc-invoice", "2026-10-19")
+    assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER" and "DORS/91-45" in ruleset["source"]
+    assert all(r["citation"] for r in ruleset["rules"]) and not [r for r in ruleset["rules"] if r["method"] == "JUDGMENT"]
+    # What could not be read at its source is said not to be encoded, never silently omitted.
+    assert "TVQ" in ruleset["reviewNote"] and "non encodé" in ruleset["reviewNote"].lower()
+
+
+def test_the_invoice_is_opt_in_the_lease_stays_the_default_of_quebec():
+    assert rules.jurisdictions()["QC"] == "qc-residential-lease"
+    assert set(rules.rulesets_by_jurisdiction()["QC"]) == {"qc-residential-lease", "qc-invoice"}
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):

@@ -13,7 +13,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: document-validation
-version: 1.2.0
+version: 1.3.0
 tier: WORKER
 distribution: CLOUD
 regulatoryClass: SENSITIVE
@@ -47,6 +47,7 @@ requires:
           document: { type: string, description: "Le document à contrôler, tel que l'étape amont l'a publié." }
           jurisdiction: { type: string, description: "Le ruleset applicable." }
           asOf: { type: string, description: "La date à laquelle les règles sont évaluées." }
+          ruleset: { type: string, description: "Le corpus nommé, quand la juridiction en porte plusieurs (une facture, par exemple). Par défaut : le bail de la juridiction." }
         required: [document, jurisdiction]
       outputSchema:
         type: object
