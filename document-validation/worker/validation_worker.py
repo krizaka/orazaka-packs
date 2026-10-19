@@ -67,14 +67,30 @@ def _screen(payload: dict) -> tuple:
             f"aucun corpus de règles pour la juridiction '{jurisdiction}'; "
             f"disponibles: {', '.join(sorted(known))}"
         )
-    ruleset = rules.resolve(known[jurisdiction], as_of)
+    ruleset_id = known[jurisdiction]
+    named = str(payload.get("ruleset") or "").strip()
+    if named:
+        # A document type other than the jurisdiction's lease (an invoice): chosen by name, and only among
+        # the rulesets this pack ships FOR THAT jurisdiction — never another country's law.
+        if named not in rules.rulesets_by_jurisdiction().get(jurisdiction, []):
+            raise InvalidJobPayload(
+                f"le corpus '{named}' n'existe pas pour la juridiction '{jurisdiction}'; "
+                f"disponibles: {', '.join(rules.rulesets_by_jurisdiction().get(jurisdiction, []))}"
+            )
+        ruleset_id = named
+    ruleset = rules.resolve(ruleset_id, as_of)
     findings, judgments = rules.screen(ruleset, text)
 
-    questions = "\n".join(f"- {j['ruleId']}: {j['question']}" for j in judgments)
-    prompt = (
-        f"{JUDGMENT_INSTRUCTIONS}\n\nRègles à évaluer:\n{questions}\n\n"
-        f"Document:\n---\n{text}\n---"
-    )
+    if judgments:
+        questions = "\n".join(f"- {j['ruleId']}: {j['question']}" for j in judgments)
+        prompt = (
+            f"{JUDGMENT_INSTRUCTIONS}\n\nRègles à évaluer:\n{questions}\n\n"
+            f"Document:\n---\n{text}\n---"
+        )
+    else:
+        # A ruleset with no question for a model (the invoice rules are all deterministic): the judge step
+        # still runs, so it is given nothing to read and an empty answer to give.
+        prompt = "Réponds exactement par un tableau JSON vide : []"
     screened = {
         "rulesetId": ruleset["rulesetId"],
         "rulesetVersion": ruleset["version"],

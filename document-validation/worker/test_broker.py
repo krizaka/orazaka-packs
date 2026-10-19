@@ -73,6 +73,22 @@ def test_a_quebec_report_carries_its_review_status():
     assert report["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
 
 
+def test_a_named_ruleset_is_applied_only_within_its_jurisdiction():
+    import test_rules
+    import validation_worker
+    named = validation_worker._screen({"document": test_rules.QC_INVOICE_CLEAN, "jurisdiction": "QC", "ruleset": "qc-invoice", "asOf": "2026-10-19"})
+    assert named["rulesetId"] == "qc-invoice" and named["judgmentCount"] == 0
+    assert "JSON vide" in named["judgmentPrompt"]  # no question for a model: nothing to read
+    default = validation_worker._screen({"document": test_rules.QC_DEFECTIVE, "jurisdiction": "QC", "ruleset": "", "asOf": "2026-10-19"})
+    assert default["rulesetId"] == "qc-residential-lease"
+    for jurisdiction in ("FR", "BE-WAL"):
+        try:
+            validation_worker._screen({"document": "x", "jurisdiction": jurisdiction, "ruleset": "qc-invoice"})
+        except validation_worker.InvalidJobPayload:
+            continue
+        raise AssertionError("an invoice ruleset of Québec must never be applied to another jurisdiction")
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):

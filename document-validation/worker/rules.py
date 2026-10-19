@@ -74,13 +74,28 @@ def resolve(ruleset_id: str, as_of: str) -> dict:
 
 
 def jurisdictions() -> dict:
-    """Every ruleset this pack ships, by jurisdiction — the pack's own declaration."""
+    """Every jurisdiction this pack ships, with its DEFAULT ruleset — the pack's own declaration.
+
+    A ruleset marked ``optIn`` (a document type other than the jurisdiction's lease, such as an
+    invoice) is never the default: it is applied only when a run names it (``ruleset``).
+    """
+    found = {}
+    for entry in sorted(os.listdir(RULESETS_DIR)):
+        if os.path.isdir(os.path.join(RULESETS_DIR, entry)):
+            versions = _load_all(entry)
+            if versions and not versions[0].get("optIn"):
+                found[versions[0]["jurisdiction"]] = entry
+    return found
+
+
+def rulesets_by_jurisdiction() -> dict:
+    """Every shipped ruleset id, by jurisdiction (defaults and opt-in alike)."""
     found = {}
     for entry in sorted(os.listdir(RULESETS_DIR)):
         if os.path.isdir(os.path.join(RULESETS_DIR, entry)):
             versions = _load_all(entry)
             if versions:
-                found[versions[0]["jurisdiction"]] = entry
+                found.setdefault(versions[0]["jurisdiction"], []).append(entry)
     return found
 
 

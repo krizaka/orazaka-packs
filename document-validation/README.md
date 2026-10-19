@@ -16,6 +16,7 @@ The user forwards this output to their counterparty. That single fact decides ev
 | `regulatoryClass` | `SENSITIVE` — it receives the five controls of ADR-051 and declares a `scopeGuard` |
 | Studios | `compliance-check` |
 | Jurisdictions | `QC` (Québec — to be reviewed by a lawyer), `FR`, `BE-WAL` |
+| Document types | the residential lease (every jurisdiction, the default) and, for `QC`, the supplier's **invoice** (`ruleset: qc-invoice`, opt-in) |
 
 ## Deterministic first, model second
 
@@ -55,6 +56,22 @@ or the tenant's right to refuse, a rent increase (art. 1942, 1943, 1945 ; 1893).
 Not encoded, on purpose: the notice periods of art. 1942 and the content of the mandatory form's section F — their text could
 not be checked at the source, and a compliance rule written from memory is worse than none. They wait for a lawyer's review
 (`reviewStatus: TO_REVIEW_BY_LAWYER`).
+
+## Québec invoice — `qc-invoice` (revision 1, opt-in)
+
+A run names it with `ruleset: "qc-invoice"` (jurisdiction `QC`); without the name the jurisdiction's lease is used, as before.
+Eight deterministic rules, no model question (the judge step is given nothing to read), each with its fixture pair and its
+source. Written from the text of the **Input Tax Credit Information (GST/HST) Regulations, SOR/91-45, s. 3**, read on
+laws-lois.justice.gc.ca (current to 2026-09-30, in force since 2024-06-20): every supporting document carries the supplier's
+name, the date and the total; from **$100** the supplier's registration number, the tax or « tax included », (the rate); from **$500**
+the buyer's name, the payment terms and a description. The thresholds were **$30 and $150 until June 2024** — a value that
+would have been written from memory. Encoded: date, total, GST/HST number present and well formed (9 digits, `RT`, 4 digits —
+CRA), QST number present and well formed (10 digits, `TQ`, 4 digits — Revenu Québec), taxes shown or included, payment terms.
+
+Not encoded, and said so in the ruleset's `reviewNote`: the QST-specific requirement (the Québec regulation and Revenu
+Québec's invoice page could not be read at the source), the supplier's and buyer's names and the description (no honest
+lexical rule), the rate and the arithmetic of the taxes. The threshold rules do not read the amount; their finding says
+« from $100 » / « from $500 ». A number is checked for its **form only**, never against the CRA or Revenu Québec registers.
 
 ## Adding a jurisdiction
 
