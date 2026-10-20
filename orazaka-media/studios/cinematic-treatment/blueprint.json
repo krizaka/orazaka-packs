@@ -1,0 +1,182 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 30,
+  "changelog": "1.0.0 — Le traitement d'un court métrage (orazaka#289, ADR-080 addendum v2) : un brief court devient une histoire avec un arc (accroche → voyage → retournement → dénouement), un thème, l'intention de chaque personnage, et une liste de plans où chaque plan a un but, une action vivante au service de son temps (regard, physique du corps, interaction), des répliques dirigées (émotion, rythme, insistance), une musique par temps de l'arc et une liste de sons par plan. Jugé ensuite par la critique (cinematic-critique) et la grille d'`orazaka cinema`, renvoyé à l'écriture avec les raisons s'il est plat.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "cinematic-treatment",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "treatment",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "You are the writer and director of a {{inputs.durationSeconds}}-second short film, aspect {{inputs.aspect}}. The brief is short; your job is to turn it into a STORY that transports the viewer, then into a shot list a video model can film. The brief: {{inputs.brief}}\n\nRULES (never break them): every character, logo and name is ORIGINAL — no studio's characters, no trademark, no real person's name or likeness. Nothing sexual, nothing gory. No text, letters or logos inside the pictures.\n\nTHE STORY FIRST. Give it a theme (one sentence: what the film says) and an arc of four beats in this order: hook (a question or a danger in the first seconds: who, what is at stake), journey (the characters act toward a goal, each one from what it wants), turn (an emotional reversal after the first third: a fall, a fear, a loss, then the help or the choice that changes it), payoff (the answer to the hook, earned, then a held last image). Each character has an INTENTION that comes from its role or promise: what it wants in this story. Every shot has a PURPOSE (why it is in the film, which beat it serves) and an ACTION that serves that beat and the character's intention — never decoration, never an unrelated gesture.\n\nLIVING CHARACTERS. A character shot directs a performance, never 'the bird moves', 'stands', 'looks around' or 'turns its head left then right': write the action as a short sequence with a change (first…, then…, finally…), the GAZE (where it looks and why), the PHYSICS of the body (breath, weight shifting, wings beating with effort, landing and folding, gripping, carrying), and the INTERACTION when several characters share the frame (a nod, a nudge, a bow). Prefer shorter purposeful shots (2.5 to 4 seconds) and more coverage over long static ones. Keep continuity: the same weather, light, props and screen direction from shot to shot; a shot may start from a frame of an earlier shot (chainFrom) to continue a movement.\n\nTHE SOUND. The narrator's LINES are few and land on the shots that show them (at most 2.3 words per second of those shots), each with a DIRECTION: emotion, pace (slow|measured|rhythmic|lively), the words to emphasise, the pause after. The MUSIC has one cue per beat, with an intensity from 0 to 0.85 that starts low on the hook, builds to its peak on the turn and resolves lower on the payoff; each cue prompt names instruments, mood and tempo, never an artist or a title, no vocals. Every shot has a SOUND list: beds (rain|storm|wind|wind-soft|lake|waves|drizzle|room|dawn|city|rain-window|drips) and events at a second of the shot (thunder|gust|flap|whoosh|steps|rustle|shake|paper|block|hum|ignite|chime|call|chirp|splash|splash-small|coin|parcel|tap|swell); a character's action is always heard.\n\nTHE CINEMATIC KIT for each shot: the lens in mm, the camera move and its speed, the light (key, rim, practicals), the atmosphere, the shot size (framing).\n\nAnswer with ONE JSON object and nothing else, in {{inputs.language}} for the lines and in English for everything else, of this shape:\n{\"title\", \"logline\", \"theme\", \"aspect\": \"{{inputs.aspect}}\", \"grade\": one of none|teal-orange|neon-night|warm-film|clean-news|nordic, \"style\": the visual bible in one paragraph, \"keep\": one positive sentence that keeps every character on-model in every shot, \"arc\": [{\"beat\": hook|journey|turn|payoff, \"purpose\", \"emotion\", \"intensity\": 0..0.85}], \"characters\": [{\"id\", \"description\" precise enough to draw it twice, \"promise\" its role in one line, \"intention\" what it wants in this story}], \"lines\": [{\"id\", \"shots\": [consecutive shot ids], \"{{inputs.language}}\": the words, \"direction\": {\"emotion\", \"pace\", \"emphasis\": [words], \"pauseAfter\": seconds}}], \"music\": {\"prompt\": the score's palette, \"cues\": [{\"beat\", \"intensity\", \"prompt\"}]}, \"shots\": [{\"id\": 1.., \"slug\", \"seconds\": 2 to 5, \"beat\", \"purpose\", \"characters\": [ids], \"intent\", \"gaze\", \"physics\", \"interaction\", \"action\", \"framing\", \"lens\", \"camera\", \"lighting\", \"atmosphere\", \"keyframe\": the still of the first frame (subject, pose, place, light; repeats the characters' looks), \"motion\": the video prompt of the shot as a sequence of physical actions with the camera and the light, said positively, \"transition\": cut|dissolve|fade|black|whip, \"chainFrom\": {\"shot\": an earlier id, \"at\": seconds} or omit, \"sound\": [{\"kind\", \"at\": seconds or omit for a bed, \"gain\": dB from -24 to -6}]}]}.\n\nCRITIQUE OF YOUR PREVIOUS DRAFT (fix every point): {{inputs.notes:}}",
+          "model": "{{inputs.model:}}"
+        },
+        "out": "treatment",
+        "onError": "RETRY",
+        "maxAttempts": 2,
+        "timeout": "PT6M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "treatment",
+        "label": "Le traitement : histoire, arc, plans, répliques, musique, sons (JSON)",
+        "from": "{{steps.treatment.content}}",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "brief"
+    ],
+    "properties": {
+      "brief": {
+        "type": "string",
+        "format": "prose",
+        "minLength": 10,
+        "maxLength": 2000,
+        "title": "Le brief",
+        "description": "L'histoire, le lieu, l'ambiance, ce qui doit marquer. Personnages originaux seulement.",
+        "x-i18n": {
+          "en": {
+            "title": "The brief",
+            "description": "The story, the place, the mood, what should stand out. Original characters only.",
+            "placeholder": "A night ferry crossing the St. Lawrence at dawn…"
+          },
+          "fr": {
+            "title": "Le brief",
+            "description": "L'histoire, le lieu, l'ambiance, ce qui doit marquer. Personnages originaux seulement.",
+            "placeholder": "Un traversier de nuit sur le Saint-Laurent, à l'aube…"
+          }
+        }
+      },
+      "aspect": {
+        "type": "string",
+        "enum": [
+          "9:16",
+          "16:9"
+        ],
+        "default": "9:16",
+        "title": "Format d'image",
+        "description": "9:16 : Reels, TikTok, Shorts. 16:9 : YouTube, un écran.",
+        "x-i18n": {
+          "en": {
+            "title": "Frame",
+            "description": "9:16 for Reels, TikTok and Shorts. 16:9 for YouTube and screens.",
+            "options": {
+              "9:16": "Vertical 9:16 · TikTok, Reels",
+              "16:9": "Wide 16:9 · YouTube"
+            }
+          },
+          "fr": {
+            "title": "Format d'image",
+            "description": "9:16 : Reels, TikTok, Shorts. 16:9 : YouTube, un écran.",
+            "options": {
+              "9:16": "Vertical 9:16 · TikTok, Reels",
+              "16:9": "Large 16:9 · YouTube"
+            }
+          }
+        }
+      },
+      "durationSeconds": {
+        "type": "integer",
+        "minimum": 30,
+        "maximum": 60,
+        "default": 45,
+        "title": "Durée (secondes)",
+        "description": "La durée du film monté : de 30 secondes à une minute.",
+        "x-i18n": {
+          "en": {
+            "title": "Duration (seconds)",
+            "description": "The length of the edited film: from 30 seconds to a minute."
+          },
+          "fr": {
+            "title": "Durée (secondes)",
+            "description": "La durée du film monté : de 30 secondes à une minute."
+          }
+        }
+      },
+      "notes": {
+        "type": "string",
+        "format": "prose",
+        "maxLength": 6000,
+        "title": "Notes de la critique",
+        "description": "Ce que la critique a refusé dans le brouillon précédent : l'écriture le corrige.",
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Critique notes",
+            "description": "What the critique rejected in the previous draft: the writer fixes it.",
+            "placeholder": "the action of shot 3 is generic motion; the turn comes too early"
+          },
+          "fr": {
+            "title": "Notes de la critique",
+            "description": "Ce que la critique a refusé dans le brouillon précédent : l'écriture le corrige.",
+            "placeholder": "l'action du plan 3 est un mouvement générique ; le retournement arrive trop tôt"
+          }
+        }
+      },
+      "language": {
+        "type": "string",
+        "enum": [
+          "en",
+          "fr"
+        ],
+        "default": "en",
+        "title": "Langue des textes",
+        "description": "La langue des titres, sous-titres et de la voix off.",
+        "x-i18n": {
+          "en": {
+            "title": "Text language",
+            "description": "The language of the titles, subtitles and voice-over.",
+            "options": {
+              "en": "English",
+              "fr": "French"
+            }
+          },
+          "fr": {
+            "title": "Langue des textes",
+            "description": "La langue des titres, sous-titres et de la voix off.",
+            "options": {
+              "en": "Anglais",
+              "fr": "Français"
+            }
+          }
+        }
+      },
+      "model": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Modèle de langage",
+        "description": "Le modèle de conversation qui répond. Auto prend celui de la plateforme.",
+        "x-options": {
+          "source": "models",
+          "category": "chat"
+        },
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Language model",
+            "description": "The chat model that answers. Auto picks the platform default."
+          },
+          "fr": {
+            "title": "Modèle de langage",
+            "description": "Le modèle de conversation qui répond. Auto prend celui de la plateforme."
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

@@ -33,6 +33,12 @@ studios:
     description: >-
       Montreal after rain: cobblestones mirroring window light and neon, light mist, a 35 mm lens wide
       open, cinematic grading. Describe the place and the moment.
+  cinematic-treatment:
+    label: "Cinematic short — treatment"
+    tagline: "A short brief becomes a story: an arc, intentions, living shots, directed lines, music, sound."
+  cinematic-critique:
+    label: "Cinematic short — critique"
+    tagline: "A director's read of a treatment: scores, flat or off-topic shots rejected, what to change."
   cinematic-script:
     label: "Cinematic short — script"
     tagline: "A brief becomes a shot list: 8–12 shots, original characters, music, voice-over."

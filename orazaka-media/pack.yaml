@@ -29,7 +29,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: orazaka-media
-version: 1.9.0
+version: 1.10.0
 tier: DATA
 distribution: OSS
 regulatoryClass: STANDARD
@@ -112,6 +112,25 @@ studios:
     blueprint: studios/video-generation/blueprint.json
   # A cinematic short (ADR-080): the script (LLM) and the cut (ffmpeg) of a production driven by `orazaka cinema`;
   # the keyframes and the shots are runs of image-generation and video-generation, the sound one of video-sound.
+  # The treatment stage (orazaka#289): a brief becomes a story with an arc, judged before it becomes a shot list.
+  - key: cinematic-treatment
+    profession: creative
+    iconKey: video
+    pricing: INCLUDED
+    entitlementKey: studio.cinematic-treatment
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 96
+    blueprint: studios/cinematic-treatment/blueprint.json
+  - key: cinematic-critique
+    profession: creative
+    iconKey: video
+    pricing: INCLUDED
+    entitlementKey: studio.cinematic-critique
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 95
+    blueprint: studios/cinematic-critique/blueprint.json
   - key: cinematic-script
     profession: creative
     iconKey: video
