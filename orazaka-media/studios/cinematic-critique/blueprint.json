@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 10,
-  "changelog": "1.0.0 — La critique d'un traitement (orazaka#289) : un modèle de langage lit l'histoire comme un réalisateur exigeant et la note de 1 à 5 sur six axes (transporte, arc, personnages, vivant, dans le sujet, continuité), rejette les plans plats ou hors sujet et dit les deux changements qui l'amélioreraient le plus. `orazaka cinema` écrit la demande (la grille et l'histoire) et combine la réponse avec sa grille sans modèle : un traitement n'est filmé que si les deux l'acceptent.",
+  "changelog": "1.1.0 — libellés des sorties en anglais et français (x-i18n). 1.0.0 — La critique d'un traitement (orazaka#289) : un modèle de langage lit l'histoire comme un réalisateur exigeant et la note de 1 à 5 sur six axes (transporte, arc, personnages, vivant, dans le sujet, continuité), rejette les plans plats ou hors sujet et dit les deux changements qui l'amélioreraient le plus. `orazaka cinema` écrit la demande (la grille et l'histoire) et combine la réponse avec sa grille sans modèle : un traitement n'est filmé que si les deux l'acceptent.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "cinematic-critique",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "critique",
@@ -28,7 +28,15 @@
         "key": "critique",
         "label": "La critique : notes, plans rejetés, deux changements (JSON)",
         "from": "{{steps.critique.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "The critique: scores, rejected shots, two changes (JSON)"
+          },
+          "fr": {
+            "label": "La critique : notes, plans rejetés, deux changements (JSON)"
+          }
+        }
       }
     ]
   },

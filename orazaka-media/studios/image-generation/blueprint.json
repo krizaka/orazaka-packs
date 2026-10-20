@@ -1,12 +1,12 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "status": "PUBLISHED",
   "estimatedCredits": 200,
-  "changelog": "1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
+  "changelog": "1.5.0 — libellés des sorties en anglais et français (x-i18n). 1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "image-generation",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "steps": [
       {
         "id": "image",
@@ -31,25 +31,57 @@
         "key": "image",
         "label": "Votre image",
         "from": "{{steps.image.url}}",
-        "type": "IMAGE"
+        "type": "IMAGE",
+        "x-i18n": {
+          "en": {
+            "label": "Your image"
+          },
+          "fr": {
+            "label": "Votre image"
+          }
+        }
       },
       {
         "key": "seed",
         "label": "Graine (pour refaire cette image)",
         "from": "{{steps.image.seed}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Seed (to make this image again)"
+          },
+          "fr": {
+            "label": "Graine (pour refaire cette image)"
+          }
+        }
       },
       {
         "key": "model",
         "label": "Modèle",
         "from": "{{steps.image.model}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Model"
+          },
+          "fr": {
+            "label": "Modèle"
+          }
+        }
       },
       {
         "key": "generationMs",
         "label": "Temps de génération (ms)",
         "from": "{{steps.image.generationMs}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Generation time (ms)"
+          },
+          "fr": {
+            "label": "Temps de génération (ms)"
+          }
+        }
       }
     ]
   },

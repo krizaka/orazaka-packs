@@ -166,3 +166,70 @@ test("the English words are English: no French article or accent in an English t
     }
   }
 });
+
+// ── Outputs speak both languages too, and a model declares the aspects it can make ────────────────────
+const blueprints = [];
+for (const pack of readdirSync(root, { withFileTypes: true })) {
+  const studios = join(root, pack.name, "studios");
+  if (!pack.isDirectory() || !existsSync(studios)) continue;
+  for (const s of readdirSync(studios)) {
+    const file = join(studios, s, "blueprint.json");
+    if (existsSync(file)) blueprints.push({ where: `${pack.name}/studios/${s}`, studio: s, bp: JSON.parse(readFileSync(file, "utf8")) });
+  }
+}
+
+test("every output of every Studio has its label in English and French (« Votre image », « Graine… » showed on the English page)", () => {
+  const outputs = blueprints.flatMap(({ where, bp }) => (bp.definition.outputs ?? []).map((o) => ({ where: `${where}#${o.key}`, o })));
+  assert.ok(outputs.length >= 55, "the audit found the outputs");
+  const french = /[àâçéèêëîïôûùœ]|\b(votre|vos|le|la|les|un|une|des|du|ce|qui|est|avec|sans|pour)\b/i;
+  for (const { where, o } of outputs) {
+    for (const lang of ["en", "fr"]) assert.ok(o["x-i18n"]?.[lang]?.label?.trim(), `${where}: x-i18n.${lang}.label`);
+    assert.equal(o["x-i18n"].fr.label, o.label, `${where}: the base label (older clients) is the French one`);
+    assert.doesNotMatch(o["x-i18n"].en.label.replace(/Québec|Montréal/g, ""), french, `${where}: the English label reads as French: « ${o["x-i18n"].en.label} »`);
+  }
+});
+
+test("a pack's English and French catalogue name the same Studios, each with a label and a tagline", () => {
+  for (const pack of readdirSync(root, { withFileTypes: true })) {
+    const dir = join(root, pack.name, "i18n");
+    if (!pack.isDirectory() || !existsSync(dir)) continue;
+    const read = (lang) => {
+      const text = readFileSync(join(dir, `${lang}.yaml`), "utf8");
+      const studios = text.slice(text.indexOf("\nstudios:"));
+      const found = {};
+      let key = null;
+      for (const line of studios.split("\n")) {
+        const k = /^  ([a-z0-9-]+):\s*$/.exec(line);
+        if (k) { key = k[1]; found[key] = {}; continue; }
+        const f = /^    (label|tagline):\s*(.+)$/.exec(line);
+        if (f && key) found[key][f[1]] = f[2].trim();
+      }
+      return found;
+    };
+    const en = read("en");
+    const fr = read("fr");
+    assert.deepEqual(Object.keys(en).sort(), Object.keys(fr).sort(), `${pack.name}: the same Studios in both languages`);
+    for (const [studio, words] of Object.entries(en)) {
+      for (const lang of ["en", "fr"]) {
+        const w = (lang === "en" ? en : fr)[studio];
+        assert.ok(w.label && w.tagline, `${pack.name}/${studio}: ${lang} label and tagline`);
+      }
+      assert.notEqual(words.tagline, fr[studio].tagline, `${pack.name}/${studio}: the French tagline is not the English one`);
+    }
+  }
+});
+
+test("the video Studios' model field declares the aspects each model can make, the hosted Wan 16:9 only", () => {
+  for (const studio of ["video-generation", "video-with-sound"]) {
+    const bp = blueprints.find((b) => b.studio === studio).bp;
+    const model = bp.inputSchema.properties.model;
+    const aspects = bp.inputSchema.properties.aspect.enum;
+    const opt = model["x-options"];
+    assert.equal(opt.aspectField, "aspect", `${studio}: the field the aspects govern`);
+    assert.deepEqual(Object.keys(opt.aspects).sort(), Object.keys(opt.facts).sort(), `${studio}: every model with facts declares its aspects`);
+    for (const [id, list] of Object.entries(opt.aspects)) {
+      assert.ok(list.length >= 1 && list.every((a) => aspects.includes(a)), `${studio}/${id}: aspects within the field's enum`);
+    }
+    assert.deepEqual(opt.aspects["wan2-2-t2v-a14b"], ["16:9"], `${studio}: the hosted Wan makes 16:9 only (run 6567e02a)`);
+  }
+});

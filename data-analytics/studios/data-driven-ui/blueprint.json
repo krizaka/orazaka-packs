@@ -1,12 +1,12 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Interface pilotée par les données (ADR-082, orazaka#207 tranche 1) : un CSV ou un JSON (par exemple l'export de vos statistiques, ADR-081) et une question deviennent une réponse en prose et un tableau de bord A2UI v0.9 du catalogue krizaka:genui/v1 (KpiStat, ChartCard, Table, Callout, Card, Text, Row, Column), dessiné par @krizaka/ui/genui. Chaque nombre vient des données ; le rendu refuse tout composant ou propriété hors catalogue. 1.1.0 — Mesuré sur dev (2026-10-17) : le modèle par défaut écrivait des objets sur plusieurs lignes, oubliait « component » et répétait la clôture ; la consigne donne maintenant la forme exacte des trois lignes, chaque composant avec ses propriétés, et un exemple complet et valide. Le modèle se choisit dans le catalogue (x-options), replié sous « Plus d'options ». 1.2.0 — Lançable depuis la barre du chat : une seule entrée requise, la question (qui peut contenir les données collées) ; « data » devient facultative.",
+  "changelog": "1.5.0 — libellés des sorties en anglais et français (x-i18n). 1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Interface pilotée par les données (ADR-082, orazaka#207 tranche 1) : un CSV ou un JSON (par exemple l'export de vos statistiques, ADR-081) et une question deviennent une réponse en prose et un tableau de bord A2UI v0.9 du catalogue krizaka:genui/v1 (KpiStat, ChartCard, Table, Callout, Card, Text, Row, Column), dessiné par @krizaka/ui/genui. Chaque nombre vient des données ; le rendu refuse tout composant ou propriété hors catalogue. 1.1.0 — Mesuré sur dev (2026-10-17) : le modèle par défaut écrivait des objets sur plusieurs lignes, oubliait « component » et répétait la clôture ; la consigne donne maintenant la forme exacte des trois lignes, chaque composant avec ses propriétés, et un exemple complet et valide. Le modèle se choisit dans le catalogue (x-options), replié sous « Plus d'options ». 1.2.0 — Lançable depuis la barre du chat : une seule entrée requise, la question (qui peut contenir les données collées) ; « data » devient facultative.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "data-driven-ui",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "steps": [
       {
         "id": "answer",
@@ -28,7 +28,15 @@
         "key": "answer",
         "label": "La réponse et son tableau de bord (A2UI)",
         "from": "{{steps.answer.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "The answer and its dashboard (A2UI)"
+          },
+          "fr": {
+            "label": "La réponse et son tableau de bord (A2UI)"
+          }
+        }
       }
     ]
   },

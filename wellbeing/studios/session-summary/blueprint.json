@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.1 — la langue des valeurs suit la langue de la personne (anglais pour « en »), et rien n'est cité qui n'ait pas été dit : une phrase entre guillemets doit figurer mot pour mot dans le moment, sinon elle est omise. Décrit, jamais expliqué.",
+  "changelog": "1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.1 — la langue des valeurs suit la langue de la personne (anglais pour « en »), et rien n'est cité qui n'ait pas été dit : une phrase entre guillemets doit figurer mot pour mot dans le moment, sinon elle est omise. Décrit, jamais expliqué.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "session-summary",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "summarise",
@@ -75,6 +75,14 @@
                 "nl"
               ]
             }
+          }
+        },
+        "x-i18n": {
+          "en": {
+            "label": "What I keep"
+          },
+          "fr": {
+            "label": "Ce que je garde"
           }
         }
       }

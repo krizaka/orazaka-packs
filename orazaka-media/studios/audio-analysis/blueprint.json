@@ -1,12 +1,12 @@
 {
-  "version": "1.5.0",
+  "version": "1.6.0",
   "status": "PUBLISHED",
   "estimatedCredits": 60,
-  "changelog": "1.5.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.4.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.4.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.3.0 — `assetId` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: audio/*` : les clients affichent un sélecteur de fichier du bon type. 1.2.0 — la capacité que cette étape appelle est renommée `orazaka.core.media.audio.analysis` : `media.audio` se lisait comme de la génération audio alors que c'est de la transcription (ADR-069, constat #44). 1.1.0 — `assetId` déclare `format: asset-id` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Transcription audio — une étape. Facturée à la minute de source, mesure que le fournisseur de transcription rapporte désormais et que rien ne rapportait avant (ADR-066, constat #22).",
+  "changelog": "1.6.0 — libellés des sorties en anglais et français (x-i18n). 1.5.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.4.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.4.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.3.0 — `assetId` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: audio/*` : les clients affichent un sélecteur de fichier du bon type. 1.2.0 — la capacité que cette étape appelle est renommée `orazaka.core.media.audio.analysis` : `media.audio` se lisait comme de la génération audio alors que c'est de la transcription (ADR-069, constat #44). 1.1.0 — `assetId` déclare `format: asset-id` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Transcription audio — une étape. Facturée à la minute de source, mesure que le fournisseur de transcription rapporte désormais et que rien ne rapportait avant (ADR-066, constat #22).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "audio-analysis",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "steps": [
       {
         "id": "transcription",
@@ -28,7 +28,15 @@
         "key": "transcript",
         "label": "Votre transcription",
         "from": "{{steps.transcription.analysis}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Your transcript"
+          },
+          "fr": {
+            "label": "Votre transcription"
+          }
+        }
       }
     ]
   },

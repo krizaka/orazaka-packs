@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Préparation de séance — organise ce qu'il y a à dire, sans rien interpréter.",
+  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Préparation de séance — organise ce qu'il y a à dire, sans rien interpréter.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "session-preparation",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "organise",
@@ -27,7 +27,15 @@
         "key": "agenda",
         "label": "Vos points pour la séance",
         "from": "{{steps.agenda.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Your points for the session"
+          },
+          "fr": {
+            "label": "Vos points pour la séance"
+          }
+        }
       }
     ]
   },

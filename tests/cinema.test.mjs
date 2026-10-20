@@ -73,7 +73,7 @@ test("the critique Studio takes the rubric and the story orazaka cinema writes, 
 
 test("treatment 1.1.0: the cast acts together, the film has rhythm, and the legal rule is in the prompt", () => {
   const b = read("cinematic-treatment");
-  assert.equal(b.version, "1.1.0");
+  assert.match(b.version, /^1\.[1-9]\d*\.\d+$/); // 1.1.0 introduced it; later minors keep it
   const prompt = b.definition.steps[0].inputs.prompt;
   for (const rule of ["never introduced: no lineup", "MEET, HELP, ARGUE, HAND OFF", "interactionKind", "runs of quick cuts", "switch genre with the place",
     "no real person's name, likeness or voice", "no existing song", "ORIGINAL means", "\"references\"", "\"legal\": {\"never\""]) {

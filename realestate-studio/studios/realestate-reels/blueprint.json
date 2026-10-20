@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 2800,
-  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Le plan d'ambiance est retiré (constat #35, ADR-066) : il était généré, facturé au tarif de diffusion — 3 600 crédits de la réserve — et jamais monté, parce que le monteur ne lit que `photos` et `audio`. Un pack ne facture pas ce qu'il ne fait pas. Le coût déclaré passe de 6 400 à 2 800, la différence étant l'estimation de la génération vidéo au pricebook. Remettre un plan d'ambiance est une décision produit : il faudra que le monteur l'assemble.",
+  "changelog": "1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Le plan d'ambiance est retiré (constat #35, ADR-066) : il était généré, facturé au tarif de diffusion — 3 600 crédits de la réserve — et jamais monté, parce que le monteur ne lit que `photos` et `audio`. Un pack ne facture pas ce qu'il ne fait pas. Le coût déclaré passe de 6 400 à 2 800, la différence étant l'estimation de la génération vidéo au pricebook. Remettre un plan d'ambiance est une décision produit : il faudra que le monteur l'assemble.",
   "createdBy": "system",
   "definition": {
     "studioKey": "realestate-reels",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "describe",
@@ -74,19 +74,43 @@
         "key": "reel",
         "label": "Votre Reel",
         "from": "{{steps.reel.url}}",
-        "type": "VIDEO"
+        "type": "VIDEO",
+        "x-i18n": {
+          "en": {
+            "label": "Your Reel"
+          },
+          "fr": {
+            "label": "Votre Reel"
+          }
+        }
       },
       {
         "key": "caption",
         "label": "Légende et hashtags",
         "from": "{{steps.script.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Caption and hashtags"
+          },
+          "fr": {
+            "label": "Légende et hashtags"
+          }
+        }
       },
       {
         "key": "rooms",
         "label": "Descriptions des pièces",
         "from": "{{steps.roomDescriptions}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Descriptions of the rooms"
+          },
+          "fr": {
+            "label": "Descriptions des pièces"
+          }
+        }
       }
     ]
   },

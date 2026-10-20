@@ -1,12 +1,12 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "PUBLISHED",
   "estimatedCredits": 4500,
-  "changelog": "1.3.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.2.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.2.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.1.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.0.0 — Génération vidéo avec son : la vidéo de Génération vidéo (mêmes entrées, même modèle), puis l'étape Du son pour une vidéo (nappe musicale ACE-Step 1.5, bruitages MMAudio non commercial sur demande), mixée à -14 LUFS en AAC. La version sans son est livrée aussi, pour les boucles muettes.",
+  "changelog": "1.4.0 — libellés des sorties en anglais et français (x-i18n). 1.3.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.2.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.2.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.1.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.0.0 — Génération vidéo avec son : la vidéo de Génération vidéo (mêmes entrées, même modèle), puis l'étape Du son pour une vidéo (nappe musicale ACE-Step 1.5, bruitages MMAudio non commercial sur demande), mixée à -14 LUFS en AAC. La version sans son est livrée aussi, pour les boucles muettes.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-with-sound",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "steps": [
       {
         "id": "video",
@@ -51,13 +51,29 @@
         "key": "video",
         "label": "Votre vidéo avec son",
         "from": "{{steps.sound.url}}",
-        "type": "VIDEO"
+        "type": "VIDEO",
+        "x-i18n": {
+          "en": {
+            "label": "Your video with sound"
+          },
+          "fr": {
+            "label": "Votre vidéo avec son"
+          }
+        }
       },
       {
         "key": "silent",
         "label": "La version sans son",
         "from": "{{steps.sound.silentUrl}}",
-        "type": "VIDEO"
+        "type": "VIDEO",
+        "x-i18n": {
+          "en": {
+            "label": "The version without sound"
+          },
+          "fr": {
+            "label": "La version sans son"
+          }
+        }
       }
     ]
   },
@@ -200,6 +216,47 @@
               "16 fps"
             ],
             "animatediff-lightning-mps": []
+          },
+          "aspectField": "aspect",
+          "aspects": {
+            "wan2-2-t2v-a14b": [
+              "16:9"
+            ],
+            "wan2.2-t2v-a14b": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "wan2.2-i2v-a14b": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "wan2.2-i2v-a14b-hq": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "ltx-video-0.9.8-13b-distilled": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "wan2.2-ti2v-5b": [
+              "9:16",
+              "16:9",
+              "1:1"
+            ],
+            "wan2.1-t2v-1.3b": [
+              "9:16",
+              "16:9",
+              "1:1"
+            ],
+            "animatediff-lightning-mps": [
+              "9:16",
+              "16:9",
+              "1:1"
+            ]
           }
         },
         "x-advanced": true,

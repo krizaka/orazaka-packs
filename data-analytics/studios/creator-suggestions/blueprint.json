@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 15,
-  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Suggestions pour un créateur (ADR-078, différé « suggestions ») : à partir du titre, de la description et des mots-clés qu'il a écrits — et, s'il les donne, des mots-clés qui marchent auprès de son audience (GET /api/v1/recommendations/insights) — trois titres, une description et des mots-clés. Ce sont des propositions : le créateur choisit, rien n'est publié sans lui.",
+  "changelog": "1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Suggestions pour un créateur (ADR-078, différé « suggestions ») : à partir du titre, de la description et des mots-clés qu'il a écrits — et, s'il les donne, des mots-clés qui marchent auprès de son audience (GET /api/v1/recommendations/insights) — trois titres, une description et des mots-clés. Ce sont des propositions : le créateur choisit, rien n'est publié sans lui.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "creator-suggestions",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "suggest",
@@ -27,7 +27,15 @@
         "key": "suggestions",
         "label": "Titres, description et mots-clés proposés (JSON)",
         "from": "{{steps.suggestions.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Suggested titles, description and keywords (JSON)"
+          },
+          "fr": {
+            "label": "Titres, description et mots-clés proposés (JSON)"
+          }
+        }
       }
     ]
   },

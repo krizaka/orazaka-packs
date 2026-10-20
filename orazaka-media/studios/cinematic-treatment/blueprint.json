@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.1.0 — Les personnages agissent ensemble (orazaka#289, deuxième revue) : jamais présentés en rang, ils se rencontrent, s'aident, se disputent, se passent le relais (interactionKind) ; du rythme (plans courts et respirations), des émotions, une musique qui change de genre avec le lieu (repères par plans) ; la règle légale : aucune personne réelle, chanson, jeu, série ou marque — chaque référence est évoquée par des moyens originaux et consignée (references, legal.never). 1.0.0 — Le traitement d'un court métrage (orazaka#289, ADR-080 addendum v2) : un brief court devient une histoire avec un arc (accroche → voyage → retournement → dénouement), un thème, l'intention de chaque personnage, et une liste de plans où chaque plan a un but, une action vivante au service de son temps (regard, physique du corps, interaction), des répliques dirigées (émotion, rythme, insistance), une musique par temps de l'arc et une liste de sons par plan. Jugé ensuite par la critique (cinematic-critique) et la grille d'`orazaka cinema`, renvoyé à l'écriture avec les raisons s'il est plat.",
+  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — Les personnages agissent ensemble (orazaka#289, deuxième revue) : jamais présentés en rang, ils se rencontrent, s'aident, se disputent, se passent le relais (interactionKind) ; du rythme (plans courts et respirations), des émotions, une musique qui change de genre avec le lieu (repères par plans) ; la règle légale : aucune personne réelle, chanson, jeu, série ou marque — chaque référence est évoquée par des moyens originaux et consignée (references, legal.never). 1.0.0 — Le traitement d'un court métrage (orazaka#289, ADR-080 addendum v2) : un brief court devient une histoire avec un arc (accroche → voyage → retournement → dénouement), un thème, l'intention de chaque personnage, et une liste de plans où chaque plan a un but, une action vivante au service de son temps (regard, physique du corps, interaction), des répliques dirigées (émotion, rythme, insistance), une musique par temps de l'arc et une liste de sons par plan. Jugé ensuite par la critique (cinematic-critique) et la grille d'`orazaka cinema`, renvoyé à l'écriture avec les raisons s'il est plat.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "cinematic-treatment",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "treatment",
@@ -28,7 +28,15 @@
         "key": "treatment",
         "label": "Le traitement : histoire, arc, plans, répliques, musique, sons (JSON)",
         "from": "{{steps.treatment.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "The treatment: story, arc, shots, lines, music, sounds (JSON)"
+          },
+          "fr": {
+            "label": "Le traitement : histoire, arc, plans, répliques, musique, sons (JSON)"
+          }
+        }
       }
     ]
   },

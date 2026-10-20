@@ -1,12 +1,12 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.3.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.2.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.1.0 — Le kit cinématographique Krizaka : chaque plan est dirigé comme un long métrage (objectif en mm, mouvement de caméra, lumière principale et de contre, profondeur de champ, atmosphère, rythme, règle des 180°, ralenti et rampe de vitesse vers le moment fort) et la liste de plans porte `lens`, `lighting` et `atmosphere` pour chaque plan. 1.0.0 — Le script d'un court métrage cinématographique (ADR-080) : un brief devient un titre, une bible visuelle, des personnages décrits, une musique, une voix off et une liste de 8 à 12 plans (cadre, action, effets, image clé, mouvement, transition, ralenti). Personnages, logos et marques toujours originaux ; jamais une personne réelle ; un format « nouvelles » a un présentateur IA déclaré et un sujet général. C'est la première étape d'une production `orazaka cinema` : chaque plan devient ensuite une image clé (Génération d'image), un plan vidéo (Génération vidéo, Wan 2.2 I2V A14B) puis le montage (Montage cinématographique).",
+  "changelog": "1.4.0 — libellés des sorties en anglais et français (x-i18n). 1.3.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.2.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.1.0 — Le kit cinématographique Krizaka : chaque plan est dirigé comme un long métrage (objectif en mm, mouvement de caméra, lumière principale et de contre, profondeur de champ, atmosphère, rythme, règle des 180°, ralenti et rampe de vitesse vers le moment fort) et la liste de plans porte `lens`, `lighting` et `atmosphere` pour chaque plan. 1.0.0 — Le script d'un court métrage cinématographique (ADR-080) : un brief devient un titre, une bible visuelle, des personnages décrits, une musique, une voix off et une liste de 8 à 12 plans (cadre, action, effets, image clé, mouvement, transition, ralenti). Personnages, logos et marques toujours originaux ; jamais une personne réelle ; un format « nouvelles » a un présentateur IA déclaré et un sujet général. C'est la première étape d'une production `orazaka cinema` : chaque plan devient ensuite une image clé (Génération d'image), un plan vidéo (Génération vidéo, Wan 2.2 I2V A14B) puis le montage (Montage cinématographique).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "cinematic-script",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "steps": [
       {
         "id": "script",
@@ -28,7 +28,15 @@
         "key": "script",
         "label": "Le script et la liste de plans (JSON)",
         "from": "{{steps.script.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "The script and the shot list (JSON)"
+          },
+          "fr": {
+            "label": "Le script et la liste de plans (JSON)"
+          }
+        }
       }
     ]
   },
