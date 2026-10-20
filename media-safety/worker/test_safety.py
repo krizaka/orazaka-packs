@@ -83,6 +83,8 @@ def test_one_picture_arrives_as_one_answer_not_a_list():
     assert rules.assess(R, one, 1, None, False)["verdict"] == "APPROVED"
     assert rules.assess(R, {"analysis": DIRTY}, 1, None, False)["blockers"] == ["SEXUAL_CONTENT"]
     assert rules.assess(R, {"analysis": "no idea"}, 1, None, False)["verdict"] == "UNREADABLE"
+    assert rules.assess(R, "\n\n" + CLEAN + "\n", 1, None, False)["verdict"] == "APPROVED"  # what the dev engine hands over: the text
+    assert rules.assess(R, DIRTY, 1, None, False)["blockers"] == ["SEXUAL_CONTENT"]
     # with several pictures a bare answer is still not a list: the missing ones stay unread
     assert rules.assess(R, one, 2, None, False)["verdict"] == "UNREADABLE"
 
