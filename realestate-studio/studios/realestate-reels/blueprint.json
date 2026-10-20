@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 2800,
-  "changelog": "Le plan d'ambiance est retiré (constat #35, ADR-066) : il était généré, facturé au tarif de diffusion — 3 600 crédits de la réserve — et jamais monté, parce que le monteur ne lit que `photos` et `audio`. Un pack ne facture pas ce qu'il ne fait pas. Le coût déclaré passe de 6 400 à 2 800, la différence étant l'estimation de la génération vidéo au pricebook. Remettre un plan d'ambiance est une décision produit : il faudra que le monteur l'assemble.",
+  "changelog": "1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Le plan d'ambiance est retiré (constat #35, ADR-066) : il était généré, facturé au tarif de diffusion — 3 600 crédits de la réserve — et jamais monté, parce que le monteur ne lit que `photos` et `audio`. Un pack ne facture pas ce qu'il ne fait pas. Le coût déclaré passe de 6 400 à 2 800, la différence étant l'estimation de la génération vidéo au pricebook. Remettre un plan d'ambiance est une décision produit : il faudra que le monteur l'assemble.",
   "createdBy": "system",
   "definition": {
     "studioKey": "realestate-reels",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "describe",
@@ -122,7 +122,28 @@
           "youtube-short"
         ],
         "default": "instagram-reel",
-        "title": "Plateforme"
+        "title": "Plateforme",
+        "description": "Où le reel sera publié : cela règle le format et le rythme.",
+        "x-i18n": {
+          "en": {
+            "title": "Platform",
+            "description": "Where the reel will be posted: it sets the format and the pace.",
+            "options": {
+              "instagram-reel": "Instagram Reel",
+              "tiktok": "TikTok",
+              "youtube-short": "YouTube Short"
+            }
+          },
+          "fr": {
+            "title": "Plateforme",
+            "description": "Où le reel sera publié : cela règle le format et le rythme.",
+            "options": {
+              "instagram-reel": "Reel Instagram",
+              "tiktok": "TikTok",
+              "youtube-short": "Short YouTube"
+            }
+          }
+        }
       }
     }
   },

@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.0.0 — Ce que montre une vidéo, pour le recommandeur (ADR-078, différé « keyframes ») : une image clé passe par le modèle de vision, puis le modèle de conversation rend une lecture JSON — résumé, sujets, mots-clés, langue, étiquettes de sécurité. Le produit réécrit ces facettes dans l'article (POST /api/v1/recommendations/items), que le service de connaissances ré-encode. Les étiquettes de sécurité alimentent une file de modération humaine, jamais un retrait automatique.",
+  "changelog": "1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Ce que montre une vidéo, pour le recommandeur (ADR-078, différé « keyframes ») : une image clé passe par le modèle de vision, puis le modèle de conversation rend une lecture JSON — résumé, sujets, mots-clés, langue, étiquettes de sécurité. Le produit réécrit ces facettes dans l'article (POST /api/v1/recommendations/items), que le service de connaissances ré-encode. Les étiquettes de sécurité alimentent une file de modération humaine, jamais un retrait automatique.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-understanding",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "see",
@@ -84,9 +84,30 @@
         "enum": ["en", "fr"],
         "default": "en",
         "title": "Langue de la lecture",
-        "description": "La langue du résumé, des sujets et des mots-clés."
+        "description": "La langue du résumé, des sujets et des mots-clés.",
+        "x-i18n": {
+          "en": {
+            "title": "Reading language",
+            "description": "The language of the summary, the topics and the keywords.",
+            "options": {
+              "en": "English",
+              "fr": "French"
+            }
+          },
+          "fr": {
+            "title": "Langue de la lecture",
+            "description": "La langue du résumé, des sujets et des mots-clés.",
+            "options": {
+              "en": "Anglais",
+              "fr": "Français"
+            }
+          }
+        }
       }
     }
   },
-  "configSchema": { "type": "object", "properties": {} }
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
 }

@@ -86,7 +86,7 @@ test("each Studio is a published blueprint over existing capabilities, labelled 
 test("closed choices are chosen, never typed (no free-text model, languages are an enum)", () => {
   for (const key of STUDIOS) {
     const props = blueprint(key).inputSchema.properties;
-    if (props.model) assert.deepEqual(props.model["x-options"], { source: "models", category: "CHAT" }, `${key}: a model is picked from the catalogue, never typed`);
+    if (props.model) assert.deepEqual(props.model["x-options"], { source: "models", category: "chat" }, `${key}: a model is picked from the catalogue, never typed`);
     assert.deepEqual(props.language.enum, ["en", "fr"]);
   }
 });

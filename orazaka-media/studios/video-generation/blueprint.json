@@ -1,12 +1,12 @@
 {
-  "version": "1.7.0",
+  "version": "1.8.0",
   "status": "PUBLISHED",
   "estimatedCredits": 3600,
-  "changelog": "1.7.0 — le kit cinématographique Krizaka : `model` propose Wan 2.2 I2V A14B en 40 pas (`wan2.2-i2v-a14b-hq`, personnes et animaux en 9:16) et LTX-Video 0.9.8 13B distilled (`ltx-video-0.9.8-13b-distilled`, GPU 80 Go) — un plan de 5 s en 1216×704 ou 704×1216, 24 i/s, en une quinzaine de secondes, depuis une image ou un texte (licence Open Weights, usage commercial) ; `upscale` (none · 1080p · 2160p, éteint par défaut) porte le plan fini en 1080p ou en 4K par SeedVR2 3B (Apache-2.0) sur le même GPU ; `prompt` et `image` disent la règle : avec une image, le texte décrit le MOUVEMENT et la CAMÉRA (l'image montre déjà la scène), et l'image est faite au format de la vidéo (image-generation 1360×768 en 16:9, 768×1360 en 9:16), jamais recadrée. 1.6.0 — `model` propose Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`) : 720p (1280×720 ou 720×1280), 5 s à 16 i/s, à partir d'une image d'amorce seulement (l'image clé d'un plan), en quatre pas distillés (LoRA lightx2v, Apache-2.0) — les plans d'un court métrage cinématographique (ADR-080). 1.5.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.4.0 — `model` propose Wan 2.2 A14B en 720p (`wan2.2-t2v-a14b`), exécuté sur notre propre GPU de 80 Go (1280×720 ou 720×1280, 5 s à 16 i/s, deux experts, la graine refait le même plan) ; l'A14B serverless (832×480) garde son nom `wan2-2-t2v-a14b`. 1.3.0 — `model` propose aussi Wan 2.2 A14B (`wan2-2-t2v-a14b`), servi par l'inférence serverless de DigitalOcean et routé par Orazaka : 832×480 en 16:9, 5 s à 16 i/s, la graine refait le même plan. 1.2.0 — le format vertical 9:16 (TikTok, Reels, Shorts) devient le défaut : `aspect` (9:16, 16:9, 1:1) choisit une taille sur laquelle le modèle a été entraîné, et `model` propose les modèles du catalogue qui le savent (Wan 2.2 5B en 704×1280 sur le GPU `big`, Wan 2.1 1.3B en 480×832 sur le `small`, AnimateDiff sur le Mac) ; `seed` refait le même plan (ADR-077). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
+  "changelog": "1.8.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.7.0 — le kit cinématographique Krizaka : `model` propose Wan 2.2 I2V A14B en 40 pas (`wan2.2-i2v-a14b-hq`, personnes et animaux en 9:16) et LTX-Video 0.9.8 13B distilled (`ltx-video-0.9.8-13b-distilled`, GPU 80 Go) — un plan de 5 s en 1216×704 ou 704×1216, 24 i/s, en une quinzaine de secondes, depuis une image ou un texte (licence Open Weights, usage commercial) ; `upscale` (none · 1080p · 2160p, éteint par défaut) porte le plan fini en 1080p ou en 4K par SeedVR2 3B (Apache-2.0) sur le même GPU ; `prompt` et `image` disent la règle : avec une image, le texte décrit le MOUVEMENT et la CAMÉRA (l'image montre déjà la scène), et l'image est faite au format de la vidéo (image-generation 1360×768 en 16:9, 768×1360 en 9:16), jamais recadrée. 1.6.0 — `model` propose Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`) : 720p (1280×720 ou 720×1280), 5 s à 16 i/s, à partir d'une image d'amorce seulement (l'image clé d'un plan), en quatre pas distillés (LoRA lightx2v, Apache-2.0) — les plans d'un court métrage cinématographique (ADR-080). 1.5.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.4.0 — `model` propose Wan 2.2 A14B en 720p (`wan2.2-t2v-a14b`), exécuté sur notre propre GPU de 80 Go (1280×720 ou 720×1280, 5 s à 16 i/s, deux experts, la graine refait le même plan) ; l'A14B serverless (832×480) garde son nom `wan2-2-t2v-a14b`. 1.3.0 — `model` propose aussi Wan 2.2 A14B (`wan2-2-t2v-a14b`), servi par l'inférence serverless de DigitalOcean et routé par Orazaka : 832×480 en 16:9, 5 s à 16 i/s, la graine refait le même plan. 1.2.0 — le format vertical 9:16 (TikTok, Reels, Shorts) devient le défaut : `aspect` (9:16, 16:9, 1:1) choisit une taille sur laquelle le modèle a été entraîné, et `model` propose les modèles du catalogue qui le savent (Wan 2.2 5B en 704×1280 sur le GPU `big`, Wan 2.1 1.3B en 480×832 sur le `small`, AnimateDiff sur le Mac) ; `seed` refait le même plan (ADR-077). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-generation",
-    "version": "1.7.0",
+    "version": "1.8.0",
     "steps": [
       {
         "id": "video",
@@ -68,7 +68,27 @@
         ],
         "default": "9:16",
         "title": "Format",
-        "description": "9:16 : la vidéo verticale (TikTok, Reels, Shorts). Laissez vide pour 9:16."
+        "description": "9:16 : la vidéo verticale (TikTok, Reels, Shorts).",
+        "x-i18n": {
+          "en": {
+            "title": "Format",
+            "description": "9:16 is vertical video for TikTok, Reels and Shorts.",
+            "options": {
+              "9:16": "Vertical 9:16 · TikTok, Reels",
+              "16:9": "Wide 16:9 · YouTube",
+              "1:1": "Square 1:1"
+            }
+          },
+          "fr": {
+            "title": "Format",
+            "description": "9:16 : la vidéo verticale (TikTok, Reels, Shorts).",
+            "options": {
+              "9:16": "Vertical 9:16 · TikTok, Reels",
+              "16:9": "Large 16:9 · YouTube",
+              "1:1": "Carré 1:1"
+            }
+          }
+        }
       },
       "image": {
         "type": "string",
@@ -80,24 +100,147 @@
       },
       "model": {
         "type": "string",
-        "enum": [
-          "wan2-2-t2v-a14b",
-          "wan2.2-t2v-a14b",
-          "wan2.2-i2v-a14b",
-          "wan2.2-ti2v-5b",
-          "wan2.1-t2v-1.3b",
-          "animatediff-lightning-mps",
-          "ltx-video-0.9.8-13b-distilled",
-          "wan2.2-i2v-a14b-hq"
-        ],
-        "title": "Modèle (facultatif)",
-        "description": "Laissez vide : l'hôte de génération choisit son modèle par défaut. Wan 2.2 5B (GPU big) : 704×1280, 24 i/s ; Wan 2.1 1.3B (GPU small) : 480×832, 16 i/s ; AnimateDiff : le Mac. Wan 2.2 A14B (serverless, fournisseur) : 832×480, 16:9 uniquement, 5 s. Wan 2.2 A14B 720p (`wan2.2-t2v-a14b`, GPU 80 Go) : 1280×720 en 16:9 ou 720×1280 en 9:16, 5 s, 16 i/s — le plan de présentation. Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`, GPU 80 Go) : part d'une image d'amorce (obligatoire), 720p, 5 s, 16 i/s, quatre pas distillés — les plans d'un court métrage. LTX-Video 0.9.8 13B distilled (`ltx-video-0.9.8-13b-distilled`, GPU 80 Go) : depuis une image ou un texte, 1216×704 (16:9) ou 704×1216 (9:16), 5 s, 24 i/s, huit pas — environ quinze secondes ; le modèle rapide de l'atelier. Wan 2.2 I2V A14B en 40 pas (`wan2.2-i2v-a14b-hq`, GPU 80 Go) : le même modèle que le plan distillé, au programme complet — environ 18 minutes un plan 720p ; le meilleur pour les personnes et les animaux en 9:16."
+        "title": "Modèle",
+        "description": "Auto choisit le meilleur modèle disponible. « Comparer les modèles » détaille chacun.",
+        "maxLength": 120,
+        "x-options": {
+          "source": "models",
+          "category": "video",
+          "facts": {
+            "ltx-video-0.9.8-13b-distilled": [
+              "1216×704",
+              "704×1216",
+              "5 s"
+            ],
+            "wan2.2-i2v-a14b-hq": [
+              "720p",
+              "5 s",
+              "40 steps"
+            ],
+            "wan2.2-i2v-a14b": [
+              "720p",
+              "5 s",
+              "16 fps"
+            ],
+            "wan2.2-t2v-a14b": [
+              "1280×720",
+              "5 s",
+              "16 fps"
+            ],
+            "wan2-2-t2v-a14b": [
+              "832×480",
+              "5 s",
+              "16 fps"
+            ],
+            "wan2.2-ti2v-5b": [
+              "704×1280",
+              "5 s",
+              "24 fps"
+            ],
+            "wan2.1-t2v-1.3b": [
+              "480×832",
+              "5 s",
+              "16 fps"
+            ],
+            "animatediff-lightning-mps": []
+          }
+        },
+        "x-i18n": {
+          "en": {
+            "title": "Model",
+            "description": "Auto picks the best model that is running. Open « Compare models » to see each one.",
+            "options": {
+              "ltx-video-0.9.8-13b-distilled": {
+                "label": "LTX-Video · fast",
+                "hint": "Image or text to video in about 15 s, 24 fps."
+              },
+              "wan2.2-i2v-a14b-hq": {
+                "label": "Wan 2.2 HQ · people",
+                "hint": "Starts from your image. Best for people and animals, 9:16. Slow."
+              },
+              "wan2.2-i2v-a14b": {
+                "label": "Wan 2.2 · image to video",
+                "hint": "Starts from your image (required). 4 distilled steps: the shots of a short film."
+              },
+              "wan2.2-t2v-a14b": {
+                "label": "Wan 2.2 · 720p",
+                "hint": "Text to video on our GPU, 16:9 or 9:16. The presentation shot."
+              },
+              "wan2-2-t2v-a14b": {
+                "label": "Wan 2.2 · cloud",
+                "hint": "Text to video, hosted by a provider. Wide 16:9 only."
+              },
+              "wan2.2-ti2v-5b": {
+                "label": "Wan 2.2 5B · vertical",
+                "hint": "Vertical shorts on the GPU host, from text or an image."
+              },
+              "wan2.1-t2v-1.3b": {
+                "label": "Wan 2.1 · draft",
+                "hint": "Quick vertical drafts on the small GPU host."
+              },
+              "animatediff-lightning-mps": {
+                "label": "AnimateDiff · Mac",
+                "hint": "Runs on the Mac. Short, light clips."
+              }
+            }
+          },
+          "fr": {
+            "title": "Modèle",
+            "description": "Auto choisit le meilleur modèle disponible. « Comparer les modèles » détaille chacun.",
+            "options": {
+              "ltx-video-0.9.8-13b-distilled": {
+                "label": "LTX-Video · rapide",
+                "hint": "Image ou texte vers vidéo en 15 s environ, 24 i/s."
+              },
+              "wan2.2-i2v-a14b-hq": {
+                "label": "Wan 2.2 HQ · personnes",
+                "hint": "Part de votre image. Le meilleur pour personnes et animaux, 9:16. Lent."
+              },
+              "wan2.2-i2v-a14b": {
+                "label": "Wan 2.2 · image vers vidéo",
+                "hint": "Part de votre image (obligatoire). 4 pas distillés : les plans d'un court métrage."
+              },
+              "wan2.2-t2v-a14b": {
+                "label": "Wan 2.2 · 720p",
+                "hint": "Texte vers vidéo sur notre GPU, 16:9 ou 9:16. Le plan de présentation."
+              },
+              "wan2-2-t2v-a14b": {
+                "label": "Wan 2.2 · infonuagique",
+                "hint": "Texte vers vidéo, hébergé par un fournisseur. 16:9 seulement."
+              },
+              "wan2.2-ti2v-5b": {
+                "label": "Wan 2.2 5B · vertical",
+                "hint": "Courts verticaux sur l'hôte GPU, depuis un texte ou une image."
+              },
+              "wan2.1-t2v-1.3b": {
+                "label": "Wan 2.1 · brouillon",
+                "hint": "Brouillons verticaux rapides sur le petit hôte GPU."
+              },
+              "animatediff-lightning-mps": {
+                "label": "AnimateDiff · Mac",
+                "hint": "Tourne sur le Mac. Clips courts et légers."
+              }
+            }
+          }
+        }
       },
       "seed": {
         "type": "string",
         "maxLength": 20,
-        "title": "Graine (facultatif)",
-        "description": "Le même prompt, le même modèle et la même graine refont le même plan."
+        "title": "Graine",
+        "description": "Le même prompt, le même modèle et la même graine refont le même plan.",
+        "x-control": "seed",
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Seed",
+            "description": "Same prompt, model and seed make the same shot again."
+          },
+          "fr": {
+            "title": "Graine",
+            "description": "Le même prompt, le même modèle et la même graine refont le même plan."
+          }
+        }
       },
       "upscale": {
         "type": "string",
@@ -107,8 +250,28 @@
           "2160p"
         ],
         "default": "none",
-        "title": "Netteté (facultatif)",
-        "description": "none : le plan tel que le modèle le fait. 1080p ou 2160p (4K) : le plan est ensuite porté à cette taille par SeedVR2 3B ; l'exécution dure plus longtemps (environ 2 min en 1080p, 5 min en 4K)."
+        "title": "Netteté",
+        "description": "Porte le plan fini en 1080p ou en 4K (SeedVR2). L'exécution est plus longue.",
+        "x-i18n": {
+          "en": {
+            "title": "Sharpness",
+            "description": "Raises the finished shot to 1080p or 4K (SeedVR2). The run takes longer.",
+            "options": {
+              "none": "None · as the model makes it",
+              "1080p": "Full HD 1080p · about 2 min more",
+              "2160p": "4K 2160p · about 5 min more"
+            }
+          },
+          "fr": {
+            "title": "Netteté",
+            "description": "Porte le plan fini en 1080p ou en 4K (SeedVR2). L'exécution est plus longue.",
+            "options": {
+              "none": "Aucune · tel que le modèle le fait",
+              "1080p": "Full HD 1080p · environ 2 min de plus",
+              "2160p": "4K 2160p · environ 5 min de plus"
+            }
+          }
+        }
       }
     }
   },
