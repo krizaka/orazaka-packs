@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Ce que montre une vidéo, pour le recommandeur (ADR-078, différé « keyframes ») : une image clé passe par le modèle de vision, puis le modèle de conversation rend une lecture JSON — résumé, sujets, mots-clés, langue, étiquettes de sécurité. Le produit réécrit ces facettes dans l'article (POST /api/v1/recommendations/items), que le service de connaissances ré-encode. Les étiquettes de sécurité alimentent une file de modération humaine, jamais un retrait automatique.",
+  "changelog": "1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Ce que montre une vidéo, pour le recommandeur (ADR-078, différé « keyframes ») : une image clé passe par le modèle de vision, puis le modèle de conversation rend une lecture JSON — résumé, sujets, mots-clés, langue, étiquettes de sécurité. Le produit réécrit ces facettes dans l'article (POST /api/v1/recommendations/items), que le service de connaissances ré-encode. Les étiquettes de sécurité alimentent une file de modération humaine, jamais un retrait automatique.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-understanding",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "see",
@@ -41,13 +41,29 @@
         "key": "reading",
         "label": "Ce que montre la vidéo (JSON)",
         "from": "{{steps.reading.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "What the video shows (JSON)"
+          },
+          "fr": {
+            "label": "Ce que montre la vidéo (JSON)"
+          }
+        }
       },
       {
         "key": "frame",
         "label": "Ce que montre l'image clé",
         "from": "{{steps.frame.analysis}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "What the key frame shows"
+          },
+          "fr": {
+            "label": "Ce que montre l'image clé"
+          }
+        }
       }
     ]
   },

@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 250,
-  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — le connecteur nomme un type que la plateforme sait exécuter (SLACK au lieu de CRM, qui n'existe dans aucun dispatcher et aurait levé « Unknown connector type »), il n'est plus conditionnel, et le fan-out chat déclare pourquoi il tolère un échec.",
+  "changelog": "1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — le connecteur nomme un type que la plateforme sait exécuter (SLACK au lieu de CRM, qui n'existe dans aucun dispatcher et aurait levé « Unknown connector type »), il n'est plus conditionnel, et le fan-out chat déclare pourquoi il tolère un échec.",
   "createdBy": "system",
   "definition": {
     "studioKey": "outbound-prospection",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "angle",
@@ -76,13 +76,29 @@
         "key": "sequence",
         "label": "Séquence d'emails",
         "from": "{{steps.emailSequence.body}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Email sequence"
+          },
+          "fr": {
+            "label": "Séquence d'emails"
+          }
+        }
       },
       {
         "key": "angles",
         "label": "Angles par prospect",
         "from": "{{steps.angles}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Angles per prospect"
+          },
+          "fr": {
+            "label": "Angles par prospect"
+          }
+        }
       }
     ]
   },

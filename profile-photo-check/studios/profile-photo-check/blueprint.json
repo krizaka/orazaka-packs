@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.0.0 — inspection des visages (déterministe, worker), lecture de chaque photo par un modèle de vision (une consigne stricte, réponse JSON), puis verdict en codes. Le modèle ne décide de rien seul : une réponse illisible vaut « non vérifié » et ne bloque pas.",
+  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.0.0 — inspection des visages (déterministe, worker), lecture de chaque photo par un modèle de vision (une consigne stricte, réponse JSON), puis verdict en codes. Le modèle ne décide de rien seul : une réponse illisible vaut « non vérifié » et ne bloque pas.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "profile-photo-check",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "faces",
@@ -54,8 +54,8 @@
       }
     ],
     "outputs": [
-      { "key": "report", "label": "Verdict, en codes", "from": "{{steps.assessment.reportJson}}", "type": "JSON" },
-      { "key": "passes", "label": "L'ensemble passe", "from": "{{steps.assessment.passes}}", "type": "TEXT" }
+      { "key": "report", "label": "Verdict, en codes", "from": "{{steps.assessment.reportJson}}", "type": "JSON", "x-i18n": {"en": {"label": "Verdict, as codes"}, "fr": {"label": "Verdict, en codes"}} },
+      { "key": "passes", "label": "L'ensemble passe", "from": "{{steps.assessment.passes}}", "type": "TEXT", "x-i18n": {"en": {"label": "The set passes"}, "fr": {"label": "L'ensemble passe"}} }
     ]
   },
   "inputSchema": {

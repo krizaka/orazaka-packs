@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 210,
-  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Vitrine initiale : description des réalisations, légende rédigée et visuel de marque.",
+  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Vitrine initiale : description des réalisations, légende rédigée et visuel de marque.",
   "createdBy": "system",
   "definition": {
     "studioKey": "trade-showcase",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "describe",
@@ -62,19 +62,43 @@
         "key": "showcase",
         "label": "Votre visuel de vitrine",
         "from": "{{steps.showcaseImage.url}}",
-        "type": "IMAGE"
+        "type": "IMAGE",
+        "x-i18n": {
+          "en": {
+            "label": "Your showcase visual"
+          },
+          "fr": {
+            "label": "Votre visuel de vitrine"
+          }
+        }
       },
       {
         "key": "caption",
         "label": "Votre légende",
         "from": "{{steps.caption.content}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Your caption"
+          },
+          "fr": {
+            "label": "Votre légende"
+          }
+        }
       },
       {
         "key": "descriptions",
         "label": "Descriptions de vos réalisations",
         "from": "{{steps.photoDescriptions}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Descriptions of your work"
+          },
+          "fr": {
+            "label": "Descriptions de vos réalisations"
+          }
+        }
       }
     ]
   },

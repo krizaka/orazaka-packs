@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 900,
-  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.0.0 — Le montage d'un court métrage cinématographique (ADR-080) : les plans vidéo d'une production et une liste de décisions de montage (coupes, fondus, flash, ralentis et rampes de vitesse, poussée de caméra, étalonnage par LUT, titres, sous-titres) deviennent un film en 1080p à 30 i/s. Les plans de 16 i/s sont interpolés par compensation de mouvement. La mention « AI-generated » est incrustée et écrite dans les métadonnées du fichier.",
+  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.0.0 — Le montage d'un court métrage cinématographique (ADR-080) : les plans vidéo d'une production et une liste de décisions de montage (coupes, fondus, flash, ralentis et rampes de vitesse, poussée de caméra, étalonnage par LUT, titres, sous-titres) deviennent un film en 1080p à 30 i/s. Les plans de 16 i/s sont interpolés par compensation de mouvement. La mention « AI-generated » est incrustée et écrite dans les métadonnées du fichier.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "cinematic-cut",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "cut",
@@ -28,7 +28,15 @@
         "key": "film",
         "label": "Votre film monté",
         "from": "{{steps.cut.url}}",
-        "type": "VIDEO"
+        "type": "VIDEO",
+        "x-i18n": {
+          "en": {
+            "label": "Your edited film"
+          },
+          "fr": {
+            "label": "Votre film monté"
+          }
+        }
       }
     ]
   },

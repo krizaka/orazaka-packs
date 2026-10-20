@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
+  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "document-authenticity",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "signals",
@@ -28,13 +28,29 @@
         "key": "report",
         "label": "Points à éclaircir",
         "from": "{{steps.signals.reportText}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Points to clear up"
+          },
+          "fr": {
+            "label": "Points à éclaircir"
+          }
+        }
       },
       {
         "key": "signals",
         "label": "Signaux, sous forme structurée",
         "from": "{{steps.signals.report}}",
-        "type": "JSON"
+        "type": "JSON",
+        "x-i18n": {
+          "en": {
+            "label": "Signals, structured"
+          },
+          "fr": {
+            "label": "Signaux, sous forme structurée"
+          }
+        }
       }
     ]
   },

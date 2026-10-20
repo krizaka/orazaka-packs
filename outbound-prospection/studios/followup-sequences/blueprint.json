@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 510,
-  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Version initiale : une relance multi-temps par prospect, uniformisée puis postée au canal après validation.",
+  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Version initiale : une relance multi-temps par prospect, uniformisée puis postée au canal après validation.",
   "createdBy": "system",
   "definition": {
     "studioKey": "followup-sequences",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "touchpoints",
@@ -91,13 +91,29 @@
         "key": "sequence",
         "label": "Votre séquence de relance",
         "from": "{{steps.sequence.body}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Your follow-up sequence"
+          },
+          "fr": {
+            "label": "Votre séquence de relance"
+          }
+        }
       },
       {
         "key": "ladders",
         "label": "Relances par prospect",
         "from": "{{steps.ladders}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Follow-ups per prospect"
+          },
+          "fr": {
+            "label": "Relances par prospect"
+          }
+        }
       }
     ]
   },

@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 200,
-  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.1.0 — la graine est un nombre avec « au hasard », rangée sous « Plus d'options ». 1.0.0 — Direction artistique « Diorama miniature tilt-shift » : une étape de génération d'image dont le prompt structuré (lumière, optique, matières, palette) suit votre sujet. Graine facultative et rapportée, pour refaire l'image ; formats 4:5, 16:9, 1:1, 9:16.",
+  "changelog": "1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.1.0 — la graine est un nombre avec « au hasard », rangée sous « Plus d'options ». 1.0.0 — Direction artistique « Diorama miniature tilt-shift » : une étape de génération d'image dont le prompt structuré (lumière, optique, matières, palette) suit votre sujet. Graine facultative et rapportée, pour refaire l'image ; formats 4:5, 16:9, 1:1, 9:16.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "art-miniature",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "image",
@@ -30,25 +30,57 @@
         "key": "image",
         "label": "Votre image",
         "from": "{{steps.image.url}}",
-        "type": "IMAGE"
+        "type": "IMAGE",
+        "x-i18n": {
+          "en": {
+            "label": "Your image"
+          },
+          "fr": {
+            "label": "Votre image"
+          }
+        }
       },
       {
         "key": "seed",
         "label": "Graine (pour refaire cette image)",
         "from": "{{steps.image.seed}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Seed (to make this image again)"
+          },
+          "fr": {
+            "label": "Graine (pour refaire cette image)"
+          }
+        }
       },
       {
         "key": "model",
         "label": "Modèle",
         "from": "{{steps.image.model}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Model"
+          },
+          "fr": {
+            "label": "Modèle"
+          }
+        }
       },
       {
         "key": "generationMs",
         "label": "Temps de génération (ms)",
         "from": "{{steps.image.generationMs}}",
-        "type": "TEXT"
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Generation time (ms)"
+          },
+          "fr": {
+            "label": "Temps de génération (ms)"
+          }
+        }
       }
     ]
   },
