@@ -13,6 +13,7 @@
 Reference packs for the Orazaka Studio marketplace (document validation, media, prospection, real-estate, wellbeing…) and the pack manifest schema.
 
 [![CI](https://github.com/krizaka/orazaka-packs/actions/workflows/ci.yml/badge.svg)](https://github.com/krizaka/orazaka-packs/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/krizaka/orazaka-packs/badge)](https://scorecard.dev/viewer/?uri=github.com/krizaka/orazaka-packs)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Orazaka](https://img.shields.io/badge/part%20of-Orazaka-f67e23)](https://github.com/krizaka/orazaka#repositories)
 [![Docs](https://img.shields.io/badge/docs-krizaka.com-f67e23)](https://www.krizaka.com/en/products/orazaka)
