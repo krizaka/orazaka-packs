@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.1 — la langue des valeurs suit la langue de la personne (anglais pour « en »), et rien n'est cité qui n'ait pas été dit : une phrase entre guillemets doit figurer mot pour mot dans le moment, sinon elle est omise. Décrit, jamais expliqué.",
+  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.1 — la langue des valeurs suit la langue de la personne (anglais pour « en »), et rien n'est cité qui n'ait pas été dit : une phrase entre guillemets doit figurer mot pour mot dans le moment, sinon elle est omise. Décrit, jamais expliqué.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "session-summary",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "summarise",
@@ -91,25 +91,69 @@
         "type": "string",
         "maxLength": 30000,
         "title": "Le moment",
-        "description": "Les tours du moment, dans l'ordre. Ce Studio les résume ; il ne les garde pas."
+        "description": "Les tours du moment, dans l'ordre. Ce Studio les résume ; il ne les garde pas.",
+        "x-i18n": {
+          "en": {
+            "title": "The moment",
+            "description": "The turns of the moment, in order. This Studio summarises them; it does not keep them.",
+            "placeholder": "You: … · Assistant: …"
+          },
+          "fr": {
+            "title": "Le moment",
+            "description": "Les tours du moment, dans l'ordre. Ce Studio les résume ; il ne les garde pas.",
+            "placeholder": "Vous : … · Assistant : …"
+          }
+        }
       },
       "thread": {
         "type": "string",
         "maxLength": 6000,
         "title": "Le fil",
-        "description": "Ce qui reste des fois précédentes, s'il y en a."
+        "description": "Ce qui reste des fois précédentes, s'il y en a.",
+        "x-i18n": {
+          "en": {
+            "title": "The thread",
+            "description": "What remains from earlier times, if any.",
+            "placeholder": "Last time we talked about sleep."
+          },
+          "fr": {
+            "title": "Le fil",
+            "description": "Ce qui reste des fois précédentes, s'il y en a.",
+            "placeholder": "La dernière fois, on a parlé du sommeil."
+          }
+        }
       },
       "moodBefore": {
         "type": "integer",
         "minimum": 1,
         "maximum": 5,
-        "title": "Humeur avant (auto-déclarée)"
+        "title": "Humeur avant (auto-déclarée)",
+        "x-i18n": {
+          "en": {
+            "title": "Mood before (self-reported)",
+            "description": "From 1 (low) to 5 (good), as you feel it."
+          },
+          "fr": {
+            "title": "Humeur avant (auto-déclarée)",
+            "description": "De 1 (bas) à 5 (bon), comme vous le ressentez."
+          }
+        }
       },
       "moodAfter": {
         "type": "integer",
         "minimum": 1,
         "maximum": 5,
-        "title": "Humeur après (auto-déclarée)"
+        "title": "Humeur après (auto-déclarée)",
+        "x-i18n": {
+          "en": {
+            "title": "Mood after (self-reported)",
+            "description": "From 1 (low) to 5 (good), as you feel it."
+          },
+          "fr": {
+            "title": "Humeur après (auto-déclarée)",
+            "description": "De 1 (bas) à 5 (bon), comme vous le ressentez."
+          }
+        }
       },
       "locale": {
         "type": "string",

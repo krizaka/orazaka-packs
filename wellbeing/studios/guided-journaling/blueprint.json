@@ -1,8 +1,8 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "Journaling guidé — le texte est écrit à la première personne, à la place de la personne. La 1.0.0 demandait « trois à cinq paragraphes à la première personne » et produisait « Je suis désolé d'apprendre que vous avez… » : deuxième personne, l'assistant qui rassure et qui conseille, exactement le registre qu'ADR-055 écarte pour ne faire aucune allégation de soin. La consigne interdit désormais l'adresse plutôt que de demander une voix (docs/evaluations/first-real-use.md, A5).",
+  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Journaling guidé — le texte est écrit à la première personne, à la place de la personne. La 1.0.0 demandait « trois à cinq paragraphes à la première personne » et produisait « Je suis désolé d'apprendre que vous avez… » : deuxième personne, l'assistant qui rassure et qui conseille, exactement le registre qu'ADR-055 écarte pour ne faire aucune allégation de soin. La consigne interdit désormais l'adresse plutôt que de demander une voix (docs/evaluations/first-real-use.md, A5).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "guided-journaling",
@@ -41,7 +41,19 @@
         "type": "string",
         "maxLength": 8000,
         "title": "Ce que vous voulez mettre par écrit",
-        "description": "Vos mots. Rien de ce que vous écrivez ici n'est utilisé pour entraîner un modèle ni compté dans une statistique."
+        "description": "Vos mots. Rien de ce que vous écrivez ici n'est utilisé pour entraîner un modèle ni compté dans une statistique.",
+        "x-i18n": {
+          "en": {
+            "title": "What you want to put in writing",
+            "description": "Your words. Nothing you write here is used to train a model or counted in a statistic.",
+            "placeholder": "Today I noticed that…"
+          },
+          "fr": {
+            "title": "Ce que vous voulez mettre par écrit",
+            "description": "Vos mots. Rien de ce que vous écrivez ici n'est utilisé pour entraîner un modèle ni compté dans une statistique.",
+            "placeholder": "Aujourd'hui, j'ai remarqué que…"
+          }
+        }
       }
     }
   },

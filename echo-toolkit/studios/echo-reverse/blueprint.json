@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "Reference Tier-W pack.",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Reference Tier-W pack.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "echo-reverse",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "reverse",
@@ -40,7 +40,19 @@
       "text": {
         "type": "string",
         "maxLength": 500,
-        "title": "Texte"
+        "title": "Texte",
+        "x-i18n": {
+          "en": {
+            "title": "Text",
+            "description": "The text to reverse.",
+            "placeholder": "Hello"
+          },
+          "fr": {
+            "title": "Texte",
+            "description": "Le texte à inverser.",
+            "placeholder": "Bonjour"
+          }
+        }
       }
     }
   },

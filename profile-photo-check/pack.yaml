@@ -15,7 +15,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: profile-photo-check
-version: 1.0.0
+version: 1.1.0
 tier: WORKER
 distribution: CLOUD
 regulatoryClass: SENSITIVE

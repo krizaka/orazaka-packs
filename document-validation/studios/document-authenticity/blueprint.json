@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "document-authenticity",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "signals",
@@ -46,13 +46,37 @@
         "type": "string",
         "maxLength": 1400000,
         "title": "Le fichier PDF",
-        "description": "Le PDF lui-même, encodé en base64. L'examen porte sur le fichier — ses métadonnées, sa structure, ses polices — et jamais sur ce que le document raconte."
+        "description": "Le PDF lui-même, encodé en base64. L'examen porte sur le fichier — ses métadonnées, sa structure, ses polices — et jamais sur ce que le document raconte.",
+        "x-i18n": {
+          "en": {
+            "title": "The PDF file",
+            "description": "The PDF itself, base64-encoded. It examines the file, never what the document says.",
+            "placeholder": "JVBERi0xLjcK…"
+          },
+          "fr": {
+            "title": "Le fichier PDF",
+            "description": "Le PDF lui-même, en base64. L'examen porte sur le fichier, jamais sur ce que dit le document.",
+            "placeholder": "JVBERi0xLjcK…"
+          }
+        }
       },
       "expectedIssuer": {
         "type": "string",
         "maxLength": 120,
         "title": "Émetteur attendu (facultatif)",
-        "description": "Qui vous pensez être à l'origine de ce document, par exemple le nom de l'agence. Renseigné, il permet de rapprocher le producteur déclaré du fichier de ce que vous attendiez : sans lui il n'y a qu'un fait, avec lui il peut y avoir une contradiction."
+        "description": "Qui vous pensez être à l'origine de ce document, par exemple le nom de l'agence. Renseigné, il permet de rapprocher le producteur déclaré du fichier de ce que vous attendiez : sans lui il n'y a qu'un fait, avec lui il peut y avoir une contradiction.",
+        "x-i18n": {
+          "en": {
+            "title": "Expected issuer (optional)",
+            "description": "Who you think produced this document, such as an agency's name. It is compared with the producer the file declares.",
+            "placeholder": "Agency name"
+          },
+          "fr": {
+            "title": "Émetteur attendu (facultatif)",
+            "description": "Qui vous pensez être à l'origine du document, par exemple le nom de l'agence. Comparé au producteur déclaré du fichier.",
+            "placeholder": "Nom de l'agence"
+          }
+        }
       }
     }
   },

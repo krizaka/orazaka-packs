@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.0.0 — inspection des visages (déterministe, worker), lecture de chaque photo par un modèle de vision (une consigne stricte, réponse JSON), puis verdict en codes. Le modèle ne décide de rien seul : une réponse illisible vaut « non vérifié » et ne bloque pas.",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.0.0 — inspection des visages (déterministe, worker), lecture de chaque photo par un modèle de vision (une consigne stricte, réponse JSON), puis verdict en codes. Le modèle ne décide de rien seul : une réponse illisible vaut « non vérifié » et ne bloque pas.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "profile-photo-check",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "faces",
@@ -68,7 +68,17 @@
         "maxItems": 12,
         "items": { "type": "string", "format": "asset-id", "contentMediaType": "image/*", "minLength": 8, "maxLength": 120 },
         "title": "Les photos (fichiers envoyés)",
-        "description": "Les identifiants des photos envoyées, pour la lecture par le modèle de vision."
+        "description": "Les identifiants des photos envoyées, pour la lecture par le modèle de vision.",
+        "x-i18n": {
+          "en": {
+            "title": "The photos (uploaded files)",
+            "description": "The ids of the uploaded photos, read by the vision model."
+          },
+          "fr": {
+            "title": "Les photos (fichiers envoyés)",
+            "description": "Les identifiants des photos envoyées, pour la lecture par le modèle de vision."
+          }
+        }
       },
       "photosBase64": {
         "type": "array",
@@ -76,12 +86,24 @@
         "maxItems": 12,
         "items": { "type": "string", "maxLength": 1300000 },
         "title": "Les mêmes photos, en base64",
-        "description": "Les mêmes photos dans le même ordre, en JPEG d'environ 512 px, pour la détection des visages."
+        "description": "Les mêmes photos dans le même ordre, en JPEG d'environ 512 px, pour la détection des visages.",
+        "x-i18n": {
+          "en": {
+            "title": "The same photos, in base64",
+            "description": "The same photos in the same order, as JPEGs of about 512 px, for face detection.",
+            "placeholder": "/9j/4AAQ…, /9j/4AAQ…"
+          },
+          "fr": {
+            "title": "Les mêmes photos, en base64",
+            "description": "Les mêmes photos dans le même ordre, en JPEG d'environ 512 px, pour la détection des visages.",
+            "placeholder": "/9j/4AAQ…, /9j/4AAQ…"
+          }
+        }
       },
-      "compareFaces": { "type": "boolean", "default": true, "title": "Comparer les visages entre eux", "description": "Traitement biométrique : à n'activer qu'avec le consentement explicite de la personne. Faux : les visages sont seulement comptés." },
-      "minPhotos": { "type": "integer", "minimum": 1, "maximum": 12, "default": 4, "title": "Photos au moins" },
-      "maxPhotos": { "type": "integer", "minimum": 1, "maximum": 12, "default": 6, "title": "Photos au plus" },
-      "minFacePhotos": { "type": "integer", "minimum": 0, "maximum": 12, "default": 2, "title": "Photos de visage au moins" }
+      "compareFaces": { "type": "boolean", "default": true, "title": "Comparer les visages entre eux", "description": "Traitement biométrique : à n'activer qu'avec le consentement explicite de la personne. Faux : les visages sont seulement comptés.", "x-i18n": {"en": {"title": "Compare the faces with each other", "description": "Biometric processing: only enable with the person's explicit consent. Off: faces are only counted."}, "fr": {"title": "Comparer les visages entre eux", "description": "Traitement biométrique : à n'activer qu'avec le consentement explicite de la personne. Désactivé : on compte les visages."}} },
+      "minPhotos": { "type": "integer", "minimum": 1, "maximum": 12, "default": 4, "title": "Photos au moins", "x-i18n": {"en": {"title": "At least this many photos", "description": "The fewest photos accepted."}, "fr": {"title": "Photos au moins", "description": "Le moins de photos accepté."}} },
+      "maxPhotos": { "type": "integer", "minimum": 1, "maximum": 12, "default": 6, "title": "Photos au plus", "x-i18n": {"en": {"title": "At most this many photos", "description": "The most photos accepted."}, "fr": {"title": "Photos au plus", "description": "Le plus de photos accepté."}} },
+      "minFacePhotos": { "type": "integer", "minimum": 0, "maximum": 12, "default": 2, "title": "Photos de visage au moins", "x-i18n": {"en": {"title": "At least this many face photos", "description": "The fewest photos in which a face must be found."}, "fr": {"title": "Photos de visage au moins", "description": "Le moins de photos où un visage doit être trouvé."}} }
     }
   },
   "configSchema": { "type": "object", "properties": {} }

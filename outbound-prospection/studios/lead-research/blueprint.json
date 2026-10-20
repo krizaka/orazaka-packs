@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 380,
-  "changelog": "Version initiale : une fiche de qualification par prospect, puis un classement par priorité.",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Version initiale : une fiche de qualification par prospect, puis un classement par priorité.",
   "createdBy": "system",
   "definition": {
     "studioKey": "lead-research",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "research",
@@ -86,17 +86,53 @@
         },
         "minItems": 1,
         "maxItems": 50,
-        "title": "Vos prospects"
+        "title": "Vos prospects",
+        "x-i18n": {
+          "en": {
+            "title": "Your prospects",
+            "description": "The prospects to research, separated by commas.",
+            "placeholder": "Anna, Tom, Mia"
+          },
+          "fr": {
+            "title": "Vos prospects",
+            "description": "Les prospects à étudier, séparés par des virgules.",
+            "placeholder": "Anna, Tom, Léa"
+          }
+        }
       },
       "offer": {
         "type": "string",
         "maxLength": 500,
-        "title": "Votre offre en une phrase"
+        "title": "Votre offre en une phrase",
+        "x-i18n": {
+          "en": {
+            "title": "Your offer in one sentence",
+            "description": "What you offer, as you would say it to a prospect.",
+            "placeholder": "I help small restaurants fill their quiet weeknights."
+          },
+          "fr": {
+            "title": "Votre offre en une phrase",
+            "description": "Ce que vous proposez, comme vous le diriez à un prospect.",
+            "placeholder": "J'aide les petits restaurants à remplir leurs soirs de semaine."
+          }
+        }
       },
       "icp": {
         "type": "string",
         "maxLength": 500,
-        "title": "Votre client idéal"
+        "title": "Votre client idéal",
+        "x-i18n": {
+          "en": {
+            "title": "Your ideal customer",
+            "description": "Who you want to reach: sector, size, role.",
+            "placeholder": "Independent restaurants with 10 to 50 seats in Montreal"
+          },
+          "fr": {
+            "title": "Votre client idéal",
+            "description": "Qui vous voulez atteindre : secteur, taille, rôle.",
+            "placeholder": "Restaurants indépendants de 10 à 50 places à Montréal"
+          }
+        }
       }
     }
   },

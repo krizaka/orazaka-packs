@@ -172,6 +172,12 @@ runs) and from `x-options.facts` (`{ "<model id>": ["1216×704", "5 s"] }`, lang
 the catalogue's, **lowercase** (`chat`, not `CHAT`: a category that matches no model draws an empty select).
 `tests/closed-sets.test.mjs` refuses a select without its words, a long helper, or an uppercase category.
 
+**Every field speaks both languages, not only the selects.** A free-text, numeric, boolean or file field carries
+`x-i18n.en` and `x-i18n.fr` too: a `title`, a one-line `description` (**≤ 140 characters**) and, for a free-text field,
+the `placeholder` it shows (an example of what to type). The blueprint's own `title` / `description` stay for clients
+that predate it. The same test refuses a field without them, an English word that is French, and the dev data check
+(`node scripts/audit-studio-forms.mjs` in krizaka/orazaka) reads the published blueprints for the same.
+
 The Studio service writes the catalogue's list into the schema it serves (`oneOf` of `const`/`title`, the facts in
 `x-meta`) and refuses, before any credit is held, a value that is not in it.
 

@@ -14,7 +14,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: echo-toolkit
-version: 1.0.0
+version: 1.1.0
 tier: WORKER
 distribution: OSS
 regulatoryClass: STANDARD

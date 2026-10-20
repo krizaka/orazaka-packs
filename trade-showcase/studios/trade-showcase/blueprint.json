@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 210,
-  "changelog": "Vitrine initiale : description des réalisations, légende rédigée et visuel de marque.",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Vitrine initiale : description des réalisations, légende rédigée et visuel de marque.",
   "createdBy": "system",
   "definition": {
     "studioKey": "trade-showcase",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "describe",
@@ -92,12 +92,36 @@
         },
         "minItems": 1,
         "maxItems": 6,
-        "title": "Photos de vos réalisations"
+        "title": "Photos de vos réalisations",
+        "x-i18n": {
+          "en": {
+            "title": "Photos of your work",
+            "description": "One to six photos of finished jobs.",
+            "placeholder": "photo1, photo2, photo3"
+          },
+          "fr": {
+            "title": "Photos de vos réalisations",
+            "description": "De une à six photos de travaux terminés.",
+            "placeholder": "photo1, photo2, photo3"
+          }
+        }
       },
       "trade": {
         "type": "string",
         "maxLength": 60,
-        "title": "Votre métier"
+        "title": "Votre métier",
+        "x-i18n": {
+          "en": {
+            "title": "Your trade",
+            "description": "What you do, in a word or two.",
+            "placeholder": "Plumber"
+          },
+          "fr": {
+            "title": "Votre métier",
+            "description": "Ce que vous faites, en un ou deux mots.",
+            "placeholder": "Plombier"
+          }
+        }
       }
     }
   },

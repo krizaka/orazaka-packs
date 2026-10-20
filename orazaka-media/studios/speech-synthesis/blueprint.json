@@ -1,12 +1,12 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — la voix se choisit dans la liste des voix du catalogue (avec leur langue), plus de champ « voix » à taper :  1.2.0 — la capacité que cette étape appelle est renommée : une clé qui disait `chat.*` pour de la synthèse AUDIO et une qui disait `media.audio` pour de la transcription mentaient toutes deux sur ce qu'elles font (ADR-069, constat #44). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Synthèse vocale — une étape. Le schéma porte le défaut de payload_template : `voice` alloy. Facturée au millier de caractères envoyés, ce que l'exécuteur rapporte désormais (ADR-066).",
+  "changelog": "1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — la voix se choisit dans la liste des voix du catalogue (avec leur langue), plus de champ « voix » à taper :  1.2.0 — la capacité que cette étape appelle est renommée : une clé qui disait `chat.*` pour de la synthèse AUDIO et une qui disait `media.audio` pour de la transcription mentaient toutes deux sur ce qu'elles font (ADR-069, constat #44). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Synthèse vocale — une étape. Le schéma porte le défaut de payload_template : `voice` alloy. Facturée au millier de caractères envoyés, ce que l'exécuteur rapporte désormais (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "speech-synthesis",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "steps": [
       {
         "id": "speech",
@@ -45,7 +45,19 @@
         "minLength": 1,
         "maxLength": 20000,
         "title": "Le texte à lire",
-        "description": "Ce qui sera prononcé. La facturation suit le nombre de caractères."
+        "description": "Ce qui sera prononcé. La facturation suit le nombre de caractères.",
+        "x-i18n": {
+          "en": {
+            "title": "The text to read",
+            "description": "What will be spoken. Billing follows the number of characters.",
+            "placeholder": "Welcome to Orazaka. Here is your summary."
+          },
+          "fr": {
+            "title": "Le texte à lire",
+            "description": "Ce qui sera prononcé. La facturation suit le nombre de caractères.",
+            "placeholder": "Bienvenue sur Orazaka. Voici votre résumé."
+          }
+        }
       },
       "model": {
         "type": "string",

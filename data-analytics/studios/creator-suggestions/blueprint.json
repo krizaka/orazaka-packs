@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 15,
-  "changelog": "1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Suggestions pour un créateur (ADR-078, différé « suggestions ») : à partir du titre, de la description et des mots-clés qu'il a écrits — et, s'il les donne, des mots-clés qui marchent auprès de son audience (GET /api/v1/recommendations/insights) — trois titres, une description et des mots-clés. Ce sont des propositions : le créateur choisit, rien n'est publié sans lui.",
+  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Suggestions pour un créateur (ADR-078, différé « suggestions ») : à partir du titre, de la description et des mots-clés qu'il a écrits — et, s'il les donne, des mots-clés qui marchent auprès de son audience (GET /api/v1/recommendations/insights) — trois titres, une description et des mots-clés. Ce sont des propositions : le créateur choisit, rien n'est publié sans lui.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "creator-suggestions",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "suggest",
@@ -40,7 +40,19 @@
         "minLength": 2,
         "maxLength": 200,
         "title": "Votre titre",
-        "description": "Le titre actuel de la vidéo."
+        "description": "Le titre actuel de la vidéo.",
+        "x-i18n": {
+          "en": {
+            "title": "Your title",
+            "description": "The video's current title.",
+            "placeholder": "How I made my first short film in one day"
+          },
+          "fr": {
+            "title": "Votre titre",
+            "description": "Le titre actuel de la vidéo.",
+            "placeholder": "Comment j'ai monté mon premier court métrage en une journée"
+          }
+        }
       },
       "description": {
         "type": "string",
@@ -48,21 +60,57 @@
         "maxLength": 2000,
         "default": "",
         "title": "Votre description (facultative)",
-        "description": "Le texte actuel de la vidéo."
+        "description": "Le texte actuel de la vidéo.",
+        "x-i18n": {
+          "en": {
+            "title": "Your description (optional)",
+            "description": "The video's current text.",
+            "placeholder": "A few lines about what the video shows"
+          },
+          "fr": {
+            "title": "Votre description (facultative)",
+            "description": "Le texte actuel de la vidéo.",
+            "placeholder": "Quelques lignes sur ce que montre la vidéo"
+          }
+        }
       },
       "tags": {
         "type": "string",
         "maxLength": 400,
         "default": "",
         "title": "Vos mots-clés (facultatif)",
-        "description": "Séparés par des virgules."
+        "description": "Séparés par des virgules.",
+        "x-i18n": {
+          "en": {
+            "title": "Your keywords (optional)",
+            "description": "Separated by commas.",
+            "placeholder": "editing, short film, tutorial"
+          },
+          "fr": {
+            "title": "Vos mots-clés (facultatif)",
+            "description": "Séparés par des virgules.",
+            "placeholder": "montage, court métrage, tutoriel"
+          }
+        }
       },
       "audienceTags": {
         "type": "string",
         "maxLength": 400,
         "default": "",
         "title": "Ce qui marche auprès de votre audience (facultatif)",
-        "description": "Les mots-clés les plus performants de vos statistiques, séparés par des virgules."
+        "description": "Les mots-clés les plus performants de vos statistiques, séparés par des virgules.",
+        "x-i18n": {
+          "en": {
+            "title": "What works with your audience (optional)",
+            "description": "The best-performing keywords from your analytics, separated by commas.",
+            "placeholder": "behind the scenes, tips, short film"
+          },
+          "fr": {
+            "title": "Ce qui marche auprès de votre audience (facultatif)",
+            "description": "Les mots-clés les plus performants de vos statistiques, séparés par des virgules.",
+            "placeholder": "coulisses, astuces, court métrage"
+          }
+        }
       },
       "language": {
         "type": "string",

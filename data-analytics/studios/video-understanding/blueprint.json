@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Ce que montre une vidéo, pour le recommandeur (ADR-078, différé « keyframes ») : une image clé passe par le modèle de vision, puis le modèle de conversation rend une lecture JSON — résumé, sujets, mots-clés, langue, étiquettes de sécurité. Le produit réécrit ces facettes dans l'article (POST /api/v1/recommendations/items), que le service de connaissances ré-encode. Les étiquettes de sécurité alimentent une file de modération humaine, jamais un retrait automatique.",
+  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Ce que montre une vidéo, pour le recommandeur (ADR-078, différé « keyframes ») : une image clé passe par le modèle de vision, puis le modèle de conversation rend une lecture JSON — résumé, sujets, mots-clés, langue, étiquettes de sécurité. Le produit réécrit ces facettes dans l'article (POST /api/v1/recommendations/items), que le service de connaissances ré-encode. Les étiquettes de sécurité alimentent une file de modération humaine, jamais un retrait automatique.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-understanding",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "see",
@@ -62,14 +62,36 @@
         "minLength": 8,
         "maxLength": 120,
         "title": "L'image clé",
-        "description": "Une image tirée de la vidéo. Le serveur la résout contre vos propres fichiers et rien d'autre."
+        "description": "Une image tirée de la vidéo. Le serveur la résout contre vos propres fichiers et rien d'autre.",
+        "x-i18n": {
+          "en": {
+            "title": "The key frame",
+            "description": "A frame taken from the video. The server only reads your own files."
+          },
+          "fr": {
+            "title": "L'image clé",
+            "description": "Une image tirée de la vidéo. Le serveur ne lit que vos propres fichiers."
+          }
+        }
       },
       "title": {
         "type": "string",
         "minLength": 2,
         "maxLength": 200,
         "title": "Le titre de la vidéo",
-        "description": "Tel que le créateur l'a écrit."
+        "description": "Tel que le créateur l'a écrit.",
+        "x-i18n": {
+          "en": {
+            "title": "The video's title",
+            "description": "As the creator wrote it.",
+            "placeholder": "My first day in Montreal"
+          },
+          "fr": {
+            "title": "Le titre de la vidéo",
+            "description": "Tel que le créateur l'a écrit.",
+            "placeholder": "Ma première journée à Montréal"
+          }
+        }
       },
       "description": {
         "type": "string",
@@ -77,7 +99,19 @@
         "maxLength": 2000,
         "default": "",
         "title": "La description (facultative)",
-        "description": "Le texte qui accompagne la vidéo."
+        "description": "Le texte qui accompagne la vidéo.",
+        "x-i18n": {
+          "en": {
+            "title": "The description (optional)",
+            "description": "The text that comes with the video.",
+            "placeholder": "Where I went and what I saw"
+          },
+          "fr": {
+            "title": "La description (facultative)",
+            "description": "Le texte qui accompagne la vidéo.",
+            "placeholder": "Où je suis allé et ce que j'ai vu"
+          }
+        }
       },
       "language": {
         "type": "string",

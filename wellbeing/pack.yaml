@@ -22,7 +22,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: bien-etre
-version: 1.1.0
+version: 1.2.0
 tier: DATA
 distribution: CLOUD
 regulatoryClass: REGULATED
