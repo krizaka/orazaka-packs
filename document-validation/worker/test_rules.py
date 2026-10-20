@@ -417,7 +417,53 @@ def test_every_invoice_rule_cites_its_source_and_says_it_awaits_review():
 
 def test_the_invoice_is_opt_in_the_lease_stays_the_default_of_quebec():
     assert rules.jurisdictions()["QC"] == "qc-residential-lease"
-    assert set(rules.rulesets_by_jurisdiction()["QC"]) == {"qc-residential-lease", "qc-invoice"}
+    assert set(rules.rulesets_by_jurisdiction()["QC"]) == {"qc-residential-lease", "qc-invoice", "qc-service-contract"}
+
+
+# --- qc-service-contract: only what federal law, read at its source, says (Interest Act s. 4, Copyright Act s. 13(4), 14.1) ---
+
+QC_CONTRACT_CLEAN = """CONTRAT DE SERVICES
+Le prestataire conçoit le site du client pour 4 000 $.
+Le prestataire cède au client ses droits d'auteur sur les livrables et renonce à ses droits moraux.
+Intérêt de retard : 2 % par mois (26,8 % par année).
+Signé à Montréal le 12 octobre 2026.
+"""
+
+QC_CONTRACT_DEFECTIVE = """CONTRAT DE SERVICES
+Le prestataire conçoit le site du client pour 4 000 $.
+Le prestataire cède au client tous ses droits d'auteur et ses droits moraux sur les livrables.
+Intérêt de retard : 2 % par mois sur toute somme impayée.
+"""
+
+
+def _contract(text):
+    return _by_id(rules.screen(rules.resolve("qc-service-contract", "2026-10-19"), text)[0])
+
+
+def test_a_service_contract_stating_the_yearly_rate_and_waiving_moral_rights_passes():
+    findings = _contract(QC_CONTRACT_CLEAN)
+    assert all(f["verdict"] == rules.PASS for f in findings.values()), {k: v["verdict"] for k, v in findings.items()}
+
+
+def test_a_service_contract_assigning_moral_rights_and_a_monthly_rate_is_flagged():
+    findings = _contract(QC_CONTRACT_DEFECTIVE)
+    failed = {k for k, v in findings.items() if v["verdict"] == rules.FAIL}
+    assert failed == {"QC-SVC-001", "QC-SVC-002", "QC-SVC-004"}
+
+
+def test_assigning_copyright_in_silence_on_moral_rights_is_only_advice():
+    text = "Le prestataire cède au client tous les droits d'auteur sur les livrables. Signé à Montréal."
+    findings = _contract(text)
+    assert findings["QC-SVC-003"]["verdict"] == rules.FAIL and findings["QC-SVC-003"]["severity"] == "ADVISORY"
+    assert findings["QC-SVC-002"]["verdict"] == rules.PASS
+
+
+def test_the_contract_ruleset_says_what_it_does_not_encode_and_cites_the_federal_texts_only():
+    ruleset = rules.resolve("qc-service-contract", "2026-10-19")
+    assert "Code civil du Québec" in ruleset["reviewNote"] and "non-concurrence" in ruleset["reviewNote"]
+    assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
+    assert all(("Loi sur l'intérêt" in r["citation"] or "droit d'auteur" in r["citation"]) for r in ruleset["rules"])
+    assert not [r for r in ruleset["rules"] if r["method"] == "JUDGMENT"]
 
 
 if __name__ == "__main__":

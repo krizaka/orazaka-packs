@@ -1,0 +1,115 @@
+{
+  "rulesetId": "qc-service-contract",
+  "label": "Contrat de service — Québec (première étape)",
+  "jurisdiction": "QC",
+  "version": "2026-10-19",
+  "effectiveFrom": "2026-10-19",
+  "effectiveTo": null,
+  "optIn": true,
+  "documentType": "service-contract",
+  "source": "Loi sur l'intérêt (L.R.C. 1985, ch. I-15), art. 4 ; Loi sur le droit d'auteur (L.R.C. 1985, ch. C-42), art. 13(4), 14.1(2) et (3) — textes lus sur le site de la législation du Canada le 2026-10-19",
+  "revision": 1,
+  "reviewStatus": "TO_REVIEW_BY_LAWYER",
+  "reviewNote": "Première étape, volontairement étroite : seules les règles du droit FÉDÉRAL lu à la source sont codées (intérêt exprimé par période, droits moraux, cession par écrit signé). Non encodé, faute d'avoir pu lire le texte à la source (legisquebec.gouv.qc.ca et CanLII inaccessibles à la lecture automatisée) : tout le Code civil du Québec — clause de non-concurrence (art. 2089 vise le contrat de travail ; pour un contrat de service, la limite relève de la jurisprudence, non codée), résiliation (art. 2125, 2129), clause pénale, définitions du contrat de service (art. 2098 et suiv.). Aucun délai de paiement n'est exigé par une loi : la règle ne l'invente pas. À faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration.",
+  "rules": [
+    {
+      "ruleId": "QC-SVC-001",
+      "title": "Intérêt de retard exprimé par mois, par semaine ou par jour sans taux annuel",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "Loi sur l'intérêt (L.R.C. 1985, ch. I-15), art. 4 (un taux pour une période de moins d'un an, sans énoncé exprès du taux annuel équivalent : intérêt limité à 5 % par année)",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?:int[ée]r[êe]ts?|interests?)(?!\\s+l[ée]gal)(?![^.\\n]{0,120}(?:par\\s+ann[ée]e|par\\s+an\\b|annuel(?:le)?s?\\b|taux\\s+annuel|l['’]an\\b|per\\s+annum|annual|a\\s+year|per\\s+year))[^.\\n]{0,80}?\\d+(?:[.,]\\d+)?\\s*%\\s*(?:par|/|per|a)\\s*(?:mois|jour|semaine|month|day|week)(?![^.\\n]{0,120}(?:par\\s+ann[ée]e|par\\s+an\\b|annuel(?:le)?s?\\b|taux\\s+annuel|l['’]an\\b|per\\s+annum|annual|a\\s+year|per\\s+year))"
+      },
+      "onPass": "Aucun intérêt exprimé par période de moins d'un an sans taux annuel.",
+      "onFail": "L'intérêt de retard est exprimé par mois, par semaine ou par jour sans énoncer le taux annuel équivalent. Selon l'article 4 de la Loi sur l'intérêt, il ne peut alors dépasser 5 % par année : l'énoncé exprès du taux annuel est nécessaire pour que le taux prévu s'applique.",
+      "fixtures": {
+        "pass": [
+          "Intérêt de retard : 2 % par mois (26,8 % par année).",
+          "Les sommes impayées portent intérêt au taux annuel de 12 %.",
+          "Les intérêts légaux s'appliquent aux sommes impayées."
+        ],
+        "fail": [
+          "Intérêt de retard : 2 % par mois sur toute somme impayée.",
+          "Tout retard porte intérêt à 0,1 % par jour.",
+          "Late payments bear interest at 1.5% per month."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-SVC-002",
+      "title": "Cession des droits moraux",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "Loi sur le droit d'auteur (L.R.C. 1985, ch. C-42), art. 14.1(2) et (3)",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?<!renonc)(?<!renonce\\s)(?<!renoncent\\s)(?<!waive\\s)(?<!waives\\s)(?:c[èe]d(?:e|ons|ent|er|[ée]s?)|transf[èe]r(?:e|ons|ent|er)|assign(?:s|e|ons|ent|er|s)?)\\s+(?:[^.\\n]{0,40}?\\s)?(?:tous\\s+)?(?:ses\\s+|les\\s+|tout\\s+)?(?:droits?\\s+moraux|moral\\s+rights)"
+      },
+      "onPass": "Aucune clause ne prétend céder les droits moraux.",
+      "onFail": "Le contrat prétend céder les droits moraux de l'auteur. Ils ne peuvent pas être cédés : seule une renonciation, totale ou partielle, est possible (art. 14.1(2)).",
+      "fixtures": {
+        "pass": [
+          "Le prestataire cède au client ses droits d'auteur sur les livrables et renonce à ses droits moraux.",
+          "Les droits moraux demeurent au prestataire.",
+          "Le prestataire renonce à ses droits moraux."
+        ],
+        "fail": [
+          "Le prestataire cède au client tous ses droits d'auteur et ses droits moraux sur les livrables.",
+          "The contractor assigns all moral rights to the client.",
+          "Le prestataire cède les droits moraux."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-SVC-003",
+      "title": "Cession du droit d'auteur sans mention des droits moraux",
+      "severity": "ADVISORY",
+      "method": "DETERMINISTIC",
+      "citation": "Loi sur le droit d'auteur (L.R.C. 1985, ch. C-42), art. 14.1(2) et (3) (céder le droit d'auteur n'emporte pas renonciation aux droits moraux)",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?is)\\A(?!.*(?:droits?\\s+moraux|moral\\s+rights)).*(?:c[èe]d(?:e|ons|ent|er)|transf[èe]r(?:e|ons|ent|er)|assign(?:s|e|ons|ent)?)[^.\\n]{0,80}(?:droits?\\s+d['’]auteur|propri[ée]t[ée]\\s+intellectuelle|copyright|intellectual\\s+property)"
+      },
+      "onPass": "Aucune cession du droit d'auteur sans mention des droits moraux.",
+      "onFail": "Le contrat cède le droit d'auteur ou la propriété intellectuelle sans dire un mot des droits moraux. Céder le droit d'auteur ne vaut pas renonciation aux droits moraux (art. 14.1(3)) : si le client en a besoin, une renonciation doit être écrite. Cette règle informe, elle ne conclut pas.",
+      "fixtures": {
+        "pass": [
+          "Le prestataire cède au client ses droits d'auteur et renonce à ses droits moraux.",
+          "Le prestataire conserve la propriété intellectuelle de ses outils.",
+          "Le client est propriétaire des livrables après paiement."
+        ],
+        "fail": [
+          "Le prestataire cède au client tous les droits d'auteur sur les livrables.",
+          "The contractor assigns all intellectual property in the deliverables to the client.",
+          "Le prestataire transfère la propriété intellectuelle des livrables au client."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-SVC-004",
+      "title": "Contrat signé",
+      "severity": "ADVISORY",
+      "method": "DETERMINISTIC",
+      "citation": "Loi sur le droit d'auteur (L.R.C. 1985, ch. C-42), art. 13(4) (une cession ou une licence de droit d'auteur n'est valide que par écrit signé du titulaire)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)(?:signature|sign[ée]e?s?\\b|signed|\\bsigns?\\b|fait\\s+en\\s+double|[ée]crit\\s+et\\s+sign[ée])"
+      },
+      "onPass": "Le contrat mentionne une signature.",
+      "onFail": "Le texte ne mentionne aucune signature. Si le contrat cède ou concède un droit d'auteur, la cession n'est valide que par écrit signé du titulaire du droit (art. 13(4)). Une version sans bloc de signature peut n'être qu'un projet.",
+      "fixtures": {
+        "pass": [
+          "Signé à Montréal le 12 octobre 2026.",
+          "Signature du prestataire : ______",
+          "Signed by both parties."
+        ],
+        "fail": [
+          "Le prestataire livre le site au plus tard le 1er décembre.",
+          "Le prix est de 4 000 $."
+        ]
+      }
+    }
+  ]
+}
