@@ -70,3 +70,14 @@ test("the critique Studio takes the rubric and the story orazaka cinema writes, 
   assert.equal(step.inputs.prompt, "{{inputs.treatment}}");
   assert.deepEqual(read("cinematic-critique").inputSchema.required, ["treatment"]);
 });
+
+test("treatment 1.1.0: the cast acts together, the film has rhythm, and the legal rule is in the prompt", () => {
+  const b = read("cinematic-treatment");
+  assert.equal(b.version, "1.1.0");
+  const prompt = b.definition.steps[0].inputs.prompt;
+  for (const rule of ["never introduced: no lineup", "MEET, HELP, ARGUE, HAND OFF", "interactionKind", "runs of quick cuts", "switch genre with the place",
+    "no real person's name, likeness or voice", "no existing song", "ORIGINAL means", "\"references\"", "\"legal\": {\"never\""]) {
+    assert.ok(prompt.includes(rule), `the treatment prompt must say: ${rule}`);
+  }
+  assert.ok(prompt.trimEnd().endsWith("{{inputs.notes:}}"));
+});
