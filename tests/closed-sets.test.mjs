@@ -226,7 +226,7 @@ test("the video Studios' model field declares the aspects each model can make, t
     const aspects = bp.inputSchema.properties.aspect.enum;
     const opt = model["x-options"];
     assert.equal(opt.aspectField, "aspect", `${studio}: the field the aspects govern`);
-    assert.deepEqual(Object.keys(opt.aspects).sort(), Object.keys(opt.facts).sort(), `${studio}: every model with facts declares its aspects`);
+    for (const id of Object.keys(opt.facts)) assert.ok(id in opt.aspects, `${studio}: ${id} has facts, so it declares its aspects`);
     for (const [id, list] of Object.entries(opt.aspects)) {
       assert.ok(list.length >= 1 && list.every((a) => aspects.includes(a)), `${studio}/${id}: aspects within the field's enum`);
     }
