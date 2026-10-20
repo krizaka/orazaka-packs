@@ -32,6 +32,7 @@ jobs:
 
   schema-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -45,6 +46,7 @@ jobs:
     # profile-photo-check's worker: the rules, the face logic (fake engine) and, with the pinned models fetched, the real
     # YuNet + SFace on a public-domain photograph.
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -64,6 +66,7 @@ jobs:
   authenticity-worker:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -80,6 +83,7 @@ jobs:
   safety-worker:
     # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
