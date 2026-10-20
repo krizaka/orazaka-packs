@@ -1,12 +1,12 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "PUBLISHED",
   "estimatedCredits": 200,
-  "changelog": "1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
+  "changelog": "1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "image-generation",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "steps": [
       {
         "id": "image",
@@ -65,7 +65,19 @@
         "minLength": 3,
         "maxLength": 2000,
         "title": "Ce que vous voulez voir",
-        "description": "Décrivez l'image en une ou deux phrases : le sujet, le cadrage, la lumière."
+        "description": "Décrivez l'image en une ou deux phrases : le sujet, le cadrage, la lumière.",
+        "x-i18n": {
+          "en": {
+            "title": "What you want to see",
+            "description": "Describe the image in a sentence or two: subject, framing, light.",
+            "placeholder": "A red kayak on a still lake at sunrise, mist on the water"
+          },
+          "fr": {
+            "title": "Ce que vous voulez voir",
+            "description": "Décrivez l'image en une ou deux phrases : le sujet, le cadrage, la lumière.",
+            "placeholder": "Un kayak rouge sur un lac calme au lever du soleil, de la brume sur l'eau"
+          }
+        }
       },
       "size": {
         "type": "string",
@@ -109,7 +121,19 @@
         "maxLength": 2000,
         "title": "À éviter (facultatif)",
         "description": "Ce que l'image ne doit pas montrer : « texte, logo, flou ». Pris en compte par les modèles à guidage (Stable Diffusion) ; FLUX.2 [klein] l'ignore — dites-le plutôt dans la description.",
-        "x-advanced": true
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "To avoid (optional)",
+            "description": "What the image should not show. Used by guided models (Stable Diffusion); FLUX.2 [klein] ignores it.",
+            "placeholder": "text, logo, blur"
+          },
+          "fr": {
+            "title": "À éviter (facultatif)",
+            "description": "Ce que l'image ne doit pas montrer. Pris en compte par les modèles à guidage ; FLUX.2 [klein] l'ignore.",
+            "placeholder": "texte, logo, flou"
+          }
+        }
       },
       "seed": {
         "type": "string",
@@ -118,7 +142,19 @@
         "title": "Graine (facultatif)",
         "description": "Laissez vide pour une image nouvelle. Reprenez la graine d'une image avec la même description, le même format et le même modèle : vous obtenez la même image.",
         "x-control": "seed",
-        "x-advanced": true
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Seed (optional)",
+            "description": "Leave empty for a new image. Reuse an image's seed with the same prompt, format and model to get the same image.",
+            "placeholder": "e.g. 123456"
+          },
+          "fr": {
+            "title": "Graine (facultatif)",
+            "description": "Laissez vide pour une image nouvelle. Même description, même format, même modèle et même graine : la même image.",
+            "placeholder": "ex. 123456"
+          }
+        }
       },
       "model": {
         "type": "string",

@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 200,
-  "changelog": "1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.1.0 — la graine est un nombre avec « au hasard », rangée sous « Plus d'options ». 1.0.0 — Direction artistique « Éditorial lumière dorée » : une étape de génération d'image dont le prompt structuré (lumière, optique, matières, palette) suit votre sujet. Graine facultative et rapportée, pour refaire l'image ; formats 4:5, 16:9, 1:1, 9:16.",
+  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.1.0 — la graine est un nombre avec « au hasard », rangée sous « Plus d'options ». 1.0.0 — Direction artistique « Éditorial lumière dorée » : une étape de génération d'image dont le prompt structuré (lumière, optique, matières, palette) suit votre sujet. Graine facultative et rapportée, pour refaire l'image ; formats 4:5, 16:9, 1:1, 9:16.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "art-golden-hour",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "image",
@@ -64,7 +64,19 @@
         "minLength": 3,
         "maxLength": 1200,
         "title": "Votre sujet",
-        "description": "Qui, quoi, où — la direction artistique s'occupe de la lumière, de l'optique, des matières et de la palette. Exemple : « Un homme verse le thé à la menthe de haut sous une tente dans le désert, menthe fraîche et amandes sur une table en bois patiné ». Décrivez en anglais pour la meilleure fidélité."
+        "description": "Qui, quoi, où — la direction artistique s'occupe de la lumière, de l'optique, des matières et de la palette. Exemple : « Un homme verse le thé à la menthe de haut sous une tente dans le désert, menthe fraîche et amandes sur une table en bois patiné ». Décrivez en anglais pour la meilleure fidélité.",
+        "x-i18n": {
+          "en": {
+            "title": "Your subject",
+            "description": "Who, what, where. The art direction handles light, optics, materials and palette. Describe in English for best results.",
+            "placeholder": "A man pours mint tea from a height under a desert tent, fresh mint and almonds on a weathered wooden table"
+          },
+          "fr": {
+            "title": "Votre sujet",
+            "description": "Qui, quoi, où. La direction artistique gère lumière, optique, matières et palette. Décrivez en anglais pour la meilleure fidélité.",
+            "placeholder": "Un homme verse le thé à la menthe de haut sous une tente dans le désert, menthe fraîche et amandes sur une table en bois patiné"
+          }
+        }
       },
       "size": {
         "type": "string",
@@ -107,7 +119,19 @@
         "title": "Graine (facultatif)",
         "description": "Vide : une image nouvelle. La graine d'une image déjà faite, avec le même sujet et le même format : la même image.",
         "x-control": "seed",
-        "x-advanced": true
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Seed (optional)",
+            "description": "Empty: a new image. The seed of an earlier image with the same subject and format: the same image.",
+            "placeholder": "e.g. 123456"
+          },
+          "fr": {
+            "title": "Graine (facultatif)",
+            "description": "Vide : une image nouvelle. La graine d'une image déjà faite, avec le même sujet et le même format : la même image.",
+            "placeholder": "ex. 123456"
+          }
+        }
       }
     }
   },

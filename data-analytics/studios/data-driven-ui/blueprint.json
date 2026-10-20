@@ -1,12 +1,12 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Interface pilotée par les données (ADR-082, orazaka#207 tranche 1) : un CSV ou un JSON (par exemple l'export de vos statistiques, ADR-081) et une question deviennent une réponse en prose et un tableau de bord A2UI v0.9 du catalogue krizaka:genui/v1 (KpiStat, ChartCard, Table, Callout, Card, Text, Row, Column), dessiné par @krizaka/ui/genui. Chaque nombre vient des données ; le rendu refuse tout composant ou propriété hors catalogue. 1.1.0 — Mesuré sur dev (2026-10-17) : le modèle par défaut écrivait des objets sur plusieurs lignes, oubliait « component » et répétait la clôture ; la consigne donne maintenant la forme exacte des trois lignes, chaque composant avec ses propriétés, et un exemple complet et valide. Le modèle se choisit dans le catalogue (x-options), replié sous « Plus d'options ». 1.2.0 — Lançable depuis la barre du chat : une seule entrée requise, la question (qui peut contenir les données collées) ; « data » devient facultative.",
+  "changelog": "1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — Interface pilotée par les données (ADR-082, orazaka#207 tranche 1) : un CSV ou un JSON (par exemple l'export de vos statistiques, ADR-081) et une question deviennent une réponse en prose et un tableau de bord A2UI v0.9 du catalogue krizaka:genui/v1 (KpiStat, ChartCard, Table, Callout, Card, Text, Row, Column), dessiné par @krizaka/ui/genui. Chaque nombre vient des données ; le rendu refuse tout composant ou propriété hors catalogue. 1.1.0 — Mesuré sur dev (2026-10-17) : le modèle par défaut écrivait des objets sur plusieurs lignes, oubliait « component » et répétait la clôture ; la consigne donne maintenant la forme exacte des trois lignes, chaque composant avec ses propriétés, et un exemple complet et valide. Le modèle se choisit dans le catalogue (x-options), replié sous « Plus d'options ». 1.2.0 — Lançable depuis la barre du chat : une seule entrée requise, la question (qui peut contenir les données collées) ; « data » devient facultative.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "data-driven-ui",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "steps": [
       {
         "id": "answer",
@@ -42,7 +42,19 @@
         "maxLength": 20000,
         "title": "Vos données (facultatif)",
         "description": "Un CSV (avec sa ligne d'en-tête) ou un JSON, par exemple l'export de vos statistiques. 20 000 caractères au plus.",
-        "default": ""
+        "default": "",
+        "x-i18n": {
+          "en": {
+            "title": "Your data (optional)",
+            "description": "A CSV with its header row, or a JSON, such as an export of your statistics. Up to 20,000 characters.",
+            "placeholder": "date,views,likes · 2026-10-01,1200,85"
+          },
+          "fr": {
+            "title": "Vos données (facultatif)",
+            "description": "Un CSV avec sa ligne d'en-tête, ou un JSON, par exemple l'export de vos statistiques. 20 000 caractères au plus.",
+            "placeholder": "date,vues,mentions j'aime · 2026-10-01,1200,85"
+          }
+        }
       },
       "question": {
         "type": "string",
@@ -50,7 +62,19 @@
         "minLength": 5,
         "maxLength": 20000,
         "title": "Votre question",
-        "description": "Ce que vous voulez voir, avec vos données collées si vous n'utilisez pas le champ « Vos données » (un CSV avec sa ligne d'en-tête, ou un JSON)."
+        "description": "Ce que vous voulez voir, avec vos données collées si vous n'utilisez pas le champ « Vos données » (un CSV avec sa ligne d'en-tête, ou un JSON).",
+        "x-i18n": {
+          "en": {
+            "title": "Your question",
+            "description": "What you want to see. Paste your data here if you do not use the « Your data » field.",
+            "placeholder": "Which day of the week do my videos get the most views?"
+          },
+          "fr": {
+            "title": "Votre question",
+            "description": "Ce que vous voulez voir. Collez vos données ici si vous n'utilisez pas le champ « Vos données ».",
+            "placeholder": "Quel jour de la semaine mes vidéos sont-elles le plus vues ?"
+          }
+        }
       },
       "language": {
         "type": "string",

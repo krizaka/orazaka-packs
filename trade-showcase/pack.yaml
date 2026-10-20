@@ -4,7 +4,7 @@
 # No pack, pack_i18n, pack_studio or billing_pack row is written for this bundle.
 apiVersion: orazaka.dev/v1
 key: trade-showcase
-version: 1.0.0
+version: 1.1.0
 tier: DATA
 distribution: OSS
 regulatoryClass: STANDARD

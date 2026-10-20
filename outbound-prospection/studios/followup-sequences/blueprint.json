@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 510,
-  "changelog": "Version initiale : une relance multi-temps par prospect, uniformisée puis postée au canal après validation.",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Version initiale : une relance multi-temps par prospect, uniformisée puis postée au canal après validation.",
   "createdBy": "system",
   "definition": {
     "studioKey": "followup-sequences",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "touchpoints",
@@ -116,17 +116,53 @@
         },
         "minItems": 1,
         "maxItems": 50,
-        "title": "Prospects à relancer"
+        "title": "Prospects à relancer",
+        "x-i18n": {
+          "en": {
+            "title": "Prospects to follow up",
+            "description": "The prospects who have not answered yet, separated by commas.",
+            "placeholder": "Anna, Tom, Mia"
+          },
+          "fr": {
+            "title": "Prospects à relancer",
+            "description": "Les prospects qui n'ont pas encore répondu, séparés par des virgules.",
+            "placeholder": "Anna, Tom, Léa"
+          }
+        }
       },
       "offer": {
         "type": "string",
         "maxLength": 500,
-        "title": "Votre offre en une phrase"
+        "title": "Votre offre en une phrase",
+        "x-i18n": {
+          "en": {
+            "title": "Your offer in one sentence",
+            "description": "What you offer, as you would say it to a prospect.",
+            "placeholder": "I help small restaurants fill their quiet weeknights."
+          },
+          "fr": {
+            "title": "Votre offre en une phrase",
+            "description": "Ce que vous proposez, comme vous le diriez à un prospect.",
+            "placeholder": "J'aide les petits restaurants à remplir leurs soirs de semaine."
+          }
+        }
       },
       "context": {
         "type": "string",
         "maxLength": 500,
-        "title": "Ce qui s'est passé au premier contact"
+        "title": "Ce qui s'est passé au premier contact",
+        "x-i18n": {
+          "en": {
+            "title": "What happened at first contact",
+            "description": "One sentence on the first exchange, so the follow-up fits.",
+            "placeholder": "We met at a trade fair; they asked for a quote."
+          },
+          "fr": {
+            "title": "Ce qui s'est passé au premier contact",
+            "description": "Une phrase sur le premier échange, pour que la relance colle.",
+            "placeholder": "Rencontrés à un salon ; ils ont demandé un devis."
+          }
+        }
       }
     }
   },

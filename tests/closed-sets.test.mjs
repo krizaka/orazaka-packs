@@ -119,3 +119,50 @@ test("a long description of the models is never written into a helper", () => {
     assert.doesNotMatch(def.description ?? "", /GPU|i\/s|[0-9]{3,4}×[0-9]{3,4}/, `${where}: resolutions and GPUs belong to the client's comparison, fed by the catalogue`);
   }
 });
+
+// ── Every field speaks both languages, not only the selects (x-i18n) ────────────────────────────────
+// « Vos données », « Votre question » and a dozen helpers still showed French on the English page (dev, 2026-10-20):
+// a free-text, numeric, boolean or file field is a field like the others. Each carries a title and a helper
+// (≤ 140 characters) in English and French; a free-text field carries the example it shows (`placeholder`).
+const isFreeText = ({ def }) =>
+  (def.type === "string" || def.type === "array") &&
+  !Array.isArray(def.enum) &&
+  !def["x-options"] &&
+  !def["x-control"] &&
+  !isUpload(def) &&
+  !(def.type === "array" && def.items && isUpload(def.items));
+
+test("every field of every Studio has its title and helper in English and French, at most 140 characters", () => {
+  assert.ok(props.length >= 80, "the audit found the fields");
+  for (const { where, def } of props) {
+    for (const lang of ["en", "fr"]) {
+      const words = def["x-i18n"]?.[lang];
+      assert.ok(words, `${where}: x-i18n.${lang} is missing`);
+      assert.ok(words.title?.trim(), `${where}: ${lang} title`);
+      assert.ok(words.description?.trim(), `${where}: ${lang} helper`);
+      assert.ok(words.description.length <= HELPER_MAX, `${where}: ${lang} helper is ${words.description.length} characters, the maximum is ${HELPER_MAX}`);
+    }
+  }
+});
+
+test("a free-text field carries the example it shows, in English and French", () => {
+  const typed = props.filter(isFreeText);
+  assert.ok(typed.length >= 25, "the audit found the free-text fields");
+  for (const { where, def } of typed) {
+    for (const lang of ["en", "fr"]) {
+      assert.ok(def["x-i18n"]?.[lang]?.placeholder?.trim(), `${where}: ${lang} placeholder`);
+    }
+  }
+});
+
+test("the English words are English: no French article or accent in an English title, helper or example", () => {
+  const french = /[àâçéèêëîïôûùœ]|\b(vos|votre|le|la|les|un|une|des|du|ce|qui|est|sont|avec|sans|pour)\b/i;
+  for (const { where, def } of props) {
+    const en = def["x-i18n"]?.en;
+    for (const part of ["title", "description", "placeholder"]) {
+      // Québec and Montréal are the places, spelled as they are in English too.
+      const text = (en?.[part] ?? "").replace(/Québec|Montréal/g, "");
+      if (text) assert.doesNotMatch(text, french, `${where}: the English ${part} reads as French: « ${en[part]} »`);
+    }
+  }
+});

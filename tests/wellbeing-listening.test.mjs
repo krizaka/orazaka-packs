@@ -158,8 +158,9 @@ test("the review note says the English is not yet read by a person", () => {
 // ── session-summary 1.0.1: what the person keeps follows their language and invents nothing ──
 test("session-summary 1.0.1 writes in the person's language and never quotes what was not said", () => {
   const bp = JSON.parse(readFileSync(join(root, "wellbeing/studios/session-summary/blueprint.json"), "utf8"));
-  assert.equal(bp.version, "1.1.0");
-  assert.equal(bp.definition.version, "1.1.0");
+  // 1.1.0 introduced it; later versions keep it (a bump for the field words, 1.2.0, changed nothing here)
+  assert.match(bp.version, /^1\.[1-9]\d*\.\d+$/);
+  assert.equal(bp.definition.version, bp.version);
   const prompt = bp.definition.steps[0].inputs.prompt;
   assert.match(prompt, /LANGUAGE: write EVERY value in the language of code \{\{inputs\.locale\}\}/);
   assert.match(prompt, /never quote a sentence that does not appear word for word/);

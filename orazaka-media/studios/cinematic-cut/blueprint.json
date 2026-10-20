@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 900,
-  "changelog": "1.0.0 — Le montage d'un court métrage cinématographique (ADR-080) : les plans vidéo d'une production et une liste de décisions de montage (coupes, fondus, flash, ralentis et rampes de vitesse, poussée de caméra, étalonnage par LUT, titres, sous-titres) deviennent un film en 1080p à 30 i/s. Les plans de 16 i/s sont interpolés par compensation de mouvement. La mention « AI-generated » est incrustée et écrite dans les métadonnées du fichier.",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.0.0 — Le montage d'un court métrage cinématographique (ADR-080) : les plans vidéo d'une production et une liste de décisions de montage (coupes, fondus, flash, ralentis et rampes de vitesse, poussée de caméra, étalonnage par LUT, titres, sous-titres) deviennent un film en 1080p à 30 i/s. Les plans de 16 i/s sont interpolés par compensation de mouvement. La mention « AI-generated » est incrustée et écrite dans les métadonnées du fichier.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "cinematic-cut",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "cut",
@@ -48,13 +48,37 @@
         "minItems": 1,
         "maxItems": 24,
         "title": "Les plans",
-        "description": "Les vidéos des plans, dans l'ordre : les sorties de vos runs de Génération vidéo."
+        "description": "Les vidéos des plans, dans l'ordre : les sorties de vos runs de Génération vidéo.",
+        "x-i18n": {
+          "en": {
+            "title": "The shots",
+            "description": "The shots' videos, in order: the outputs of your Video generation runs.",
+            "placeholder": "shot1, shot2, shot3"
+          },
+          "fr": {
+            "title": "Les plans",
+            "description": "Les vidéos des plans, dans l'ordre : les sorties de vos runs de Génération vidéo.",
+            "placeholder": "plan1, plan2, plan3"
+          }
+        }
       },
       "edit": {
         "type": "string",
         "maxLength": 20000,
         "title": "La liste de décisions de montage (JSON)",
-        "description": "aspect, grade, shots [{clip, in, out, speed, rampAt, rampSpeed, zoom, transition, transitionSeconds, caption}], titles [{text, start, end, style}], label. Écrite par `orazaka cinema` à partir du script."
+        "description": "aspect, grade, shots [{clip, in, out, speed, rampAt, rampSpeed, zoom, transition, transitionSeconds, caption}], titles [{text, start, end, style}], label. Écrite par `orazaka cinema` à partir du script.",
+        "x-i18n": {
+          "en": {
+            "title": "The edit decision list (JSON)",
+            "description": "Written by `orazaka cinema` from the script: aspect, grade, shots, titles, label.",
+            "placeholder": "{\"aspect\":\"16:9\",\"shots\":[…]}"
+          },
+          "fr": {
+            "title": "La liste de décisions de montage (JSON)",
+            "description": "Écrite par `orazaka cinema` à partir du script : format, étalonnage, plans, titres, étiquette.",
+            "placeholder": "{\"aspect\":\"16:9\",\"shots\":[…]}"
+          }
+        }
       }
     }
   },

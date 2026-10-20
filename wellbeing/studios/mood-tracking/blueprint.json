@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "Suivi d'humeur — décrit ce que les relevés montrent, sans conclure.",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Suivi d'humeur — décrit ce que les relevés montrent, sans conclure.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "mood-tracking",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "describe",
@@ -39,7 +39,19 @@
         "type": "string",
         "maxLength": 8000,
         "title": "Vos relevés",
-        "description": "Une ligne par jour suffit. Ce Studio décrit ce qu'il y voit ; il n'en tire aucune conclusion."
+        "description": "Une ligne par jour suffit. Ce Studio décrit ce qu'il y voit ; il n'en tire aucune conclusion.",
+        "x-i18n": {
+          "en": {
+            "title": "Your entries",
+            "description": "One line a day is enough. This Studio describes what it sees; it draws no conclusion.",
+            "placeholder": "Mon 3/5 · Tue 2/5 · Wed 4/5"
+          },
+          "fr": {
+            "title": "Vos relevés",
+            "description": "Une ligne par jour suffit. Ce Studio décrit ce qu'il y voit ; il n'en tire aucune conclusion.",
+            "placeholder": "Lun 3/5 · Mar 2/5 · Mer 4/5"
+          }
+        }
       }
     }
   },

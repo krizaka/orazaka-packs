@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 900,
-  "changelog": "1.2.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.2.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.1.0 — `video` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: video/*` : les clients affichent un sélecteur de fichier du bon type. 1.0.0 — Du son pour une vidéo : une nappe musicale (ACE-Step 1.5, MIT), des bruitages synchronisés à l'image (MMAudio, non commercial, demandé par son nom) et/ou une voix off (un fichier de Synthèse vocale), mixés avec ducking, ramenés à -14 LUFS et muxés en AAC dans le mp4. La vidéo d'origine, sans son, est conservée (`silent`) pour les boucles muettes. Tourne sur l'hôte du worker média (Mac, Metal).",
+  "changelog": "1.3.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.2.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.2.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.1.0 — `video` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: video/*` : les clients affichent un sélecteur de fichier du bon type. 1.0.0 — Du son pour une vidéo : une nappe musicale (ACE-Step 1.5, MIT), des bruitages synchronisés à l'image (MMAudio, non commercial, demandé par son nom) et/ou une voix off (un fichier de Synthèse vocale), mixés avec ducking, ramenés à -14 LUFS et muxés en AAC dans le mp4. La vidéo d'origine, sans son, est conservée (`silent`) pour les boucles muettes. Tourne sur l'hôte du worker média (Mac, Metal).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-sound",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "sound",
@@ -54,21 +54,55 @@
         "contentMediaType": "video/*",
         "maxLength": 160,
         "title": "La vidéo",
-        "description": "L'identifiant d'un de vos fichiers vidéo (une vidéo générée, par exemple)."
+        "description": "L'identifiant d'un de vos fichiers vidéo (une vidéo générée, par exemple).",
+        "x-i18n": {
+          "en": {
+            "title": "The video",
+            "description": "The id of one of your video files (a generated video, for instance)."
+          },
+          "fr": {
+            "title": "La vidéo",
+            "description": "L'identifiant d'un de vos fichiers vidéo (une vidéo générée, par exemple)."
+          }
+        }
       },
       "music": {
         "type": "string",
         "format": "prose",
         "maxLength": 500,
         "title": "La musique",
-        "description": "Une nappe musicale décrite : genre, ambiance, instruments. Sans paroles. Modèle par défaut : ACE-Step 1.5 (MIT, usage commercial)."
+        "description": "Une nappe musicale décrite : genre, ambiance, instruments. Sans paroles. Modèle par défaut : ACE-Step 1.5 (MIT, usage commercial).",
+        "x-i18n": {
+          "en": {
+            "title": "The music",
+            "description": "A described music bed: genre, mood, instruments. No lyrics. Default model: ACE-Step 1.5 (MIT, commercial use).",
+            "placeholder": "Warm lo-fi piano, soft drums, a rainy evening"
+          },
+          "fr": {
+            "title": "La musique",
+            "description": "Une nappe musicale décrite : genre, ambiance, instruments. Sans paroles. Modèle par défaut : ACE-Step 1.5 (MIT).",
+            "placeholder": "Piano lo-fi chaleureux, batterie douce, soirée pluvieuse"
+          }
+        }
       },
       "foley": {
         "type": "string",
         "format": "prose",
         "maxLength": 500,
         "title": "Les bruitages (facultatif)",
-        "description": "Les sons de l'image : une tasse qu'on remplit, la pluie, la foule. Demande un modèle de bruitage : le seul disponible (MMAudio) est non commercial."
+        "description": "Les sons de l'image : une tasse qu'on remplit, la pluie, la foule. Demande un modèle de bruitage : le seul disponible (MMAudio) est non commercial.",
+        "x-i18n": {
+          "en": {
+            "title": "Sound effects (optional)",
+            "description": "The sounds in the picture: a cup being filled, rain, a crowd. Needs a foley model: the only one (MMAudio) is non-commercial.",
+            "placeholder": "Pouring tea, light rain"
+          },
+          "fr": {
+            "title": "Les bruitages (facultatif)",
+            "description": "Les sons de l'image : une tasse qu'on remplit, la pluie, la foule. Demande un modèle de bruitage (MMAudio : non commercial).",
+            "placeholder": "Du thé qu'on verse, une pluie fine"
+          }
+        }
       },
       "foleyModel": {
         "type": "string",
@@ -101,7 +135,19 @@
         "title": "Graine (facultatif)",
         "description": "Les mêmes textes, les mêmes modèles et la même graine refont le même son.",
         "x-control": "seed",
-        "x-advanced": true
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Seed (optional)",
+            "description": "The same texts, models and seed make the same sound again.",
+            "placeholder": "e.g. 123456"
+          },
+          "fr": {
+            "title": "Graine (facultatif)",
+            "description": "Les mêmes textes, les mêmes modèles et la même graine refont le même son.",
+            "placeholder": "ex. 123456"
+          }
+        }
       },
       "voice": {
         "type": "string",
@@ -109,7 +155,17 @@
         "contentMediaType": "audio/*",
         "maxLength": 160,
         "title": "Voix off (facultatif)",
-        "description": "L'identifiant d'un fichier audio à poser sur la vidéo, la sortie de Synthèse vocale par exemple (voix Piper). La musique baisse pendant qu'elle parle."
+        "description": "L'identifiant d'un fichier audio à poser sur la vidéo, la sortie de Synthèse vocale par exemple (voix Piper). La musique baisse pendant qu'elle parle.",
+        "x-i18n": {
+          "en": {
+            "title": "Voice-over (optional)",
+            "description": "The id of an audio file to lay over the video, such as the output of Speech synthesis. The music ducks while it speaks."
+          },
+          "fr": {
+            "title": "Voix off (facultatif)",
+            "description": "L'identifiant d'un fichier audio à poser sur la vidéo, la sortie de Synthèse vocale par exemple. La musique baisse pendant qu'elle parle."
+          }
+        }
       }
     }
   },

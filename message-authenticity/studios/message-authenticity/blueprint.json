@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 5,
-  "changelog": "1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — une seule étape, un petit classifieur local. Aucune étape générative : un modèle qui écrit n'a rien à faire dans un contrôle d'authenticité.",
+  "changelog": "1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.0.0 — une seule étape, un petit classifieur local. Aucune étape générative : un modèle qui écrit n'a rien à faire dans un contrôle d'authenticité.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "message-authenticity",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "read",
@@ -41,7 +41,19 @@
         "minLength": 1,
         "maxLength": 5000,
         "title": "Le message",
-        "description": "Le texte à lire. Il n'est pas conservé par le worker."
+        "description": "Le texte à lire. Il n'est pas conservé par le worker.",
+        "x-i18n": {
+          "en": {
+            "title": "The message",
+            "description": "The text to read. The worker does not keep it.",
+            "placeholder": "Paste the message you received"
+          },
+          "fr": {
+            "title": "Le message",
+            "description": "Le texte à lire. Il n'est pas conservé par le worker.",
+            "placeholder": "Collez le message reçu"
+          }
+        }
       },
       "locale": {
         "type": "string",

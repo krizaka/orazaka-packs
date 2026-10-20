@@ -1,12 +1,12 @@
 {
-  "version": "1.8.0",
+  "version": "1.9.0",
   "status": "PUBLISHED",
   "estimatedCredits": 3600,
-  "changelog": "1.8.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.7.0 — le kit cinématographique Krizaka : `model` propose Wan 2.2 I2V A14B en 40 pas (`wan2.2-i2v-a14b-hq`, personnes et animaux en 9:16) et LTX-Video 0.9.8 13B distilled (`ltx-video-0.9.8-13b-distilled`, GPU 80 Go) — un plan de 5 s en 1216×704 ou 704×1216, 24 i/s, en une quinzaine de secondes, depuis une image ou un texte (licence Open Weights, usage commercial) ; `upscale` (none · 1080p · 2160p, éteint par défaut) porte le plan fini en 1080p ou en 4K par SeedVR2 3B (Apache-2.0) sur le même GPU ; `prompt` et `image` disent la règle : avec une image, le texte décrit le MOUVEMENT et la CAMÉRA (l'image montre déjà la scène), et l'image est faite au format de la vidéo (image-generation 1360×768 en 16:9, 768×1360 en 9:16), jamais recadrée. 1.6.0 — `model` propose Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`) : 720p (1280×720 ou 720×1280), 5 s à 16 i/s, à partir d'une image d'amorce seulement (l'image clé d'un plan), en quatre pas distillés (LoRA lightx2v, Apache-2.0) — les plans d'un court métrage cinématographique (ADR-080). 1.5.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.4.0 — `model` propose Wan 2.2 A14B en 720p (`wan2.2-t2v-a14b`), exécuté sur notre propre GPU de 80 Go (1280×720 ou 720×1280, 5 s à 16 i/s, deux experts, la graine refait le même plan) ; l'A14B serverless (832×480) garde son nom `wan2-2-t2v-a14b`. 1.3.0 — `model` propose aussi Wan 2.2 A14B (`wan2-2-t2v-a14b`), servi par l'inférence serverless de DigitalOcean et routé par Orazaka : 832×480 en 16:9, 5 s à 16 i/s, la graine refait le même plan. 1.2.0 — le format vertical 9:16 (TikTok, Reels, Shorts) devient le défaut : `aspect` (9:16, 16:9, 1:1) choisit une taille sur laquelle le modèle a été entraîné, et `model` propose les modèles du catalogue qui le savent (Wan 2.2 5B en 704×1280 sur le GPU `big`, Wan 2.1 1.3B en 480×832 sur le `small`, AnimateDiff sur le Mac) ; `seed` refait le même plan (ADR-077). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
+  "changelog": "1.9.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.8.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.7.0 — le kit cinématographique Krizaka : `model` propose Wan 2.2 I2V A14B en 40 pas (`wan2.2-i2v-a14b-hq`, personnes et animaux en 9:16) et LTX-Video 0.9.8 13B distilled (`ltx-video-0.9.8-13b-distilled`, GPU 80 Go) — un plan de 5 s en 1216×704 ou 704×1216, 24 i/s, en une quinzaine de secondes, depuis une image ou un texte (licence Open Weights, usage commercial) ; `upscale` (none · 1080p · 2160p, éteint par défaut) porte le plan fini en 1080p ou en 4K par SeedVR2 3B (Apache-2.0) sur le même GPU ; `prompt` et `image` disent la règle : avec une image, le texte décrit le MOUVEMENT et la CAMÉRA (l'image montre déjà la scène), et l'image est faite au format de la vidéo (image-generation 1360×768 en 16:9, 768×1360 en 9:16), jamais recadrée. 1.6.0 — `model` propose Wan 2.2 I2V A14B (`wan2.2-i2v-a14b`) : 720p (1280×720 ou 720×1280), 5 s à 16 i/s, à partir d'une image d'amorce seulement (l'image clé d'un plan), en quatre pas distillés (LoRA lightx2v, Apache-2.0) — les plans d'un court métrage cinématographique (ADR-080). 1.5.0 — `image` déclare `format: asset:image` et `contentMediaType: image/*` : les clients (web, mobile) affichent un sélecteur de photo au lieu d'un champ de texte. 1.4.0 — `model` propose Wan 2.2 A14B en 720p (`wan2.2-t2v-a14b`), exécuté sur notre propre GPU de 80 Go (1280×720 ou 720×1280, 5 s à 16 i/s, deux experts, la graine refait le même plan) ; l'A14B serverless (832×480) garde son nom `wan2-2-t2v-a14b`. 1.3.0 — `model` propose aussi Wan 2.2 A14B (`wan2-2-t2v-a14b`), servi par l'inférence serverless de DigitalOcean et routé par Orazaka : 832×480 en 16:9, 5 s à 16 i/s, la graine refait le même plan. 1.2.0 — le format vertical 9:16 (TikTok, Reels, Shorts) devient le défaut : `aspect` (9:16, 16:9, 1:1) choisit une taille sur laquelle le modèle a été entraîné, et `model` propose les modèles du catalogue qui le savent (Wan 2.2 5B en 704×1280 sur le GPU `big`, Wan 2.1 1.3B en 480×832 sur le `small`, AnimateDiff sur le Mac) ; `seed` refait le même plan (ADR-077). 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération vidéo — une étape. Le schéma porte les défauts de payload_template : `durationSeconds` 5, `model` résolu par le catalogue. L'image d'amorce est un identifiant d'asset, jamais un chemin (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "video-generation",
-    "version": "1.8.0",
+    "version": "1.9.0",
     "steps": [
       {
         "id": "video",
@@ -49,7 +49,19 @@
         "minLength": 3,
         "maxLength": 2000,
         "title": "Ce qui doit se passer à l'écran",
-        "description": "Décrivez le plan. Sans image : le sujet, le mouvement, l'ambiance. Avec une image d'amorce : décrivez seulement le MOUVEMENT et la CAMÉRA (travelling avant lent, la cabine se balance, la brume dérive, parallaxe discrète) — l'image montre déjà la scène, ne la répétez pas."
+        "description": "Décrivez le plan. Sans image : le sujet, le mouvement, l'ambiance. Avec une image d'amorce : décrivez seulement le MOUVEMENT et la CAMÉRA (travelling avant lent, la cabine se balance, la brume dérive, parallaxe discrète) — l'image montre déjà la scène, ne la répétez pas.",
+        "x-i18n": {
+          "en": {
+            "title": "What should happen on screen",
+            "description": "Describe the shot. With a starting image, describe only the MOTION and the CAMERA: the image already shows the scene.",
+            "placeholder": "Slow push-in on a cabin by a lake, mist drifting across the water"
+          },
+          "fr": {
+            "title": "Ce qui doit se passer à l'écran",
+            "description": "Décrivez le plan. Avec une image d'amorce, décrivez seulement le MOUVEMENT et la CAMÉRA : l'image montre déjà la scène.",
+            "placeholder": "Travelling avant lent sur une cabane au bord d'un lac, la brume dérive sur l'eau"
+          }
+        }
       },
       "durationSeconds": {
         "type": "integer",
@@ -57,7 +69,17 @@
         "maximum": 20,
         "default": 5,
         "title": "Durée (secondes)",
-        "description": "La vidéo est facturée à la seconde produite : une durée est une dépense, pas un réglage."
+        "description": "La vidéo est facturée à la seconde produite : une durée est une dépense, pas un réglage.",
+        "x-i18n": {
+          "en": {
+            "title": "Duration (seconds)",
+            "description": "Billed per second produced: a duration is a spend, not a setting."
+          },
+          "fr": {
+            "title": "Durée (secondes)",
+            "description": "La vidéo est facturée à la seconde produite : une durée est une dépense, pas un réglage."
+          }
+        }
       },
       "aspect": {
         "type": "string",
@@ -96,7 +118,17 @@
         "contentMediaType": "image/*",
         "maxLength": 120,
         "title": "Image d'amorce (facultatif)",
-        "description": "Choisissez une photo parmi vos fichiers ou depuis votre appareil pour amorcer la vidéo. Faite au format de la vidéo (1360×768 pour du 16:9, 768×1360 pour du 9:16 avec image-generation) : une image portrait recadrée en 16:9 perd les deux tiers de ses pixels."
+        "description": "Choisissez une photo parmi vos fichiers ou depuis votre appareil pour amorcer la vidéo. Faite au format de la vidéo (1360×768 pour du 16:9, 768×1360 pour du 9:16 avec image-generation) : une image portrait recadrée en 16:9 perd les deux tiers de ses pixels.",
+        "x-i18n": {
+          "en": {
+            "title": "Starting image (optional)",
+            "description": "Pick a photo from your files or your device to start the video, ideally in the video's own format."
+          },
+          "fr": {
+            "title": "Image d'amorce (facultatif)",
+            "description": "Choisissez une photo parmi vos fichiers ou votre appareil pour amorcer la vidéo, de préférence au format de la vidéo."
+          }
+        }
       },
       "model": {
         "type": "string",

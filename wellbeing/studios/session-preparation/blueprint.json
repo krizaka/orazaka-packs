@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "Préparation de séance — organise ce qu'il y a à dire, sans rien interpréter.",
+  "changelog": "1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Préparation de séance — organise ce qu'il y a à dire, sans rien interpréter.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "session-preparation",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "organise",
@@ -39,7 +39,19 @@
         "type": "string",
         "maxLength": 8000,
         "title": "Ce que vous avez noté depuis la dernière séance",
-        "description": "En vrac. C'est ce Studio qui met de l'ordre, sans rien ajouter."
+        "description": "En vrac. C'est ce Studio qui met de l'ordre, sans rien ajouter.",
+        "x-i18n": {
+          "en": {
+            "title": "What you have noted since the last session",
+            "description": "As it comes. This Studio puts it in order and adds nothing.",
+            "placeholder": "Slept badly twice; a talk with my sister went well"
+          },
+          "fr": {
+            "title": "Ce que vous avez noté depuis la dernière séance",
+            "description": "En vrac. C'est ce Studio qui met de l'ordre, sans rien ajouter.",
+            "placeholder": "Dormi mal deux fois ; une discussion avec ma sœur s'est bien passée"
+          }
+        }
       }
     }
   },
