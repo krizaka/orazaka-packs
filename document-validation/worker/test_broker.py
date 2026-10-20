@@ -79,6 +79,8 @@ def test_a_named_ruleset_is_applied_only_within_its_jurisdiction():
     named = validation_worker._screen({"document": test_rules.QC_INVOICE_CLEAN, "jurisdiction": "QC", "ruleset": "qc-invoice", "asOf": "2026-10-19"})
     assert named["rulesetId"] == "qc-invoice" and named["judgmentCount"] == 0
     assert "JSON vide" in named["judgmentPrompt"]  # no question for a model: nothing to read
+    contract = validation_worker._screen({"document": test_rules.QC_CONTRACT_CLEAN, "jurisdiction": "QC", "ruleset": "qc-service-contract", "asOf": "2026-10-19"})
+    assert contract["rulesetId"] == "qc-service-contract"
     default = validation_worker._screen({"document": test_rules.QC_DEFECTIVE, "jurisdiction": "QC", "ruleset": "", "asOf": "2026-10-19"})
     assert default["rulesetId"] == "qc-residential-lease"
     for jurisdiction in ("FR", "BE-WAL"):

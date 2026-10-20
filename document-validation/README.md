@@ -73,6 +73,16 @@ Québec's invoice page could not be read at the source), the supplier's and buye
 lexical rule), the rate and the arithmetic of the taxes. The threshold rules do not read the amount; their finding says
 « from $100 » / « from $500 ». A number is checked for its **form only**, never against the CRA or Revenu Québec registers.
 
+## Québec service contract — `qc-service-contract` (revision 1, opt-in, first step)
+
+Chosen by name like the invoice (`ruleset: "qc-service-contract"`). Four deterministic rules, **only from federal law read at its
+source** (laws-lois.justice.gc.ca, 2026-10-19): interest on late payment stated per month, week or day without the yearly rate
+(Interest Act s. 4: capped at 5 % a year then); a clause assigning moral rights (Copyright Act s. 14.1(2): they can only be waived);
+assigning copyright in silence on moral rights (s. 14.1(3), advice); no mention of a signature (s. 13(4): an assignment is valid
+only in writing signed by the owner, advice). **Not encoded** — the Civil Code of Québec could not be read at its source
+(legisquebec.gouv.qc.ca and CanLII refuse automated reads): non-competition limits (art. 2089 is about employment contracts; for a
+service contract the limit is case law), termination (art. 2125, 2129), penal clauses, payment deadlines (no statute requires one).
+
 ## Adding a jurisdiction
 
 Add `rulesets/<id>/<effectiveFrom>.json` and its code to the blueprint's `jurisdiction` enum. No
