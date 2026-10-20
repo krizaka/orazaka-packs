@@ -33,6 +33,12 @@ studios:
     description: >-
       Montréal après la pluie : pavés qui reflètent les fenêtres et le néon, brume légère, objectif de
       35 mm grand ouvert, étalonnage cinéma. Décrivez le lieu et le moment.
+  cinematic-treatment:
+    label: "Court métrage — traitement"
+    tagline: "Un brief court devient une histoire : un arc, des intentions, des plans vivants, des répliques dirigées, musique et sons."
+  cinematic-critique:
+    label: "Court métrage — critique"
+    tagline: "La lecture d'un réalisateur : des notes, les plans plats ou hors sujet rejetés, quoi changer."
   cinematic-script:
     label: "Court métrage — script"
     tagline: "Un brief devient une liste de plans : 8 à 12 plans, personnages originaux, musique, voix off."
