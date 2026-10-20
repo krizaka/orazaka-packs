@@ -152,6 +152,29 @@ human), `CONNECTOR` (calls out), `KNOWLEDGE`. **`onError`**: `FAIL` | `SKIP` | `
 template that is *exactly one placeholder* over a list stays a list; anywhere else it renders as
 text. That is what lets a step take a list of asset ids.
 
+**Closed sets are chosen, never typed.** A field whose values are a known set is a list in every client
+(web, phone), so a person cannot type a value that does not exist (`tests/closed-sets.test.mjs` refuses it):
+
+| You write | The client draws |
+| :--- | :--- |
+| `"enum": ["9:16", "16:9"]` | a select (readable names come from the client's messages) |
+| `"oneOf": [{ "const": "9:16", "title": "Vertical" }, …]` | a select with your labels |
+| `"x-options": { "source": "models", "category": "image" }` | a searchable picker fed by the model catalogue (`orazaka_models`): label, local or cloud, speed, typical time, price, availability and the default that will run. **Never list the models yourself** — a hand-kept `enum` drifts from the catalogue. |
+| `"x-control": "seed"` | a number with a « random » switch (nothing is sent while it is on) |
+| `"x-advanced": true` | folded under « More options » — model, seed and things to avoid are advanced; the field the Studio is about is not |
+
+**Every select speaks both languages (`x-i18n`).** A field that is a list carries its words in English and French, so a
+client never shows the blueprint's French on an English page: `"x-i18n": {"en": {"title", "description", "options"},
+"fr": {…}}`, where `options` maps each `enum` value to its label — or, on a catalogue-fed model field, each model id to
+`{ "label": "LTX-Video · fast", "hint": "one line" }`. The helper is one line (**≤ 140 characters**), a hint ≤ 100; the
+long comparison of the models is never written there: the client draws it from the catalogue's facts (time, price, where it
+runs) and from `x-options.facts` (`{ "<model id>": ["1216×704", "5 s"] }`, language-neutral). The category of `x-options` is
+the catalogue's, **lowercase** (`chat`, not `CHAT`: a category that matches no model draws an empty select).
+`tests/closed-sets.test.mjs` refuses a select without its words, a long helper, or an uppercase category.
+
+The Studio service writes the catalogue's list into the schema it serves (`oneOf` of `const`/`title`, the facts in
+`x-meta`) and refuses, before any credit is held, a value that is not in it.
+
 **`estimatedCredits` is a hold, not a price.** Size it for your blueprint's *worst legal input* —
 the maximum `forEach` fan-out, every optional step firing. It is released, not charged: a run
 settles what it measured.

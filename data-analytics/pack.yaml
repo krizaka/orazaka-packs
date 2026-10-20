@@ -18,7 +18,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: data-analytics
-version: 1.3.0
+version: 1.4.0
 tier: DATA
 distribution: OSS
 regulatoryClass: STANDARD

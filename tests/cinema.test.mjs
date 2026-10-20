@@ -35,5 +35,5 @@ test("the cut is the compose capability with clips and an edit list", () => {
 });
 
 test("video generation offers the 4-step I2V A14B for the shots", () => {
-  assert.ok(read("video-generation").inputSchema.properties.model.enum.includes("wan2.2-i2v-a14b"));
+  assert.ok(Object.keys(read("video-generation").inputSchema.properties.model["x-i18n"].en.options).includes("wan2.2-i2v-a14b"));
 });

@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.2.0 — `assetId` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: image/*` : les clients affichent un sélecteur de fichier du bon type. 1.1.0 — `assetId` déclare `format: asset-id`, et la question facultative `format: prose` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Analyse d'image — une étape. Le schéma porte le défaut de payload_template : la consigne vaut « Analyze this image » quand elle n'est pas donnée. L'image est désignée par identifiant, résolu côté serveur contre son propriétaire (ADR-066).",
+  "changelog": "1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — `assetId` garde `format: asset-id` (la barre du chat en dépend) et déclare `contentMediaType: image/*` : les clients affichent un sélecteur de fichier du bon type. 1.1.0 — `assetId` déclare `format: asset-id`, et la question facultative `format: prose` : la barre du chat dérive sa ligne de boutons de la structure du blueprint (une étape, une entrée requise), mais un id d'asset et une phrase sont tous deux `type: string`, et ce que l'entrée porte est déclaré par le pack plutôt que deviné (ADR-068 §3). Analyse d'image — une étape. Le schéma porte le défaut de payload_template : la consigne vaut « Analyze this image » quand elle n'est pas donnée. L'image est désignée par identifiant, résolu côté serveur contre son propriétaire (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "image-analysis",
-    "version": "1.1.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "analysis",
@@ -35,7 +35,9 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": ["assetId"],
+    "required": [
+      "assetId"
+    ],
     "properties": {
       "assetId": {
         "type": "string",
@@ -57,10 +59,28 @@
       "model": {
         "type": "string",
         "maxLength": 120,
-        "title": "Modèle (facultatif)",
-        "description": "Laissez vide : le catalogue choisit le modèle de vision par défaut."
+        "title": "Modèle",
+        "description": "Le modèle de vision qui lit le fichier. Auto choisit le meilleur disponible.",
+        "x-options": {
+          "source": "models",
+          "category": "vision"
+        },
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Model",
+            "description": "The vision model that reads the file. Auto picks the best one running."
+          },
+          "fr": {
+            "title": "Modèle",
+            "description": "Le modèle de vision qui lit le fichier. Auto choisit le meilleur disponible."
+          }
+        }
       }
     }
   },
-  "configSchema": { "type": "object", "properties": {} }
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
 }

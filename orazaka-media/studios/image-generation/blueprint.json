@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 200,
-  "changelog": "1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
+  "changelog": "1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "image-generation",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "image",
@@ -78,26 +78,127 @@
         ],
         "default": "1024x1024",
         "title": "Format",
-        "description": "1024x1024 carré · 1024x1280 portrait 4:5 (réseaux) · 1360x768 paysage 16:9 (bannière) · 768x1360 vertical 9:16 (story) · 512x512 aperçu rapide."
+        "description": "La forme de l'image : 4:5 pour les réseaux, 16:9 pour une bannière.",
+        "x-i18n": {
+          "en": {
+            "title": "Format",
+            "description": "The shape of the image: 4:5 suits social posts, 16:9 a banner.",
+            "options": {
+              "1024x1024": "Square · 1024×1024",
+              "1024x1280": "Portrait 4:5 · 1024×1280",
+              "1360x768": "Landscape 16:9 · 1360×768",
+              "768x1360": "Vertical 9:16 · 768×1360",
+              "512x512": "Quick preview · 512×512"
+            }
+          },
+          "fr": {
+            "title": "Format",
+            "description": "La forme de l'image : 4:5 pour les réseaux, 16:9 pour une bannière.",
+            "options": {
+              "1024x1024": "Carré · 1024×1024",
+              "1024x1280": "Portrait 4:5 · 1024×1280",
+              "1360x768": "Paysage 16:9 · 1360×768",
+              "768x1360": "Vertical 9:16 · 768×1360",
+              "512x512": "Aperçu rapide · 512×512"
+            }
+          }
+        }
       },
       "negativePrompt": {
         "type": "string",
         "maxLength": 2000,
         "title": "À éviter (facultatif)",
-        "description": "Ce que l'image ne doit pas montrer : « texte, logo, flou ». Pris en compte par les modèles à guidage (Stable Diffusion) ; FLUX.2 [klein] l'ignore — dites-le plutôt dans la description."
+        "description": "Ce que l'image ne doit pas montrer : « texte, logo, flou ». Pris en compte par les modèles à guidage (Stable Diffusion) ; FLUX.2 [klein] l'ignore — dites-le plutôt dans la description.",
+        "x-advanced": true
       },
       "seed": {
         "type": "string",
         "pattern": "^[0-9]{0,10}$",
         "maxLength": 10,
         "title": "Graine (facultatif)",
-        "description": "Laissez vide pour une image nouvelle. Reprenez la graine d'une image avec la même description, le même format et le même modèle : vous obtenez la même image."
+        "description": "Laissez vide pour une image nouvelle. Reprenez la graine d'une image avec la même description, le même format et le même modèle : vous obtenez la même image.",
+        "x-control": "seed",
+        "x-advanced": true
       },
       "model": {
         "type": "string",
         "maxLength": 120,
-        "title": "Modèle (facultatif)",
-        "description": "Laissez vide : le catalogue choisit le modèle par défaut de la catégorie."
+        "title": "Modèle",
+        "description": "Auto choisit le meilleur modèle disponible. « Comparer les modèles » détaille chacun.",
+        "x-options": {
+          "source": "models",
+          "category": "image",
+          "facts": {
+            "flux-2-klein-4b": [
+              "1024²"
+            ],
+            "z-image-turbo": [
+              "1024²"
+            ],
+            "stable-diffusion-3.5-large": [
+              "1024²"
+            ],
+            "v1-5-pruned-emaonly": [
+              "512²"
+            ],
+            "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized": []
+          }
+        },
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Model",
+            "description": "Auto picks the best model that is running. Open « Compare models » to see each one.",
+            "options": {
+              "flux-2-klein-4b": {
+                "label": "FLUX.2 klein · editorial",
+                "hint": "Clean, editorial images. Ignores the negative prompt."
+              },
+              "z-image-turbo": {
+                "label": "Z-Image Turbo · detail",
+                "hint": "Rich detail and text in the image."
+              },
+              "stable-diffusion-3.5-large": {
+                "label": "Stable Diffusion 3.5 · cloud",
+                "hint": "Hosted and fast. Follows the negative prompt."
+              },
+              "v1-5-pruned-emaonly": {
+                "label": "Stable Diffusion 1.5 · light",
+                "hint": "Light and quick, for drafts."
+              },
+              "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized": {
+                "label": "FLUX.1 schnell · Mac",
+                "hint": "Four-step FLUX on the Mac."
+              }
+            }
+          },
+          "fr": {
+            "title": "Modèle",
+            "description": "Auto choisit le meilleur modèle disponible. « Comparer les modèles » détaille chacun.",
+            "options": {
+              "flux-2-klein-4b": {
+                "label": "FLUX.2 klein · éditorial",
+                "hint": "Images nettes et éditoriales. Ignore le prompt négatif."
+              },
+              "z-image-turbo": {
+                "label": "Z-Image Turbo · détail",
+                "hint": "Beaucoup de détails, du texte dans l'image."
+              },
+              "stable-diffusion-3.5-large": {
+                "label": "Stable Diffusion 3.5 · infonuagique",
+                "hint": "Hébergé et rapide. Suit le prompt négatif."
+              },
+              "v1-5-pruned-emaonly": {
+                "label": "Stable Diffusion 1.5 · léger",
+                "hint": "Léger et rapide, pour les brouillons."
+              },
+              "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized": {
+                "label": "FLUX.1 schnell · Mac",
+                "hint": "FLUX en quatre pas sur le Mac."
+              }
+            }
+          }
+        }
       }
     }
   },

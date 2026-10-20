@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.1.0 — Le kit cinématographique Krizaka : chaque plan est dirigé comme un long métrage (objectif en mm, mouvement de caméra, lumière principale et de contre, profondeur de champ, atmosphère, rythme, règle des 180°, ralenti et rampe de vitesse vers le moment fort) et la liste de plans porte `lens`, `lighting` et `atmosphere` pour chaque plan. 1.0.0 — Le script d'un court métrage cinématographique (ADR-080) : un brief devient un titre, une bible visuelle, des personnages décrits, une musique, une voix off et une liste de 8 à 12 plans (cadre, action, effets, image clé, mouvement, transition, ralenti). Personnages, logos et marques toujours originaux ; jamais une personne réelle ; un format « nouvelles » a un présentateur IA déclaré et un sujet général. C'est la première étape d'une production `orazaka cinema` : chaque plan devient ensuite une image clé (Génération d'image), un plan vidéo (Génération vidéo, Wan 2.2 I2V A14B) puis le montage (Montage cinématographique).",
+  "changelog": "1.2.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.1.0 — Le kit cinématographique Krizaka : chaque plan est dirigé comme un long métrage (objectif en mm, mouvement de caméra, lumière principale et de contre, profondeur de champ, atmosphère, rythme, règle des 180°, ralenti et rampe de vitesse vers le moment fort) et la liste de plans porte `lens`, `lighting` et `atmosphere` pour chaque plan. 1.0.0 — Le script d'un court métrage cinématographique (ADR-080) : un brief devient un titre, une bible visuelle, des personnages décrits, une musique, une voix off et une liste de 8 à 12 plans (cadre, action, effets, image clé, mouvement, transition, ralenti). Personnages, logos et marques toujours originaux ; jamais une personne réelle ; un format « nouvelles » a un présentateur IA déclaré et un sujet général. C'est la première étape d'une production `orazaka cinema` : chaque plan devient ensuite une image clé (Génération d'image), un plan vidéo (Génération vidéo, Wan 2.2 I2V A14B) puis le montage (Montage cinématographique).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "cinematic-script",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "steps": [
       {
         "id": "script",
@@ -57,7 +57,31 @@
         ],
         "default": "custom",
         "title": "Le format",
-        "description": "superhero-vfx : action et effets spéciaux originaux ; social-reel : un reel de saisons, de rue, de musique ; news-explainer : un présentateur IA déclaré explique un sujet général ; trailer : une bande-annonce."
+        "description": "La famille de film que suit le script. Libre : vous écrivez le brief.",
+        "x-i18n": {
+          "en": {
+            "title": "Kind of film",
+            "description": "The family of film the script follows. Custom: you write the brief.",
+            "options": {
+              "superhero-vfx": "Superhero · original action and effects",
+              "social-reel": "Social reel · seasons, street, music",
+              "news-explainer": "News explainer · a declared AI presenter",
+              "trailer": "Trailer",
+              "custom": "Custom · from your brief"
+            }
+          },
+          "fr": {
+            "title": "Le format",
+            "description": "La famille de film que suit le script. Libre : vous écrivez le brief.",
+            "options": {
+              "superhero-vfx": "Super-héros · action et effets originaux",
+              "social-reel": "Reel social · saisons, rue, musique",
+              "news-explainer": "Explicatif · un présentateur IA déclaré",
+              "trailer": "Bande-annonce",
+              "custom": "Libre · selon votre brief"
+            }
+          }
+        }
       },
       "aspect": {
         "type": "string",
@@ -67,7 +91,25 @@
         ],
         "default": "9:16",
         "title": "Format d'image",
-        "description": "9:16 : Reels, TikTok, Shorts. 16:9 : YouTube, un écran."
+        "description": "9:16 : Reels, TikTok, Shorts. 16:9 : YouTube, un écran.",
+        "x-i18n": {
+          "en": {
+            "title": "Frame",
+            "description": "9:16 for Reels, TikTok and Shorts. 16:9 for YouTube and screens.",
+            "options": {
+              "9:16": "Vertical 9:16 · TikTok, Reels",
+              "16:9": "Wide 16:9 · YouTube"
+            }
+          },
+          "fr": {
+            "title": "Format d'image",
+            "description": "9:16 : Reels, TikTok, Shorts. 16:9 : YouTube, un écran.",
+            "options": {
+              "9:16": "Vertical 9:16 · TikTok, Reels",
+              "16:9": "Large 16:9 · YouTube"
+            }
+          }
+        }
       },
       "durationSeconds": {
         "type": "integer",
@@ -93,13 +135,46 @@
         ],
         "default": "en",
         "title": "Langue des textes",
-        "description": "La langue des titres, sous-titres et de la voix off."
+        "description": "La langue des titres, sous-titres et de la voix off.",
+        "x-i18n": {
+          "en": {
+            "title": "Text language",
+            "description": "The language of the titles, subtitles and voice-over.",
+            "options": {
+              "en": "English",
+              "fr": "French"
+            }
+          },
+          "fr": {
+            "title": "Langue des textes",
+            "description": "La langue des titres, sous-titres et de la voix off.",
+            "options": {
+              "en": "Anglais",
+              "fr": "Français"
+            }
+          }
+        }
       },
       "model": {
         "type": "string",
         "maxLength": 120,
-        "title": "Modèle de langage (facultatif)",
-        "description": "Laissez vide : le modèle de conversation par défaut du catalogue écrit le script. Un modèle plus grand écrit des plans plus riches."
+        "title": "Modèle de langage",
+        "description": "Le modèle de conversation qui répond. Auto prend celui de la plateforme.",
+        "x-options": {
+          "source": "models",
+          "category": "chat"
+        },
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Language model",
+            "description": "The chat model that answers. Auto picks the platform default."
+          },
+          "fr": {
+            "title": "Modèle de langage",
+            "description": "Le modèle de conversation qui répond. Auto prend celui de la plateforme."
+          }
+        }
       }
     }
   },
