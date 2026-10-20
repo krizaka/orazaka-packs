@@ -29,7 +29,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: orazaka-media
-version: 1.10.0
+version: 1.11.0
 tier: DATA
 distribution: OSS
 regulatoryClass: STANDARD
