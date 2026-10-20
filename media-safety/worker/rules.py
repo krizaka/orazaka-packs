@@ -71,7 +71,8 @@ def _judge(checks: list, answer: object) -> Optional[list]:
 
 def assess(ruleset: dict, looks: Optional[list], frames: int, heard: object, expects_speech: bool) -> dict:
     """``frames`` pictures were sent, ``looks`` are the answers (a list of another length leaves the missing ones unread)."""
-    answers = looks if isinstance(looks, list) else []
+    # A fan-out of one picture reaches the worker as that picture's answer itself (the model's text, or its object), not as a list of one.
+    answers = looks if isinstance(looks, list) else ([looks] if isinstance(looks, (dict, str)) and frames == 1 else [])
     findings: list[dict] = []
     unreadable = 0
     for index in range(frames):

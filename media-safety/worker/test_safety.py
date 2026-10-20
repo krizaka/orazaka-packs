@@ -77,6 +77,18 @@ def test_the_log_and_the_protocol():
     assert not re.search(r"orazaka\.safety\.|featureKey", src.replace("`featureKey`", ""))
 
 
+def test_one_picture_arrives_as_one_answer_not_a_list():
+    """The studio publishes a fan-out of ONE item as the item itself (RunSagaService.buildScope): every photo message is that case."""
+    one = {"analysis": CLEAN}
+    assert rules.assess(R, one, 1, None, False)["verdict"] == "APPROVED"
+    assert rules.assess(R, {"analysis": DIRTY}, 1, None, False)["blockers"] == ["SEXUAL_CONTENT"]
+    assert rules.assess(R, {"analysis": "no idea"}, 1, None, False)["verdict"] == "UNREADABLE"
+    assert rules.assess(R, "\n\n" + CLEAN + "\n", 1, None, False)["verdict"] == "APPROVED"  # what the dev engine hands over: the text
+    assert rules.assess(R, DIRTY, 1, None, False)["blockers"] == ["SEXUAL_CONTENT"]
+    # with several pictures a bare answer is still not a list: the missing ones stay unread
+    assert rules.assess(R, one, 2, None, False)["verdict"] == "UNREADABLE"
+
+
 if __name__ == "__main__":
     failed = 0
     for name, fn in sorted(globals().items()):
