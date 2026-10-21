@@ -527,6 +527,13 @@ def test_the_installer_reads_fixtures_raw_so_they_stay_readable_without_the_layo
             assert (pattern.search(text) is not None) != required, (rule["ruleId"], text)
 
 
+def test_an_english_sub_total_is_not_the_total():
+    # The bilingual block's « SUB-TOTAL (EXCLUDING TAXES) » line satisfied QC-INV-002 by itself: a document with no total passed.
+    no_total = _fixture("krizaka-bilingual-aligned.txt").replace("TOTAL À PAYER / TOTAL AMOUNT DUE ($CAD) :" + " " * 37 + "4 024,13 $CAD", "")
+    assert _invoice(no_total)["QC-INV-002"]["verdict"] == rules.FAIL
+    assert _invoice(_fixture("krizaka-bilingual-aligned.txt"))["QC-INV-002"]["evidenceSpan"]["quote"].startswith("TOTAL À PAYER")
+
+
 def test_the_bilingual_template_block_passes_every_rule_as_laid_out():
     found = _invoice(_fixture("krizaka-bilingual-aligned.txt"))
     assert {k: v["verdict"] for k, v in found.items()} == {f"QC-INV-00{n}": rules.PASS for n in range(1, 9)}
