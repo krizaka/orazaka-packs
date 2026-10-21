@@ -1,0 +1,33 @@
+← Toutes les factures
+Facture / Invoice
+N° de facture
+KZ-00016
+Date
+27 août 2026
+Émise par
+Technologies Krizaka inc. (démo)
+1 rue Exemple, Montréal QC H2X 1Y1 (adresse fictive)
+N° d'inscription à la TPS : 123456789RT0001
+N° d'inscription à la TVQ : 1234567890TQ0001
+Facturée à
+Café du Parc inc. (démo)
+514-555-0111
+Conditions de paiement
+Net 30 jours
+Date d'échéance
+26 septembre 2026
+Développement logiciel (à l'heure) / Software development (hourly)
+4 800,00 $
+Qté 32 × 150,00 $
+Soutien et maintenance (forfait mensuel) / Support and maintenance (monthly flat fee)
+500,00 $
+Qté 1 × 500,00 $
+Sous-total
+5 300,00 $
+TPS (5 %)
+265,00 $
+TVQ (9,975 %)
+528,68 $
+Total (CAD)
+6 093,68 $
+Préparée avec Akinaza. Le commerçant produit lui-même la déclaration de TPS/TVQ; Akinaza ne la produit jamais.

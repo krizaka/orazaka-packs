@@ -99,22 +99,107 @@ def rulesets_by_jurisdiction() -> dict:
     return found
 
 
-def _span(match, text: str) -> dict:
-    """Where in the document the evidence sits, and what it says. Offsets are into ``text``."""
-    quote = match.group(0).strip()
-    return {
-        "start": match.start(),
-        "end": match.end(),
-        "quote": quote[:MAX_QUOTE] + ("…" if len(quote) > MAX_QUOTE else ""),
-    }
-
-
 def _number(raw: str) -> float:
     """A euro amount as written by a human: '1 250,00' and '1.250,00' are the same number."""
     cleaned = raw.strip().replace(" ", "").replace(" ", "")
     if "," in cleaned:
         cleaned = cleaned.replace(".", "").replace(",", ".")
     return float(cleaned)
+
+
+# --- How a ruleset reads the layout of a document (orazaka-packs#81) -------------------------------------------------
+#
+# A rule is a regular expression over prose, and a real invoice is not prose: its text layer is aligned columns, a
+# calculation in brackets between a label and its amount, a label on one line and its value on the next. The regexes
+# of qc-invoice are written for « label : value » on one line; rather than loosen every one of them into something an
+# auditor cannot read, the ruleset DECLARES how its text is to be read (`textLayout`) and the engine reads it that way,
+# once, before any rule runs. Three steps, each a plain statement about layout and none about meaning:
+#
+#   collapseSpaces  a run of spaces or tabs is one space (a column of padding is not a gap in the sentence);
+#   dropBracketed   a one-line [bracketed note] is not part of the sentence (« [Calcul : 3 500,00 $ * 0,05] »);
+#   joinValueLines  a line that holds only a value (an amount, a date, a tax number) belongs to the label line above it.
+#
+# Nothing here invents text: every character of the read form comes from the document, and a finding's evidence is
+# still the exact passage of the document as given — its offsets and its quote are mapped back through the rewrite.
+# A ruleset that does not declare `textLayout` is read as given.
+
+_BLANKS = re.compile(r"[ \t\u00a0\u2007\u2009\u202f]+")
+_BRACKETED = re.compile(r"\[[^\[\]\n]{0,200}\]")
+_VALUE_LINE = re.compile(
+    r"^[ \t\u00a0\u202f]*(?:"
+    r"[$€]?\s*-?\d[\d \u00a0\u202f.,]*(?:\s*(?:\$\s*CAD|\$|CAD|dollars?|€|EUR|%))?"  # an amount or a number
+    r"|\d{4}[-/.]\d{1,2}[-/.]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{4}"  # a numeric date
+    r"|\d{1,2}(?:er)?\s+[A-Za-zÀ-ÿ]+\.?\s+\d{4}|[A-Za-zÀ-ÿ]+\.?\s+\d{1,2},?\s+\d{4}"  # a date written out
+    r"|\d{3}[ -]?\d{3}[ -]?\d{3}\s?RT\s?\d{4}|\d{10}\s?TQ\s?\d{4}"  # a registration number
+    r")[ \t\u00a0\u202f]*$"
+)
+_LINE_BREAK = re.compile(r"[ \t\u00a0\u202f]*\n[ \t\u00a0\u202f]*")
+
+
+class _Document:
+    """The text a rule reads, and the way back to the document as given.
+
+    ``chars`` is the read form, one entry per character: ``(character, start, end)`` where ``start:end`` is the stretch
+    of the original it comes from (a collapsed run of spaces is one character standing for the whole run).
+    """
+
+    def __init__(self, original: str, layout: dict | None = None):
+        self.original = original
+        chars = [(c, i, i + 1) for i, c in enumerate(original)]
+        layout = layout or {}
+        if layout.get("dropBracketed"):
+            chars = self._rewrite(chars, _BRACKETED, lambda m, t: "")
+        if layout.get("joinValueLines"):
+            chars = self._rewrite(chars, _LINE_BREAK, self._join_if_value)
+        if layout.get("collapseSpaces"):
+            chars = self._rewrite(chars, _BLANKS, lambda m, t: " ")
+        self.chars = chars
+        self.text = "".join(c for c, _, _ in chars)
+
+    @staticmethod
+    def _rewrite(chars: list, pattern, replacement) -> list:
+        """A regex substitution that remembers where every character came from.
+
+        ``replacement(match, text)`` returns the new text of the stretch, ``""`` to drop it, or ``None`` to keep it as it is.
+        """
+        text = "".join(c for c, _, _ in chars)
+        out, position = [], 0
+        for match in pattern.finditer(text):
+            out.extend(chars[position : match.start()])
+            replaced = replacement(match, text)
+            if replaced is None:
+                out.extend(chars[match.start() : match.end()])
+            elif replaced:
+                start, end = chars[match.start()][1], chars[match.end() - 1][2]
+                out.extend((c, start, end) for c in replaced)
+            position = match.end()
+        out.extend(chars[position:])
+        return out
+
+    @staticmethod
+    def _join_if_value(match, text: str):
+        """A single line break becomes a space when the line after it holds only a value and the line before holds a label."""
+        end = text.find("\n", match.end())
+        following = text[match.end() : end if end != -1 else len(text)]
+        before_start = text.rfind("\n", 0, match.start()) + 1
+        preceding = text[before_start : match.start()]
+        # Two breaks in a row are a paragraph; a value line under a value line is a column, not a label and its value.
+        if text[match.start() : match.end()].count("\n") != 1 or not preceding.strip() or not following.strip():
+            return None
+        if _VALUE_LINE.match(following) and not _VALUE_LINE.match(preceding):
+            return " "
+        return None
+
+    def span(self, match) -> dict:
+        """Where in the document as given the evidence sits, and what it says. Offsets are into the original text."""
+        start, end = self.chars[match.start()][1], self.chars[match.end() - 1][2]
+        quote = self.original[start:end].strip()
+        return {"start": start, "end": end, "quote": quote[:MAX_QUOTE] + ("…" if len(quote) > MAX_QUOTE else "")}
+
+
+def _document(source, layout: dict | None = None) -> "_Document":
+    """What an evaluator is handed: a ready document, or plain text read as given (the engine's own tests do the latter)."""
+    return source if isinstance(source, _Document) else _Document(source, layout)
 
 
 def _finding(rule: dict, verdict: str, span, explanation: str) -> dict:
@@ -130,23 +215,27 @@ def _finding(rule: dict, verdict: str, span, explanation: str) -> dict:
     }
 
 
-def _required_pattern(rule: dict, text: str) -> dict:
-    match = re.search(rule["check"]["pattern"], text)
+def _required_pattern(rule: dict, source) -> dict:
+    doc = _document(source)
+    match = re.search(rule["check"]["pattern"], doc.text)
     if match:
-        return _finding(rule, PASS, _span(match, text), rule["onPass"])
+        return _finding(rule, PASS, doc.span(match), rule["onPass"])
     # An absence has no span, and saying so is information rather than a gap: the reader learns
     # that nothing was found, not that the tool forgot to look.
     return _finding(rule, FAIL, None, rule["onFail"])
 
 
-def _forbidden_pattern(rule: dict, text: str) -> dict:
-    match = re.search(rule["check"]["pattern"], text)
+def _forbidden_pattern(rule: dict, source) -> dict:
+    doc = _document(source)
+    match = re.search(rule["check"]["pattern"], doc.text)
     if match:
-        return _finding(rule, FAIL, _span(match, text), rule["onFail"])
+        return _finding(rule, FAIL, doc.span(match), rule["onFail"])
     return _finding(rule, PASS, None, rule["onPass"])
 
 
-def _numeric_ratio_max(rule: dict, text: str) -> dict:
+def _numeric_ratio_max(rule: dict, source) -> dict:
+    doc = _document(source)
+    text = doc.text
     check = rule["check"]
     top = re.search(check["numerator"], text)
     bottom = re.search(check["denominator"], text)
@@ -155,7 +244,7 @@ def _numeric_ratio_max(rule: dict, text: str) -> dict:
         return _finding(
             rule,
             INSUFFICIENT_EVIDENCE,
-            _span(top or bottom, text) if (top or bottom) else None,
+            doc.span(top or bottom) if (top or bottom) else None,
             f"Le document ne chiffre pas {missing} ; la règle ne peut pas être évaluée.",
         )
     try:
@@ -164,15 +253,15 @@ def _numeric_ratio_max(rule: dict, text: str) -> dict:
         return _finding(
             rule,
             INSUFFICIENT_EVIDENCE,
-            _span(top, text),
+            doc.span(top),
             "Les montants trouvés ne sont pas exploitables ; la règle ne peut pas être évaluée.",
         )
     if ratio <= check["max"] + 1e-9:
-        return _finding(rule, PASS, _span(top, text), rule["onPass"])
+        return _finding(rule, PASS, doc.span(top), rule["onPass"])
     return _finding(
         rule,
         FAIL,
-        _span(top, text),
+        doc.span(top),
         f"{rule['onFail']} Constaté : {ratio:.2f} mois.",
     )
 
@@ -183,7 +272,7 @@ _WORDED_NUMBERS = {
 }
 
 
-def _numeric_min(rule: dict, text: str) -> dict:
+def _numeric_min(rule: dict, source) -> dict:
     """A quantity the law sets a FLOOR under, not a clause whose presence is enough.
 
     Added because FR-LEASE-003 was a REQUIRED_PATTERN looking for the words "durée du bail", for a
@@ -195,6 +284,8 @@ def _numeric_min(rule: dict, text: str) -> dict:
 
     French leases write the term in words as often as in digits, so both are read.
     """
+    doc = _document(source)
+    text = doc.text
     check = rule["check"]
     match = re.search(check["quantity"], text)
     if not match:
@@ -213,15 +304,15 @@ def _numeric_min(rule: dict, text: str) -> dict:
         return _finding(
             rule,
             INSUFFICIENT_EVIDENCE,
-            _span(match, text),
+            doc.span(match),
             "La durée trouvée n'est pas exploitable ; la règle ne peut pas être évaluée.",
         )
     if value >= check["min"] - 1e-9:
-        return _finding(rule, PASS, _span(match, text), rule["onPass"])
+        return _finding(rule, PASS, doc.span(match), rule["onPass"])
     return _finding(
         rule,
         FAIL,
-        _span(match, text),
+        doc.span(match),
         f"{rule['onFail']} Constaté : {value:g} an(s).",
     )
 
@@ -234,6 +325,11 @@ CHECKS = {
 }
 
 
+def evaluate(ruleset: dict, rule: dict, text: str) -> dict:
+    """One deterministic rule of a ruleset on a text, read the way the ruleset declares (its ``textLayout``)."""
+    return CHECKS[rule["check"]["type"]](rule, _Document(text, ruleset.get("textLayout")))
+
+
 def screen(ruleset: dict, text: str) -> tuple:
     """Every deterministic rule, plus the questions the model still has to be asked.
 
@@ -242,6 +338,7 @@ def screen(ruleset: dict, text: str) -> tuple:
     """
     findings = []
     judgments = []
+    doc = _Document(text, ruleset.get("textLayout"))
     for rule in ruleset["rules"]:
         if rule["method"] == "JUDGMENT":
             judgments.append(
@@ -260,7 +357,7 @@ def screen(ruleset: dict, text: str) -> tuple:
                 )
             )
             continue
-        findings.append(evaluator(rule, text))
+        findings.append(evaluator(rule, doc))
     return findings, judgments
 
 

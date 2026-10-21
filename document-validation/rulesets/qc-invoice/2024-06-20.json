@@ -8,7 +8,13 @@
   "optIn": true,
   "documentType": "invoice",
   "source": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (version en vigueur depuis le 2024-06-20, à jour au 2026-09-30 : seuils de 100 $ et de 500 $) ; numéro de compte de la TPS/TVH (ARC) ; numéro d'inscription au fichier de la TVQ (Revenu Québec)",
-  "revision": 1,
+  "revision": 2,
+  "revisionNote": "Révision 2 (orazaka-packs#81) : le moteur lit la mise en page d'une facture réelle avant d'appliquer les règles — colonnes alignées par des espaces, calcul entre crochets entre un libellé et son montant, libellé et valeur sur deux lignes (le texte d'un PDF ou d'un tableau). Aucune règle ni aucun seuil ne change ; ce que la loi exige est inchangé. Faux échecs corrigés : QC-INV-001 (date), QC-INV-002 (total), QC-INV-007 (taxes). La preuve citée reste le passage exact du document.",
+  "textLayout": {
+    "collapseSpaces": true,
+    "dropBracketed": true,
+    "joinValueLines": true
+  },
   "reviewStatus": "TO_REVIEW_BY_LAWYER",
   "reviewNote": "Corpus rédigé à partir du texte du règlement fédéral lu sur le site de la législation du Canada (le 2026-10-19). Non encodé, faute d'avoir pu lire la source : l'exigence propre à la TVQ (règlement québécois, page de Revenu Québec inaccessible à la lecture automatisée), le nom du fournisseur, le nom de l'acheteur et la description des biens ou services (aucune règle lexicale honnête), le taux et le calcul des taxes. Les règles de seuil (100 $, 500 $) ne lisent pas le montant : le constat le dit. Le numéro n'est pas vérifié auprès de l'ARC ni de Revenu Québec : seule sa forme l'est. À faire relire par un comptable ou un avocat avant tout usage autre que la démonstration.",
   "rules": [
@@ -28,12 +34,15 @@
         "pass": [
           "Date de la facture : 2026-10-12",
           "Facture émise le 12 octobre 2026",
-          "Invoice date: 12/10/2026"
+          "Invoice date: 12/10/2026",
+          "Date\n27 août 2026"
         ],
         "fail": [
           "Facture n° 2041. Total : 575,00 $",
           "Date d'échéance : 2026-11-11",
-          "Date à confirmer."
+          "Date à confirmer.",
+          "Date\nà confirmer",
+          "Date d'échéance\n2026-11-11"
         ]
       }
     },
@@ -53,12 +62,16 @@
         "pass": [
           "Total : 1 149,75 $",
           "TOTAL $ 1149.75",
-          "Total à payer 575 CAD"
+          "Total à payer 575 CAD",
+          "TOTAL À PAYER / TOTAL AMOUNT DUE ($CAD) :                                     4 024,13 $CAD",
+          "Total (CAD)\n6 093,68 $"
         ],
         "fail": [
           "Sous-total : 1 000,00 $",
           "Total à venir",
-          "Total des taxes : 149,75 $"
+          "Total des taxes : 149,75 $",
+          "Sous-total\n1 000,00 $",
+          "Total des taxes\n149,75 $"
         ]
       }
     },
@@ -178,12 +191,16 @@
           "TPS (5 %) : 52,50 $",
           "TVQ 9,975 % : 104,74 $",
           "Prix, taxes incluses.",
-          "TPS $ 52.50"
+          "TPS $ 52.50",
+          "TPS / GST (5,000 %) [Calcul : 3 500,00 $ * 0,05] :                              175,00 $CAD",
+          "TPS (5 %)\n265,00 $"
         ],
         "fail": [
           "Total : 1 050,00 $",
           "TPS : 123456789 RT0001",
-          "Taxes à calculer."
+          "Taxes à calculer.",
+          "TPS\nà calculer",
+          "TPS\n123456789 RT0001"
         ]
       }
     },

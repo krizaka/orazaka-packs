@@ -1,0 +1,39 @@
+====================================================================================================
+                                      FACTURE / INVOICE
+====================================================================================================
+
+ÉMETTEUR / ISSUED BY :
+Technologies Krizaka Inc. / Krizaka Technologies Inc.
+[Adresse du siège]
+
+IDENTIFIANTS LÉGAUX ET FISCAUX / LEGAL & TAX IDENTIFIERS :
+Numéro d'inscription TPS / GST (5 %) :      123456789 RT 0001
+Numéro d'inscription TVQ / QST (9,975 %) :  1234567890 TQ 0001
+
+----------------------------------------------------------------------------------------------------
+DÉTAILS DE LA FACTURE / INVOICE DETAILS :
+Numéro de facture / Invoice Number :      KZ-2026-001
+Date d'émission / Issue Date :            14 octobre 2026
+Date d'échéance / Due Date :              13 novembre 2026 (Net 30 jours / Net 30 days)
+Devise / Currency :                       Dollar Canadien ($CAD)
+Mode de règlement / Payment Terms :       Virement bancaire
+----------------------------------------------------------------------------------------------------
+
+DÉSIGNATION DES PRESTATIONS / DESCRIPTION OF SERVICES :
+
+Item | Description du produit ou service                          | Qté / H. | Prix Unitaire | Total HT ($CAD)
+:--- | :--------------------------------------------------------- | :------- | :------------ | :--------------
+01   | Intégration d'architecture & configuration (démo)          | 10 heures | 150,00 $CAD   | 1 500,00 $CAD
+02   | Support et maintenance technique (forfait, démo)           | 1 forfait | 2 000,00 $CAD | 2 000,00 $CAD
+
+----------------------------------------------------------------------------------------------------
+DÉCOMPTE FISCAL ET TOTAL / TAX BREAKDOWN & TOTAL :
+
+SOUS-TOTAL HORS TAXES / SUB-TOTAL (EXCLUDING TAXES) :                         3 500,00 $CAD
+
+TPS / GST (5,000 %) [Calcul : 3 500,00 $ * 0,05] :                              175,00 $CAD
+TVQ / QST (9,975 %) [Calcul : 3 500,00 $ * 0,09975] :                           349,13 $CAD
+
+----------------------------------------------------------------------------------------------------
+TOTAL À PAYER / TOTAL AMOUNT DUE ($CAD) :                                     4 024,13 $CAD
+====================================================================================================
