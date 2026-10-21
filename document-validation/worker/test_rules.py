@@ -494,6 +494,39 @@ def test_a_total_after_a_column_of_spaces_and_a_tax_after_a_bracketed_calculatio
     assert " " * 30 in found["QC-INV-007"]["evidenceSpan"]["quote"] and "[Calcul : 3 500,00 $ * 0,05]" in found["QC-INV-007"]["evidenceSpan"]["quote"]
 
 
+# Cases of layout, per rule. They live here and not in the ruleset's `fixtures`: the installer reads those raw, with no
+# knowledge of `textLayout`, to prove each pattern can both pass and fail; these are how the engine READS a layout.
+LAYOUT_CASES = {
+    "QC-INV-001": (["Date\n27 août 2026", "Date de la facture\n2026-10-21"], ["Date\nà confirmer", "Date d'échéance\n2026-11-11"]),
+    "QC-INV-002": (["TOTAL À PAYER / TOTAL AMOUNT DUE ($CAD) :" + " " * 37 + "4 024,13 $CAD", "Total (CAD)\n6 093,68 $"], ["Sous-total\n1 000,00 $", "Total des taxes\n149,75 $"]),
+    "QC-INV-007": (["TPS / GST (5,000 %) [Calcul : 3 500,00 $ * 0,05] :" + " " * 30 + "175,00 $CAD", "TPS (5 %)\n265,00 $"], ["TPS\nà calculer", "TPS\n123456789 RT0001"]),
+}
+
+
+def test_every_layout_case_passes_or_fails_as_the_requirement_says():
+    ruleset = rules.resolve("qc-invoice", "2026-10-19")
+    by_id = {r["ruleId"]: r for r in ruleset["rules"]}
+    for rule_id, (passing, failing) in LAYOUT_CASES.items():
+        for text in passing:
+            assert rules.evaluate(ruleset, by_id[rule_id], text)["verdict"] == rules.PASS, (rule_id, text)
+        for text in failing:
+            assert rules.evaluate(ruleset, by_id[rule_id], text)["verdict"] == rules.FAIL, (rule_id, text)
+
+
+def test_the_installer_reads_fixtures_raw_so_they_stay_readable_without_the_layout():
+    """The platform's installer (RulesetFixtureValidator) evaluates `fixtures` with the bare pattern: every fixture of this
+    ruleset must keep discriminating that way, whatever `textLayout` adds on top."""
+    import re
+    ruleset = rules.resolve("qc-invoice", "2026-10-19")
+    for rule in ruleset["rules"]:
+        pattern = re.compile(rule["check"]["pattern"])
+        required = rule["check"]["type"] == "REQUIRED_PATTERN"
+        for text in _as_list(rule["fixtures"]["pass"]):
+            assert (pattern.search(text) is not None) == required, (rule["ruleId"], text)
+        for text in _as_list(rule["fixtures"]["fail"]):
+            assert (pattern.search(text) is not None) != required, (rule["ruleId"], text)
+
+
 def test_the_bilingual_template_block_passes_every_rule_as_laid_out():
     found = _invoice(_fixture("krizaka-bilingual-aligned.txt"))
     assert {k: v["verdict"] for k, v in found.items()} == {f"QC-INV-00{n}": rules.PASS for n in range(1, 9)}
