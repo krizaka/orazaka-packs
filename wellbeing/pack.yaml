@@ -22,7 +22,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: bien-etre
-version: 1.4.0
+version: 1.5.0
 tier: DATA
 distribution: CLOUD
 regulatoryClass: REGULATED
@@ -54,39 +54,49 @@ scopeGuard:
 # the processing does. Bumping this version stops every existing installation until its owner
 # agrees again — and that cost is the point.
 consent:
-  # 2.0 (orazaka#301): the statement now says exactly what the system does — the erase exists
-  # (DELETE .../packs/bien-etre/my-data, and one entry), retention is the platform's 30 days, and
-  # withdrawing is uninstalling. It is served by the server in the caller's language: `statement`
-  # is French (the default), `statements.en` the English one. Both are reviewed text.
-  version: "2.0"
+  # 2.1 (orazaka#301): what is encrypted, where, and for how long backups keep a deletion — each claim
+  # checked against the system (ADR-055 section 8). The statement is served by the server in the
+  # caller's language: `statement` is French (the default), `statements.en` the English one. Both are
+  # reviewed text and must say the same thing.
+  version: "2.1"
   statement: >-
-    Ce Studio enregistre ce que vous y écrivez sur votre humeur et votre vécu, et le texte qu'il
-    vous renvoie. Ce sont des données de santé au sens du RGPD (art. 9) et de la Loi 25. Elles sont
-    chiffrées, conservées 30 jours au plus après chaque entrée, jamais utilisées pour entraîner un
-    modèle et jamais incluses dans une statistique. Ce Studio n'est pas un soin : il ne pose aucun
-    diagnostic, ne remplace aucun professionnel, et n'est pas un service d'urgence. Vous pouvez tout
-    supprimer à tout moment : « Supprimer toutes mes données de bien-être » efface définitivement
-    vos entrées, leurs résultats, les fichiers associés et le consentement que vous donnez ici ; vous
-    pouvez aussi supprimer une seule entrée. Il ne reste alors qu'une trace sans aucun contenu — la
-    date de la suppression et le Studio concerné — qui prouve que vous l'avez demandée. Vous pouvez
-    retirer votre consentement à tout moment en désinstallant le Studio : il ne traite plus rien et
-    ce qu'il avait enregistré disparaît au plus tard après 30 jours, ou tout de suite si vous
-    choisissez de tout supprimer. En installant ce Studio, vous consentez explicitement à ce
-    traitement.
+    Ce Studio enregistre ce que vous y écrivez ou dites sur votre humeur et votre vécu — le texte, pas
+    le son — et le texte qu'il vous renvoie. Ce sont des données de santé au sens du RGPD (art. 9) et
+    de la Loi 25. Les échanges entre votre appareil, le service et sa base de données sont chiffrés
+    (TLS) ; les fichiers de travail sont chiffrés par Orazaka, une clé par fichier ; vos textes sont
+    conservés dans une base de données gérée dont les disques sont chiffrés par l'hébergeur
+    (DigitalOcean), sans chiffrement supplémentaire champ par champ. Ils sont conservés 30 jours au
+    plus après chaque entrée ou échange, jamais utilisés pour entraîner un modèle et jamais inclus
+    dans une statistique. Des sauvegardes techniques chiffrées de la base sont conservées 7 jours : ce
+    que vous supprimez, ou qui expire, en disparaît au plus tard 7 jours plus tard. Ce Studio n'est
+    pas un soin : il ne pose aucun diagnostic, ne remplace aucun professionnel, et n'est pas un
+    service d'urgence. Vous pouvez tout supprimer à tout moment : « Supprimer toutes mes données de
+    bien-être » efface définitivement vos entrées, vos échanges écrits ou parlés, leurs résultats, les
+    fichiers associés et le consentement que vous donnez ici ; vous pouvez aussi supprimer une seule
+    entrée. Il ne reste alors qu'une trace sans aucun contenu — la date de la suppression et le Studio
+    concerné — qui prouve que vous l'avez demandée. Vous pouvez retirer votre consentement à tout
+    moment en désinstallant le Studio : il ne traite plus rien et ce qu'il avait enregistré disparaît
+    au plus tard après 30 jours, ou tout de suite si vous choisissez de tout supprimer. En installant
+    ce Studio, vous consentez explicitement à ce traitement.
   statements:
     en: >-
-      This Studio records what you write in it about your mood and what you are going through, and
-      the text it sends back. This is health data under the GDPR (art. 9) and Québec's Law 25. It is
-      encrypted, kept for 30 days at most after each entry, never used to train a model and never
-      included in any statistic. This Studio is not care: it makes no diagnosis, does not replace
-      any professional, and is not an emergency service. You can delete everything at any time:
-      "Delete all my wellbeing data" permanently erases your entries, their results, the files tied
-      to them and the consent you give here; you can also delete a single entry. All that remains is
-      a record with no content whatsoever — the date of the deletion and the Studio concerned —
-      proving that you asked for it. You can withdraw your consent at any time by uninstalling the
-      Studio: it processes nothing more and whatever it had recorded disappears after 30 days at
-      most, or immediately if you choose to delete everything. By installing this Studio, you
-      explicitly consent to this processing.
+      This Studio records what you write or say in it about your mood and what you are going
+      through — the text, not the sound — and the text it sends back. This is health data under the
+      GDPR (art. 9) and Québec's Law 25. Exchanges between your device, the service and its database
+      are encrypted (TLS); working files are encrypted by Orazaka, one key per file; your texts are
+      kept in a managed database whose disks are encrypted by the host (DigitalOcean), without any
+      further field-by-field encryption. They are kept for 30 days at most after each entry or
+      exchange, never used to train a model and never included in any statistic. Encrypted technical
+      backups of the database are kept for 7 days: whatever you delete, or whatever expires,
+      disappears from them within 7 days at most. This Studio is not care: it makes no diagnosis,
+      does not replace any professional, and is not an emergency service. You can delete everything
+      at any time: "Delete all my wellbeing data" permanently erases your entries, your written or
+      spoken exchanges, their results, the files tied to them and the consent you give here; you can
+      also delete a single entry. All that remains is a record with no content whatsoever — the date
+      of the deletion and the Studio concerned — proving that you asked for it. You can withdraw
+      your consent at any time by uninstalling the Studio: it processes nothing more and whatever it
+      had recorded disappears after 30 days at most, or immediately if you choose to delete
+      everything. By installing this Studio, you explicitly consent to this processing.
 
 # The crisis declaration. The response is FIXED and reviewed by a person: a model asked to compose
 # one will produce a number that looks like a crisis line, and someone will dial it.
