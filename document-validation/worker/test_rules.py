@@ -252,10 +252,9 @@ def test_every_deterministic_rule_distinguishes_its_own_fixtures():
                 failures.append(f"{rule['ruleId']} ships no fixture pair")
                 continue
             checked += 1
-            check = rules.CHECKS[rule["check"]["type"]]
             for expected, fragments in (("PASS", fixtures["pass"]), ("FAIL", fixtures["fail"])):
                 for fragment in _as_list(fragments):
-                    got = check(rule, fragment)["verdict"]
+                    got = rules.evaluate(ruleset, rule, fragment)["verdict"]
                     if got != expected:
                         failures.append(
                             f"{rule['ruleId']} expected {expected} and returned {got} on: "
@@ -466,6 +465,118 @@ def test_the_contract_ruleset_says_what_it_does_not_encode_and_cites_the_federal
     assert not [r for r in ruleset["rules"] if r["method"] == "JUDGMENT"]
 
 
+# --- qc-invoice reads layouts as they come out of a PDF or a table (orazaka-packs#81) -----------------------------------
+#
+# The false FAILs of the Krizaka review (2026-10-21): a total or a tax amount separated from its label by a column of
+# spaces or a bracketed calculation, and a label and its value on separate lines (the text layer of a table). The
+# fixtures are the layouts themselves, reproduced with demo values: the bilingual template's aligned block and Akinaza's
+# own invoice KZ-00004. The finding's evidence stays the exact passage of the document.
+
+FIXTURES = Path(__file__).resolve().parent / "fixtures" / "qc-invoice"
+
+
+def _fixture(name):
+    return (FIXTURES / name).read_text(encoding="utf-8")
+
+
+def test_a_total_after_a_column_of_spaces_and_a_tax_after_a_bracketed_calculation_are_found():
+    total = "TOTAL À PAYER / TOTAL AMOUNT DUE ($CAD) :" + " " * 37 + "4 024,13 $CAD"
+    tax = "TPS / GST (5,000 %) [Calcul : 3 500,00 $ * 0,05] :" + " " * 30 + "175,00 $CAD"
+    found = _invoice(total + "\n" + tax + "\n")
+    assert found["QC-INV-002"]["verdict"] == rules.PASS and found["QC-INV-007"]["verdict"] == rules.PASS
+    # The evidence is the exact passage, spaces and brackets included, with offsets into the document as given.
+    document = total + "\n" + tax + "\n"
+    for rule_id, passage, amount in (("QC-INV-002", total, "4 024,13 $"), ("QC-INV-007", tax, "175,00 $")):
+        span = found[rule_id]["evidenceSpan"]
+        assert document[span["start"]:span["end"]].strip() == span["quote"]
+        assert span["quote"] in passage and span["quote"].endswith(amount)
+    # The column of padding and the bracketed calculation are in the quote: it is the document's own words, not the read form.
+    assert " " * 30 in found["QC-INV-007"]["evidenceSpan"]["quote"] and "[Calcul : 3 500,00 $ * 0,05]" in found["QC-INV-007"]["evidenceSpan"]["quote"]
+
+
+# Cases of layout, per rule. They live here and not in the ruleset's `fixtures`: the installer reads those raw, with no
+# knowledge of `textLayout`, to prove each pattern can both pass and fail; these are how the engine READS a layout.
+LAYOUT_CASES = {
+    "QC-INV-001": (["Date\n27 août 2026", "Date de la facture\n2026-10-21"], ["Date\nà confirmer", "Date d'échéance\n2026-11-11"]),
+    "QC-INV-002": (["TOTAL À PAYER / TOTAL AMOUNT DUE ($CAD) :" + " " * 37 + "4 024,13 $CAD", "Total (CAD)\n6 093,68 $"], ["Sous-total\n1 000,00 $", "Total des taxes\n149,75 $"]),
+    "QC-INV-007": (["TPS / GST (5,000 %) [Calcul : 3 500,00 $ * 0,05] :" + " " * 30 + "175,00 $CAD", "TPS (5 %)\n265,00 $"], ["TPS\nà calculer", "TPS\n123456789 RT0001"]),
+}
+
+
+def test_every_layout_case_passes_or_fails_as_the_requirement_says():
+    ruleset = rules.resolve("qc-invoice", "2026-10-19")
+    by_id = {r["ruleId"]: r for r in ruleset["rules"]}
+    for rule_id, (passing, failing) in LAYOUT_CASES.items():
+        for text in passing:
+            assert rules.evaluate(ruleset, by_id[rule_id], text)["verdict"] == rules.PASS, (rule_id, text)
+        for text in failing:
+            assert rules.evaluate(ruleset, by_id[rule_id], text)["verdict"] == rules.FAIL, (rule_id, text)
+
+
+def test_the_installer_reads_fixtures_raw_so_they_stay_readable_without_the_layout():
+    """The platform's installer (RulesetFixtureValidator) evaluates `fixtures` with the bare pattern: every fixture of this
+    ruleset must keep discriminating that way, whatever `textLayout` adds on top."""
+    import re
+    ruleset = rules.resolve("qc-invoice", "2026-10-19")
+    for rule in ruleset["rules"]:
+        pattern = re.compile(rule["check"]["pattern"])
+        required = rule["check"]["type"] == "REQUIRED_PATTERN"
+        for text in _as_list(rule["fixtures"]["pass"]):
+            assert (pattern.search(text) is not None) == required, (rule["ruleId"], text)
+        for text in _as_list(rule["fixtures"]["fail"]):
+            assert (pattern.search(text) is not None) != required, (rule["ruleId"], text)
+
+
+def test_the_bilingual_template_block_passes_every_rule_as_laid_out():
+    found = _invoice(_fixture("krizaka-bilingual-aligned.txt"))
+    assert {k: v["verdict"] for k, v in found.items()} == {f"QC-INV-00{n}": rules.PASS for n in range(1, 9)}
+
+
+def test_akinaza_kz_00004_is_read_label_over_value_and_fails_only_on_its_real_gap():
+    found = _invoice(_fixture("akinaza-kz-00004-tabular.txt"))
+    failed = {k for k, v in found.items() if v["verdict"] == rules.FAIL}
+    # The date, the total and the taxes are printed: the layout must not hide them. The invoice had no payment terms
+    # (krizaka/akinaza#113): that one is a real gap, and the only one.
+    assert failed == {"QC-INV-008"}, {k: v["verdict"] for k, v in found.items()}
+    assert found["QC-INV-001"]["evidenceSpan"]["quote"].replace("\n", " ") == "Date 27 août 2026"
+    assert found["QC-INV-002"]["evidenceSpan"]["quote"].replace("\n", " ") == "Total (CAD) 6 093,68 $"
+
+
+def test_akinaza_with_its_payment_terms_passes_every_rule():
+    found = _invoice(_fixture("akinaza-with-terms-tabular.txt"))
+    assert {k: v["verdict"] for k, v in found.items()} == {f"QC-INV-00{n}": rules.PASS for n in range(1, 9)}
+
+
+def test_reading_a_layout_never_turns_an_absence_into_a_pass():
+    # A label with nothing to it, or with the wrong kind of value, must still fail; joining lines is not inventing evidence.
+    for text, rule_id in (
+        ("Date\nà confirmer\n", "QC-INV-001"),
+        ("Date d'échéance\n2026-11-11\n", "QC-INV-001"),
+        ("Sous-total\n1 000,00 $\n", "QC-INV-002"),
+        ("Total des taxes\n149,75 $\n", "QC-INV-002"),
+        ("Total\nà venir\n", "QC-INV-002"),
+        ("TPS\nà calculer\n", "QC-INV-007"),
+        ("TPS\n123456789 RT0001\n", "QC-INV-007"),
+        ("Total\n\n1 149,75 $\n", "QC-INV-002"),  # a blank line is a paragraph, not a table cell
+    ):
+        assert _invoice(text)[rule_id]["verdict"] == rules.FAIL, text
+
+
+def test_a_bracketed_placeholder_is_not_evidence_and_does_not_hide_one():
+    # « [NE 9 chiffres] RT 0001 » is a template placeholder: the number is still missing.
+    assert _invoice("TPS : [NE 9 chiffres] RT 0001\n")["QC-INV-003"]["verdict"] == rules.FAIL
+    # A calculation in brackets must not be taken for the tax amount itself.
+    assert _invoice("TPS [Calcul : 3 500,00 $ * 0,05]\n")["QC-INV-007"]["verdict"] == rules.FAIL
+
+
+def test_the_layout_reading_is_the_invoice_rulesets_and_says_so_in_its_revision():
+    ruleset = rules.resolve("qc-invoice", "2026-10-19")
+    assert ruleset["revision"] == 2 and "81" in ruleset["revisionNote"]
+    assert ruleset["textLayout"] == {"collapseSpaces": True, "dropBracketed": True, "joinValueLines": True}
+    # Other rulesets read the text as given: a lease clause is not a table.
+    assert "textLayout" not in rules.resolve("qc-residential-lease", "2026-10-15")
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):
@@ -478,4 +589,3 @@ if __name__ == "__main__":
                 print(f"  FAIL {name}: {exc}")
     print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
     sys.exit(1 if failures else 0)
-
