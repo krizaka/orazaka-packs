@@ -22,7 +22,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: bien-etre
-version: 1.3.0
+version: 1.4.0
 tier: DATA
 distribution: CLOUD
 regulatoryClass: REGULATED
@@ -54,19 +54,44 @@ scopeGuard:
 # the processing does. Bumping this version stops every existing installation until its owner
 # agrees again — and that cost is the point.
 consent:
-  version: "1.0"
+  # 2.0 (orazaka#301): the statement now says exactly what the system does — the erase exists
+  # (DELETE .../packs/bien-etre/my-data, and one entry), retention is the platform's 30 days, and
+  # withdrawing is uninstalling. It is served by the server in the caller's language: `statement`
+  # is French (the default), `statements.en` the English one. Both are reviewed text.
+  version: "2.0"
   statement: >-
-    Ce Studio enregistre ce que vous y écrivez sur votre humeur et votre vécu. Ce sont des données
-    de santé au sens du RGPD (art. 9) et de la Loi 25. Elles sont chiffrées, conservées 30 jours au
-    plus, jamais utilisées pour entraîner un modèle et jamais incluses dans une statistique. Ce
-    Studio n'est pas un soin : il ne pose aucun diagnostic, ne remplace aucun professionnel, et
-    n'est pas un service d'urgence. Vous pouvez tout supprimer à tout moment. En installant ce
-    Studio, vous consentez explicitement à ce traitement.
+    Ce Studio enregistre ce que vous y écrivez sur votre humeur et votre vécu, et le texte qu'il
+    vous renvoie. Ce sont des données de santé au sens du RGPD (art. 9) et de la Loi 25. Elles sont
+    chiffrées, conservées 30 jours au plus après chaque entrée, jamais utilisées pour entraîner un
+    modèle et jamais incluses dans une statistique. Ce Studio n'est pas un soin : il ne pose aucun
+    diagnostic, ne remplace aucun professionnel, et n'est pas un service d'urgence. Vous pouvez tout
+    supprimer à tout moment : « Supprimer toutes mes données de bien-être » efface définitivement
+    vos entrées, leurs résultats, les fichiers associés et le consentement que vous donnez ici ; vous
+    pouvez aussi supprimer une seule entrée. Il ne reste alors qu'une trace sans aucun contenu — la
+    date de la suppression et le Studio concerné — qui prouve que vous l'avez demandée. Vous pouvez
+    retirer votre consentement à tout moment en désinstallant le Studio : il ne traite plus rien et
+    ce qu'il avait enregistré disparaît au plus tard après 30 jours, ou tout de suite si vous
+    choisissez de tout supprimer. En installant ce Studio, vous consentez explicitement à ce
+    traitement.
+  statements:
+    en: >-
+      This Studio records what you write in it about your mood and what you are going through, and
+      the text it sends back. This is health data under the GDPR (art. 9) and Québec's Law 25. It is
+      encrypted, kept for 30 days at most after each entry, never used to train a model and never
+      included in any statistic. This Studio is not care: it makes no diagnosis, does not replace
+      any professional, and is not an emergency service. You can delete everything at any time:
+      "Delete all my wellbeing data" permanently erases your entries, their results, the files tied
+      to them and the consent you give here; you can also delete a single entry. All that remains is
+      a record with no content whatsoever — the date of the deletion and the Studio concerned —
+      proving that you asked for it. You can withdraw your consent at any time by uninstalling the
+      Studio: it processes nothing more and whatever it had recorded disappears after 30 days at
+      most, or immediately if you choose to delete everything. By installing this Studio, you
+      explicitly consent to this processing.
 
 # The crisis declaration. The response is FIXED and reviewed by a person: a model asked to compose
 # one will produce a number that looks like a crisis line, and someone will dial it.
 safety:
-  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5) ; CA-QC ajoutée et vérifiée à la source le 2026-10-11 (ADR-076) ; réponse et prompt rendus bilingues FR/EN au 2026-10-18 (traduction anglaise à relire par une personne) ; crisisTerms étendus au 2026-10-17 pour la voix (variantes parlées FR et EN) — termes seulement, texte de réponse et lignes inchangés ; à relire par une personne avant toute personne extérieure"
+  safetyReviewRef: "safety-review/2026-09-10 — texte rédigé et relu à la main, ressources vérifiées à la source le 2026-09-10 (ADR-055 §5), revérifiées une à une à leur source officielle le 2026-10-20 (orazaka#301) ; CA-QC ajoutée et vérifiée à la source le 2026-10-11 (ADR-076) ; réponse et prompt rendus bilingues FR/EN au 2026-10-18 (traduction anglaise à relire par une personne) ; crisisTerms étendus au 2026-10-17 pour la voix (variantes parlées FR et EN) — termes seulement, texte de réponse et lignes inchangés ; à relire par une personne avant toute personne extérieure"
   crisisTerms:
     - suicide
     - me suicider
@@ -126,28 +151,28 @@ safety:
       contact: "3114"
       availability: "24h/24 et 7j/7, confidentiel et gratuit"
       sourceUrl: "https://www.bourgogne-franche-comte.ars.sante.fr/le-3114-numero-national-de-prevention-du-suicide"
-      verifiedOn: "2026-09-10"
+      verifiedOn: "2026-10-20"
     BE-FR:
       region: BE-FR
       label: "Centre de Prévention du Suicide"
       contact: "0800 32 123"
       availability: "24h/24 et 7j/7, anonyme et gratuit"
       sourceUrl: "https://www.preventionsuicide.be/la-ligne-decoute-0800-32-123"
-      verifiedOn: "2026-09-10"
+      verifiedOn: "2026-10-20"
     BE-NL:
       region: BE-NL
       label: "Zelfmoordlijn 1813"
       contact: "1813"
       availability: "24 uur op 24, volledig gratis en anoniem"
       sourceUrl: "https://www.zelfmoord1813.be/ik-heb-hulp-nodig/bellen-met-de-zelfmoordlijn"
-      verifiedOn: "2026-09-10"
+      verifiedOn: "2026-10-20"
     CA:
       region: CA
       label: "9-8-8 : Ligne d'aide en cas de crise de suicide / Suicide Crisis Helpline"
       contact: "9-8-8 (appel ou texto)"
-      availability: "24/7/365, en français et en anglais"
+      availability: "24 h/24, 7 j/7 — appel ou texto"
       sourceUrl: "https://988.ca/"
-      verifiedOn: "2026-09-10"
+      verifiedOn: "2026-10-20"
     # Québec, read at the source on 2026-10-11 (ADR-076). Three ways to reach someone trained, in
     # the order Québec itself lists them:
     #   - 1 866 APPELLE (277-3553), texto 535353 — the Québec suicide prevention line, "en tout
@@ -164,7 +189,7 @@ safety:
       contact: "1 866 APPELLE (1 866 277-3553), texto 535353 · 9-8-8 (appel ou texto, acheminé vers la ligne québécoise) · 811, Info-Social"
       availability: "En tout temps, de partout au Québec ; Info-Social : 24 heures par jour, 365 jours par année, gratuit et confidentiel"
       sourceUrl: "https://www.quebec.ca/sante/conseils-et-prevention/sante-mentale/obtenir-aide-en-sante-mentale/ressources-aide-et-soutien-en-sante-mentale"
-      verifiedOn: "2026-10-11"
+      verifiedOn: "2026-10-20"
   # What a conversational turn of this pack is told first (ADR-076). Reviewed text, like the
   # response: it carries the disclosure the AI Act (art. 50) and the pack's name both require, and
   # it never gives a number — the crisis reply is the guard's fixed text, not the model's.
