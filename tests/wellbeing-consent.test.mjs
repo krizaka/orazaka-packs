@@ -25,8 +25,8 @@ function folded(key, indent) {
 const fr = folded("statement", 2);
 const en = folded("en", 4);
 
-test("the consent version is 2.0 and the schema accepts translations", () => {
-  assert.match(yaml, /consent:\n(?:  #.*\n)*  version: "2\.0"/);
+test("the consent version is 2.1 and the schema accepts translations", () => {
+  assert.match(yaml, /consent:\n(?:  #.*\n)*  version: "2\.1"/);
   assert.equal(schema.properties.consent.properties.statements.type, "object");
 });
 
@@ -40,10 +40,34 @@ test("both statements promise the erase and the withdrawal, with the retention t
   assert.doesNotMatch(fr + en, /\d{1,3}[ -]?\d{3}/, "a statement carries no phone number: the lines are served apart");
 });
 
+test("the statement says what is encrypted, where, and how long backups keep a deletion (ADR-055 section 8)", () => {
+  assert.match(fr, /TLS/);
+  assert.match(fr, /une clé par fichier/);
+  assert.match(fr, /disques sont chiffrés par l'hébergeur/);
+  assert.match(fr, /champ par champ/);
+  assert.match(fr, /sauvegardes techniques chiffrées .* conservées 7 jours/);
+  assert.match(en, /TLS/);
+  assert.match(en, /one key per file/);
+  assert.match(en, /disks are encrypted by the host/);
+  assert.match(en, /field-by-field/);
+  assert.match(en, /backups of the database are kept for 7 days/);
+  // It must not claim the columns themselves are encrypted by the application.
+  assert.doesNotMatch(fr, /colonnes? chiffrées?|champs? chiffrés?/);
+});
+
+test("the statement covers spoken exchanges and says the sound is not kept", () => {
+  assert.match(fr, /écrivez ou dites/);
+  assert.match(fr, /le texte, pas le son/);
+  assert.match(fr, /échanges écrits ou parlés/);
+  assert.match(en, /write or say/);
+  assert.match(en, /the text, not the sound/);
+  assert.match(en, /written or spoken exchanges/);
+});
+
 test("the English statement says what the French one says: same figures, same promises", () => {
   const figures = (t) => (t.match(/\b\d+\b/g) ?? []).sort().join(",");
   assert.equal(figures(fr), figures(en));
-  for (const [f, e] of [[/RGPD/, /GDPR/], [/Loi 25/, /Law 25/], [/jamais utilisées pour entraîner/, /never used to train/], [/n'est pas un service d'urgence/, /not an emergency service/]]) {
+  for (const [f, e] of [[/RGPD/, /GDPR/], [/Loi 25/, /Law 25/], [/jamais utilisés pour entraîner/, /never used to train/], [/n'est pas un service d'urgence/, /not an emergency service/]]) {
     assert.match(fr, f);
     assert.match(en, e);
   }
