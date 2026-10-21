@@ -257,7 +257,18 @@
         "statement": {
           "type": "string",
           "minLength": 40,
-          "description": "What the user is agreeing to, in plain language."
+          "description": "What the user is agreeing to, in plain language, in the platform's default language (French)."
+        },
+        "statements": {
+          "type": "object",
+          "description": "The same statement in other languages, keyed by two-letter language (en). Served by the server in the caller's language; each must say exactly what the system does.",
+          "propertyNames": {
+            "pattern": "^[a-z]{2}$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 40
+          }
         }
       }
     },
