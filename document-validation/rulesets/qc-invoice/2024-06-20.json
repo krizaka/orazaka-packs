@@ -9,7 +9,7 @@
   "documentType": "invoice",
   "source": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (version en vigueur depuis le 2024-06-20, à jour au 2026-09-30 : seuils de 100 $ et de 500 $) ; numéro de compte de la TPS/TVH (ARC) ; numéro d'inscription au fichier de la TVQ (Revenu Québec)",
   "revision": 2,
-  "revisionNote": "Révision 2 (orazaka-packs#81) : le moteur lit la mise en page d'une facture réelle avant d'appliquer les règles — colonnes alignées par des espaces, calcul entre crochets entre un libellé et son montant, libellé et valeur sur deux lignes (le texte d'un PDF ou d'un tableau). Aucune règle ni aucun seuil ne change ; ce que la loi exige est inchangé. Faux échecs corrigés : QC-INV-001 (date), QC-INV-002 (total), QC-INV-007 (taxes). La preuve citée reste le passage exact du document.",
+  "revisionNote": "Révision 2 (orazaka-packs#81) : le moteur lit la mise en page d'une facture réelle avant d'appliquer les règles — colonnes alignées par des espaces, calcul entre crochets entre un libellé et son montant, libellé et valeur sur deux lignes (le texte d'un PDF ou d'un tableau). Aucune règle ni aucun seuil ne change ; ce que la loi exige est inchangé. Faux échecs corrigés : QC-INV-001 (date), QC-INV-002 (total), QC-INV-007 (taxes). La preuve citée reste le passage exact du document. Le « sub-total » anglais n'est plus pris pour le total (QC-INV-002) : la facture bilingue du modèle passait sur son sous-total.",
   "textLayout": {
     "collapseSpaces": true,
     "dropBracketed": true,
@@ -51,7 +51,7 @@
       "citation": "Règlement sur les renseignements nécessaires pour demander un crédit de taxe sur les intrants (TPS/TVH), DORS/91-45, art. 3 (le total payé ou à payer, quel que soit le montant)",
       "check": {
         "type": "REQUIRED_PATTERN",
-        "pattern": "(?i)(?<!sous-)(?<!sous )\\btotal\\b(?!\\s+(?:des\\s+)?tax)[^.\\n]{0,40}?(?:\\$\\s*\\d[\\d\\s.,]*|\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?))"
+        "pattern": "(?i)(?<!sous-)(?<!sous )(?<!sub-)(?<!sub )\\btotal\\b(?!\\s+(?:des\\s+)?tax)[^.\\n]{0,40}?(?:\\$\\s*\\d[\\d\\s.,]*|\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?))"
       },
       "onPass": "Le total à payer est chiffré.",
       "onFail": "Le total à payer n'est pas chiffré en dollars. Il fait partie des renseignements exigés de toute pièce justificative.",
@@ -64,7 +64,9 @@
         "fail": [
           "Sous-total : 1 000,00 $",
           "Total à venir",
-          "Total des taxes : 149,75 $"
+          "Total des taxes : 149,75 $",
+          "Sub-total : 1 000,00 $",
+          "SUB-TOTAL (EXCLUDING TAXES) : 3 500,00 $"
         ]
       }
     },
