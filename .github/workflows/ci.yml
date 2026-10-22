@@ -42,57 +42,79 @@ jobs:
           node-version: 22
       - run: npm test
 
-  photo-worker:
+  # The three Python workers: the org's reusable python-ci (krizaka/.github#149). Each caller job is named like its former
+  # check's origin; the required checks keep their names through the shims below (branch protection untouched).
+  py-photo:
     # profile-photo-check's worker: the rules, the face logic (fake engine) and, with the pinned models fetched, the real
     # YuNet + SFace on a public-domain photograph.
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
     permissions:
       contents: read
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    with:
+      working-directory: profile-photo-check/worker
+      requirements: profile-photo-check/requirements.txt
+      extra-packages: ""
+      setup-command: python fetch_models.py
+      test-command: |
+        python test_rules.py
+        python test_faces.py
+        python test_worker.py
+        python test_broker.py
+
+  py-authenticity:
+    # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
+    permissions:
+      contents: read
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    with:
+      working-directory: message-authenticity/worker
+      extra-packages: pika pyyaml
+      test-command: |
+        python test_authenticity.py
+        python test_broker.py
+
+  py-safety:
+    # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
+    permissions:
+      contents: read
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    with:
+      working-directory: media-safety/worker
+      extra-packages: pika pyyaml
+      test-command: |
+        python test_safety.py
+        python test_broker.py
+
+  # The required checks keep their names; each reads its gate's verdict. They go when protection requires the gates.
+  photo-worker:
+    needs: py-photo
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions: {}
+    env:
+      RESULT: ${{ needs.py-photo.outputs.result }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
-        with:
-          python-version: "3.12"
-      - run: pip install -r profile-photo-check/requirements.txt
-      - run: python profile-photo-check/worker/fetch_models.py
-      - working-directory: profile-photo-check/worker
-        run: |
-          python test_rules.py
-          python test_faces.py
-          python test_worker.py
-          python test_broker.py
+      - run: test "$RESULT" = success
 
   authenticity-worker:
-    # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
+    needs: py-authenticity
+    if: ${{ always() }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      contents: read
+    timeout-minutes: 2
+    permissions: {}
+    env:
+      RESULT: ${{ needs.py-authenticity.outputs.result }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
-        with:
-          python-version: "3.12"
-      - run: pip install pika pyyaml
-      - working-directory: message-authenticity/worker
-        run: |
-          python test_authenticity.py
-          python test_broker.py
+      - run: test "$RESULT" = success
 
   safety-worker:
-    # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
+    needs: py-safety
+    if: ${{ always() }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      contents: read
+    timeout-minutes: 2
+    permissions: {}
+    env:
+      RESULT: ${{ needs.py-safety.outputs.result }}
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
-        with:
-          python-version: "3.12"
-      - run: pip install pika pyyaml
-      - working-directory: media-safety/worker
-        run: |
-          python test_safety.py
-          python test_broker.py
+      - run: test "$RESULT" = success
