@@ -181,20 +181,6 @@ def _is_denial(line: str) -> bool:
     ))
 
 
-if __name__ == "__main__":
-    failures = 0
-    for name, fn in sorted(globals().items()):
-        if name.startswith("test_") and callable(fn):
-            try:
-                fn()
-                print(f"  ok   {name}")
-            except AssertionError as exc:
-                failures += 1
-                print(f"  FAIL {name}: {str(exc)[:200]}")
-    print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
-    sys.exit(1 if failures else 0)
-
-
 def test_the_structured_signals_reach_the_blueprint_as_json_text():
     """A blueprint step addresses fields, not a nested value: `signals` must be a JSON string a product can parse (the live run
     of 2026-10-22 returned it flattened to « pages: 3, header: … » and Yomizaka could not read it)."""
@@ -212,3 +198,56 @@ def test_the_structured_signals_reach_the_blueprint_as_json_text():
     blueprint = json.load(open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8"))
     sources = {o["key"]: o["from"] for o in blueprint["definition"]["outputs"]}
     assert sources["signals"] == "{{steps.signals.reportJson}}"
+
+
+def _conforms(schema, value, path="$"):
+    """The subset of JSON Schema the engine enforces (orazaka-studio OutputContract, ADR-076), for what this schema uses."""
+    problems = []
+    kinds = {"string": str, "integer": int, "array": list, "object": dict}
+    t = schema.get("type")
+    if t and not (isinstance(value, kinds[t]) and not (t == "integer" and isinstance(value, bool))):
+        return [f"{path}: expected {t}"]
+    if isinstance(value, str) and len(value.strip()) < schema.get("minLength", 0):
+        problems.append(f"{path}: too short")
+    if "enum" in schema and value not in schema["enum"]:
+        problems.append(f"{path}: not one of {schema['enum']}")
+    if "minimum" in schema and value < schema["minimum"]:
+        problems.append(f"{path}: below {schema['minimum']}")
+    if isinstance(value, dict):
+        problems += [f"{path}.{k}: missing" for k in schema.get("required", []) if value.get(k) is None]
+        for k, sub in schema.get("properties", {}).items():
+            if k in value:
+                problems += _conforms(sub, value[k], f"{path}.{k}")
+    if isinstance(value, list) and "items" in schema:
+        for n, item in enumerate(value):
+            problems += _conforms(schema["items"], item, f"{path}[{n}]")
+    return problems
+
+
+def test_every_real_report_meets_the_declared_signals_contract():
+    """The `signals` output declares its contract (1.2.2): the reports this worker really produces — clean, modified,
+    scanned — all meet it, and a flattened one (what the live run returned) does not."""
+    import json
+
+    blueprint = json.load(open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8"))
+    schema = {o["key"]: o for o in blueprint["definition"]["outputs"]}["signals"]["schema"]
+    for name in ("clean", "modified", "scanned"):
+        report = a.analyse(_fixture(name))
+        assert _conforms(schema, report) == [], (name, _conforms(schema, report))
+    assert _conforms(schema, "pages: 3, header: …") == ["$: expected object"]
+    assert any("level" in p for p in _conforms(schema, {**a.analyse(_fixture("clean")), "signals": [{"signalId": "X", "level": "faux", "observation": "o", "mayIndicate": "m", "where": "w"}]}))
+
+
+
+if __name__ == "__main__":
+    failures = 0
+    for name, fn in sorted(globals().items()):
+        if name.startswith("test_") and callable(fn):
+            try:
+                fn()
+                print(f"  ok   {name}")
+            except AssertionError as exc:
+                failures += 1
+                print(f"  FAIL {name}: {str(exc)[:200]}")
+    print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
+    sys.exit(1 if failures else 0)

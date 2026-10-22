@@ -61,6 +61,20 @@ jobs:
         python test_faces.py
         python test_worker.py
 
+  py-document-validation:
+    # document-validation's worker (Yomizaka's checks): the deterministic rules, the authenticity signals and their declared
+    # contract, the screening — no model needed. These tests existed but no job ran them (2026-10-22).
+    permissions:
+      contents: read
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    with:
+      working-directory: document-validation/worker
+      extra-packages: pypdf pika pyyaml
+      test-command: |
+        python test_rules.py
+        python test_authenticity.py
+        python test_screening.py
+
   py-authenticity:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
     permissions:
