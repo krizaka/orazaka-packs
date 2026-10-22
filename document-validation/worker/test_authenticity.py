@@ -193,3 +193,22 @@ if __name__ == "__main__":
                 print(f"  FAIL {name}: {str(exc)[:200]}")
     print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
     sys.exit(1 if failures else 0)
+
+
+def test_the_structured_signals_reach_the_blueprint_as_json_text():
+    """A blueprint step addresses fields, not a nested value: `signals` must be a JSON string a product can parse (the live run
+    of 2026-10-22 returned it flattened to « pages: 3, header: … » and Yomizaka could not read it)."""
+    import json
+
+    try:
+        import validation_worker as w
+    except ModuleNotFoundError:  # the broker client is not installed where only the rules are tested
+        return
+    import base64
+
+    clean = open(os.path.join(FIXTURES, "clean.pdf"), "rb").read()
+    out = w._signals({"documentBase64": base64.b64encode(clean).decode()})
+    assert json.loads(out["reportJson"]) == out["report"]
+    blueprint = json.load(open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8"))
+    sources = {o["key"]: o["from"] for o in blueprint["definition"]["outputs"]}
+    assert sources["signals"] == "{{steps.signals.reportJson}}"

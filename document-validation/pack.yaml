@@ -13,7 +13,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: document-validation
-version: 1.7.2
+version: 1.7.3
 tier: WORKER
 distribution: CLOUD
 regulatoryClass: SENSITIVE
@@ -80,9 +80,10 @@ requires:
         properties:
           report: { type: object, description: "Le rapport d'authenticité, signaux et sources." }
           reportText: { type: string, description: "Le même rapport, rendu pour lecture." }
+          reportJson: { type: string, description: "Le même rapport, en JSON : un pas de blueprint adresse des CHAMPS, pas une valeur imbriquée." }
           signalCount: { type: integer }
           actionableCount: { type: integer }
-        required: [report, reportText, signalCount, actionableCount]
+        required: [report, reportText, reportJson, signalCount, actionableCount]
     - key: orazaka.validation.document.assemble
       routingKey: job.validation.assemble
       handlerKey: validation.assemble

@@ -173,6 +173,8 @@ def _signals(payload: dict) -> dict:
     return {
         "report": report,
         "reportText": authenticity.render(report),
+        # A blueprint step addresses FIELDS, not a nested value: the structured report is also given as JSON text (like the compliance report).
+        "reportJson": json.dumps(report, ensure_ascii=False, indent=2),
         "signalCount": len(report["signals"]),
         "actionableCount": sum(
             1 for s in report["signals"] if s["level"] != authenticity.OBSERVED

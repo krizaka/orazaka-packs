@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
+  "changelog": "1.2.1 — la sortie « signals » est du vrai JSON (reportJson) : elle arrivait aplatie en « clé: valeur » et le produit ne pouvait pas la lire. 1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "document-authenticity",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "steps": [
       {
         "id": "signals",
@@ -41,7 +41,7 @@
       {
         "key": "signals",
         "label": "Signaux, sous forme structurée",
-        "from": "{{steps.signals.report}}",
+        "from": "{{steps.signals.reportJson}}",
         "type": "JSON",
         "x-i18n": {
           "en": {
@@ -56,7 +56,9 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": ["documentBase64"],
+    "required": [
+      "documentBase64"
+    ],
     "properties": {
       "documentBase64": {
         "type": "string",
@@ -96,5 +98,8 @@
       }
     }
   },
-  "configSchema": { "type": "object", "properties": {} }
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
 }
