@@ -1,12 +1,12 @@
 {
-  "version": "1.2.1",
+  "version": "1.2.2",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.2.1 — la sortie « signals » est du vrai JSON (reportJson) : elle arrivait aplatie en « clé: valeur » et le produit ne pouvait pas la lire. 1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
+  "changelog": "1.2.2 — la sortie « signals » déclare son contrat (ADR-076) : un rapport aplati ou incomplet fait échouer le run, remboursé, au lieu de livrer un rapport illisible (orazaka-packs#93). 1.2.1 — la sortie « signals » est du vrai JSON (reportJson) : elle arrivait aplatie en « clé: valeur » et le produit ne pouvait pas la lire. 1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "document-authenticity",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "steps": [
       {
         "id": "signals",
@@ -49,6 +49,80 @@
           },
           "fr": {
             "label": "Signaux, sous forme structurée"
+          }
+        },
+        "schema": {
+          "type": "object",
+          "required": [
+            "header",
+            "pages",
+            "signals",
+            "realExamination"
+          ],
+          "properties": {
+            "header": {
+              "type": "string",
+              "minLength": 1
+            },
+            "pages": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "signals": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "signalId",
+                  "level",
+                  "observation",
+                  "mayIndicate",
+                  "where"
+                ],
+                "properties": {
+                  "signalId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "level": {
+                    "type": "string",
+                    "enum": [
+                      "observé",
+                      "inhabituel",
+                      "incohérent"
+                    ]
+                  },
+                  "observation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "mayIndicate": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "where": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "realExamination": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notExamined": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "levels": {
+              "type": "object"
+            }
           }
         }
       }
