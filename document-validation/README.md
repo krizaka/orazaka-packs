@@ -83,6 +83,15 @@ only in writing signed by the owner, advice). **Not encoded** — the Civil Code
 (legisquebec.gouv.qc.ca and CanLII refuse automated reads): non-competition limits (art. 2089 is about employment contracts; for a
 service contract the limit is case law), termination (art. 2125, 2129), penal clauses, payment deadlines (no statute requires one).
 
+## Known limits (demo documents under `worker/fixtures/`)
+
+- The **lease** rules read French wording (the language of the mandatory form). An English lease is not read: it comes
+  back with blocking failures (parties, rent) and must never be taken for a clean one (`fixtures/qc-residential-lease/en-not-read.txt`).
+  The invoice and the service contract rules read both languages.
+- The **service contract** does not encode the Civil Code (art. 2098 and following), among them the client's right to
+  terminate (art. 2125): the text could not be read at its source. The report must say « non vérifié : droit de résiliation,
+  art. 2125 C.c.Q., à faire relire par un avocat ».
+
 ## Adding a jurisdiction
 
 Add `rulesets/<id>/<effectiveFrom>.json` and its code to the blueprint's `jurisdiction` enum. No
