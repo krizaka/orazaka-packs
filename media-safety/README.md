@@ -23,5 +23,5 @@ audio?[assetId]  ──listen (transcript) ── read (chat model judges the tr
 report: model answers can be wrong (both ways), a video is only its sampled frames, a sound only its transcript. It never claims more.
 
 ```bash
-cd worker && python3 test_safety.py && python3 test_broker.py
+cd worker && python3 test_safety.py
 ```

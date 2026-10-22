@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The worker's broker connection. Run: python3 -m pytest test_broker.py -q  (or: python3 test_broker.py)
+"""The shared broker connection (worker_broker.py). Run: python3 test_worker_broker.py
 
 The dev broker is TLS only: a worker that cannot verify it never drains a job, and one that skips
 the verification would hand the job payloads — documents — to whoever answers on 5671.
@@ -14,7 +14,7 @@ import tempfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pika  # noqa: E402
 
-import broker  # noqa: E402
+import worker_broker as broker  # noqa: E402
 
 CREDS = pika.PlainCredentials("orazaka", "not-a-real-password")
 
