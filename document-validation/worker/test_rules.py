@@ -596,3 +596,48 @@ if __name__ == "__main__":
                 print(f"  FAIL {name}: {exc}")
     print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
     sys.exit(1 if failures else 0)
+
+
+# --- the three Québec rulesets on whole demo documents, FR and EN (Yomizaka launch, 2026-10-21) -------------------------
+# Fixtures are fictional documents under fixtures/<rulesetId>/. They prove each ruleset end to end on a document, not on a
+# sentence: a clean one passes every deterministic rule, a defective one fails exactly the rules it breaks.
+FIXTURES_ROOT = Path(__file__).resolve().parent / "fixtures"
+
+
+def _verdicts(ruleset_id, name):
+    text = (FIXTURES_ROOT / ruleset_id / name).read_text(encoding="utf-8")
+    findings, _ = rules.screen(rules.resolve(ruleset_id, "2026-10-21"), text)
+    return {f["ruleId"]: f["verdict"] for f in findings}
+
+
+def test_a_complete_quebec_lease_in_french_passes_every_deterministic_rule():
+    assert set(_verdicts("qc-residential-lease", "fr-compliant.txt").values()) == {rules.PASS}
+
+
+def test_a_quebec_lease_breaking_the_civil_code_fails_exactly_what_it_breaks():
+    verdicts = _verdicts("qc-residential-lease", "fr-defective.txt")
+    failed = {k for k, v in verdicts.items() if v == rules.FAIL}
+    assert failed == {"QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-007", "QC-LEASE-008"}
+
+
+def test_a_lease_in_english_is_not_read_and_never_comes_back_clean():
+    # Known limit, stated in the README: the lease rules read French wording. An English lease must not read as a clean one.
+    verdicts = _verdicts("qc-residential-lease", "en-not-read.txt")
+    assert rules.FAIL in verdicts.values()
+
+
+def test_a_service_contract_in_french_with_the_yearly_rate_and_a_signature_passes():
+    assert set(_verdicts("qc-service-contract", "fr-compliant.txt").values()) == {rules.PASS}
+
+
+def test_a_service_contract_is_checked_the_same_in_french_and_english():
+    fr = _verdicts("qc-service-contract", "fr-defective.txt")
+    en = _verdicts("qc-service-contract", "en-defective.txt")
+    assert {k for k, v in fr.items() if v == rules.FAIL} == {"QC-SVC-001", "QC-SVC-002", "QC-SVC-004"}
+    assert {k for k, v in en.items() if v == rules.FAIL} == {"QC-SVC-001", "QC-SVC-002", "QC-SVC-004"}
+
+
+def test_the_contract_ruleset_leaves_the_termination_right_to_a_lawyer_and_encodes_no_civil_code_rule():
+    ruleset = rules.resolve("qc-service-contract", "2026-10-21")
+    assert "2125" in ruleset["reviewNote"]
+    assert not any("2125" in (r.get("citation") or "") for r in ruleset["rules"])
