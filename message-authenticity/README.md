@@ -51,6 +51,6 @@ and the routing key. The platform keeps the run (`SENSITIVE`: purged within 30 d
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cd worker && ../.venv/bin/python authenticity_worker.py     # RABBITMQ_HOST / _USER / _PASS (+ _SSL_* for the TLS dev broker)
-python3 test_authenticity.py && python3 test_broker.py      # no model needed
+python3 test_authenticity.py      # no model needed
 ```
 Recalibrate: `build_human_set.py`, `generate_set.py` (needs `AI_ENGINE_URL` / `AI_ENGINE_API_KEY`), `evaluate.py`, `calibrate.py`.

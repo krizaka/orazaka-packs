@@ -85,7 +85,7 @@ cd worker && ../.venv/bin/python photo_worker.py   # RABBITMQ_HOST / _USER / _PA
 ## Tests
 
 ```bash
-cd worker && python3 test_rules.py && python3 test_faces.py && python3 test_worker.py && python3 test_broker.py
+cd worker && python3 test_rules.py && python3 test_faces.py && python3 test_worker.py
 npm test    # from the repository root: the manifest ↔ blueprint ↔ worker coherence
 ```
 

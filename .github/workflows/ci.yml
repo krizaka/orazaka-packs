@@ -60,7 +60,6 @@ jobs:
         python test_rules.py
         python test_faces.py
         python test_worker.py
-        python test_broker.py
 
   py-authenticity:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
@@ -72,7 +71,6 @@ jobs:
       extra-packages: pika pyyaml
       test-command: |
         python test_authenticity.py
-        python test_broker.py
 
   py-safety:
     # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
@@ -84,7 +82,16 @@ jobs:
       extra-packages: pika pyyaml
       test-command: |
         python test_safety.py
-        python test_broker.py
+
+  py-common:
+    # The broker connection every worker shares (worker-common/worker_broker.py): tested once.
+    permissions:
+      contents: read
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    with:
+      working-directory: worker-common
+      extra-packages: pika
+      test-command: python test_worker_broker.py
 
   # The required checks keep their names; each reads its gate's verdict. They go when protection requires the gates.
   photo-worker:
