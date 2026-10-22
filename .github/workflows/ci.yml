@@ -49,7 +49,7 @@ jobs:
     # YuNet + SFace on a public-domain photograph.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@d740d59e397a18390ca350b31eabd93f6589f7dc # v1.3.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
     with:
       working-directory: profile-photo-check/worker
       requirements: profile-photo-check/requirements.txt
@@ -65,7 +65,7 @@ jobs:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@d740d59e397a18390ca350b31eabd93f6589f7dc # v1.3.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
     with:
       working-directory: message-authenticity/worker
       extra-packages: pika pyyaml
@@ -77,7 +77,7 @@ jobs:
     # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@d740d59e397a18390ca350b31eabd93f6589f7dc # v1.3.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
     with:
       working-directory: media-safety/worker
       extra-packages: pika pyyaml
