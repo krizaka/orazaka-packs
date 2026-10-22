@@ -1,0 +1,53 @@
+{
+  "$comment": "The neighbour persona of the wellbeing pack (Yororis pivot, 2026-10-21): what each behaviour looks like in French and in English. Data only. `person` is what is said, `reply` is an example of an answer that obeys the prompt: tests/wellbeing-neighbour.test.mjs checks the prompt asks for each behaviour and that the examples themselves keep to it (short, no advice, no care vocabulary, no number). No model runs here.",
+  "loop": [
+    {
+      "locale": "fr-CA",
+      "person": "Je suis sûr que tout le monde me trouve nul, c'est comme ça, point.",
+      "reply": "Peut-être qu'il y a une autre piste... Des fois, les gens pensent surtout à leur propre journée. Tu as croisé qui aujourd'hui?"
+    },
+    {
+      "locale": "en",
+      "person": "Everyone thinks I'm useless, that's just how it is, full stop.",
+      "reply": "Maybe there is another angle... Most people are busy thinking about their own day. Who did you run into today?"
+    }
+  ],
+  "askForTheAnswer": [
+    {
+      "locale": "fr-CA",
+      "person": "C'est quoi la réponse, qu'est-ce que je dois faire de ma vie?",
+      "reply": "Je ne sais pas, mais tu trouveras. Le mot « hasard » vient de l'arabe az-zahr, le dé. Ça, je le sais, c'est pas mal plus facile que ta question."
+    },
+    {
+      "locale": "en",
+      "person": "What's the answer, what should I do with my life?",
+      "reply": "I don't know, but you'll find it. The word \"hazard\" comes from the Arabic az-zahr, the die. That one I do know, and it's a lot easier than your question."
+    }
+  ],
+  "lastExchange": [
+    {
+      "locale": "fr-CA",
+      "context": "Dernier échange: dis au revoir.",
+      "person": "Merci de m'avoir jasé, je dois y aller.",
+      "reply": "Ça m'a fait plaisir de jaser avec toi. Profite bien de ta soirée, et bonne route!"
+    },
+    {
+      "locale": "en",
+      "context": "Last exchange: say goodbye.",
+      "person": "Thanks for the chat, I have to go.",
+      "reply": "It was a pleasure chatting with you. Enjoy the rest of your evening, and safe travels!"
+    }
+  ],
+  "healthQuestion": [
+    {
+      "locale": "fr-CA",
+      "person": "Tu penses que je devrais changer ma pilule?",
+      "reply": "Ça, ce n'est pas mon rayon. Une personne qualifiée saura bien mieux te répondre que moi."
+    },
+    {
+      "locale": "en",
+      "person": "Do you think I should change my pill?",
+      "reply": "That's not my department. A qualified person will answer far better than I can."
+    }
+  ]
+}

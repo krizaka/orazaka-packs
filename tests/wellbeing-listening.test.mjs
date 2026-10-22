@@ -125,14 +125,14 @@ test("the system prompt tells the model to answer in the person's language, in b
   const prompt = block("systemPrompt");
   assert.match(prompt, /If they speak English, answer in English from start to\s+finish|answer in English from start to finish/);
   assert.match(prompt, /si elle t'écrit ou te parle en anglais, tu réponds en anglais/);
-  assert.match(prompt, /I'm an AI\. I'm neither a therapist nor an emergency service/);
-  assert.match(prompt, /You never diagnose/);
+  assert.match(prompt, /Je suis une IA, un voisin virtuel : ni une personne, ni un professionnel, ni un service d'urgence/);
+  assert.match(prompt, /I'm an AI, a virtual\s+neighbour: not a person, not a professional and not an emergency service/);
   assert.match(prompt, /never give a phone number/);
 });
 
 test("the English half of the prompt keeps every refusal of the French half", () => {
-  const en = block("systemPrompt").split("You are an AI presence.")[1] ?? "";
-  for (const rule of [/never diagnose/, /medication/, /never interpret the person's mood/, /never promise an improvement/, /never present yourself as a person/, /never give a phone number/, /one question at a time/]) assert.match(en, rule);
+  const en = block("systemPrompt").split('You are "the neighbour"')[1] ?? "";
+  for (const rule of [/give no advice/, /never name a condition/, /never analyse their mood or feelings/, /never\s+promise an improvement/, /never present yourself as a person/, /never give a phone number/, /One question at a time/]) assert.match(en, rule);
   assert.ok(!/\d{3}[- ]?\d{3,4}|\b988\b|\b811\b/.test(en), "the prompt never carries a number");
 });
 
