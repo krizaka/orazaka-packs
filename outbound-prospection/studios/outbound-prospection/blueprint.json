@@ -1,12 +1,12 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "PUBLISHED",
   "estimatedCredits": 250,
-  "changelog": "1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — le connecteur nomme un type que la plateforme sait exécuter (SLACK au lieu de CRM, qui n'existe dans aucun dispatcher et aurait levé « Unknown connector type »), il n'est plus conditionnel, et le fan-out chat déclare pourquoi il tolère un échec.",
+  "changelog": "1.4.0 — les sorties de texte se lisent par leur champ ({{steps.angles.content}}) : le résultat entier rendait aussi ses métadonnées (« content: …, metadata: provider: … ») — orazaka-packs#5, rendu possible sur un fan-out par orazaka-studio#60. 1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — le connecteur nomme un type que la plateforme sait exécuter (SLACK au lieu de CRM, qui n'existe dans aucun dispatcher et aurait levé « Unknown connector type »), il n'est plus conditionnel, et le fan-out chat déclare pourquoi il tolère un échec.",
   "createdBy": "system",
   "definition": {
     "studioKey": "outbound-prospection",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "steps": [
       {
         "id": "angle",
@@ -31,7 +31,7 @@
           "angle"
         ],
         "inputs": {
-          "body": "{{steps.angles}}",
+          "body": "{{steps.angles.content}}",
           "signature": "{{config.signature:}}",
           "subject": "{{inputs.offer}}"
         },
@@ -89,7 +89,7 @@
       {
         "key": "angles",
         "label": "Angles par prospect",
-        "from": "{{steps.angles}}",
+        "from": "{{steps.angles.content}}",
         "type": "TEXT",
         "x-i18n": {
           "en": {
