@@ -1,0 +1,176 @@
+{
+  "$comment": "What kind of software a declared producer is (orazaka-packs#88). Matched case-insensitively as a substring of /Producer, /Creator, EXIF Software, an XMP softwareAgent or an office Application. The class explains a signal and never decides one: an editor is a tool people use every day. ocr explains a text layer over an image; editor raises PDF-META-004 / IMG-META-002 / XMP-HIST-001.editor. First match wins, so a specific pattern comes before a general one.",
+  "version": "1.0.0",
+  "classes": {
+    "editor": "edits an existing file (PDF editors, image editors)",
+    "ocr": "puts a recognised text layer over a scan",
+    "scanner": "a scanning app or device",
+    "generator": "writes a document when it is issued (report engines, print drivers, office exports)"
+  },
+  "profiles": [
+    {
+      "pattern": "tesseract",
+      "class": "ocr"
+    },
+    {
+      "pattern": "abbyy",
+      "class": "ocr"
+    },
+    {
+      "pattern": "finereader",
+      "class": "ocr"
+    },
+    {
+      "pattern": "ocrmypdf",
+      "class": "ocr"
+    },
+    {
+      "pattern": "readiris",
+      "class": "ocr"
+    },
+    {
+      "pattern": "omnipage",
+      "class": "ocr"
+    },
+    {
+      "pattern": "acrobat capture",
+      "class": "ocr"
+    },
+    {
+      "pattern": "pdfescape",
+      "class": "editor"
+    },
+    {
+      "pattern": "sejda",
+      "class": "editor"
+    },
+    {
+      "pattern": "smallpdf",
+      "class": "editor"
+    },
+    {
+      "pattern": "ilovepdf",
+      "class": "editor"
+    },
+    {
+      "pattern": "pdf-xchange editor",
+      "class": "editor"
+    },
+    {
+      "pattern": "pdfelement",
+      "class": "editor"
+    },
+    {
+      "pattern": "foxit phantompdf",
+      "class": "editor"
+    },
+    {
+      "pattern": "foxit pdf editor",
+      "class": "editor"
+    },
+    {
+      "pattern": "nitro pro",
+      "class": "editor"
+    },
+    {
+      "pattern": "pdffiller",
+      "class": "editor"
+    },
+    {
+      "pattern": "dochub",
+      "class": "editor"
+    },
+    {
+      "pattern": "inkscape",
+      "class": "editor"
+    },
+    {
+      "pattern": "photoshop",
+      "class": "editor"
+    },
+    {
+      "pattern": "gimp",
+      "class": "editor"
+    },
+    {
+      "pattern": "pixelmator",
+      "class": "editor"
+    },
+    {
+      "pattern": "affinity",
+      "class": "editor"
+    },
+    {
+      "pattern": "canva",
+      "class": "editor"
+    },
+    {
+      "pattern": "snapseed",
+      "class": "editor"
+    },
+    {
+      "pattern": "picsart",
+      "class": "editor"
+    },
+    {
+      "pattern": "paint.net",
+      "class": "editor"
+    },
+    {
+      "pattern": "camscanner",
+      "class": "scanner"
+    },
+    {
+      "pattern": "adobe scan",
+      "class": "scanner"
+    },
+    {
+      "pattern": "genius scan",
+      "class": "scanner"
+    },
+    {
+      "pattern": "microsoft lens",
+      "class": "scanner"
+    },
+    {
+      "pattern": "epson scan",
+      "class": "scanner"
+    },
+    {
+      "pattern": "microsoft: print to pdf",
+      "class": "generator"
+    },
+    {
+      "pattern": "microsoft® word",
+      "class": "generator"
+    },
+    {
+      "pattern": "quartz pdfcontext",
+      "class": "generator"
+    },
+    {
+      "pattern": "libreoffice",
+      "class": "generator"
+    },
+    {
+      "pattern": "reportlab",
+      "class": "generator"
+    },
+    {
+      "pattern": "itext",
+      "class": "generator"
+    },
+    {
+      "pattern": "jasperreports",
+      "class": "generator"
+    },
+    {
+      "pattern": "wkhtmltopdf",
+      "class": "generator"
+    },
+    {
+      "pattern": "skia/pdf",
+      "class": "generator"
+    }
+  ]
+}

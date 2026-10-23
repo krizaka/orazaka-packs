@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Authenticity SIGNALS over a PDF. Facts about the file, and nothing else.
+"""Authenticity SIGNALS over a document — a PDF, an image or an office file. Facts about the file, and nothing else.
 
 **There is no inference step in this module, and none in the Studio that calls it.** Detecting
 forgery with a language model is the worst available use of one: asked whether a document was
@@ -13,13 +13,22 @@ a person, once, per signal type.
 a measured base rate, and a number gets quoted in a dispute as though it were one. The scale is
 three qualitative levels, each defined in `LEVELS` below.
 
+**The signals are data** (orazaka-packs#88): `authenticity-signals.json` holds each case's id, level, thresholds and
+the sentences (FR, EN); `producer-profiles.json` says what kind of software a declared producer is. This module only
+reads facts off the bytes and picks the case.
+
 **The value of this module is TRIAGE, not a verdict.** It tells a reader which points deserve a
 question. What it is not, and what it did not look at, is stated by the report itself.
 """
 
 import base64
 import io
+import json
+import os
 import re
+import struct
+import zipfile
+import zlib
 from collections import Counter
 from datetime import datetime
 
@@ -51,10 +60,6 @@ LEVELS = {
 
 OBSERVED, UNUSUAL, INCONSISTENT = "observé", "inhabituel", "incohérent"
 
-#: Producers that name an OCR stage. Their presence explains a text layer over an image; it is not
-#: a tampering signal, and conflating the two would make every scanned document suspect.
-OCR_PRODUCERS = ("tesseract", "abbyy", "finereader", "ocrmypdf", "readiris", "omnipage", "acrobat capture")
-
 #: What this module does NOT look at. Printed by every report, because a report that hides its
 #: limits is worse than no report: it is read as covering what it never examined.
 NOT_EXAMINED = [
@@ -62,6 +67,8 @@ NOT_EXAMINED = [
     "Les signatures, manuscrites comme électroniques : aucune n'est validée, et une signature électronique valide n'est pas vérifiée ici.",
     "L'existence de l'émetteur et le fait qu'il ait bien émis ce document.",
     "Les images au niveau du pixel : aucune analyse de retouche, de compression ou de bruit de capteur.",
+    "Le contenu d'un document bureautique : ni son suivi des modifications ni ses commentaires ne sont lus.",
+    "Les métadonnées elles-mêmes se réécrivent aussi facilement que le reste : leur présence ne garantit rien, leur absence ne prouve rien.",
     "L'original papier, s'il existe.",
     "La comparaison avec un exemplaire de référence, qui n'a pas été fourni.",
 ]
@@ -75,32 +82,75 @@ REAL_EXAMINATION = [
 
 #: Stated once, at the top of the report, in full. Not a footer.
 HEADER = (
-    "Ce rapport n'est pas une expertise. Il relève des faits techniques sur le fichier PDF fourni "
+    "Ce rapport n'est pas une expertise. Il relève des faits techniques sur le fichier fourni (PDF, image ou document "
+    "bureautique) "
     "et signale ceux qui méritent une question. Il ne dit pas si le document est authentique ni "
     "s'il ne l'est pas — il n'en a pas les moyens, et personne ne devrait en tirer cette "
     "conclusion. Il ne porte aucune appréciation sur la personne qui a fourni le document."
 )
 
 
-class UnreadablePdf(Exception):
-    """The bytes are not a PDF this module can parse. Said plainly, never guessed around."""
+class UnreadableDocument(Exception):
+    """The bytes are not a document this module can read. Said plainly, never guessed around."""
 
 
-def _signal(signal_id, level, observation, may_indicate, where):
-    """One signal: what was seen, what it can be an indication of, and where in the file.
+#: The worker and older callers name it after the only format it used to read.
+UnreadablePdf = UnreadableDocument
 
-    ``may_indicate`` is deliberately phrased as a possibility and written by hand per signal type.
-    It is never generated, and it never names a person.
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def _load(name):
+    with open(os.path.join(HERE, name), encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+CATALOGUE = _load("authenticity-signals.json")
+PROFILES = _load("producer-profiles.json")
+THRESHOLDS = CATALOGUE["thresholds"]
+
+#: What this module reads, said in the refusal of anything else.
+SUPPORTED = "les PDF, les images (JPEG, PNG, WebP, TIFF, HEIC) et les documents bureautiques (Word, Excel, PowerPoint, OpenDocument)"
+
+
+def producer_class(*names) -> str:
+    """The class of the first declared software that a profile knows (``editor``, ``ocr``…), or ``""``."""
+    for name in names:
+        lowered = str(name or "").lower()
+        if not lowered:
+            continue
+        for profile in PROFILES["profiles"]:
+            if profile["pattern"] in lowered:
+                return profile["class"]
+    return ""
+
+
+def _first_of_class(cls, *names) -> str:
+    return next((str(n) for n in names if n and producer_class(n) == cls), "")
+
+
+def _emit(case, locale="fr", **facts):
+    """One signal from its catalogue case: what was seen, what it can be an indication of, and where.
+
+    ``mayIndicate`` is phrased as a possibility and written by hand per case, in the catalogue. It is never generated,
+    and it never names a person.
     """
+    entry = CATALOGUE["signals"][case]
+    texts = entry[locale]
     return {
-        "signalId": signal_id,
-        "level": level,
-        "observation": observation,
-        "mayIndicate": may_indicate,
-        "where": where,
+        "signalId": entry["signalId"],
+        "level": entry["level"] if "level" not in facts else facts.pop("level"),
+        "observation": texts["observation"].format(**facts),
+        "mayIndicate": texts["mayIndicate"].format(**facts),
+        "where": texts["where"].format(**facts),
     }
 
 
+def _stamp(moment) -> str:
+    return f"{moment:%Y-%m-%d %H:%M}"
+
+
+# ── PDF ──────────────────────────────────────────────────────────────────────
 def _pdf_date(value):
     """A PDF date string (``D:YYYYMMDDHHmmSS``) as a datetime, or None."""
     if not value:
@@ -166,25 +216,35 @@ def _invisible_text(raw_page: bytes) -> bool:
     return b" 3 Tr" in raw_page or b"\n3 Tr" in raw_page
 
 
-def analyse(pdf_bytes: bytes, expected_issuer: str = "") -> dict:
-    """Every signal this module can read off ``pdf_bytes``.
+def _pdf_xmp(reader, raw: bytes) -> bytes:
+    """The document's XMP packet: the catalog's /Metadata stream (often compressed), else a packet in the raw bytes."""
+    try:
+        stream = reader.trailer["/Root"].get("/Metadata")
+        if stream is not None:
+            return stream.get_object().get_data()
+    except Exception:  # noqa: BLE001 — an unreadable stream is the same as none
+        pass
+    return _xmp_packet(raw)
 
-    :param pdf_bytes: the file, as bytes
-    :param expected_issuer: who the reader believes issued it, optional. Supplied, it turns a
-        producer mismatch from an observation into an inconsistency — because a contradiction
-        needs two facts, and without this there is only one.
-    :returns: the report structure, with no verdict in it
-    """
+
+def _pdf_ids_differ(reader) -> bool:
+    """The trailer's /ID pair: the first is set when the file is created, the second each time it is rewritten."""
+    try:
+        ids = reader.trailer.get("/ID")
+        return bool(ids) and len(ids) == 2 and bytes(str(ids[0]), "latin-1", "replace") != bytes(str(ids[1]), "latin-1", "replace")
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def _analyse_pdf(pdf_bytes: bytes, expected_issuer: str, locale: str):
     if PdfReader is None:  # pragma: no cover
-        raise UnreadablePdf("la bibliothèque PDF n'est pas disponible dans ce worker")
-    if not pdf_bytes.startswith(b"%PDF-"):
-        raise UnreadablePdf("le fichier fourni ne commence pas par %PDF- : ce n'est pas un PDF")
+        raise UnreadableDocument("la bibliothèque PDF n'est pas disponible dans ce worker")
     try:
         reader = PdfReader(io.BytesIO(pdf_bytes))
         info = reader.metadata or {}
         pages = reader.pages
     except Exception as broken:  # noqa: BLE001
-        raise UnreadablePdf(f"le PDF n'a pas pu être ouvert : {broken}") from broken
+        raise UnreadableDocument(f"le PDF n'a pas pu être ouvert : {broken}") from broken
 
     signals = []
     producer = str(info.get("/Producer") or "").strip()
@@ -192,65 +252,35 @@ def analyse(pdf_bytes: bytes, expected_issuer: str = "") -> dict:
     created = _pdf_date(info.get("/CreationDate"))
     modified = _pdf_date(info.get("/ModDate"))
 
-    # ── PDF-META-001 — the producer, always reported ──────────────────────────
-    if producer or creator:
-        signals.append(_signal(
-            "PDF-META-001", OBSERVED,
-            f"Le fichier déclare avoir été produit par « {producer or '—'} »"
-            + (f" et créé avec « {creator} »." if creator else "."),
-            "Rien en soi. Le producteur est le logiciel qui a écrit le fichier, pas son auteur.",
-            "Métadonnées du document (/Producer, /Creator)",
-        ))
+    if creator:
+        signals.append(_emit("PDF-META-001.producerAndCreator", locale, producer=producer or "—", creator=creator))
+    elif producer:
+        signals.append(_emit("PDF-META-001.producer", locale, producer=producer))
     else:
-        signals.append(_signal(
-            "PDF-META-001", UNUSUAL,
-            "Le fichier ne déclare aucun logiciel producteur.",
-            "Des métadonnées retirées, ce que font certains outils de nettoyage — et aussi "
-            "certaines chaînes de production légitimes.",
-            "Métadonnées du document (/Producer, /Creator absents)",
-        ))
+        signals.append(_emit("PDF-META-001.absent", locale))
 
-    # ── PDF-META-002 — producer vs the issuer the reader expects ──────────────
-    if expected_issuer:
-        haystack = f"{producer} {creator}".lower()
-        if producer and expected_issuer.lower() not in haystack:
-            signals.append(_signal(
-                "PDF-META-002", INCONSISTENT,
-                f"Le producteur déclaré (« {producer} ») ne correspond pas à l'émetteur que vous "
-                f"attendiez (« {expected_issuer} »).",
-                "Un document réenregistré ou recomposé après émission. C'est aussi ce que fait un "
-                "intermédiaire qui réimprime en PDF, ou une boîte mail qui convertit une pièce jointe.",
-                "Métadonnées du document (/Producer)",
-            ))
+    if expected_issuer and producer and expected_issuer.lower() not in f"{producer} {creator}".lower():
+        signals.append(_emit("PDF-META-002", locale, producer=producer, expectedIssuer=expected_issuer))
 
-    # ── PDF-META-003 — modified after creation ────────────────────────────────
+    editor = _first_of_class("editor", producer, creator)
+    if editor:
+        signals.append(_emit("PDF-META-004", locale, software=editor))
+
     if created and modified and modified > created:
-        delta = modified - created
-        signals.append(_signal(
-            "PDF-META-003", UNUSUAL,
-            f"Le fichier déclare avoir été modifié après sa création : créé le "
-            f"{created:%Y-%m-%d %H:%M}, modifié le {modified:%Y-%m-%d %H:%M} "
-            f"({delta.days} jour(s) plus tard).",
-            "Une modification postérieure à l'émission. Un réenregistrement, l'ajout d'une "
-            "annotation ou une signature produisent exactement la même trace.",
-            "Métadonnées du document (/CreationDate vs /ModDate)",
-        ))
+        signals.append(_emit("PDF-META-003", locale, created=_stamp(created), modified=_stamp(modified),
+                             days=(modified - created).days))
 
-    # ── PDF-REV-001 — stacked revisions ───────────────────────────────────────
     revisions = _count_revisions(pdf_bytes)
     if revisions > 1:
-        signals.append(_signal(
-            "PDF-REV-001", UNUSUAL if revisions == 2 else INCONSISTENT,
-            f"Le fichier contient {revisions} écritures successives : il a été enregistré une "
-            f"première fois, puis modifié et réenregistré {revisions - 1} fois par-dessus, sans "
-            "que les versions précédentes soient effacées.",
-            "Des modifications apportées après le premier enregistrement. Les formulaires remplis "
-            "et les signatures électroniques procèdent ainsi normalement.",
-            f"Structure du fichier ({revisions} marqueurs %%EOF)",
-        ))
+        level = "incohérent" if revisions >= THRESHOLDS["PDF-REV-001"]["inconsistentFrom"] else "inhabituel"
+        signals.append(_emit("PDF-REV-001", locale, level=level, revisions=revisions, later=revisions - 1))
 
-    # ── PDF-TEXT-001 — an OCR text layer over an image ────────────────────────
-    ocr_producer = any(tool in f"{producer} {creator}".lower() for tool in OCR_PRODUCERS)
+    if _pdf_ids_differ(reader):
+        signals.append(_emit("PDF-ID-001", locale))
+
+    signals += _xmp_signals(_pdf_xmp(reader, pdf_bytes), locale)
+
+    ocr_producer = producer_class(producer, creator) == "ocr"
     scanned_pages = []
     for index, page in enumerate(pages, start=1):
         try:
@@ -260,62 +290,315 @@ def analyse(pdf_bytes: bytes, expected_issuer: str = "") -> dict:
         if _has_image(page) and (_invisible_text(raw_page) or ocr_producer):
             scanned_pages.append(index)
     if scanned_pages:
-        signals.append(_signal(
-            "PDF-TEXT-001", OBSERVED,
-            f"La couche texte des pages {', '.join(map(str, scanned_pages))} a été produite par "
-            "reconnaissance de caractères par-dessus une image : ce document est un scan, pas un "
-            "texte natif.",
-            "Rien quant à l'authenticité. C'est l'état normal d'un document imprimé puis numérisé. "
-            "Noté parce que les autres signaux se lisent différemment sur un scan.",
-            f"Pages {', '.join(map(str, scanned_pages))} (image + texte en mode de rendu invisible)",
-        ))
+        signals.append(_emit("PDF-TEXT-001", locale, pages=", ".join(map(str, scanned_pages))))
 
-    # ── PDF-FONT-001 — a font appearing on one page only ──────────────────────
     per_page = _fonts_per_page(reader)
-    if len(per_page) > 1:
+    if len(per_page) >= THRESHOLDS["PDF-FONT-001"]["minPages"]:
         counts = Counter(font for names in per_page for font in names)
         for index, names in enumerate(per_page, start=1):
             lonely = sorted(font for font in names if counts[font] == 1)
-            if lonely and len(per_page) > 2:
-                signals.append(_signal(
-                    "PDF-FONT-001", UNUSUAL,
-                    f"La page {index} utilise une police que l'on ne retrouve sur aucune autre "
-                    f"page : {', '.join(lonely)}.",
-                    "Une page composée séparément du reste, puis insérée. Les en-têtes, les "
-                    "annexes et les pages de signature produisent aussi cet écart.",
-                    f"Page {index} (/Resources /Font)",
-                ))
+            if lonely:
+                signals.append(_emit("PDF-FONT-001", locale, page=index, fonts=", ".join(lonely)))
 
-    # ── PDF-OBJ-001 — objects present but referenced by nothing ───────────────
     declared = len(set(re.findall(rb"(?m)^\s*(\d+)\s+\d+\s+obj\b", pdf_bytes)))
     referenced = len(set(re.findall(rb"\b(\d+)\s+\d+\s+R\b", pdf_bytes)))
-    if declared and referenced and declared - referenced > max(5, declared // 4):
-        signals.append(_signal(
-            "PDF-OBJ-001", UNUSUAL,
-            f"Le fichier définit {declared} objets dont environ {declared - referenced} ne sont "
-            "référencés nulle part.",
-            "Des éléments retirés d'une version antérieure sans que le fichier soit reconstruit. "
-            "Beaucoup d'outils laissent ce genre de résidu en enregistrant.",
-            "Structure du fichier (objets déclarés vs référencés)",
-        ))
+    limits = THRESHOLDS["PDF-OBJ-001"]
+    if declared and referenced and declared - referenced > max(limits["minUnreferenced"], int(declared * limits["unreferencedShare"])):
+        signals.append(_emit("PDF-OBJ-001", locale, declared=declared, unreferenced=declared - referenced))
 
+    return len(pages), signals
+
+
+# ── XMP (any format) ─────────────────────────────────────────────────────────
+#: History actions that mean the file was written again. ``created`` is its first writing, not a later one.
+REWRITE_ACTIONS = ("saved", "converted", "derived", "edited", "produced")
+
+
+def _xmp_packet(raw: bytes) -> bytes:
+    match = re.search(rb"<x:xmpmeta[\s\S]*?</x:xmpmeta>", raw)
+    return match.group(0) if match else b""
+
+
+def _xmp_value(text: str, name: str) -> str:
+    match = re.search(rf'{name}\s*=\s*"([^"]*)"|<{name}>([^<]*)</{name}>', text)
+    return (match.group(1) or match.group(2) or "").strip() if match else ""
+
+
+def _xmp_history(packet: bytes) -> list:
+    """The (action, softwareAgent) events of ``xmpMM:History``, in order."""
+    text = packet.decode("utf-8", "replace")
+    block = re.search(r"<xmpMM:History>([\s\S]*?)</xmpMM:History>", text)
+    if not block:
+        return []
+    events = []
+    for item in re.split(r"<rdf:li\b", block.group(1))[1:]:
+        action = _xmp_value(item, "stEvt:action")
+        if action:
+            events.append((action, _xmp_value(item, "stEvt:softwareAgent")))
+    return events
+
+
+def _xmp_signals(packet: bytes, locale: str) -> list:
+    rewrites = [(action, agent) for action, agent in _xmp_history(packet) if action.lower() in REWRITE_ACTIONS]
+    if not rewrites:
+        return []
+    agents = list(dict.fromkeys(agent for _action, agent in rewrites if agent)) or ["—"]
+    case = "XMP-HIST-001.editor" if _first_of_class("editor", *agents) else "XMP-HIST-001.plain"
+    return [_emit(case, locale, events=len(rewrites), agents=", ".join(agents))]
+
+
+# ── images ───────────────────────────────────────────────────────────────────
+#: The EXIF tags this module reads, and nothing else (no GPS, no owner name: they say nothing about the file's history
+#: and something about a person).
+EXIF_TAGS = {0x010F: "make", 0x0110: "model", 0x0131: "software", 0x0132: "modified", 0x9003: "taken"}
+EXIF_IFD_POINTER = 0x8769
+ASCII, LONG = 2, 4
+
+
+def _tiff_tags(tiff: bytes) -> dict:
+    """The few ASCII tags of IFD0 and the Exif IFD, read straight off a TIFF structure (EXIF is one)."""
+    order = {b"II": "<", b"MM": ">"}.get(tiff[:2])
+    if not order or len(tiff) < 8:
+        return {}
+    found, pending, seen = {}, [struct.unpack(order + "I", tiff[4:8])[0]], set()
+    try:
+        while pending:
+            offset = pending.pop()
+            if offset in seen or offset + 2 > len(tiff):
+                continue
+            seen.add(offset)
+            (count,) = struct.unpack(order + "H", tiff[offset:offset + 2])
+            for n in range(count):
+                entry = offset + 2 + 12 * n
+                tag, kind, length, value = struct.unpack(order + "HHII", tiff[entry:entry + 12])
+                if tag == EXIF_IFD_POINTER and kind == LONG:
+                    pending.append(value)
+                elif tag in EXIF_TAGS and kind == ASCII:
+                    data = tiff[entry + 8:entry + 8 + length] if length <= 4 else tiff[value:value + length]
+                    text = data.split(b"\0")[0].decode("utf-8", "replace").strip()
+                    if text:
+                        found[EXIF_TAGS[tag]] = text
+    except struct.error:  # a truncated directory: keep what was read
+        pass
+    return found
+
+
+def _jpeg_parts(raw: bytes):
+    exif, xmp, at = b"", b"", 2
+    while at + 4 <= len(raw) and raw[at] == 0xFF:
+        marker = raw[at + 1]
+        if marker in (0xD9, 0xDA):  # end of image, start of scan: no metadata after this
+            break
+        (length,) = struct.unpack(">H", raw[at + 2:at + 4])
+        segment = raw[at + 4:at + 2 + length]
+        if marker == 0xE1 and segment.startswith(b"Exif\0\0"):
+            exif = segment[6:]
+        elif marker == 0xE1 and segment.startswith(b"http://ns.adobe.com/xap/1.0/\0"):
+            xmp = segment
+        at += 2 + length
+    return exif, xmp
+
+
+def _png_parts(raw: bytes):
+    exif, xmp, text, at = b"", b"", {}, 8
+    while at + 8 <= len(raw):
+        length, kind = struct.unpack(">I4s", raw[at:at + 8])
+        data = raw[at + 8:at + 8 + length]
+        if kind == b"eXIf":
+            exif = data
+        elif kind in (b"tEXt", b"iTXt"):
+            keyword, _, rest = data.partition(b"\0")
+            if kind == b"iTXt":
+                compressed = rest[:1] == b"\1"
+                rest = rest[2:].split(b"\0", 2)[-1]
+                rest = zlib.decompress(rest) if compressed else rest
+            text[keyword.decode("latin-1")] = rest
+        elif kind == b"IEND":
+            break
+        at += 12 + length
+    software = text.get("Software", b"").decode("utf-8", "replace").strip()
+    return exif, text.get("XML:com.adobe.xmp", b""), software
+
+
+def _webp_parts(raw: bytes):
+    exif, xmp, at = b"", b"", 12
+    while at + 8 <= len(raw):
+        kind, length = struct.unpack("<4sI", raw[at:at + 8])
+        data = raw[at + 8:at + 8 + length]
+        if kind == b"EXIF":
+            exif = data[6:] if data.startswith(b"Exif\0\0") else data
+        elif kind == b"XMP ":
+            xmp = data
+        at += 8 + length + (length & 1)
+    return exif, xmp
+
+
+def _isobmff_exif(raw: bytes) -> bytes:
+    """HEIC/AVIF keep EXIF as an item whose data starts with the TIFF header: found by its signature."""
+    marker = raw.find(b"Exif\0\0")
+    if marker >= 0:
+        return raw[marker + 6:]
+    for signature in (b"MM\0*", b"II*\0"):
+        found = raw.find(signature)
+        if found >= 0:
+            return raw[found:]
+    return b""
+
+
+def _exif_date(text: str):
+    try:
+        return datetime.strptime(text[:19], "%Y:%m:%d %H:%M:%S")
+    except (TypeError, ValueError):
+        return None
+
+
+def _analyse_image(raw: bytes, media_type: str, locale: str):
+    software = ""
+    if media_type == "image/jpeg":
+        exif, xmp = _jpeg_parts(raw)
+    elif media_type == "image/png":
+        exif, xmp, software = _png_parts(raw)
+    elif media_type == "image/webp":
+        exif, xmp = _webp_parts(raw)
+    elif media_type == "image/tiff":
+        exif, xmp = raw, _xmp_packet(raw)
+    else:
+        exif, xmp = _isobmff_exif(raw), _xmp_packet(raw)
+    xmp = xmp or _xmp_packet(raw)
+    tags = _tiff_tags(exif)
+    software = tags.get("software") or software or _xmp_value(xmp.decode("utf-8", "replace"), "xmp:CreatorTool")
+    make, model = tags.get("make", ""), tags.get("model", "")
+    device = model if make and model.lower().startswith(make.lower()) else " ".join(p for p in (make, model) if p)
+    taken, modified = _exif_date(tags.get("taken")), _exif_date(tags.get("modified"))
+
+    signals = []
+    if not (software or device or taken or modified):
+        signals.append(_emit("IMG-META-001.absent", locale))
+    else:
+        signals.append(_emit("IMG-META-001.declared", locale, device=device or "—", software=software or "—"))
+        if not device:
+            signals.append(_emit("IMG-META-005", locale))
+    if producer_class(software) == "editor":
+        signals.append(_emit("IMG-META-002", locale, software=software))
+    if taken and modified:
+        gap = (modified - taken).total_seconds()
+        margin = THRESHOLDS["IMG-META-003"]["minSeconds"]
+        if gap < -margin:
+            signals.append(_emit("IMG-META-004", locale, taken=_stamp(taken), modified=_stamp(modified)))
+        elif gap > margin:
+            signals.append(_emit("IMG-META-003", locale, taken=_stamp(taken), modified=_stamp(modified)))
+    signals += _xmp_signals(xmp, locale)
+    return 1, signals
+
+
+# ── office documents ─────────────────────────────────────────────────────────
+def _xml_value(text: str, name: str) -> str:
+    match = re.search(rf"<{name}\b[^>]*>([^<]*)</{name}>", text)
+    return match.group(1).strip() if match else ""
+
+
+def _iso_date(text: str):
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).replace(tzinfo=None) if text else None
+    except ValueError:
+        return None
+
+
+def _analyse_office(archive, locale: str):
+    """Who wrote it and when, from the package's properties. Never the author or last-modified-by fields: they name a person."""
+    names = set(archive.namelist())
+
+    def read(name):
+        return archive.read(name).decode("utf-8", "replace") if name in names else ""
+
+    if "meta.xml" in names:  # OpenDocument
+        meta = read("meta.xml")
+        application = _xml_value(meta, "meta:generator")
+        created, modified = _iso_date(_xml_value(meta, "meta:creation-date")), _iso_date(_xml_value(meta, "dc:date"))
+        revision = _xml_value(meta, "meta:editing-cycles")
+    else:  # Office Open XML
+        app, core = read("docProps/app.xml"), read("docProps/core.xml")
+        application = " ".join(p for p in (_xml_value(app, "Application"), _xml_value(app, "AppVersion")) if p)
+        created, modified = _iso_date(_xml_value(core, "dcterms:created")), _iso_date(_xml_value(core, "dcterms:modified"))
+        revision = _xml_value(core, "cp:revision")
+
+    signals = [_emit("OFF-META-001", locale, application=application or "—")]
+    if created and modified and (modified - created).total_seconds() > THRESHOLDS["OFF-META-002"]["minSeconds"]:
+        signals.append(_emit("OFF-META-002", locale, created=_stamp(created), modified=_stamp(modified), revision=revision or "—"))
+    return 0, signals
+
+
+# ── the file's type, from its bytes ──────────────────────────────────────────
+IMAGE_SIGNATURES = (
+    (b"\xff\xd8\xff", "image/jpeg"),
+    (b"\x89PNG\r\n\x1a\n", "image/png"),
+    (b"II*\0", "image/tiff"),
+    (b"MM\0*", "image/tiff"),
+)
+HEIF_BRANDS = (b"heic", b"heix", b"heif", b"mif1", b"msf1", b"avif")
+
+
+def detect(raw: bytes):
+    """``(documentType, mediaType)`` read from the first bytes — never from a file name, which says what the sender chose."""
+    if raw.startswith(b"%PDF-"):
+        return "pdf", "application/pdf"
+    for signature, media_type in IMAGE_SIGNATURES:
+        if raw.startswith(signature):
+            return "image", media_type
+    if raw[:4] == b"RIFF" and raw[8:12] == b"WEBP":
+        return "image", "image/webp"
+    if raw[4:8] == b"ftyp" and raw[8:12] in HEIF_BRANDS:
+        return "image", "image/heic" if raw[8:12] != b"avif" else "image/avif"
+    if raw.startswith(b"PK\x03\x04"):
+        return "office", "application/zip"
+    return None, None
+
+
+def analyse(document: bytes, expected_issuer: str = "", locale: str = "fr") -> dict:
+    """Every signal this module can read off ``document``.
+
+    :param document: the file, as bytes — a PDF, an image or an office document
+    :param expected_issuer: who the reader believes issued it, optional. Supplied, it turns a
+        producer mismatch from an observation into an inconsistency — because a contradiction
+        needs two facts, and without this there is only one.
+    :param locale: the language of the signals' sentences (``fr`` or ``en``, both in the catalogue)
+    :returns: the report structure, with no verdict in it
+    """
+    kind, media_type = detect(document)
+    if kind == "pdf":
+        pages, signals = _analyse_pdf(document, expected_issuer, locale)
+    elif kind == "image":
+        pages, signals = _analyse_image(document, media_type, locale)
+    elif kind == "office":
+        try:
+            archive = zipfile.ZipFile(io.BytesIO(document))
+        except zipfile.BadZipFile as broken:
+            raise UnreadableDocument("l'archive fournie n'a pas pu être ouverte") from broken
+        if not ({"docProps/core.xml", "meta.xml"} & set(archive.namelist())):
+            raise UnreadableDocument(f"cette archive n'est pas un document bureautique : ce module lit {SUPPORTED}")
+        pages, signals = _analyse_office(archive, locale)
+    else:
+        raise UnreadableDocument(f"type de fichier non examiné : ce module lit {SUPPORTED}")
     return {
         "header": HEADER,
-        "pages": len(pages),
+        "documentType": kind,
+        "mediaType": media_type,
+        "pages": pages,
         "signals": signals,
         "levels": LEVELS,
         "notExamined": NOT_EXAMINED,
         "realExamination": REAL_EXAMINATION,
+        "catalogueVersion": CATALOGUE["version"],
     }
 
 
-def analyse_base64(encoded: str, expected_issuer: str = "") -> dict:
-    """:func:`analyse` over a base64 payload, which is how the PDF reaches this worker."""
+def analyse_base64(encoded: str, expected_issuer: str = "", locale: str = "fr") -> dict:
+    """:func:`analyse` over a base64 payload, which is how the document reaches this worker."""
     try:
         raw = base64.b64decode(encoded, validate=True)
     except Exception as bad:  # noqa: BLE001
-        raise UnreadablePdf("le contenu fourni n'est pas du base64 valide") from bad
-    return analyse(raw, expected_issuer)
+        raise UnreadableDocument("le contenu fourni n'est pas du base64 valide") from bad
+    return analyse(raw, expected_issuer, locale)
 
 
 def render(report: dict) -> str:

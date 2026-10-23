@@ -1,0 +1,307 @@
+{
+  "$comment": "The authenticity signals, as data (orazaka-packs#88). One entry per case a signal can take: its id, its level, the sentences a person reads (written once, by hand, never generated), and the thresholds that decide it. authenticity.py only reads facts off the bytes and picks the case. Placeholders in braces are filled with those facts. A new signal is an entry here, its detector in authenticity.py, and its PASS/FAIL fixture in test_authenticity.py.",
+  "version": "2.0.0",
+  "thresholds": {
+    "PDF-FONT-001": { "minPages": 3 },
+    "PDF-OBJ-001": { "minUnreferenced": 5, "unreferencedShare": 0.25 },
+    "PDF-REV-001": { "inconsistentFrom": 3 },
+    "IMG-META-003": { "minSeconds": 60 },
+    "OFF-META-002": { "minSeconds": 60 }
+  },
+  "signals": {
+    "PDF-META-001.producer": {
+      "signalId": "PDF-META-001",
+      "level": "observé",
+      "fr": {
+        "observation": "Le fichier déclare avoir été produit par « {producer} ».",
+        "mayIndicate": "Rien en soi. Le producteur est le logiciel qui a écrit le fichier, pas son auteur.",
+        "where": "Métadonnées du document (/Producer, /Creator)"
+      },
+      "en": {
+        "observation": "The file declares it was produced by “{producer}”.",
+        "mayIndicate": "Nothing in itself. The producer is the software that wrote the file, not its author.",
+        "where": "Document metadata (/Producer, /Creator)"
+      }
+    },
+    "PDF-META-001.producerAndCreator": {
+      "signalId": "PDF-META-001",
+      "level": "observé",
+      "fr": {
+        "observation": "Le fichier déclare avoir été produit par « {producer} » et créé avec « {creator} ».",
+        "mayIndicate": "Rien en soi. Le producteur est le logiciel qui a écrit le fichier, pas son auteur.",
+        "where": "Métadonnées du document (/Producer, /Creator)"
+      },
+      "en": {
+        "observation": "The file declares it was produced by “{producer}” and created with “{creator}”.",
+        "mayIndicate": "Nothing in itself. The producer is the software that wrote the file, not its author.",
+        "where": "Document metadata (/Producer, /Creator)"
+      }
+    },
+    "PDF-META-001.absent": {
+      "signalId": "PDF-META-001",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "Le fichier ne déclare aucun logiciel producteur.",
+        "mayIndicate": "Des métadonnées retirées, ce que font certains outils de nettoyage — et aussi certaines chaînes de production légitimes.",
+        "where": "Métadonnées du document (/Producer, /Creator absents)"
+      },
+      "en": {
+        "observation": "The file declares no producing software.",
+        "mayIndicate": "Metadata removed, which some clean-up tools do — and so do some legitimate production chains.",
+        "where": "Document metadata (/Producer, /Creator missing)"
+      }
+    },
+    "PDF-META-002": {
+      "signalId": "PDF-META-002",
+      "level": "incohérent",
+      "fr": {
+        "observation": "Le producteur déclaré (« {producer} ») ne correspond pas à l'émetteur que vous attendiez (« {expectedIssuer} »).",
+        "mayIndicate": "Un document réenregistré ou recomposé après émission. C'est aussi ce que fait un intermédiaire qui réimprime en PDF, ou une boîte mail qui convertit une pièce jointe.",
+        "where": "Métadonnées du document (/Producer)"
+      },
+      "en": {
+        "observation": "The declared producer (“{producer}”) does not match the issuer you expected (“{expectedIssuer}”).",
+        "mayIndicate": "A document saved again or recomposed after it was issued. It is also what an intermediary reprinting to PDF, or a mailbox converting an attachment, does.",
+        "where": "Document metadata (/Producer)"
+      }
+    },
+    "PDF-META-003": {
+      "signalId": "PDF-META-003",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "Le fichier déclare avoir été modifié après sa création : créé le {created}, modifié le {modified} ({days} jour(s) plus tard).",
+        "mayIndicate": "Une modification postérieure à l'émission. Un réenregistrement, l'ajout d'une annotation ou une signature produisent exactement la même trace.",
+        "where": "Métadonnées du document (/CreationDate vs /ModDate)"
+      },
+      "en": {
+        "observation": "The file declares it was modified after it was created: created {created}, modified {modified} ({days} day(s) later).",
+        "mayIndicate": "A change made after it was issued. Saving again, adding an annotation or a signature leave exactly the same trace.",
+        "where": "Document metadata (/CreationDate vs /ModDate)"
+      }
+    },
+    "PDF-META-004": {
+      "signalId": "PDF-META-004",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "Le logiciel déclaré (« {software} ») est un éditeur de PDF existants, pas un logiciel qui en génère à l'émission.",
+        "mayIndicate": "Un fichier ouvert puis réenregistré dans un éditeur. On s'en sert aussi, tous les jours, pour remplir un formulaire, signer, fusionner ou compresser.",
+        "where": "Métadonnées du document (/Producer, /Creator)"
+      },
+      "en": {
+        "observation": "The declared software (“{software}”) edits existing PDFs; it is not software that generates them when they are issued.",
+        "mayIndicate": "A file opened and saved again in an editor. Such tools are also used every day to fill a form, sign, merge or compress.",
+        "where": "Document metadata (/Producer, /Creator)"
+      }
+    },
+    "PDF-REV-001": {
+      "signalId": "PDF-REV-001",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "Le fichier contient {revisions} écritures successives : il a été enregistré une première fois, puis modifié et réenregistré {later} fois par-dessus, sans que les versions précédentes soient effacées.",
+        "mayIndicate": "Des modifications apportées après le premier enregistrement. Les formulaires remplis et les signatures électroniques procèdent ainsi normalement.",
+        "where": "Structure du fichier ({revisions} marqueurs %%EOF)"
+      },
+      "en": {
+        "observation": "The file holds {revisions} successive writings: it was saved once, then changed and saved over {later} time(s), without the earlier versions being erased.",
+        "mayIndicate": "Changes made after the first save. Filled forms and electronic signatures normally work this way.",
+        "where": "File structure ({revisions} %%EOF markers)"
+      }
+    },
+    "PDF-ID-001": {
+      "signalId": "PDF-ID-001",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "Les deux identifiants du fichier diffèrent : celui de sa première écriture et celui de sa dernière ne sont pas les mêmes.",
+        "mayIndicate": "Un fichier réécrit après sa création. Un réenregistrement, une signature ou une compression changent aussi cet identifiant.",
+        "where": "Structure du fichier (/ID du trailer)"
+      },
+      "en": {
+        "observation": "The file's two identifiers differ: the one of its first writing and the one of its last are not the same.",
+        "mayIndicate": "A file rewritten after it was created. Saving again, signing or compressing also change this identifier.",
+        "where": "File structure (trailer /ID)"
+      }
+    },
+    "PDF-TEXT-001": {
+      "signalId": "PDF-TEXT-001",
+      "level": "observé",
+      "fr": {
+        "observation": "La couche texte des pages {pages} a été produite par reconnaissance de caractères par-dessus une image : ce document est un scan, pas un texte natif.",
+        "mayIndicate": "Rien quant à l'authenticité. C'est l'état normal d'un document imprimé puis numérisé. Noté parce que les autres signaux se lisent différemment sur un scan.",
+        "where": "Pages {pages} (image + texte en mode de rendu invisible)"
+      },
+      "en": {
+        "observation": "The text layer of pages {pages} was produced by character recognition over an image: this document is a scan, not native text.",
+        "mayIndicate": "Nothing about authenticity. It is the normal state of a document printed then scanned. Noted because the other signals read differently on a scan.",
+        "where": "Pages {pages} (image + text in invisible render mode)"
+      }
+    },
+    "PDF-FONT-001": {
+      "signalId": "PDF-FONT-001",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "La page {page} utilise une police que l'on ne retrouve sur aucune autre page : {fonts}.",
+        "mayIndicate": "Une page composée séparément du reste, puis insérée. Les en-têtes, les annexes et les pages de signature produisent aussi cet écart.",
+        "where": "Page {page} (/Resources /Font)"
+      },
+      "en": {
+        "observation": "Page {page} uses a font found on no other page: {fonts}.",
+        "mayIndicate": "A page composed apart from the rest, then inserted. Headers, appendices and signature pages produce the same gap.",
+        "where": "Page {page} (/Resources /Font)"
+      }
+    },
+    "PDF-OBJ-001": {
+      "signalId": "PDF-OBJ-001",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "Le fichier définit {declared} objets dont environ {unreferenced} ne sont référencés nulle part.",
+        "mayIndicate": "Des éléments retirés d'une version antérieure sans que le fichier soit reconstruit. Beaucoup d'outils laissent ce genre de résidu en enregistrant.",
+        "where": "Structure du fichier (objets déclarés vs référencés)"
+      },
+      "en": {
+        "observation": "The file defines {declared} objects, about {unreferenced} of which nothing refers to.",
+        "mayIndicate": "Elements removed from an earlier version without the file being rebuilt. Many tools leave this kind of residue when they save.",
+        "where": "File structure (declared vs referenced objects)"
+      }
+    },
+    "XMP-HIST-001.editor": {
+      "signalId": "XMP-HIST-001",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "L'historique intégré au fichier relate {events} enregistrement(s) ou conversion(s), dont par un éditeur : {agents}.",
+        "mayIndicate": "Un fichier repris dans un éditeur après sa création. Recadrer, compresser, signer ou exporter laissent la même trace.",
+        "where": "Métadonnées XMP (xmpMM:History)"
+      },
+      "en": {
+        "observation": "The history embedded in the file records {events} save(s) or conversion(s), including by an editor: {agents}.",
+        "mayIndicate": "A file taken back into an editor after it was created. Cropping, compressing, signing or exporting leave the same trace.",
+        "where": "XMP metadata (xmpMM:History)"
+      }
+    },
+    "XMP-HIST-001.plain": {
+      "signalId": "XMP-HIST-001",
+      "level": "observé",
+      "fr": {
+        "observation": "L'historique intégré au fichier relate {events} enregistrement(s) ou conversion(s), par : {agents}.",
+        "mayIndicate": "Rien en soi : beaucoup de logiciels tiennent cet historique à chaque export.",
+        "where": "Métadonnées XMP (xmpMM:History)"
+      },
+      "en": {
+        "observation": "The history embedded in the file records {events} save(s) or conversion(s), by: {agents}.",
+        "mayIndicate": "Nothing in itself: many programs keep this history at every export.",
+        "where": "XMP metadata (xmpMM:History)"
+      }
+    },
+    "IMG-META-001.declared": {
+      "signalId": "IMG-META-001",
+      "level": "observé",
+      "fr": {
+        "observation": "L'image déclare l'appareil « {device} » et le logiciel « {software} ».",
+        "mayIndicate": "Rien en soi. C'est ce que l'appareil ou le logiciel a inscrit en écrivant le fichier.",
+        "where": "Métadonnées de l'image (EXIF Make, Model, Software)"
+      },
+      "en": {
+        "observation": "The image declares the device “{device}” and the software “{software}”.",
+        "mayIndicate": "Nothing in itself. It is what the device or the software wrote when it saved the file.",
+        "where": "Image metadata (EXIF Make, Model, Software)"
+      }
+    },
+    "IMG-META-001.absent": {
+      "signalId": "IMG-META-001",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "L'image ne déclare ni appareil, ni logiciel, ni date de prise de vue.",
+        "mayIndicate": "Des métadonnées retirées. Les messageries, les captures d'écran et les réseaux sociaux les retirent aussi d'office.",
+        "where": "Métadonnées de l'image (EXIF absent)"
+      },
+      "en": {
+        "observation": "The image declares no device, no software and no capture date.",
+        "mayIndicate": "Metadata removed. Messaging apps, screenshots and social networks also remove it by default.",
+        "where": "Image metadata (no EXIF)"
+      }
+    },
+    "IMG-META-002": {
+      "signalId": "IMG-META-002",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "L'image a été enregistrée en dernier par un logiciel de retouche : « {software} ».",
+        "mayIndicate": "Une image reprise après la prise de vue. Recadrer, redresser ou alléger une photo laisse exactement la même trace.",
+        "where": "Métadonnées de l'image (EXIF Software)"
+      },
+      "en": {
+        "observation": "The image was last saved by an image editor: “{software}”.",
+        "mayIndicate": "An image reworked after it was taken. Cropping, straightening or shrinking a photo leaves exactly the same trace.",
+        "where": "Image metadata (EXIF Software)"
+      }
+    },
+    "IMG-META-003": {
+      "signalId": "IMG-META-003",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "L'image déclare avoir été modifiée après la prise de vue : prise le {taken}, modifiée le {modified}.",
+        "mayIndicate": "Un enregistrement postérieur à la prise de vue. Une rotation ou un export depuis la photothèque produisent la même trace.",
+        "where": "Métadonnées de l'image (EXIF DateTimeOriginal vs DateTime)"
+      },
+      "en": {
+        "observation": "The image declares it was modified after it was taken: taken {taken}, modified {modified}.",
+        "mayIndicate": "A save after the capture. A rotation or an export from the photo library leaves the same trace.",
+        "where": "Image metadata (EXIF DateTimeOriginal vs DateTime)"
+      }
+    },
+    "IMG-META-004": {
+      "signalId": "IMG-META-004",
+      "level": "incohérent",
+      "fr": {
+        "observation": "L'image déclare une date de modification ({modified}) antérieure à sa prise de vue ({taken}).",
+        "mayIndicate": "Des dates réécrites, ou une horloge d'appareil mal réglée — ce qui arrive aussi après un changement de fuseau ou une batterie vide.",
+        "where": "Métadonnées de l'image (EXIF DateTimeOriginal vs DateTime)"
+      },
+      "en": {
+        "observation": "The image declares a modification date ({modified}) earlier than its capture ({taken}).",
+        "mayIndicate": "Dates rewritten, or a device clock set wrong — which also happens after a time-zone change or a flat battery.",
+        "where": "Image metadata (EXIF DateTimeOriginal vs DateTime)"
+      }
+    },
+    "IMG-META-005": {
+      "signalId": "IMG-META-005",
+      "level": "observé",
+      "fr": {
+        "observation": "L'image ne déclare aucun appareil de prise de vue : c'est vraisemblablement une capture d'écran, un export ou une image générée par un logiciel.",
+        "mayIndicate": "Rien quant à l'authenticité. Noté parce qu'une photo d'un document papier porte d'ordinaire la marque de l'appareil.",
+        "where": "Métadonnées de l'image (EXIF Make, Model absents)"
+      },
+      "en": {
+        "observation": "The image declares no capture device: it is most likely a screenshot, an export or an image made by software.",
+        "mayIndicate": "Nothing about authenticity. Noted because a photo of a paper document usually carries the device's name.",
+        "where": "Image metadata (no EXIF Make, Model)"
+      }
+    },
+    "OFF-META-001": {
+      "signalId": "OFF-META-001",
+      "level": "observé",
+      "fr": {
+        "observation": "Le fichier déclare avoir été écrit avec « {application} ».",
+        "mayIndicate": "Rien en soi. Un document bureautique se modifie par nature : il ne garde pas la trace d'une émission figée comme un PDF.",
+        "where": "Propriétés du document (docProps/app.xml, meta.xml)"
+      },
+      "en": {
+        "observation": "The file declares it was written with “{application}”.",
+        "mayIndicate": "Nothing in itself. An office document is editable by nature: it does not keep a fixed issued state the way a PDF does.",
+        "where": "Document properties (docProps/app.xml, meta.xml)"
+      }
+    },
+    "OFF-META-002": {
+      "signalId": "OFF-META-002",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "Le fichier déclare avoir été modifié après sa création : créé le {created}, modifié le {modified}, révision {revision}.",
+        "mayIndicate": "Une modification postérieure à la création. C'est l'usage ordinaire d'un document bureautique, qui se reprend et se réenregistre.",
+        "where": "Propriétés du document (dcterms:created, dcterms:modified, révision)"
+      },
+      "en": {
+        "observation": "The file declares it was modified after it was created: created {created}, modified {modified}, revision {revision}.",
+        "mayIndicate": "A change after creation. It is the ordinary use of an office document, which is reopened and saved again.",
+        "where": "Document properties (dcterms:created, dcterms:modified, revision)"
+      }
+    }
+  }
+}

@@ -127,12 +127,25 @@ separate Studio emitting *signals with confidence and never a verdict* — see A
 
 ## The authenticity Studio — `document-authenticity`
 
-Reads **facts about a PDF file** and reports which ones deserve a question. Same pack, same worker
+Reads **facts about a file** — a PDF, an image (JPEG, PNG, WebP, TIFF, HEIC) or an office document (Word, Excel,
+PowerPoint, OpenDocument), recognised by its bytes — and reports which ones deserve a question. Same pack, same worker
 process, one more routing key — `job.validation.signals`.
 
 **It has no model call.** Not a constrained one. A model asked to explain a tampering signal will
 explain signals it never received, and the error it makes most readily is the one that accuses an
-honest person. The seven signal explanations are written by hand, once, per signal type.
+honest person. The explanations are written by hand, once, per signal case — in a data file, not in code:
+`worker/authenticity-signals.json` (each case's id, level, thresholds, sentences FR/EN) and
+`worker/producer-profiles.json` (what kind of software a producer is: editor, OCR, scanner, generator). A new signal
+is an entry there, its detector in `authenticity.py` and its PASS/FAIL case in `test_authenticity_formats.py`.
+
+| Family | Signals | Read from |
+| :--- | :--- | :--- |
+| PDF | `PDF-META-001…004`, `PDF-REV-001`, `PDF-ID-001`, `PDF-TEXT-001`, `PDF-FONT-001`, `PDF-OBJ-001` | info dictionary, `%%EOF`, trailer `/ID`, fonts, objects |
+| Any file with XMP | `XMP-HIST-001` | `xmpMM:History` (saves and conversions, and by which software) |
+| Images | `IMG-META-001…005` | EXIF device, software, capture and modification dates (never GPS nor owner) |
+| Office | `OFF-META-001…002` | the package's application, dates and revision (never author fields: they name a person) |
+
+An editor is reported as what it is — a tool people use every day — never as proof of anything.
 
 **Triage, not a verdict.** It tells a reader *"these three points deserve a question"* or *"nothing
 stands out"*. It is not an examination, the report says so in full at the top, and it names what a
@@ -149,4 +162,5 @@ produced, no signal that names a person, and every report states what it did not
 ```bash
 .venv/bin/python worker/fixtures/make_fixtures.py   # rebuild the three gate documents
 .venv/bin/python worker/test_authenticity.py        # the gate
+.venv/bin/python worker/test_authenticity_formats.py # the catalogue, XMP, /ID, images, office files
 ```
