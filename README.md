@@ -60,8 +60,24 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) to write a pack.
 
 ## Build
 
-Packs are validated by the platform: `orazaka pack validate` (shape, offline) and the Studio
-service's catalogue tests inside the [Orazaka workspace](https://github.com/krizaka/orazaka).
+With Node.js 22, run the repository's validation suite:
+
+```bash
+npm ci
+npm test
+```
+
+On every pull request, CI runs this suite, including `tests/schema.test.mjs`: every
+`*/pack.yaml` (including DRAFT packs) is parsed as YAML and validated against the complete
+[`pack.schema.json`](pack.schema.json) using Ajv's JSON Schema 2020-12 validator and
+`ajv-formats`. Failures name the manifest and the JSON Pointer path of each schema violation;
+malformed YAML is rejected too. No platform services or network access are needed after
+installing dependencies.
+
+Platform validation remains complementary: `orazaka pack validate` (shape, offline) and the
+Studio service's catalogue/coherence tests inside the
+[Orazaka workspace](https://github.com/krizaka/orazaka) check runtime integration, blueprint
+links and referenced i18n files beyond the manifest schema.
 
 ## Governance
 
