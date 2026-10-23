@@ -367,7 +367,7 @@ assumed, and lower-level model caches are outside this runner's visibility.
 The shared component workflow itself does not start that stack.
 
 Generated platform documentation lives in the Orazaka workspace, not this repository. After
-assembling the workspace, regenerate it with `orazaka docs build`; do not hand-edit generated docs.
+assembling the workspace, regenerate it with `orazaka docs build`: generated pages change only through their generator.
 
 ## 9. Licence
 
