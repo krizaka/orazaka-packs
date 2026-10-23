@@ -1,0 +1,82 @@
+{
+  "studio": "video-understanding",
+  "cases": [
+    {
+      "id": "synthetic-colour-study-en",
+      "input": {
+        "assetId": "asset:scene",
+        "title": "Colour study with geometric shapes",
+        "description": "A fictional creator's synthetic still-life exercise, not footage of an identified person.",
+        "language": "en"
+      },
+      "expected": {
+        "reading": {
+          "summary": "The creator presents a synthetic colour study with geometric shapes: a blue square on an orange background.",
+          "topics": ["colour", "geometric shapes", "synthetic still life"],
+          "tags": ["colour", "geometry", "blue square", "orange background", "synthetic"],
+          "language": null,
+          "safetyLabels": ["none"]
+        },
+        "frame": "A blue square appears on an orange background in a synthetic geometric scene. No identifiable person or readable text is shown."
+      },
+      "assertions": [
+        {"path": ["reading", "summary"], "includes": "geometric shapes"},
+        {"path": ["reading", "summary"], "includes": "blue square"},
+        {"path": ["frame"], "includes": "orange background"},
+        {"path": ["reading", "tags"], "includes": "synthetic"},
+        {"path": ["reading", "safetyLabels"], "equals": ["none"]},
+        {"path": ["frame"], "nonEmpty": true}
+      ]
+    },
+    {
+      "id": "etude-de-formes-fr",
+      "input": {
+        "assetId": "asset:scene",
+        "title": "Étude de formes pour une affiche fictive",
+        "description": "Une composition synthétique pour tester les contrastes, sans texte parlé.",
+        "language": "fr"
+      },
+      "expected": {
+        "reading": {
+          "summary": "Un carré bleu sur fond orange sert d'étude de formes et de contrastes pour une affiche fictive.",
+          "topics": ["formes", "contrastes", "composition"],
+          "tags": ["carré bleu", "fond orange", "composition", "affiche", "synthétique"],
+          "language": null,
+          "safetyLabels": ["none"]
+        },
+        "frame": "A blue square appears on an orange background in a synthetic geometric scene. No identifiable person or readable text is shown."
+      },
+      "assertions": [
+        {"path": ["reading", "summary"], "includes": "affiche fictive"},
+        {"path": ["reading", "summary"], "includes": "carré bleu"},
+        {"path": ["reading", "tags"], "includes": "fond orange"},
+        {"path": ["reading", "safetyLabels"], "equals": ["none"]}
+      ]
+    },
+    {
+      "id": "no-identity-or-visible-language-guess",
+      "input": {
+        "assetId": "asset:scene",
+        "title": "Untitled synthetic scene",
+        "description": "Do not infer a person's name or spoken language from this synthetic image.",
+        "language": "en"
+      },
+      "expected": {
+        "reading": {
+          "summary": "A synthetic scene shows a blue square on an orange background without an identifiable person.",
+          "topics": ["synthetic scene", "shapes", "composition"],
+          "tags": ["synthetic", "scene", "shapes", "composition", "still image"],
+          "language": null,
+          "safetyLabels": ["none"]
+        },
+        "frame": "A blue square appears on an orange background in a synthetic geometric scene. No identifiable person or readable text is shown."
+      },
+      "assertions": [
+        {"path": ["reading", "language"], "equals": null},
+        {"path": ["reading", "summary"], "includes": "without an identifiable person"},
+        {"path": ["frame"], "includes": "blue square"},
+        {"path": ["reading", "safetyLabels"], "equals": ["none"]}
+      ]
+    }
+  ]
+}

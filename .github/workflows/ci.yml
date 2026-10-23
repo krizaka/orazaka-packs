@@ -9,6 +9,11 @@ on:
     tags: ["v*"]
   pull_request:
   workflow_dispatch:
+    inputs:
+      golden_stack:
+        description: "Run actual goldens on the provisioned, trusted orazaka-golden runner"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -38,10 +43,36 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0 # Compare golden exceptions with the immutable PR base, not a second editable baseline.
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
+      - run: npm ci
       - run: npm test
+        env:
+          GOLDEN_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
+  # Never expose an authenticated local stack/self-hosted runner to pull-request code.
+  # Enable after provisioning the dedicated runner, environment protection, and test account.
+  golden-stack:
+    if: ${{ github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_dispatch' && inputs.golden_stack) || (github.event_name == 'push' && vars.GOLDEN_STACK_ENABLED == 'true')) }}
+    runs-on: [self-hosted, orazaka-golden]
+    environment: golden-stack
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run golden:run -- --config "$GOLDEN_STACK_CONFIG"
+        env:
+          GOLDEN_STACK_CONFIG: ${{ vars.GOLDEN_STACK_CONFIG }}
 
   # The three Python workers: the org's reusable python-ci (krizaka/.github#149). Each caller job is named like its former
   # check's origin; the required checks keep their names through the shims below (branch protection untouched).

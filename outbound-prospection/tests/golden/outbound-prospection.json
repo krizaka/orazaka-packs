@@ -1,0 +1,55 @@
+{
+  "studio": "outbound-prospection",
+  "cases": [
+    {
+      "id": "atelier-fictif-fr",
+      "input": {
+        "prospects": ["Atelier Nacre Fictif, menuiserie de six personnes"],
+        "offer": "Un tableau de suivi des devis pour petits ateliers",
+        "icp": "Ateliers de moins de dix personnes"
+      },
+      "expected": {
+        "sequence": "Atelier Nacre Fictif — Bonjour, notre tableau de suivi des devis est pensé pour les petits ateliers. Seriez-vous disponible pour voir si cela convient à votre menuiserie de six personnes ?",
+        "angles": "Atelier Nacre Fictif : proposer un tableau de suivi des devis adapté à une menuiserie de six personnes."
+      },
+      "assertions": [
+        {"path": ["sequence"], "includes": "Atelier Nacre Fictif"},
+        {"path": ["sequence"], "includes": "suivi des devis"},
+        {"path": ["angles"], "includes": "six personnes"}
+      ]
+    },
+    {
+      "id": "two-distinct-fictional-prospects",
+      "input": {
+        "prospects": ["Studio Brume Fictif, agence de trois personnes", "Studio Galet Fictif, agence de huit personnes"],
+        "offer": "Centraliser les retours clients sur des maquettes",
+        "icp": "Petites agences de design"
+      },
+      "expected": {
+        "sequence": "Studio Brume Fictif — Pour votre agence de trois personnes, souhaitez-vous découvrir une façon de centraliser les retours clients sur les maquettes ?\nStudio Galet Fictif — Votre agence de huit personnes pourrait-elle bénéficier de retours clients regroupés sur les maquettes ?",
+        "angles": "Studio Brume Fictif : centraliser les retours clients pour une équipe de trois personnes.\nStudio Galet Fictif : regrouper les commentaires sur les maquettes pour huit personnes."
+      },
+      "assertions": [
+        {"path": ["sequence"], "includes": "Studio Brume Fictif"},
+        {"path": ["sequence"], "includes": "Studio Galet Fictif"},
+        {"path": ["angles"], "includes": "maquettes"}
+      ]
+    },
+    {
+      "id": "unknown-prospect-no-invented-research",
+      "input": {
+        "prospects": ["Entreprise Sillage Fictive, aucune autre information disponible"],
+        "offer": "Un outil de classement des demandes entrantes"
+      },
+      "expected": {
+        "sequence": "Entreprise Sillage Fictive — Bonjour, nous proposons un outil de classement des demandes entrantes. Est-ce un sujet pertinent pour votre équipe ?",
+        "angles": "Entreprise Sillage Fictive : vérifier si le classement des demandes entrantes est pertinent, sans présumer de sa taille ou de ses besoins."
+      },
+      "assertions": [
+        {"path": ["sequence"], "includes": "Entreprise Sillage Fictive"},
+        {"path": ["sequence"], "includes": "demandes entrantes"},
+        {"path": ["angles"], "includes": "sans présumer"}
+      ]
+    }
+  ]
+}

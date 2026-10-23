@@ -285,6 +285,90 @@ ORAZAKA_PACKS_SOURCES=~/packs,registry:https://…          # plus a hosted regi
 `orazaka pack list` shows the configured sources and what they offer. A registry source is listed
 and marked unavailable on a local deployment rather than silently ignored.
 
-## 8. Licence
+## 8. Golden cases
+
+Every Studio ships `tests/golden/<studio-key>.json` in its pack. Use 3–5 distinct fictional
+inputs: an ordinary request, a boundary/negative case, and another language or safety case.
+The shared harness checks inputs against the shipped `inputSchema`; expected outputs are
+illustrative examples, not snapshots to regenerate from the same code being tested.
+
+```json
+{
+  "studio": "echo-reverse",
+  "cases": [
+    {
+      "id": "french-greeting",
+      "input": { "text": "Bonjour" },
+      "expected": { "reversed": "ruojnoB" },
+      "assertions": [{ "path": ["reversed"], "equals": "ruojnoB" }]
+    }
+  ]
+}
+```
+
+The abbreviated example needs two more cases before it passes. Assertion paths start at the
+blueprint's declared output key. Supported operators are `equals` (deep equality), `includes`
+(substring/array member), `type`, `atLeast` (numeric lower bound), and `nonEmpty: true`.
+Exactly one operator is required.
+Nested JSON stored in a TEXT artefact is decoded when traversing its path. Assert stable facts,
+verdicts and safety limitations rather than exact nondeterministic prose or generated URLs.
+Never remove an assertion merely to accommodate an unexplained model/prompt regression.
+
+`npm run test:golden` runs offline schema/coverage/assertion tests and the HTTP adapter integration
+tests. This does **not** execute inference. Existing document-validation goldens remain in
+`worker/fixtures/` and run with `python worker/test_golden.py`; the two Studio-level gaps are
+listed in `golden-ratchet.json`. Remove an exception when covering it. PR CI forbids adding any.
+
+### Against a provisioned local stack
+
+Install the packs/blueprint versions under test through `orazaka pack install` first. The operator
+provisions the account, credits, models, consent and installations through the normal platform
+controls. The runner never bypasses authentication, grants entitlements, chooses a vendor/model,
+or automatically approves a regulated run.
+
+Create a configuration **outside the repository** (do not commit credentials):
+
+```json
+{
+  "baseUrl": "http://127.0.0.1:8088",
+  "tokenFile": "/absolute/path/to/test-account-token",
+  "assetsFile": "/absolute/path/to/orazaka-packs/tests/golden/assets.json",
+  "timeoutMs": 600000,
+  "pollIntervalMs": 1000,
+  "installations": {}
+}
+```
+
+Obtain the token through the normal login flow. For installed/regulated Studios, map their Studio
+key to the configured installation UUID in `installations`. Otherwise the runner uses key-addressed
+execution. Config paths are relative to the configuration file; the endpoint must be HTTPS unless
+it is loopback. Timeout/polling values are test infrastructure wiring, not domain configuration.
+
+```bash
+npm run golden:run -- --config /absolute/path/to/stack.json
+npm run golden:run -- --config /absolute/path/to/stack.json --pack echo-toolkit
+```
+
+`asset:scene`, `asset:scene-two`, `asset:audio`, and `asset:video` refer to the synthetic asset registry;
+`base64:scene` embeds its bytes. The runner uploads assets as the same actor, executes the real
+Studio DAG through the public API, polls terminal states, rejects stale blueprint versions,
+asserts actual outputs, and deletes temporary uploads. Failures exit nonzero. Operator-action
+states fail and cancel instead of approving themselves. Output/response bodies are not logged.
+Fixture validation in standalone CI is always on. For actual inference in CI, provision a dedicated,
+isolated self-hosted runner labelled `orazaka-golden` with a local stack and a least-privileged test
+account. Configure the `golden-stack` environment's protection/approvals, set `GOLDEN_STACK_CONFIG`
+to the runner-local configuration path, and set repository variable `GOLDEN_STACK_ENABLED=true`.
+The `golden-stack` job then executes the same cases after pushes to `main`, including prompt/model
+manifest changes. Alternatively dispatch CI on `main` with `golden_stack=true` after changing a
+runtime model. It deliberately never runs PR code against a credentialed self-hosted stack.
+Provision/update the installed blueprints before execution and use a fresh, isolated seeded test
+stack; stale versions, cached runs, or idempotent replays fail, not pass. No cache-bypass API is
+assumed, and lower-level model caches are outside this runner's visibility.
+The shared component workflow itself does not start that stack.
+
+Generated platform documentation lives in the Orazaka workspace, not this repository. After
+assembling the workspace, regenerate it with `orazaka docs build`; do not hand-edit generated docs.
+
+## 9. Licence
 
 Your pack is yours. See [docs/LICENSING.md](docs/LICENSING.md).

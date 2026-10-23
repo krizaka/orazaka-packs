@@ -1,0 +1,57 @@
+{
+  "studio": "lead-research",
+  "cases": [
+    {
+      "id": "known-fit-fictional-workshop",
+      "input": {
+        "prospects": ["Atelier Orme Fictif, menuiserie, cinq personnes, devis suivis sur papier"],
+        "offer": "Suivi partagé des devis",
+        "icp": "Menuiseries de moins de dix personnes avec suivi papier"
+      },
+      "expected": {
+        "ranking": "Atelier Orme Fictif — haute — Petite menuiserie, suivi papier, offre directement adaptée.",
+        "briefs": "Secteur : menuiserie, Atelier Orme Fictif.\nTaille estimée : cinq personnes, selon les informations fournies.\nDéclencheur probable : besoin éventuel de partager les devis papier, à confirmer.\nObjection attendue : effort de changement, hypothèse à vérifier.\nAngle d'entrée : demander comment les devis papier sont partagés."
+      },
+      "assertions": [
+        {"path": ["ranking"], "includes": "Atelier Orme Fictif"},
+        {"path": ["ranking"], "includes": "haute"},
+        {"path": ["briefs"], "includes": "cinq personnes"},
+        {"path": ["briefs"], "includes": "à confirmer"}
+      ]
+    },
+    {
+      "id": "contrasting-fit-two-prospects",
+      "input": {
+        "prospects": ["Atelier Lichen Fictif, artisan, quatre personnes", "Groupe Basalte Fictif, industrie, mille personnes"],
+        "offer": "Planification simple pour petits ateliers",
+        "icp": "Artisans de deux à dix personnes"
+      },
+      "expected": {
+        "ranking": "Atelier Lichen Fictif — haute — Taille artisanale correspondant directement au périmètre visé.\nGroupe Basalte Fictif — basse — Effectif industriel dépassant largement le périmètre visé.",
+        "briefs": "Secteur : artisanat, Atelier Lichen Fictif.\nTaille estimée : quatre personnes.\nDéclencheur probable : organisation du planning, à confirmer.\nObjection attendue : temps de prise en main, à vérifier.\nAngle d'entrée : vérifier les besoins de planification.\n\nSecteur : industrie, Groupe Basalte Fictif.\nTaille estimée : mille personnes.\nDéclencheur probable : non documenté.\nObjection attendue : outil destiné aux petits ateliers.\nAngle d'entrée : vérifier si une petite unité autonome est concernée."
+      },
+      "assertions": [
+        {"path": ["ranking"], "includes": "Atelier Lichen Fictif — haute"},
+        {"path": ["ranking"], "includes": "Groupe Basalte Fictif — basse"},
+        {"path": ["briefs"], "includes": "mille personnes"}
+      ]
+    },
+    {
+      "id": "sparse-record-uncertainty",
+      "input": {
+        "prospects": ["Collectif Aube Fictif ; secteur et effectif inconnus"],
+        "offer": "Un espace partagé de suivi des demandes",
+        "icp": "Associations de trois à douze personnes"
+      },
+      "expected": {
+        "ranking": "Collectif Aube Fictif — basse — Secteur et effectif inconnus, qualification préalable nécessaire.",
+        "briefs": "Secteur : inconnu pour Collectif Aube Fictif.\nTaille estimée : inconnue.\nDéclencheur probable : non documenté.\nObjection attendue : inconnue, à demander.\nAngle d'entrée : vérifier le secteur, l'effectif et le besoin de suivi des demandes."
+      },
+      "assertions": [
+        {"path": ["ranking"], "includes": "Collectif Aube Fictif"},
+        {"path": ["briefs"], "includes": "Taille estimée : inconnue"},
+        {"path": ["briefs"], "includes": "non documenté"}
+      ]
+    }
+  ]
+}

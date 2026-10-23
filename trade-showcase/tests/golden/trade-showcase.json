@@ -1,0 +1,62 @@
+{
+  "studio": "trade-showcase",
+  "cases": [
+    {
+      "id": "single-photo-cabinetmaker",
+      "input": {
+        "photos": ["asset:scene"],
+        "trade": "menuisier fictif, visuel synthétique"
+      },
+      "expected": {
+        "showcase": "asset:generated-showcase",
+        "caption": "Une vitrine de menuisier fictif, illustrée par un visuel synthétique. Cette composition présente une intention visuelle, pas une réalisation client documentée.",
+        "descriptions": "Un carré bleu sur fond orange compose la scène synthétique fournie pour la vitrine du menuisier fictif ; aucun chantier réel n'est documenté."
+      },
+      "assertions": [
+        {"path": ["showcase"], "nonEmpty": true},
+        {"path": ["caption"], "includes": "menuisier fictif"},
+        {"path": ["caption"], "includes": "visuel synthétique"},
+        {"path": ["descriptions"], "includes": "carré bleu"},
+        {"path": ["descriptions"], "includes": "fond orange"}
+      ]
+    },
+    {
+      "id": "six-photo-ceramicist-boundary",
+      "input": {
+        "photos": ["asset:scene", "asset:scene-two", "asset:scene-three", "asset:scene-four", "asset:scene-five", "asset:scene-six"],
+        "trade": "céramiste fictif, scènes de test"
+      },
+      "expected": {
+        "showcase": "asset:generated-showcase",
+        "caption": "Une vitrine de céramiste fictif composée à partir de six scènes de test synthétiques. Une illustration de présentation, sans attribution à une commande réelle.",
+        "descriptions": "Six scènes synthétiques composent le jeu de test pour la vitrine du céramiste fictif, dont un carré bleu sur fond orange et un cercle orange sur fond bleu ; elles ne documentent pas des commandes réelles."
+      },
+      "assertions": [
+        {"path": ["showcase"], "type": "string"},
+        {"path": ["caption"], "includes": "céramiste fictif"},
+        {"path": ["caption"], "includes": "scènes de test"},
+        {"path": ["descriptions"], "includes": "carré bleu"},
+        {"path": ["descriptions"], "includes": "cercle orange"}
+      ]
+    },
+    {
+      "id": "restoration-no-certification-claim",
+      "input": {
+        "photos": ["asset:scene", "asset:scene-two"],
+        "trade": "restaurateur fictif, sans certification revendiquée"
+      },
+      "expected": {
+        "showcase": "asset:generated-showcase",
+        "caption": "Une vitrine pour un restaurateur fictif, sur la base de scènes synthétiques d'illustration. Aucune certification n'est revendiquée et aucun chantier réel n'est attesté.",
+        "descriptions": "Deux scènes synthétiques d'illustration pour le restaurateur fictif : un carré bleu sur fond orange et un cercle orange sur fond bleu. Aucun label ni certification ne peut être déduit de ces images."
+      },
+      "assertions": [
+        {"path": ["showcase"], "nonEmpty": true},
+        {"path": ["caption"], "includes": "restaurateur fictif"},
+        {"path": ["caption"], "includes": "Aucune certification"},
+        {"path": ["descriptions"], "includes": "scènes synthétiques"},
+        {"path": ["descriptions"], "includes": "cercle orange"}
+      ]
+    }
+  ]
+}

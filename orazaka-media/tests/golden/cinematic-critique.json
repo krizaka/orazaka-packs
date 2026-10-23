@@ -1,0 +1,73 @@
+{
+  "studio": "cinematic-critique",
+  "cases": [
+    {
+      "id": "english-unearned-lantern-payoff",
+      "input": {
+        "treatment": "Critique this fictional 30-second film treatment in English. Return only JSON with scores (story and continuity, numbers), rejectedShots (array of objects with id and reason), and changes (exactly two strings). Title: The Lantern Crossing. Original characters: Neri the copper beetle wants to carry a lantern over a puddle; Oru the felt moth wants to guide Neri. Hook: the lantern flickers. Journey: Neri reaches the puddle. Shot 4 is an unrelated five-second view of an empty cupboard; explicitly reject shot 4 as unrelated. Turn: Neri drops the lantern. Payoff: it suddenly glows on the far bank without a rescue or crossing. Recommend a visible handoff between Neri and Oru, and replacing the cupboard insert with the crossing. Mention Neri in the first change. Do not add real people, brands or copyrighted characters."
+      },
+      "expected": {
+        "critique": {
+          "scores": {"story": 4, "continuity": 3},
+          "rejectedShots": [{"id": 4, "reason": "The empty cupboard does not advance the crossing or the lantern's recovery."}],
+          "changes": [
+            "Show Neri passing the fallen lantern to Oru so the recovery is earned.",
+            "Replace the cupboard insert with a continuous crossing that preserves the lantern's screen direction."
+          ]
+        }
+      },
+      "assertions": [
+        {"path": ["critique", "scores", "story"], "type": "number"},
+        {"path": ["critique", "rejectedShots", 0, "id"], "equals": 4},
+        {"path": ["critique", "rejectedShots", 0, "reason"], "nonEmpty": true},
+        {"path": ["critique", "changes", 0], "includes": "Neri"},
+        {"path": ["critique", "changes", 1], "nonEmpty": true}
+      ]
+    },
+    {
+      "id": "french-conflicting-river-continuity",
+      "input": {
+        "treatment": "Critique en français ce traitement entièrement fictif. Réponds uniquement en JSON avec scores (histoire et continuite, nombres), rejectedShots (objets id et reason) et changes (exactement deux chaînes). Titre : Le Pont de Feutre. Personnages originaux : Lune, une souris en feutre bleu qui veut apporter une graine, et Piko, un hérisson en bois qui veut réparer un pont. Il pleut doucement dans tous les plans. Plan 1 : Lune avance vers la droite. Plan 2 : Piko tend une planche. Plan 3 : désert en plein soleil, Lune marche vers la gauche sans transition. Rejette explicitement le plan 3 pour la rupture de lieu, météo et direction. Plan 4 : ils traversent et plantent la graine. Propose deux changements concrets, le premier citant Lune. Aucun artiste, personnage existant ou événement réel."
+      },
+      "expected": {
+        "critique": {
+          "scores": {"histoire": 6, "continuite": 2},
+          "rejectedShots": [{"id": 3, "reason": "Le désert ensoleillé contredit la pluie, le lieu et la direction établis."}],
+          "changes": [
+            "Garder Lune sous la pluie et orientée vers la droite pendant toute la traversée.",
+            "Montrer Piko stabilisant la planche avant que les deux amis ne plantent la graine."
+          ]
+        }
+      },
+      "assertions": [
+        {"path": ["critique", "scores", "continuite"], "type": "number"},
+        {"path": ["critique", "rejectedShots", 0, "id"], "equals": 3},
+        {"path": ["critique", "rejectedShots", 0, "reason"], "nonEmpty": true},
+        {"path": ["critique", "changes", 0], "includes": "Lune"},
+        {"path": ["critique", "changes", 1], "nonEmpty": true}
+      ]
+    },
+    {
+      "id": "silent-object-film-with-no-rejected-shots",
+      "input": {
+        "treatment": "Review an original silent object film, not a character-driven story. Return only JSON: scores with numeric story and continuity, rejectedShots as an empty array if no shot is unrelated, and changes as exactly two strings. Treatment: The Empty Cup, 30 seconds, one room, one static clay cup, warm side light throughout. Hook: a drop trembles on the cup's rim. Journey: the drop moves down the glaze. Turn: it catches the reflection of an amber window. Payoff: it reaches the saucer and the reflected light settles. All four purposeful shots share the same cup, light and screen direction. No people, brands, narration or music. Preserve the silent premise; mention silence in the first change and clay in the second. Suggest pacing and material-detail refinements, not an invented plot problem."
+      },
+      "expected": {
+        "critique": {
+          "scores": {"story": 8, "continuity": 9},
+          "rejectedShots": [],
+          "changes": [
+            "Preserve the silence and hold the final reflected light a little longer.",
+            "Add a closer view of the clay glaze as the drop begins moving to strengthen the tactile journey."
+          ]
+        }
+      },
+      "assertions": [
+        {"path": ["critique", "scores", "continuity"], "type": "number"},
+        {"path": ["critique", "rejectedShots"], "equals": []},
+        {"path": ["critique", "changes", 0], "includes": "silence"},
+        {"path": ["critique", "changes", 1], "includes": "clay"}
+      ]
+    }
+  ]
+}

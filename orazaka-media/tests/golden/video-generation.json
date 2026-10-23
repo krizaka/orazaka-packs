@@ -1,0 +1,43 @@
+{
+  "studio": "video-generation",
+  "cases": [
+    {
+      "id": "english-original-paper-boat",
+      "input": {
+        "prompt": "An original paper boat drifts left to right across a miniature pond; slow tracking camera, soft dawn light, no people, text or logos.",
+        "durationSeconds": 5,
+        "aspect": "16:9",
+        "seed": "137",
+        "upscale": "none"
+      },
+      "expected": {"video": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}]
+    },
+    {
+      "id": "french-animate-synthetic-scene",
+      "input": {
+        "prompt": "Animer doucement cette scène synthétique : léger rapprochement de caméra, lumière stable, objets identiques à la première image, aucun texte ajouté.",
+        "durationSeconds": 5,
+        "aspect": "9:16",
+        "image": "asset:scene",
+        "seed": "149",
+        "upscale": "none"
+      },
+      "expected": {"video": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}]
+    },
+    {
+      "id": "square-second-scene-still-camera",
+      "input": {
+        "prompt": "Use the supplied synthetic still as the first frame. Keep the square camera locked; create only a gentle change of light, preserving all objects and avoiding text.",
+        "durationSeconds": 5,
+        "aspect": "1:1",
+        "image": "asset:scene-two",
+        "seed": "0",
+        "upscale": "none"
+      },
+      "expected": {"video": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}]
+    }
+  ]
+}

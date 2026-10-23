@@ -1,0 +1,40 @@
+{
+  "studio": "video-sound",
+  "cases": [
+    {
+      "id": "english-synthetic-clip-music-bed",
+      "input": {
+        "video": "asset:video",
+        "music": "Original instrumental underscore: soft felt piano, 68 BPM, restrained curiosity, no vocals.",
+        "foley": "Very soft room tone; do not invent speech.",
+        "seed": "173"
+      },
+      "expected": {"video": "asset:video", "silent": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+    },
+    {
+      "id": "french-voice-track-with-quiet-music",
+      "input": {
+        "video": "asset:video",
+        "voice": "asset:audio",
+        "music": "Composition originale au vibraphone, 60 BPM, très douce sous la piste parlée, sans chant.",
+        "foley": "Ambiance discrète sans événement fort.",
+        "seed": "179"
+      },
+      "expected": {"video": "asset:video", "silent": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+    },
+    {
+      "id": "voice-only-no-generated-music",
+      "input": {
+        "video": "asset:video",
+        "voice": "asset:audio",
+        "music": "",
+        "foley": "",
+        "seed": "0"
+      },
+      "expected": {"video": "asset:video", "silent": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+    }
+  ]
+}

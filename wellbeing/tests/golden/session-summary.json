@@ -1,0 +1,77 @@
+{
+  "studio": "session-summary",
+  "cases": [
+    {
+      "id": "english-walk-small-step",
+      "input": {
+        "turns": "Person: Work felt noisy today. Naming that helped. I might take a short walk tomorrow. I want to discuss the noisy office with my therapist.",
+        "thread": "",
+        "moodBefore": 2,
+        "moodAfter": 3,
+        "locale": "en"
+      },
+      "expected": {
+        "summary": {
+          "themes": ["Noisy office"],
+          "whatHelped": "Naming that work felt noisy helped.",
+          "smallStep": "A short walk tomorrow was considered.",
+          "bringToTherapist": ["The noisy office"],
+          "locale": "en"
+        }
+      },
+      "assertions": [
+        {"path": ["summary", "locale"], "equals": "en"},
+        {"path": ["summary", "smallStep"], "includes": "walk tomorrow"},
+        {"path": ["summary", "bringToTherapist"], "includes": "The noisy office"}
+      ]
+    },
+    {
+      "id": "fr-ca-own-words",
+      "input": {
+        "turns": "Personne : J'ai parlé de mon déménagement. Faire la liste des cartons m'a aidé. Je pense noter ce qui reste à emballer demain. Je veux en parler à ma thérapeute.",
+        "thread": "Le déménagement était déjà évoqué.",
+        "moodBefore": 1,
+        "moodAfter": 5,
+        "locale": "fr-CA"
+      },
+      "expected": {
+        "summary": {
+          "themes": ["Déménagement"],
+          "whatHelped": "Faire la liste des cartons a aidé.",
+          "smallStep": "Noter demain ce qui reste à emballer a été envisagé.",
+          "bringToTherapist": ["Le déménagement"],
+          "locale": "fr-CA"
+        }
+      },
+      "assertions": [
+        {"path": ["summary", "locale"], "equals": "fr-CA"},
+        {"path": ["summary", "whatHelped"], "includes": "liste des cartons"},
+        {"path": ["summary", "smallStep"], "includes": "emballer"}
+      ]
+    },
+    {
+      "id": "no-invented-help-or-step",
+      "input": {
+        "turns": "Personne : J'ai attendu le bus. Je ne sais pas ce qui m'a aidé. Je n'ai envisagé aucun petit pas et je n'ai rien choisi à apporter en séance.",
+        "thread": "",
+        "moodBefore": 3,
+        "moodAfter": 3,
+        "locale": "fr"
+      },
+      "expected": {
+        "summary": {
+          "themes": ["Attente du bus"],
+          "whatHelped": "La personne ne sait pas ce qui l'a aidée.",
+          "smallStep": "Aucun petit pas n'a été envisagé.",
+          "bringToTherapist": [],
+          "locale": "fr"
+        }
+      },
+      "assertions": [
+        {"path": ["summary", "bringToTherapist"], "equals": []},
+        {"path": ["summary", "smallStep"], "includes": "Aucun petit pas"},
+        {"path": ["summary", "whatHelped"], "includes": "ne sait pas"}
+      ]
+    }
+  ]
+}

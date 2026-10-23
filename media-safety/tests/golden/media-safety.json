@@ -1,0 +1,77 @@
+{
+  "studio": "media-safety",
+  "cases": [
+    {
+      "id": "empty-nacre-storyboard",
+      "input": {"frames": [], "frameCount": 0, "expectsSpeech": false},
+      "expected": {
+        "report": {
+          "rulesetId": "media-safety",
+          "rulesetVersion": "2026-10-17",
+          "rulesetRevision": 1,
+          "verdict": "UNREADABLE",
+          "blockers": [],
+          "findings": [],
+          "examined": {"frames": 0, "speech": false},
+          "unreadable": 1,
+          "limits": ["MODEL_ANSWERS_CAN_BE_WRONG", "FAILS_CLOSED_WHEN_UNREADABLE", "VIDEO_IS_JUDGED_ON_SAMPLED_FRAMES", "AUDIO_IS_JUDGED_ON_ITS_TRANSCRIPT"]
+        }
+      },
+      "assertions": [
+        {"path": ["report", "verdict"], "equals": "UNREADABLE"},
+        {"path": ["report", "unreadable"], "equals": 1},
+        {"path": ["report", "examined"], "equals": {"frames": 0, "speech": false}},
+        {"path": ["report", "limits"], "includes": "FAILS_CLOSED_WHEN_UNREADABLE"}
+      ]
+    },
+    {
+      "id": "mira-missing-voice-track",
+      "input": {"frames": ["asset:scene"], "frameCount": 1, "expectsSpeech": true},
+      "expected": {
+        "report": {
+          "rulesetId": "media-safety",
+          "rulesetVersion": "2026-10-17",
+          "rulesetRevision": 1,
+          "verdict": "UNREADABLE",
+          "blockers": [],
+          "findings": [],
+          "examined": {"frames": 1, "speech": true},
+          "unreadable": 1,
+          "limits": ["MODEL_ANSWERS_CAN_BE_WRONG", "FAILS_CLOSED_WHEN_UNREADABLE", "VIDEO_IS_JUDGED_ON_SAMPLED_FRAMES", "AUDIO_IS_JUDGED_ON_ITS_TRANSCRIPT"]
+        }
+      },
+      "assertions": [
+        {"path": ["report", "verdict"], "equals": "UNREADABLE"},
+        {"path": ["report", "unreadable"], "equals": 1},
+        {"path": ["report", "examined"], "equals": {"frames": 1, "speech": true}},
+        {"path": ["report", "limits"], "includes": "AUDIO_IS_JUDGED_ON_ITS_TRANSCRIPT"},
+        {"path": ["report", "limits"], "includes": "FAILS_CLOSED_WHEN_UNREADABLE"}
+      ]
+    },
+    {
+      "id": "aster-two-scene-silent-reel",
+      "input": {"frames": ["asset:scene", "asset:scene-two"], "frameCount": 2, "expectsSpeech": false},
+      "expected": {
+        "report": {
+          "rulesetId": "media-safety",
+          "rulesetVersion": "2026-10-17",
+          "rulesetRevision": 1,
+          "verdict": "APPROVED",
+          "blockers": [],
+          "findings": [],
+          "examined": {"frames": 2, "speech": false},
+          "unreadable": 0,
+          "limits": ["MODEL_ANSWERS_CAN_BE_WRONG", "FAILS_CLOSED_WHEN_UNREADABLE", "VIDEO_IS_JUDGED_ON_SAMPLED_FRAMES", "AUDIO_IS_JUDGED_ON_ITS_TRANSCRIPT"]
+        }
+      },
+      "assertions": [
+        {"path": ["report", "verdict"], "equals": "APPROVED"},
+        {"path": ["report", "blockers"], "equals": []},
+        {"path": ["report", "unreadable"], "equals": 0},
+        {"path": ["report", "examined"], "equals": {"frames": 2, "speech": false}},
+        {"path": ["report", "limits"], "includes": "VIDEO_IS_JUDGED_ON_SAMPLED_FRAMES"},
+        {"path": ["report", "limits"], "includes": "MODEL_ANSWERS_CAN_BE_WRONG"}
+      ]
+    }
+  ]
+}
