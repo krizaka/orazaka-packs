@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 210,
-  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Vitrine initiale : description des réalisations, légende rédigée et visuel de marque.",
+  "changelog": "1.3.0 — les descriptions se lisent par leur champ ({{steps.photoDescriptions.analysis}}, comme image-analysis) : le résultat entier rendait aussi ses métadonnées — orazaka-packs#5, possible sur un fan-out depuis orazaka-studio#60. 1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Vitrine initiale : description des réalisations, légende rédigée et visuel de marque.",
   "createdBy": "system",
   "definition": {
     "studioKey": "trade-showcase",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "describe",
@@ -32,7 +32,7 @@
           "describe"
         ],
         "inputs": {
-          "prompt": "Rédige la légende de vitrine d'un artisan {{inputs.trade}} pour {{config.brandName}}. Réalisations: {{steps.photoDescriptions}}. Ton: {{config.tone}}. {{config.signature:}}"
+          "prompt": "Rédige la légende de vitrine d'un artisan {{inputs.trade}} pour {{config.brandName}}. Réalisations: {{steps.photoDescriptions.analysis}}. Ton: {{config.tone}}. {{config.signature:}}"
         },
         "out": "caption",
         "onError": "RETRY",
@@ -48,7 +48,7 @@
         ],
         "maxParallel": 0,
         "inputs": {
-          "prompt": "Visuel de vitrine pour {{config.brandName}}, artisan {{inputs.trade}}. Réalisations: {{steps.photoDescriptions}}. Ton: {{config.tone}}.",
+          "prompt": "Visuel de vitrine pour {{config.brandName}}, artisan {{inputs.trade}}. Réalisations: {{steps.photoDescriptions.analysis}}. Ton: {{config.tone}}.",
           "size": "{{config.imageSize:1024x1024}}"
         },
         "out": "showcaseImage",
@@ -89,7 +89,7 @@
       {
         "key": "descriptions",
         "label": "Descriptions de vos réalisations",
-        "from": "{{steps.photoDescriptions}}",
+        "from": "{{steps.photoDescriptions.analysis}}",
         "type": "TEXT",
         "x-i18n": {
           "en": {

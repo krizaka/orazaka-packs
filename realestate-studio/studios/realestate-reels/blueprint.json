@@ -1,12 +1,12 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "PUBLISHED",
   "estimatedCredits": 2800,
-  "changelog": "1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Le plan d'ambiance est retiré (constat #35, ADR-066) : il était généré, facturé au tarif de diffusion — 3 600 crédits de la réserve — et jamais monté, parce que le monteur ne lit que `photos` et `audio`. Un pack ne facture pas ce qu'il ne fait pas. Le coût déclaré passe de 6 400 à 2 800, la différence étant l'estimation de la génération vidéo au pricebook. Remettre un plan d'ambiance est une décision produit : il faudra que le monteur l'assemble.",
+  "changelog": "1.4.0 — les descriptions se lisent par leur champ ({{steps.roomDescriptions.analysis}}, comme image-analysis) : le résultat entier rendait aussi ses métadonnées — orazaka-packs#5, possible sur un fan-out depuis orazaka-studio#60. 1.3.0 — libellés des sorties en anglais et français (x-i18n). 1.2.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.1.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Le plan d'ambiance est retiré (constat #35, ADR-066) : il était généré, facturé au tarif de diffusion — 3 600 crédits de la réserve — et jamais monté, parce que le monteur ne lit que `photos` et `audio`. Un pack ne facture pas ce qu'il ne fait pas. Le coût déclaré passe de 6 400 à 2 800, la différence étant l'estimation de la génération vidéo au pricebook. Remettre un plan d'ambiance est une décision produit : il faudra que le monteur l'assemble.",
   "createdBy": "system",
   "definition": {
     "studioKey": "realestate-reels",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "steps": [
       {
         "id": "describe",
@@ -33,7 +33,7 @@
           "describe"
         ],
         "inputs": {
-          "prompt": "Écris le script d'un Reel immobilier pour {{inputs.platform}}: accroche, voix off, légende et hashtags. Le bien: {{inputs.propertyBrief}}. Les pièces: {{steps.roomDescriptions}}. Ton: {{config.tone}}."
+          "prompt": "Écris le script d'un Reel immobilier pour {{inputs.platform}}: accroche, voix off, légende et hashtags. Le bien: {{inputs.propertyBrief}}. Les pièces: {{steps.roomDescriptions.analysis}}. Ton: {{config.tone}}."
         },
         "out": "script",
         "onError": "RETRY",
@@ -101,7 +101,7 @@
       {
         "key": "rooms",
         "label": "Descriptions des pièces",
-        "from": "{{steps.roomDescriptions}}",
+        "from": "{{steps.roomDescriptions.analysis}}",
         "type": "TEXT",
         "x-i18n": {
           "en": {

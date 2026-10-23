@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 510,
-  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Version initiale : une relance multi-temps par prospect, uniformisée puis postée au canal après validation.",
+  "changelog": "1.3.0 — les sorties de texte se lisent par leur champ ({{steps.ladders.content}}) : le résultat entier rendait aussi ses métadonnées (« content: …, metadata: provider: … ») — orazaka-packs#5, rendu possible sur un fan-out par orazaka-studio#60. 1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Version initiale : une relance multi-temps par prospect, uniformisée puis postée au canal après validation.",
   "createdBy": "system",
   "definition": {
     "studioKey": "followup-sequences",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "touchpoints",
@@ -32,7 +32,7 @@
           "touchpoints"
         ],
         "inputs": {
-          "prompt": "Voici des séquences de relance : {{steps.ladders}}. Uniformise le ton ({{config.tone}}) et supprime les répétitions d'une séquence à l'autre, sans changer les délais ni les objets. Rends le texte prêt à envoyer."
+          "prompt": "Voici des séquences de relance : {{steps.ladders.content}}. Uniformise le ton ({{config.tone}}) et supprime les répétitions d'une séquence à l'autre, sans changer les délais ni les objets. Rends le texte prêt à envoyer."
         },
         "out": "polished",
         "onError": "FAIL",
@@ -104,7 +104,7 @@
       {
         "key": "ladders",
         "label": "Relances par prospect",
-        "from": "{{steps.ladders}}",
+        "from": "{{steps.ladders.content}}",
         "type": "TEXT",
         "x-i18n": {
           "en": {

@@ -1,12 +1,12 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "PUBLISHED",
   "estimatedCredits": 380,
-  "changelog": "1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Version initiale : une fiche de qualification par prospect, puis un classement par priorité.",
+  "changelog": "1.3.0 — les sorties de texte se lisent par leur champ ({{steps.briefs.content}}, {{steps.ranking.content}}) : le résultat entier rendait aussi ses métadonnées (« content: …, metadata: provider: … ») — orazaka-packs#5, rendu possible sur un fan-out par orazaka-studio#60. 1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Version initiale : une fiche de qualification par prospect, puis un classement par priorité.",
   "createdBy": "system",
   "definition": {
     "studioKey": "lead-research",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "steps": [
       {
         "id": "research",
@@ -32,7 +32,7 @@
           "research"
         ],
         "inputs": {
-          "prompt": "Voici des fiches de qualification : {{steps.briefs}}. Classe ces prospects du plus au moins prioritaire pour l'offre suivante : {{inputs.offer}}. Pour chacun, une ligne : nom, priorité (haute/moyenne/basse), la raison en six mots."
+          "prompt": "Voici des fiches de qualification : {{steps.briefs.content}}. Classe ces prospects du plus au moins prioritaire pour l'offre suivante : {{inputs.offer}}. Pour chacun, une ligne : nom, priorité (haute/moyenne/basse), la raison en six mots."
         },
         "out": "ranking",
         "onError": "FAIL",
@@ -46,9 +46,9 @@
           "score"
         ],
         "inputs": {
-          "body": "{{steps.briefs}}",
+          "body": "{{steps.briefs.content}}",
           "subject": "{{inputs.offer}}",
-          "signature": "{{steps.ranking}}"
+          "signature": "{{steps.ranking.content}}"
         },
         "out": "researchDossier",
         "onError": "FAIL",
@@ -74,7 +74,7 @@
       {
         "key": "briefs",
         "label": "Fiches de qualification",
-        "from": "{{steps.briefs}}",
+        "from": "{{steps.briefs.content}}",
         "type": "TEXT",
         "x-i18n": {
           "en": {
