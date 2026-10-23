@@ -1,0 +1,34 @@
+{
+  "studio": "session-preparation",
+  "cases": [
+    {
+      "id": "reunion-et-pause",
+      "input": {"notes": "Lundi, j'ai quitté la réunion sans parler. Mardi, une pause au jardin m'a fait du bien. Je veux parler de cette réunion et de cette pause."},
+      "expected": {"agenda": "- Je veux parler de la réunion de lundi : je suis parti sans parler.\n- Je veux parler de la pause au jardin de mardi, qui m'a fait du bien."},
+      "assertions": [
+        {"path": ["agenda"], "includes": "réunion de lundi"},
+        {"path": ["agenda"], "includes": "pause au jardin"},
+        {"path": ["agenda"], "type": "string"}
+      ]
+    },
+    {
+      "id": "single-note-boundary",
+      "input": {"notes": "Je veux parler de mon déménagement."},
+      "expected": {"agenda": "- Je veux parler de mon déménagement."},
+      "assertions": [
+        {"path": ["agenda"], "includes": "mon déménagement"},
+        {"path": ["agenda"], "nonEmpty": true}
+      ]
+    },
+    {
+      "id": "uncertainty-without-diagnosis",
+      "input": {"notes": "J'ai mal dormi deux nuits. Je ne sais pas pourquoi. Je ne veux pas qu'on me colle une étiquette. Je veux décrire ces deux nuits en séance."},
+      "expected": {"agenda": "- Je veux décrire les deux nuits où j'ai mal dormi.\n- Je ne sais pas pourquoi et je ne veux pas qu'on me colle une étiquette."},
+      "assertions": [
+        {"path": ["agenda"], "includes": "deux nuits"},
+        {"path": ["agenda"], "includes": "Je ne sais pas pourquoi"},
+        {"path": ["agenda"], "includes": "une étiquette"}
+      ]
+    }
+  ]
+}

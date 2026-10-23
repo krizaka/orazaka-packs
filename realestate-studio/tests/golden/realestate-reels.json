@@ -1,0 +1,67 @@
+{
+  "studio": "realestate-reels",
+  "cases": [
+    {
+      "id": "three-photo-fictional-flat",
+      "input": {
+        "photos": ["asset:scene", "asset:scene-two", "asset:scene-three"],
+        "propertyBrief": "Bien fictif : appartement de 42 m², deux pièces, balcon. Les images synthétiques illustrent seulement le montage, pas l'état réel d'un logement.",
+        "platform": "instagram-reel"
+      },
+      "expected": {
+        "reel": "asset:generated-reel",
+        "caption": "Accroche : Deux pièces et un balcon, dans un bien fictif de 42 m².\nVoix off : Découvrez cet appartement fictif de 42 m², composé de deux pièces avec balcon. Ces images synthétiques illustrent le montage et ne constituent pas une visite du logement.\nLégende : Appartement fictif de 42 m², deux pièces et balcon. Visuels synthétiques d'illustration.\n#immobilier #appartement #balcon #bienfictif",
+        "rooms": "Trois scènes synthétiques d'illustration, dont un carré bleu sur fond orange et un cercle orange sur fond bleu ; elles ne permettent pas de décrire les pièces réelles du bien fictif."
+      },
+      "assertions": [
+        {"path": ["reel"], "nonEmpty": true},
+        {"path": ["caption"], "includes": "42 m²"},
+        {"path": ["caption"], "includes": "balcon"},
+        {"path": ["caption"], "includes": "synthétiques"},
+        {"path": ["rooms"], "includes": "carré bleu"},
+        {"path": ["rooms"], "includes": "cercle orange"}
+      ]
+    },
+    {
+      "id": "eight-photo-house-boundary",
+      "input": {
+        "photos": ["asset:scene", "asset:scene-two", "asset:scene-three", "asset:scene-four", "asset:scene-five", "asset:scene-six", "asset:scene-seven", "asset:scene-eight"],
+        "propertyBrief": "Bien fictif : maison de 96 m², trois chambres, jardin. Huit scènes synthétiques de test, aucune photo du logement.",
+        "platform": "youtube-short"
+      },
+      "expected": {
+        "reel": "asset:generated-reel",
+        "caption": "Accroche : Une maison fictive de 96 m² avec jardin.\nVoix off : Ce bien fictif comprend trois chambres et un jardin. Les huit scènes synthétiques testent le montage, elles ne montrent pas le logement.\nLégende : Maison fictive de 96 m², trois chambres et jardin. Montage de test sur images synthétiques.\n#maison #jardin #bienfictif",
+        "rooms": "Huit scènes synthétiques fournies pour tester le montage, dont un carré bleu sur fond orange et un cercle orange sur fond bleu ; aucune description de pièce réelle n'est établie."
+      },
+      "assertions": [
+        {"path": ["reel"], "type": "string"},
+        {"path": ["caption"], "includes": "96 m²"},
+        {"path": ["caption"], "includes": "trois chambres"},
+        {"path": ["caption"], "includes": "jardin"},
+        {"path": ["rooms"], "includes": "carré bleu"},
+        {"path": ["rooms"], "includes": "cercle orange"}
+      ]
+    },
+    {
+      "id": "unverified-features-not-marketed",
+      "input": {
+        "photos": ["asset:scene", "asset:scene-two", "asset:scene-three"],
+        "propertyBrief": "Annonce fictive : studio de 24 m². DPE, accessibilité et rentabilité non renseignés ; ne pas les présenter comme acquis. Images synthétiques d'illustration.",
+        "platform": "tiktok"
+      },
+      "expected": {
+        "reel": "asset:generated-reel",
+        "caption": "Accroche : Un studio fictif de 24 m².\nVoix off : Présentation d'un studio fictif de 24 m² à l'aide d'images synthétiques d'illustration. DPE, accessibilité et rentabilité ne sont pas renseignés.\nLégende : Studio fictif de 24 m². Visuels synthétiques ; caractéristiques non renseignées à vérifier, sans promesse de rentabilité.\n#studio #immobilier #bienfictif",
+        "rooms": "Scènes synthétiques d'illustration uniquement, dont un carré bleu sur fond orange et un cercle orange sur fond bleu ; elles ne prouvent ni l'accessibilité ni l'état du studio fictif."
+      },
+      "assertions": [
+        {"path": ["reel"], "nonEmpty": true},
+        {"path": ["caption"], "includes": "24 m²"},
+        {"path": ["caption"], "includes": "ne sont pas renseignés"},
+        {"path": ["caption"], "includes": "sans promesse de rentabilité"},
+        {"path": ["rooms"], "includes": "carré bleu"}
+      ]
+    }
+  ]
+}

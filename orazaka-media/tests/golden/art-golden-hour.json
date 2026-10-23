@@ -1,0 +1,35 @@
+{
+  "studio": "art-golden-hour",
+  "cases": [
+    {
+      "id": "english-pottery-workshop",
+      "input": {
+        "subject": "An original editorial portrait of a fictional potter in an ochre apron, lifting a handmade bowl beside an open workshop window; no branding.",
+        "size": "1024x1280",
+        "seed": "17"
+      },
+      "expected": {"image": "asset:scene", "seed": "17", "model": "synthetic-image", "generationMs": "125"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "17"}]
+    },
+    {
+      "id": "french-garden-breakfast",
+      "input": {
+        "subject": "Petit déjeuner imaginaire dans un jardin : une nappe en lin, deux bols artisanaux et des abricots, sans personne ni inscription.",
+        "size": "1360x768",
+        "seed": "29"
+      },
+      "expected": {"image": "asset:scene", "seed": "29", "model": "synthetic-image", "generationMs": "132"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "29"}]
+    },
+    {
+      "id": "square-empty-reading-chair",
+      "input": {
+        "subject": "A single empty wool reading chair beside a brass floor lamp in a fictional quiet cabin, framed with ample negative space and no visible writing.",
+        "size": "1024x1024",
+        "seed": "0"
+      },
+      "expected": {"image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "119"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "0"}]
+    }
+  ]
+}

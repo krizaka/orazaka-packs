@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs tests/golden/*.test.mjs",
+    "test:golden": "node --test tests/golden.test.mjs tests/golden/*.test.mjs",
+    "golden:run": "node tests/golden/run.mjs"
   },
   "devDependencies": {
     "ajv": "^8.20.0",

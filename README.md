@@ -79,6 +79,30 @@ Studio service's catalogue/coherence tests inside the
 [Orazaka workspace](https://github.com/krizaka/orazaka) check runtime integration, blueprint
 links and referenced i18n files beyond the manifest schema.
 
+## Golden cases
+
+Each Studio outside document-validation ships **3–5 fictional inputs**, illustrative JSON outputs,
+and executable output assertions in `<pack>/tests/golden/<studio>.json`. Never use customer
+documents, messages, photos, or recordings. Media references use synthetic test assets.
+
+```bash
+npm ci
+npm run test:golden
+```
+
+CI runs the shared harness on every PR (including prompt/model changes): it validates inputs
+against the actual blueprint's JSON Schema, checks output assertions, and fails for uncovered
+Studios. `golden-ratchet.json` lists the two document-validation Studio exceptions: their existing
+deterministic document/ruleset goldens still run through `document-validation/worker/test_golden.py`.
+An exception must be removed when Studio cases land; CI compares the list with the PR base and
+rejects additions or renamed exceptions. New packs are discovered automatically, including DRAFT packs.
+
+These offline checks validate fixture contracts, **not model quality**. The live-stack runner
+uses the same cases and assertions against the Studio API; see [CONTRIBUTING.md](CONTRIBUTING.md).
+The standalone CI does not provision inference or a Studio stack. The trusted `golden-stack`
+CI lane runs actual cases on an operator-provisioned runner after pushes to `main` when enabled,
+or via workflow dispatch; it never runs untrusted PR code.
+
 ## Governance
 
 This repository follows the Orazaka governance contract — [AGENTS.md](https://github.com/krizaka/orazaka/blob/main/AGENTS.md)

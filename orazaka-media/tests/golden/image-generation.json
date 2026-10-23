@@ -1,0 +1,38 @@
+{
+  "studio": "image-generation",
+  "cases": [
+    {
+      "id": "english-paper-lantern-poster",
+      "input": {
+        "prompt": "An original editorial illustration of a floating paper lantern over an imaginary lily pond at dusk, indigo and amber palette, no lettering.",
+        "size": "1024x1024",
+        "negativePrompt": "text, logos, signatures",
+        "seed": "127"
+      },
+      "expected": {"image": "asset:scene", "seed": "127", "model": "synthetic-image", "generationMs": "162"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "127"}]
+    },
+    {
+      "id": "french-imaginary-botanical-cover",
+      "input": {
+        "prompt": "Couverture botanique fictive sans texte : une plante imaginaire aux feuilles turquoise dans un pot en argile, fond crème et espace libre en haut.",
+        "size": "768x1360",
+        "negativePrompt": "lettres, marques, filigranes",
+        "seed": "131"
+      },
+      "expected": {"image": "asset:scene", "seed": "131", "model": "synthetic-image", "generationMs": "176"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "131"}]
+    },
+    {
+      "id": "small-square-abstract-shapes",
+      "input": {
+        "prompt": "An original abstract composition of one amber circle and two indigo squares on a white background, flat colors, no texture or text.",
+        "size": "512x512",
+        "seed": "0",
+        "negativePrompt": ""
+      },
+      "expected": {"image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "96"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "0"}]
+    }
+  ]
+}

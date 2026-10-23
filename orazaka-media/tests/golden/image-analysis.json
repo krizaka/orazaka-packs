@@ -1,0 +1,44 @@
+{
+  "studio": "image-analysis",
+  "cases": [
+    {
+      "id": "english-synthetic-square-alt-text",
+      "input": {
+        "assetId": "asset:scene",
+        "prompt": "Write one sentence of English alt text for this original synthetic test image. Name the visible color and geometric shape using the phrase blue square if those are present. Do not invent people, brands or text."
+      },
+      "expected": {"analysis": "A blue square is centered against an orange background; no people or readable text are visible."},
+      "assertions": [
+        {"path": ["analysis"], "type": "string"},
+        {"path": ["analysis"], "nonEmpty": true},
+        {"path": ["analysis"], "includes": "blue square"}
+      ]
+    },
+    {
+      "id": "french-synthetic-circle-alt-text",
+      "input": {
+        "assetId": "asset:scene-two",
+        "prompt": "Décris en une phrase française cette image synthétique originale. Nomme la forme et sa couleur avec les mots cercle orange si cette forme est visible. Ne suppose aucune marque, personne ou inscription."
+      },
+      "expected": {"analysis": "Un cercle orange apparaît sur un fond bleu uni, sans personne ni inscription lisible."},
+      "assertions": [
+        {"path": ["analysis"], "type": "string"},
+        {"path": ["analysis"], "nonEmpty": true},
+        {"path": ["analysis"], "includes": "cercle orange"}
+      ]
+    },
+    {
+      "id": "structured-square-with-no-readable-text",
+      "input": {
+        "assetId": "asset:scene",
+        "prompt": "Inspect this original synthetic shape image. Return only JSON with shape (lowercase English noun), color (lowercase English color), and containsReadableText (boolean). Report what is visible, not a fictional caption."
+      },
+      "expected": {"analysis": {"shape": "square", "color": "blue", "containsReadableText": false}},
+      "assertions": [
+        {"path": ["analysis", "shape"], "equals": "square"},
+        {"path": ["analysis", "color"], "equals": "blue"},
+        {"path": ["analysis", "containsReadableText"], "equals": false}
+      ]
+    }
+  ]
+}

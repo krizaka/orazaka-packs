@@ -1,0 +1,67 @@
+{
+  "studio": "creator-suggestions",
+  "cases": [
+    {
+      "id": "balcony-herbs-en",
+      "input": {
+        "title": "Repotting basil on my balcony",
+        "description": "A fictional creator repots one basil plant in a reused pot. No harvest results yet.",
+        "tags": "basil, balcony",
+        "audienceTags": "small space gardening",
+        "language": "en"
+      },
+      "expected": {
+        "suggestions": {
+          "titles": ["Repotting balcony basil", "One basil plant, one reused pot", "Basil repotting in a small space"],
+          "description": "Repotting one basil plant on a balcony using a reused pot. No harvest results yet.",
+          "tags": ["basil", "balcony", "repotting", "reused pot", "small space gardening"],
+          "why": "The proposals foreground basil and the reused pot without promising a harvest."
+        }
+      },
+      "assertions": [
+        {"path": ["suggestions", "titles"], "type": "array"},
+        {"path": ["suggestions", "description"], "includes": "basil"},
+        {"path": ["suggestions", "tags"], "includes": "small space gardening"}
+      ]
+    },
+    {
+      "id": "papier-plie-fr",
+      "input": {
+        "title": "Un bateau en papier brouillon",
+        "description": "Je plie une feuille déjà utilisée en petit bateau, sans colle.",
+        "tags": "papier, pliage",
+        "language": "fr"
+      },
+      "expected": {
+        "suggestions": {
+          "titles": ["Plier un bateau en papier brouillon", "Une feuille utilisée devient un bateau", "Un petit bateau sans colle"],
+          "description": "Une feuille déjà utilisée, quelques plis et un petit bateau en papier, sans colle.",
+          "tags": ["papier", "pliage", "bateau", "papier brouillon", "sans colle"],
+          "why": "Les propositions mettent en avant le papier déjà utilisé et le pliage sans colle."
+        }
+      },
+      "assertions": [
+        {"path": ["suggestions", "description"], "includes": "sans colle"},
+        {"path": ["suggestions", "tags"], "includes": "pliage"},
+        {"path": ["suggestions", "why"], "type": "string"}
+      ]
+    },
+    {
+      "id": "minimal-title-no-invented-promise",
+      "input": {"title": "Clay cup", "language": "en"},
+      "expected": {
+        "suggestions": {
+          "titles": ["Clay cup", "A cup in clay", "The clay cup"],
+          "description": "A clay cup.",
+          "tags": ["clay", "cup", "clay cup", "object", "vessel"],
+          "why": "The sparse title supports only a clay cup, not a process or performance claim."
+        }
+      },
+      "assertions": [
+        {"path": ["suggestions", "description"], "includes": "clay cup"},
+        {"path": ["suggestions", "titles"], "type": "array"},
+        {"path": ["suggestions", "tags"], "includes": "clay"}
+      ]
+    }
+  ]
+}

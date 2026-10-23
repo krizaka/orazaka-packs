@@ -1,0 +1,45 @@
+{
+  "studio": "video-with-sound",
+  "cases": [
+    {
+      "id": "english-fictional-lantern-launch",
+      "input": {
+        "prompt": "A tiny original paper lantern lifts above an imaginary pond, slow dolly in, warm dusk light, no writing or logos.",
+        "durationSeconds": 5,
+        "aspect": "16:9",
+        "music": "Original instrumental cue, soft marimba and bowed strings, 72 BPM, quiet anticipation, no vocals.",
+        "foley": "Gentle water movement and a faint paper rustle.",
+        "seed": "157"
+      },
+      "expected": {"video": "asset:video", "silent": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+    },
+    {
+      "id": "french-synthetic-scene-reveal",
+      "input": {
+        "prompt": "À partir de l'image synthétique, créer un lent mouvement de caméra vers l'avant, objets inchangés et lumière douce, sans inscription.",
+        "durationSeconds": 5,
+        "aspect": "9:16",
+        "image": "asset:scene",
+        "music": "Composition instrumentale originale au piano feutré, 60 BPM, calme et curieuse, sans voix.",
+        "foley": "Ambiance de pièce discrète et souffle léger.",
+        "seed": "163"
+      },
+      "expected": {"video": "asset:video", "silent": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+    },
+    {
+      "id": "square-foley-only-experiment",
+      "input": {
+        "prompt": "An original miniature wooden wind chime sways slowly in an empty imaginary courtyard, locked square framing, no people or text.",
+        "durationSeconds": 5,
+        "aspect": "1:1",
+        "music": "",
+        "foley": "Sparse dry wooden taps with a gentle wind bed; no voices or melody.",
+        "seed": "0"
+      },
+      "expected": {"video": "asset:video", "silent": "asset:video"},
+      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+    }
+  ]
+}

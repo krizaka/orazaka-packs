@@ -1,0 +1,35 @@
+{
+  "studio": "art-still-life",
+  "cases": [
+    {
+      "id": "english-ceramic-pear-study",
+      "input": {
+        "subject": "An original still life of three green pears in a handmade cream ceramic bowl beside a folded linen napkin, no marks or lettering.",
+        "size": "1024x1280",
+        "seed": "71"
+      },
+      "expected": {"image": "asset:scene", "seed": "71", "model": "synthetic-image", "generationMs": "124"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "71"}]
+    },
+    {
+      "id": "french-copper-and-plums",
+      "input": {
+        "subject": "Nature morte fictive : cinq prunes violettes, une cruche en cuivre martelé et une serviette écrue sur une table patinée, sans étiquette.",
+        "size": "1360x768",
+        "seed": "83"
+      },
+      "expected": {"image": "asset:scene", "seed": "83", "model": "synthetic-image", "generationMs": "136"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "83"}]
+    },
+    {
+      "id": "minimal-single-empty-bowl",
+      "input": {
+        "subject": "One empty irregular clay bowl on an otherwise bare weathered table in a fictional artisan studio; restrained square composition, no food, no text.",
+        "size": "1024x1024",
+        "seed": "0"
+      },
+      "expected": {"image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "111"},
+      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "0"}]
+    }
+  ]
+}
