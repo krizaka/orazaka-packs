@@ -131,6 +131,19 @@ def _clean():
         return handle.read()
 
 
+def _profile_fixture(name):
+    if name != "reportlab-generated":
+        with open(os.path.join(HERE, "fixtures", name), "rb") as handle:
+            return handle.read()
+    from pypdf import PdfReader, PdfWriter
+
+    writer = PdfWriter(clone_from=PdfReader(io.BytesIO(_clean())))
+    writer.add_metadata({"/Producer": "ReportLab", "/Creator": "ReportLab"})
+    output = io.BytesIO()
+    writer.write(output)
+    return output.getvalue()
+
+
 # ── the catalogue is data ────────────────────────────────────────────────────
 def test_every_case_is_written_in_both_languages_with_the_same_facts():
     fields = string.Formatter()
@@ -142,6 +155,108 @@ def test_every_case_is_written_in_both_languages_with_the_same_facts():
             en = {f for _, f, _, _ in fields.parse(entry["en"][part]) if f}
             assert fr == en, f"{case}.{part}: {fr} vs {en}"
             assert entry["fr"][part].strip() and entry["en"][part].strip(), f"{case}.{part}"
+
+
+def _profile_schema_errors(schema, value, path="$"):
+    types = {"object": dict, "array": list, "string": str, "integer": int}
+    expected = schema.get("type")
+    if expected and (
+        not isinstance(value, types[expected])
+        or (expected == "integer" and isinstance(value, bool))
+    ):
+        return [f"{path}: expected {expected}"]
+    errors = []
+    if "enum" in schema and value not in schema["enum"]:
+        errors.append(f"{path}: not in enum")
+    if isinstance(value, str):
+        if len(value) < schema.get("minLength", 0):
+            errors.append(f"{path}: too short")
+        if "pattern" in schema and not re.fullmatch(schema["pattern"], value):
+            errors.append(f"{path}: does not match pattern")
+    if isinstance(value, int) and not isinstance(value, bool) and value < schema.get("minimum", value):
+        errors.append(f"{path}: below minimum")
+    if isinstance(value, list):
+        if len(value) < schema.get("minItems", 0):
+            errors.append(f"{path}: too few items")
+        if "items" in schema:
+            for i, item in enumerate(value):
+                errors += _profile_schema_errors(schema["items"], item, f"{path}[{i}]")
+    if isinstance(value, dict):
+        errors += [f"{path}.{key}: missing" for key in schema.get("required", []) if key not in value]
+        properties = schema.get("properties", {})
+        if schema.get("additionalProperties") is False:
+            errors += [f"{path}.{key}: unexpected" for key in value if key not in properties]
+        for key, child in properties.items():
+            if key in value:
+                errors += _profile_schema_errors(child, value[key], f"{path}.{key}")
+    return errors
+
+
+def test_document_profiles_match_their_schema_and_profile_goldens():
+    schema = json.load(open(os.path.join(HERE, "document-profile.schema.json"), encoding="utf-8"))
+    profile_dir = os.path.join(HERE, "document_profiles")
+    fixture_dir = os.path.join(HERE, "fixtures", "document-profiles")
+    blueprint = json.load(open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8"))
+    profile_input = blueprint["inputSchema"]["properties"]["documentType"]
+    assert profile_input["enum"] == ["pay-stub", "bank-statement", "employment-letter"]
+    assert "documentType" not in blueprint["inputSchema"]["required"]
+    signal_schema = {
+        output["key"]: output["schema"]
+        for output in blueprint["definition"]["outputs"]
+        if "schema" in output
+    }["signals"]
+    assert blueprint["definition"]["steps"][0]["inputs"]["documentType"] == "{{inputs.documentType:}}"
+    profile_types = set()
+    for profile_file in sorted(os.listdir(profile_dir)):
+        if not profile_file.endswith(".json"):
+            continue
+        profile = json.load(open(os.path.join(profile_dir, profile_file), encoding="utf-8"))
+        assert _profile_schema_errors(schema, profile) == [], profile_file
+        assert profile["pageCount"]["min"] <= profile["pageCount"]["max"], profile_file
+        assert profile["fontCount"]["min"] <= profile["fontCount"]["max"], profile_file
+        assert profile["documentType"] not in profile_types, profile_file
+        profile_types.add(profile["documentType"])
+        golden = json.load(open(os.path.join(fixture_dir, f"{profile['documentType']}.expected.json"), encoding="utf-8"))
+        assert golden["documentType"] == profile["documentType"]
+        for key in ("acceptedFixture", "mismatchFixture"):
+            raw = _profile_fixture(golden[key])
+            report = a.analyse(raw, document_type=golden["documentType"])
+            assert _conforms(signal_schema, report) == []
+            signal = _by_id(report).get(golden["signalId"])
+            if key == "acceptedFixture":
+                assert signal is None, (golden["documentType"], signal)
+            else:
+                assert signal and signal["level"] == golden["level"], (golden["documentType"], signal)
+                assert report["profileId"] == profile["profileId"]
+                assert report["profileVersion"] == profile["version"]
+                for word in VERDICT_WORDS + ("forged", "fake", "fraud", "tampered"):
+                    assert word not in f"{signal['observation']} {signal['mayIndicate']}".lower()
+    assert profile_types == {"pay-stub", "bank-statement", "employment-letter"}
+
+
+def test_a_profile_mismatch_reads_in_the_report_language():
+    fields = string.Formatter()
+    entry = a.CATALOGUE["signals"]["DOC-PROFILE-001"]
+    assert entry["fr"]["mismatches"].keys() == entry["en"]["mismatches"].keys()
+    for key in entry["fr"]["mismatches"]:
+        fr = {f for _, f, _, _ in fields.parse(entry["fr"]["mismatches"][key]) if f}
+        en = {f for _, f, _, _ in fields.parse(entry["en"]["mismatches"][key]) if f}
+        assert fr == en, key
+    profile = a.DOCUMENT_PROFILES["pay-stub"]
+    english = a._document_profile_signal(profile, "en", ("SomeEditor 1.0",), 9, 40)
+    assert english["observation"].startswith("The file differs")
+    for french in ("polices", "producteur", "logiciel"):
+        assert french not in english["observation"], english["observation"]
+    assert "9 page(s)" in english["observation"] and "40 distinct fonts" in english["observation"]
+    french = a._document_profile_signal(profile, "fr", ("SomeEditor 1.0",), 9, 40)
+    assert "40 polices distinctes" in french["observation"]
+
+
+def test_an_absent_or_unknown_document_profile_preserves_the_current_report():
+    raw = _clean()
+    baseline = a.analyse(raw)
+    assert a.analyse(raw, document_type="") == baseline
+    assert a.analyse(raw, document_type="unknown-type") == baseline
 
 
 def test_the_catalogue_never_asserts_a_verdict_and_every_profile_has_a_known_class():

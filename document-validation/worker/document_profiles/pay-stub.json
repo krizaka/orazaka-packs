@@ -1,0 +1,11 @@
+{
+  "profileId": "pay-stub",
+  "version": "1.0.0",
+  "documentType": "pay-stub",
+  "expectedIssuers": ["employer", "payroll provider"],
+  "acceptedProducers": ["adp", "ceridian", "dayforce", "nethris", "payworks", "workday"],
+  "acceptedProducerClasses": ["generator", "ocr", "scanner"],
+  "expectedFields": ["pay period", "gross pay", "net pay"],
+  "pageCount": { "min": 1, "max": 3 },
+  "fontCount": { "min": 1, "max": 6 }
+}

@@ -1,0 +1,7 @@
+{
+  "acceptedFixture": "reportlab-generated",
+  "mismatchFixture": "modified.pdf",
+  "documentType": "employment-letter",
+  "signalId": "DOC-PROFILE-001",
+  "level": "inhabituel"
+}

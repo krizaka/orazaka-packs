@@ -200,6 +200,19 @@ def test_the_structured_signals_reach_the_blueprint_as_json_text():
     assert sources["signals"] == "{{steps.signals.reportJson}}"
 
 
+def test_the_worker_passes_the_optional_document_type_to_authenticity():
+    import base64
+
+    try:
+        import validation_worker as w
+    except ModuleNotFoundError:  # the broker client is not installed where only the rules are tested
+        return
+    encoded = base64.b64encode(_fixture("modified")).decode()
+    report = w._signals({"documentBase64": encoded, "documentType": "pay-stub"})["report"]
+    assert report["profileId"] == "pay-stub"
+    assert _by_id(report)["DOC-PROFILE-001"]["level"] == a.UNUSUAL
+
+
 def _conforms(schema, value, path="$"):
     """The subset of JSON Schema the engine enforces (orazaka-studio OutputContract, ADR-076), for what this schema uses."""
     problems = []
