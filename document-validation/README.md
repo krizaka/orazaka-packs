@@ -161,6 +161,7 @@ produced, no signal that names a person, and every report states what it did not
 
 ```bash
 .venv/bin/python worker/fixtures/make_fixtures.py   # rebuild the three gate documents
+.venv/bin/python worker/test_golden.py              # golden cases: whole documents, every rule's verdict (--update to rewrite)
 .venv/bin/python worker/test_authenticity.py        # the gate
 .venv/bin/python worker/test_authenticity_formats.py # the catalogue, XMP, /ID, images, office files
 ```

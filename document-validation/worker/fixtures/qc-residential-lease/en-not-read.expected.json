@@ -1,0 +1,17 @@
+{
+  "asOf": "2026-10-22",
+  "findings": {
+    "QC-LEASE-001": "FAIL",
+    "QC-LEASE-002": "FAIL",
+    "QC-LEASE-003": "FAIL",
+    "QC-LEASE-004": "PASS",
+    "QC-LEASE-005": "PASS",
+    "QC-LEASE-006": "PASS",
+    "QC-LEASE-007": "PASS",
+    "QC-LEASE-008": "FAIL",
+    "QC-LEASE-009": "PASS"
+  },
+  "judgments": [
+    "QC-LEASE-020"
+  ]
+}
