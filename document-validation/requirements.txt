@@ -1,0 +1,5 @@
+# The validation worker (worker/validation_worker.py): the PDF reader, the broker client, the rulesets. Its venv is the pack's
+# (worker.yaml run.python); the dev image installs this file (krizaka/orazaka#374).
+pypdf>=6.20.0
+pika>=1.4.4
+pyyaml>=6.0.3
