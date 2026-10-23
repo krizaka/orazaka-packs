@@ -41,6 +41,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
+      - run: npm ci
       - run: npm test
 
   # The three Python workers: the org's reusable python-ci (krizaka/.github#149). Each caller job is named like its former
