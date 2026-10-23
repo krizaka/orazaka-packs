@@ -45,13 +45,17 @@ Two numbers, and they answer different questions:
 
 Both appear in every report.
 
-## Québec lease — what the ruleset covers, and what it does not (revision 2)
+## Québec lease — what the ruleset covers, and what it does not (revision 3)
 
-`QC-LEASE-004` catches a forbidden deposit however the lease words it — « dépôt de garantie / de sécurité / pour
-dommages », « équivalant à un mois de loyer », a percentage, « deux mois de loyer d'avance », a surety in cash, refundable
-key fees — with or without an amount (C.c.Q., art. 1904 al. 1). Negations pass (« aucun dépôt », « néant », « ne peut
-exiger de dépôt »). Every wording is a fixture (ADR-072). `QC-LEASE-009` flags a clause that waives in advance the notice of,
+`QC-LEASE-004` catches a required sum other than rent, whether called a deposit or otherwise — « dépôt de garantie / de sécurité / pour
+dommages », « somme d'argent autre que le loyer », « équivalant à un mois de loyer », a percentage, « deux mois de loyer d'avance »,
+a surety in cash, refundable key fees — with or without an amount (C.c.Q., art. 1904). Negations pass (« aucun dépôt », « néant »,
+« aucune somme d'argent autre que le loyer », « ne peut exiger de dépôt »). Every wording is a fixture (ADR-072). `QC-LEASE-009` flags a clause that waives in advance the notice of,
 or the tenant's right to refuse, a rent increase (art. 1942, 1943, 1945 ; 1893).
+
+`QC-LEASE-010` asks for a contextual review of penalties and late fees under [C.c.Q., art. 1901](https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1901): the article concerns a penalty exceeding the landlord's actual loss or an unreasonable obligation. A fixed fee alone is not treated as a legal conclusion; its amount and circumstances require human review. `QC-LEASE-011` asks whether an applicable building regulation is described as delivered before the lease is concluded and as part of the lease, as required by [art. 1894](https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1894). The text check cannot establish that a copy was physically delivered. Both are advisory model questions with PASS/FAIL examples for review, not automatic legal determinations; the examples and a fictional sample annex are under `worker/fixtures/qc-residential-lease/`.
+
+The articles were read from the official Légis Québec text: [art. 1894](https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1894) requires, where applicable, delivery of the regulation before the lease is concluded and states that it forms part of the lease; [art. 1901](https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1901) addresses a penalty exceeding actual loss and unreasonable obligations. The sample-annex golden case records the worker's deterministic findings and the judgment questions it queues, not the result of a legal review.
 
 Not encoded, on purpose: the notice periods of art. 1942 and the content of the mandatory form's section F — their text could
 not be checked at the source, and a compliance rule written from memory is worse than none. They wait for a lawyer's review
