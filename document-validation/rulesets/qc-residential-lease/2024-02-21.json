@@ -6,9 +6,9 @@
   "effectiveFrom": "2024-02-21",
   "effectiveTo": null,
   "source": "Code civil du Québec, art. 1851 et suiv. (bail de logement : art. 1892 à 1978), Règlement sur les formulaires de bail obligatoires et sur les mentions de l'avis au nouveau locataire (RLRQ c. T-15.01, r. 3), Tribunal administratif du logement",
-  "revision": 2,
+  "revision": 3,
   "reviewStatus": "TO_REVIEW_BY_LAWYER",
-  "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. À faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration.",
+  "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration.",
   "rules": [
     {
       "ruleId": "QC-LEASE-001",
@@ -69,10 +69,10 @@
       "citation": "C.c.Q., art. 1904, al. 1",
       "check": {
         "type": "FORBIDDEN_PATTERN",
-        "pattern": "(?i)(?:(?<!aucun )(?<!aucune )(?<!sans )(?<!pas de )(?<!pas d['’])(?<!ni )(?<!nul )(?<!exiger de )(?<!exiger d['’])(?<!exige de )(?<!exige d['’])(?<!exigé de )(?<!exigé d['’])(?:d[ée]p[ôo]ts?\\s+(?:de\\s+|en\\s+|pour\\s+)?(?:garantie|s[ée]curit[ée]|dommages?|cl[ée]s?)|d[ée]p[ôo]ts?\\s+(?:[ée]quivalant|[ée]gal|correspondant|d['’]un\\s+mois|de\\s+\\d)|caution(?:nement)?\\s+(?:en\\s+argent|de\\s+\\d)|frais\\s+de\\s+(?:dommages|cl[ée]s?)\\s+remboursables?|(?:en|à\\s+titre\\s+de)\\s+(?:garantie|d[ée]p[ôo]t|caution)(?=[^.\\n]{0,60}?\\d)|mois\\s+de\\s+loyer[^.\\n]{0,40}?(?:en|à\\s+titre\\s+de)\\s+(?:garantie|d[ée]p[ôo]t|caution))(?!\\s*:\\s*(?:n[ée]ant|aucun|sans\\s+objet|0\\s*\\$))(?![^.\\n]{0,30}?(?:n['’]est|ne\\s+sera|ne\\s+peut)\\s+(?:pas\\s+|jamais\\s+)?(?:exig|requis|demand|per[çc]u))(?:[^.\\n]{0,80}?\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?|%))?|(?:deux|trois|quatre|[2-9])\\s+mois\\s+de\\s+loyer\\s+(?:payables?\\s+)?(?:d['’]avance|à\\s+la\\s+signature))"
+        "pattern": "(?i)(?:(?<!aucun )(?<!aucune )(?<!sans )(?<!pas de )(?<!pas d['’])(?<!ni )(?<!nul )(?<!exiger de )(?<!exiger d['’])(?<!exige de )(?<!exige d['’])(?<!exigé de )(?<!exigé d['’])(?:somme\\s+d['’]argent\\s+autre\\s+que\\s+le\\s+loyer|d[ée]p[ôo]ts?\\s+(?:de\\s+|en\\s+|pour\\s+)?(?:garantie|s[ée]curit[ée]|dommages?|cl[ée]s?)|d[ée]p[ôo]ts?\\s+(?:[ée]quivalant|[ée]gal|correspondant|d['’]un\\s+mois|de\\s+\\d)|caution(?:nement)?\\s+(?:en\\s+argent|de\\s+\\d)|frais\\s+de\\s+(?:dommages|cl[ée]s?)\\s+remboursables?|(?:en|à\\s+titre\\s+de)\\s+(?:garantie|d[ée]p[ôo]t|caution)(?=[^.\\n]{0,60}?\\d)|mois\\s+de\\s+loyer[^.\\n]{0,40}?(?:en|à\\s+titre\\s+de)\\s+(?:garantie|d[ée]p[ôo]t|caution))(?!\\s*:\\s*(?:n[ée]ant|aucun|sans\\s+objet|0\\s*\\$))(?![^.\\n]{0,30}?(?:n['’]est|ne\\s+sera|ne\\s+peut)\\s+(?:pas\\s+|jamais\\s+)?(?:exig|requis|demand|per[çc]u))(?:[^.\\n]{0,80}?\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?|%))?|(?:deux|trois|quatre|[2-9])\\s+mois\\s+de\\s+loyer\\s+(?:payables?\\s+)?(?:d['’]avance|à\\s+la\\s+signature))"
       },
-      "onPass": "Aucun dépôt de garantie n'est exigé.",
-      "onFail": "Le bail exige un dépôt ou une garantie en argent, quelle que soit la façon dont il est nommé. L'article 1904 ne permet au locateur d'exiger d'avance que le premier terme de loyer.",
+      "onPass": "Aucune somme autre que le loyer n'est exigée.",
+      "onFail": "Le bail exige une somme autre que le loyer, sous forme de dépôt ou autrement. L'article 1904 ne permet au locateur d'exiger d'avance que le premier terme de loyer.",
       "fixtures": {
         "pass": [
           "Le premier mois de loyer, 1 450 $, est payable à la signature.",
@@ -82,7 +82,8 @@
           "Le locateur ne peut exiger de dépôt de garantie (art. 1904).",
           "Le loyer est payé par dépôt direct dans le compte du locateur.",
           "Le locataire verse le loyer du premier mois à la signature.",
-          "Le locateur détient une garantie légale de bon état du logement."
+          "Le locateur détient une garantie légale de bon état du logement.",
+          "Aucune somme d'argent autre que le loyer n'est exigée."
         ],
         "fail": [
           "La locataire verse un dépôt de sécurité de 1 450 $ à la signature.",
@@ -94,7 +95,8 @@
           "Un cautionnement en argent de 800 $ est exigé.",
           "Des frais de clés remboursables de 50 $ sont exigés.",
           "Le locataire paie deux mois de loyer d'avance à la signature.",
-          "Dépôt pour dommages : 300 $."
+          "Dépôt pour dommages : 300 $.",
+          "Le locataire doit verser une somme d'argent autre que le loyer : 100 $."
         ]
       }
     },
@@ -192,6 +194,46 @@
       }
     },
     {
+      "ruleId": "QC-LEASE-010",
+      "title": "Peines et frais de retard — appréciation contextuelle",
+      "severity": "ADVISORY",
+      "method": "JUDGMENT",
+      "citation": "C.c.Q., art. 1901",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1901",
+      "question": "Le libellé prévoit-il une peine ou des frais de retard qui dépassent explicitement le préjudice réellement subi par le locateur, ou qui imposent au locataire une obligation déraisonnable compte tenu des circonstances ? La seule mention d'un montant fixe ne suffit pas à trancher : ne présume pas le préjudice réel et signale toute incertitude pour vérification humaine.",
+      "onPass": "Aucune formulation explicitement disproportionnée n'est relevée. Le préjudice réel et l'application de la clause ne sont pas vérifiés.",
+      "onFail": "Le libellé de la peine ou des frais de retard paraît dépasser le préjudice décrit ou imposer une obligation déraisonnable. Vérification humaine requise ; ce constat informatif n'est pas un avis juridique.",
+      "fixtures": {
+        "pass": [
+          "En cas de retard, seuls les frais réels directement engagés seront réclamés.",
+          "Les intérêts applicables sont ceux prévus par la loi."
+        ],
+        "fail": [
+          "Tout retard entraîne des frais fixes de 100 $, même si le préjudice subi est inférieur ou nul.",
+          "Une pénalité de 250 $ est due automatiquement pour tout jour de retard, sans égard au préjudice réel."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-011",
+      "title": "Règlement de l'immeuble — remise avant la conclusion du bail",
+      "severity": "ADVISORY",
+      "method": "JUDGMENT",
+      "citation": "C.c.Q., art. 1894",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1894",
+      "question": "Si un règlement de l'immeuble portant sur la jouissance, l'usage ou l'entretien des logements ou des lieux communs s'applique, le document indique-t-il qu'un exemplaire a été remis au locataire avant la conclusion du bail et qu'il fait partie du bail ? Ne présume pas qu'un règlement existe ou a été matériellement remis. Si le document ne permet pas de le vérifier, signale cette limite plutôt que de conclure.",
+      "onPass": "Le texte indique la remise préalable du règlement applicable et son intégration au bail ; la remise matérielle n'est pas vérifiée.",
+      "onFail": "Le texte prévoit une remise après la conclusion du bail ou ne permet pas de vérifier la remise préalable d'un règlement applicable. Vérification humaine requise ; ce constat informatif n'est pas un avis juridique.",
+      "fixtures": {
+        "pass": [
+          "Le règlement de l'immeuble ci-joint, remis au locataire avant la conclusion du bail, en fait partie. Il porte sur la jouissance, l'usage et l'entretien des logements et des lieux d'usage commun."
+        ],
+        "fail": [
+          "Le règlement de l'immeuble sera remis au locataire après la signature du bail."
+        ]
+      }
+    },
+    {
       "ruleId": "QC-LEASE-020",
       "title": "Clause abusive",
       "severity": "ADVISORY",
@@ -202,5 +244,5 @@
       "onFail": "Une clause paraît abusive ; l'article 1901 permet au Tribunal administratif du logement de l'annuler ou d'en réduire l'obligation."
     }
   ],
-  "revisionNote": "Révision 2 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-004 repère le dépôt de garantie quelle que soit sa formulation (« un mois de loyer », « dépôt de sécurité », pourcentage, sans montant), et non plus seulement avec un montant en dollars ; QC-LEASE-009 est ajoutée : renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat."
+  "revisionNote": "Révision 3 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-010 ajoute une question d'appréciation des pénalités et frais de retard au regard du préjudice réellement subi (art. 1901) ; QC-LEASE-011 vérifie informativement la mention de remise préalable du règlement applicable et de son intégration au bail (art. 1894), sans prétendre vérifier sa remise matérielle. QC-LEASE-004 précise que l'article 1904 couvre toute somme autre que le loyer, sous forme de dépôt ou autrement, tout en permettant d'exiger d'avance le premier terme de loyer. Révision 2 avait ajouté QC-LEASE-009 sur la renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat. Chaque nouvel élément reste à faire relire par un avocat ou une avocate membre du Barreau du Québec."
 }

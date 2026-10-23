@@ -292,6 +292,7 @@ def test_quebec_rules_catch_what_the_civil_code_forbids_and_say_they_await_a_law
 # advance). Written from the requirement — what a landlord actually writes — not from the pattern.
 QC_DEPOSIT_FAIL = [
     "La locataire verse un dépôt de sécurité de 1 450 $ à la signature.",
+    "Le locataire doit verser une somme d'argent autre que le loyer : 100 $.",
     "Un dépôt de garantie équivalant à un mois de loyer est exigé à la signature.",
     "Dépôt de garantie : un mois de loyer.",
     "Un dépôt de 10 % du loyer annuel est requis à la signature.",
@@ -304,6 +305,7 @@ QC_DEPOSIT_FAIL = [
 ]
 QC_DEPOSIT_PASS = [
     "Le premier mois de loyer, 1 450 $, est payable à la signature.",
+    "Aucune somme d'argent autre que le loyer n'est exigée.",
     "Aucun dépôt de garantie n'est exigé.",
     "Le locateur n'exige aucun dépôt de sécurité.",
     "Dépôt de garantie : néant.",
@@ -358,8 +360,26 @@ def test_qc_waiver_of_the_rent_increase_regime_is_flagged_and_the_lawful_clauses
 
 def test_qc_revision_records_the_correction_and_the_law_is_unchanged():
     ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
-    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 2
+    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 3
+    assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
     assert "dépôt" in ruleset["revisionNote"].lower() and "augmentation" in ruleset["revisionNote"].lower()
+    assert "pénalité" in ruleset["revisionNote"].lower() and "règlement" in ruleset["revisionNote"].lower()
+
+
+def test_qc_penalty_and_building_rules_are_sourced_judgments_with_fixtures():
+    ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
+    rule_ids = ("QC-LEASE-010", "QC-LEASE-011")
+    rules_by_id = {rule["ruleId"]: rule for rule in ruleset["rules"]}
+    assert set(rule_ids) <= set(rules_by_id)
+    for rule_id in rule_ids:
+        rule = rules_by_id[rule_id]
+        assert rule["method"] == "JUDGMENT"
+        assert "C.c.Q., art." in rule["citation"]
+        assert "www.legisquebec.gouv.qc.ca" in rule["sourceUrl"]
+        assert rule["fixtures"]["pass"] and rule["fixtures"]["fail"]
+
+    _, judgments = rules.screen(ruleset, "Le bail prévoit une clause; voir le règlement annexé.")
+    assert set(rule_ids) <= {judgment["ruleId"] for judgment in judgments}
 
 
 # --- qc-invoice: the mentions a supplier's invoice carries, from the federal regulation DORS/91-45 art. 3 -------------

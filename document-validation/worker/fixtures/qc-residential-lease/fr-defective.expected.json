@@ -12,6 +12,8 @@
     "QC-LEASE-009": "PASS"
   },
   "judgments": [
+    "QC-LEASE-010",
+    "QC-LEASE-011",
     "QC-LEASE-020"
   ]
 }
