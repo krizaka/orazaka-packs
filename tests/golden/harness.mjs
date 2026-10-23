@@ -32,7 +32,7 @@ export function assertOutput(output, assertions) {
       case "nonEmpty":
         assert.equal(assertion.nonEmpty, true, "nonEmpty must be true");
         assert.ok((typeof actual === "string" && actual.trim().length > 0) || (Array.isArray(actual) && actual.length > 0), label);
-        if (typeof actual === "string") assert.doesNotMatch(actual, /\{\{[^}]*\}\}/, `${label}: unresolved output template`);
+        if (typeof actual === "string") assert.doesNotMatch(actual, /^\s*\{\{[^}]*\}\}\s*$/, `${label}: unresolved output template`);
         break;
       case "type": {
         assert.ok(["object", "array", "string", "number", "boolean"].includes(assertion.type), "unknown assertion type");

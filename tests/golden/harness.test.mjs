@@ -42,6 +42,7 @@ test("assertions reject missing paths, changed verdicts, malformed JSON, and emp
   }
   assert.throws(() => assertOutput({ image: "" }, [{ path: ["image"], nonEmpty: true }]));
   assert.throws(() => assertOutput({ image: "{{steps.image.url}}" }, [{ path: ["image"], nonEmpty: true }]));
+  assertOutput({ explanation: "A template such as {{name}} is literal prose." }, [{ path: ["explanation"], nonEmpty: true }]);
   assert.throws(() => assertOutput({ report: { verdict: "PASS" } }, [{ path: ["report"], typo: true }]));
   assertOutput({ frames: 1 }, [{ path: ["frames"], atLeast: 1 }]);
   for (const frames of [0, "1", null]) {
