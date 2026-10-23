@@ -155,7 +155,7 @@ def _assemble(payload: dict) -> dict:
 
 
 def _signals(payload: dict) -> dict:
-    """Authenticity SIGNALS over a PDF. No model, and no verdict (ADR-056).
+    """Authenticity SIGNALS over a document (PDF, image, office file). No model, and no verdict (ADR-056).
 
     Deliberately the whole of this capability: a deterministic pass and the sentences the pack
     author wrote per signal type. There is no judgement step, and adding one would be the worst
@@ -168,7 +168,7 @@ def _signals(payload: dict) -> dict:
         raise InvalidJobPayload("aucun document fourni : documentBase64 est vide")
     try:
         report = authenticity.analyse_base64(encoded, str(payload.get("expectedIssuer") or ""))
-    except authenticity.UnreadablePdf as unreadable:
+    except authenticity.UnreadableDocument as unreadable:
         raise InvalidJobPayload(str(unreadable)) from unreadable
     return {
         "report": report,

@@ -72,7 +72,7 @@ requires:
       inputSchema:
         type: object
         properties:
-          documentBase64: { type: string, description: "Le PDF encodé. Aucun `format` : une barre de chat ne peut pas remplir cette entrée (ADR-068 §3)." }
+          documentBase64: { type: string, description: "Le document encodé — PDF, image (JPEG, PNG, WebP, TIFF, HEIC) ou fichier bureautique, reconnu à ses octets. Aucun `format` : une barre de chat ne peut pas remplir cette entrée (ADR-068 §3)." }
           expectedIssuer: { type: string, description: "L'émetteur attendu, quand le demandeur le connaît." }
         required: [documentBase64]
       outputSchema:

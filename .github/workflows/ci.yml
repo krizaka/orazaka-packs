@@ -73,6 +73,7 @@ jobs:
       test-command: |
         python test_rules.py
         python test_authenticity.py
+        python test_authenticity_formats.py
         python test_screening.py
 
   py-authenticity:
