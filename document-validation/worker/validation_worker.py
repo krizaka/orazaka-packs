@@ -167,7 +167,11 @@ def _signals(payload: dict) -> dict:
     if not encoded:
         raise InvalidJobPayload("aucun document fourni : documentBase64 est vide")
     try:
-        report = authenticity.analyse_base64(encoded, str(payload.get("expectedIssuer") or ""))
+        report = authenticity.analyse_base64(
+            encoded,
+            str(payload.get("expectedIssuer") or ""),
+            document_type=str(payload.get("documentType") or ""),
+        )
     except authenticity.UnreadableDocument as unreadable:
         raise InvalidJobPayload(str(unreadable)) from unreadable
     return {

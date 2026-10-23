@@ -1,12 +1,12 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "PUBLISHED",
   "estimatedCredits": 30,
-  "changelog": "1.3.0 — n'importe quel document : PDF, image (JPEG, PNG, WebP, TIFF, HEIC) ou fichier bureautique, reconnu à ses octets ; historique XMP, identifiants /ID, logiciel éditeur, EXIF ; les signaux sont des données (authenticity-signals.json, producer-profiles.json) (orazaka-packs#88). 1.2.2 — la sortie « signals » déclare son contrat (ADR-076) : un rapport aplati ou incomplet fait échouer le run, remboursé, au lieu de livrer un rapport illisible (orazaka-packs#93). 1.2.1 — la sortie « signals » est du vrai JSON (reportJson) : elle arrivait aplatie en « clé: valeur » et le produit ne pouvait pas la lire. 1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
+  "changelog": "1.4.0 — profils de documents versionnés en JSON sélectionnés par documentType, avec des constats d'écart informatifs (orazaka-packs#89). 1.3.0 — n'importe quel document : PDF, image (JPEG, PNG, WebP, TIFF, HEIC) ou fichier bureautique, reconnu à ses octets ; historique XMP, identifiants /ID, logiciel éditeur, EXIF ; les signaux sont des données (authenticity-signals.json, producer-profiles.json) (orazaka-packs#88). 1.2.2 — la sortie « signals » déclare son contrat (ADR-076) : un rapport aplati ou incomplet fait échouer le run, remboursé, au lieu de livrer un rapport illisible (orazaka-packs#93). 1.2.1 — la sortie « signals » est du vrai JSON (reportJson) : elle arrivait aplatie en « clé: valeur » et le produit ne pouvait pas la lire. 1.2.0 — libellés des sorties en anglais et français (x-i18n). 1.1.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). Signaux d'authenticité — une seule étape, déterministe. Aucune étape d'inférence, et c'est la décision d'architecture (ADR-056).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "document-authenticity",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "steps": [
       {
         "id": "signals",
@@ -15,7 +15,8 @@
         "dependsOn": [],
         "inputs": {
           "documentBase64": "{{inputs.documentBase64}}",
-          "expectedIssuer": "{{inputs.expectedIssuer:}}"
+          "expectedIssuer": "{{inputs.expectedIssuer:}}",
+          "documentType": "{{inputs.documentType:}}"
         },
         "out": "signals",
         "onError": "FAIL",
@@ -136,6 +137,12 @@
             },
             "catalogueVersion": {
               "type": "string"
+            },
+            "profileId": {
+              "type": "string"
+            },
+            "profileVersion": {
+              "type": "string"
             }
           }
         }
@@ -181,6 +188,32 @@
             "title": "Émetteur attendu (facultatif)",
             "description": "Qui vous pensez être à l'origine du document, par exemple le nom de l'agence. Comparé au producteur déclaré du fichier.",
             "placeholder": "Nom de l'agence"
+          }
+        }
+      },
+      "documentType": {
+        "type": "string",
+        "enum": ["pay-stub", "bank-statement", "employment-letter"],
+        "title": "Type de document (facultatif)",
+        "description": "Sélectionne un profil de comparaison informatif. Sans sélection, le comportement reste inchangé.",
+        "x-i18n": {
+          "en": {
+            "title": "Document type (optional)",
+            "description": "Selects an informational comparison profile. Without one, behavior is unchanged.",
+            "options": {
+              "pay-stub": "Pay stub",
+              "bank-statement": "Bank statement",
+              "employment-letter": "Employment letter"
+            }
+          },
+          "fr": {
+            "title": "Type de document (facultatif)",
+            "description": "Sélectionne un profil de comparaison informatif. Sans sélection, le comportement reste inchangé.",
+            "options": {
+              "pay-stub": "Talon de paie",
+              "bank-statement": "Relevé bancaire",
+              "employment-letter": "Lettre d'emploi"
+            }
           }
         }
       }

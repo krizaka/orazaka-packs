@@ -1,0 +1,11 @@
+{
+  "profileId": "bank-statement",
+  "version": "1.0.0",
+  "documentType": "bank-statement",
+  "expectedIssuers": ["financial institution"],
+  "acceptedProducers": ["desjardins", "jasperreports", "pdf generator", "statement"],
+  "acceptedProducerClasses": ["generator", "ocr", "scanner"],
+  "expectedFields": ["statement period", "financial institution"],
+  "pageCount": { "min": 1, "max": 12 },
+  "fontCount": { "min": 1, "max": 8 }
+}

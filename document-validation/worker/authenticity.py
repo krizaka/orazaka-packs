@@ -14,8 +14,8 @@ a measured base rate, and a number gets quoted in a dispute as though it were on
 three qualitative levels, each defined in `LEVELS` below.
 
 **The signals are data** (orazaka-packs#88): `authenticity-signals.json` holds each case's id, level, thresholds and
-the sentences (FR, EN); `producer-profiles.json` says what kind of software a declared producer is. This module only
-reads facts off the bytes and picks the case.
+the sentences (FR, EN); `producer-profiles.json` classifies software; `document_profiles/` holds document-specific
+expectations. This module only reads facts off the bytes and picks the case.
 
 **The value of this module is TRIAGE, not a verdict.** It tells a reader which points deserve a
 question. What it is not, and what it did not look at, is stated by the report itself.
@@ -31,6 +31,7 @@ import zipfile
 import zlib
 from collections import Counter
 from datetime import datetime
+from pathlib import Path
 
 try:  # pragma: no cover - import shape only
     from pypdf import PdfReader
@@ -108,6 +109,13 @@ def _load(name):
 CATALOGUE = _load("authenticity-signals.json")
 PROFILES = _load("producer-profiles.json")
 THRESHOLDS = CATALOGUE["thresholds"]
+DOCUMENT_PROFILES = {
+    profile["documentType"]: profile
+    for profile in (
+        json.loads(path.read_text(encoding="utf-8"))
+        for path in (Path(HERE) / "document_profiles").glob("*.json")
+    )
+}
 
 #: What this module reads, said in the refusal of anything else.
 SUPPORTED = "les PDF, les images (JPEG, PNG, WebP, TIFF, HEIC) et les documents bureautiques (Word, Excel, PowerPoint, OpenDocument)"
@@ -127,6 +135,32 @@ def producer_class(*names) -> str:
 
 def _first_of_class(cls, *names) -> str:
     return next((str(n) for n in names if n and producer_class(n) == cls), "")
+
+
+def _document_profile_signal(profile, locale, producer_names=(), pages=None, font_count=None):
+    """Compare available file facts with a selected profile; never inspect document content."""
+    mismatches = []
+    declared = [str(name).strip() for name in producer_names if name and str(name).strip()]
+    if declared:
+        accepted = [name.lower() for name in profile["acceptedProducers"]]
+        classes = profile["acceptedProducerClasses"]
+        if not any(
+            any(pattern in name.lower() for pattern in accepted) or producer_class(name) in classes
+            for name in declared
+        ):
+            mismatches.append("producteur déclaré")
+    if pages is not None and not profile["pageCount"]["min"] <= pages <= profile["pageCount"]["max"]:
+        mismatches.append(f"{pages} page(s)")
+    if font_count is not None and font_count > 0 and not profile["fontCount"]["min"] <= font_count <= profile["fontCount"]["max"]:
+        mismatches.append(f"{font_count} polices distinctes")
+    if not mismatches:
+        return None
+    return _emit(
+        "DOC-PROFILE-001",
+        locale,
+        documentType=profile["documentType"],
+        mismatches=", ".join(mismatches),
+    )
 
 
 def _emit(case, locale="fr", **facts):
@@ -236,7 +270,7 @@ def _pdf_ids_differ(reader) -> bool:
         return False
 
 
-def _analyse_pdf(pdf_bytes: bytes, expected_issuer: str, locale: str):
+def _analyse_pdf(pdf_bytes: bytes, expected_issuer: str, locale: str, profile=None):
     if PdfReader is None:  # pragma: no cover
         raise UnreadableDocument("la bibliothèque PDF n'est pas disponible dans ce worker")
     try:
@@ -293,12 +327,18 @@ def _analyse_pdf(pdf_bytes: bytes, expected_issuer: str, locale: str):
         signals.append(_emit("PDF-TEXT-001", locale, pages=", ".join(map(str, scanned_pages))))
 
     per_page = _fonts_per_page(reader)
+    font_count = len(set(font for names in per_page for font in names))
     if len(per_page) >= THRESHOLDS["PDF-FONT-001"]["minPages"]:
         counts = Counter(font for names in per_page for font in names)
         for index, names in enumerate(per_page, start=1):
             lonely = sorted(font for font in names if counts[font] == 1)
             if lonely:
                 signals.append(_emit("PDF-FONT-001", locale, page=index, fonts=", ".join(lonely)))
+
+    if profile:
+        profile_signal = _document_profile_signal(profile, locale, (producer, creator), len(pages), font_count)
+        if profile_signal:
+            signals.append(profile_signal)
 
     declared = len(set(re.findall(rb"(?m)^\s*(\d+)\s+\d+\s+obj\b", pdf_bytes)))
     referenced = len(set(re.findall(rb"\b(\d+)\s+\d+\s+R\b", pdf_bytes)))
@@ -452,7 +492,7 @@ def _exif_date(text: str):
         return None
 
 
-def _analyse_image(raw: bytes, media_type: str, locale: str):
+def _analyse_image(raw: bytes, media_type: str, locale: str, profile=None):
     software = ""
     if media_type == "image/jpeg":
         exif, xmp = _jpeg_parts(raw)
@@ -488,6 +528,10 @@ def _analyse_image(raw: bytes, media_type: str, locale: str):
         elif gap > margin:
             signals.append(_emit("IMG-META-003", locale, taken=_stamp(taken), modified=_stamp(modified)))
     signals += _xmp_signals(xmp, locale)
+    if profile:
+        profile_signal = _document_profile_signal(profile, locale, (software,))
+        if profile_signal:
+            signals.append(profile_signal)
     return 1, signals
 
 
@@ -504,7 +548,7 @@ def _iso_date(text: str):
         return None
 
 
-def _analyse_office(archive, locale: str):
+def _analyse_office(archive, locale: str, profile=None):
     """Who wrote it and when, from the package's properties. Never the author or last-modified-by fields: they name a person."""
     names = set(archive.namelist())
 
@@ -525,6 +569,10 @@ def _analyse_office(archive, locale: str):
     signals = [_emit("OFF-META-001", locale, application=application or "—")]
     if created and modified and (modified - created).total_seconds() > THRESHOLDS["OFF-META-002"]["minSeconds"]:
         signals.append(_emit("OFF-META-002", locale, created=_stamp(created), modified=_stamp(modified), revision=revision or "—"))
+    if profile:
+        profile_signal = _document_profile_signal(profile, locale, (application,))
+        if profile_signal:
+            signals.append(profile_signal)
     return 0, signals
 
 
@@ -554,7 +602,7 @@ def detect(raw: bytes):
     return None, None
 
 
-def analyse(document: bytes, expected_issuer: str = "", locale: str = "fr") -> dict:
+def analyse(document: bytes, expected_issuer: str = "", locale: str = "fr", document_type: str = "") -> dict:
     """Every signal this module can read off ``document``.
 
     :param document: the file, as bytes — a PDF, an image or an office document
@@ -565,10 +613,11 @@ def analyse(document: bytes, expected_issuer: str = "", locale: str = "fr") -> d
     :returns: the report structure, with no verdict in it
     """
     kind, media_type = detect(document)
+    profile = DOCUMENT_PROFILES.get(str(document_type or "").strip())
     if kind == "pdf":
-        pages, signals = _analyse_pdf(document, expected_issuer, locale)
+        pages, signals = _analyse_pdf(document, expected_issuer, locale, profile)
     elif kind == "image":
-        pages, signals = _analyse_image(document, media_type, locale)
+        pages, signals = _analyse_image(document, media_type, locale, profile)
     elif kind == "office":
         try:
             archive = zipfile.ZipFile(io.BytesIO(document))
@@ -576,10 +625,10 @@ def analyse(document: bytes, expected_issuer: str = "", locale: str = "fr") -> d
             raise UnreadableDocument("l'archive fournie n'a pas pu être ouverte") from broken
         if not ({"docProps/core.xml", "meta.xml"} & set(archive.namelist())):
             raise UnreadableDocument(f"cette archive n'est pas un document bureautique : ce module lit {SUPPORTED}")
-        pages, signals = _analyse_office(archive, locale)
+        pages, signals = _analyse_office(archive, locale, profile)
     else:
         raise UnreadableDocument(f"type de fichier non examiné : ce module lit {SUPPORTED}")
-    return {
+    report = {
         "header": HEADER,
         "documentType": kind,
         "mediaType": media_type,
@@ -590,15 +639,19 @@ def analyse(document: bytes, expected_issuer: str = "", locale: str = "fr") -> d
         "realExamination": REAL_EXAMINATION,
         "catalogueVersion": CATALOGUE["version"],
     }
+    if profile:
+        report["profileId"] = profile["profileId"]
+        report["profileVersion"] = profile["version"]
+    return report
 
 
-def analyse_base64(encoded: str, expected_issuer: str = "", locale: str = "fr") -> dict:
+def analyse_base64(encoded: str, expected_issuer: str = "", locale: str = "fr", document_type: str = "") -> dict:
     """:func:`analyse` over a base64 payload, which is how the document reaches this worker."""
     try:
         raw = base64.b64decode(encoded, validate=True)
     except Exception as bad:  # noqa: BLE001
         raise UnreadableDocument("le contenu fourni n'est pas du base64 valide") from bad
-    return analyse(raw, expected_issuer, locale)
+    return analyse(raw, expected_issuer, locale, document_type)
 
 
 def render(report: dict) -> str:

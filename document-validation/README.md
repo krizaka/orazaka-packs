@@ -135,7 +135,13 @@ process, one more routing key — `job.validation.signals`.
 explain signals it never received, and the error it makes most readily is the one that accuses an
 honest person. The explanations are written by hand, once, per signal case — in a data file, not in code:
 `worker/authenticity-signals.json` (each case's id, level, thresholds, sentences FR/EN) and
-`worker/producer-profiles.json` (what kind of software a producer is: editor, OCR, scanner, generator). A new signal
+`worker/producer-profiles.json` (what kind of software a producer is: editor, OCR, scanner, generator), and
+`worker/document_profiles/<type>.json` (expected issuers and fields, accepted producers/classes, and page/font ranges,
+validated against `worker/document-profile.schema.json`). The authenticity Studio accepts an optional `documentType`
+(`pay-stub`, `bank-statement`, or `employment-letter`). A mismatch is an informational `inhabituel` signal, never a
+verdict; without a matching profile, the report follows its prior behavior. Profiles are examples to review and tune
+for the organization's document sources; the worker does not extract their listed content fields.
+A new signal
 is an entry there, its detector in `authenticity.py` and its PASS/FAIL case in `test_authenticity_formats.py`.
 
 | Family | Signals | Read from |

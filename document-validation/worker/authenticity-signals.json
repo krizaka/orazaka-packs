@@ -93,6 +93,20 @@
         "where": "Document metadata (/Producer, /Creator)"
       }
     },
+    "DOC-PROFILE-001": {
+      "signalId": "DOC-PROFILE-001",
+      "level": "inhabituel",
+      "fr": {
+        "observation": "Le fichier présente un écart avec le profil « {documentType} » : {mismatches}.",
+        "mayIndicate": "Un logiciel de production, un nombre de pages ou une mise en page différents du profil. Les chaînes de production et les modèles varient aussi.",
+        "where": "Métadonnées et structure du fichier (/Producer, nombre de pages, polices)"
+      },
+      "en": {
+        "observation": "The file differs from the “{documentType}” profile: {mismatches}.",
+        "mayIndicate": "A production tool, page count or layout different from the profile. Production workflows and templates also vary.",
+        "where": "File metadata and structure (/Producer, page count, fonts)"
+      }
+    },
     "PDF-REV-001": {
       "signalId": "PDF-REV-001",
       "level": "inhabituel",

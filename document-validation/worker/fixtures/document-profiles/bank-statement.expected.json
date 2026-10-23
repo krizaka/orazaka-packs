@@ -1,0 +1,7 @@
+{
+  "acceptedFixture": "reportlab-generated",
+  "mismatchFixture": "modified.pdf",
+  "documentType": "bank-statement",
+  "signalId": "DOC-PROFILE-001",
+  "level": "inhabituel"
+}
