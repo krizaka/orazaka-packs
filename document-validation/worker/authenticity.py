@@ -139,6 +139,8 @@ def _first_of_class(cls, *names) -> str:
 
 def _document_profile_signal(profile, locale, producer_names=(), pages=None, font_count=None):
     """Compare available file facts with a selected profile; never inspect document content."""
+    # The fragments are catalogue data in the report's language, never French in an English sentence.
+    words = CATALOGUE["signals"]["DOC-PROFILE-001"][locale]["mismatches"]
     mismatches = []
     declared = [str(name).strip() for name in producer_names if name and str(name).strip()]
     if declared:
@@ -148,11 +150,11 @@ def _document_profile_signal(profile, locale, producer_names=(), pages=None, fon
             any(pattern in name.lower() for pattern in accepted) or producer_class(name) in classes
             for name in declared
         ):
-            mismatches.append("producteur déclaré")
+            mismatches.append(words["producer"])
     if pages is not None and not profile["pageCount"]["min"] <= pages <= profile["pageCount"]["max"]:
-        mismatches.append(f"{pages} page(s)")
+        mismatches.append(words["pages"].format(pages=pages))
     if font_count is not None and font_count > 0 and not profile["fontCount"]["min"] <= font_count <= profile["fontCount"]["max"]:
-        mismatches.append(f"{font_count} polices distinctes")
+        mismatches.append(words["fonts"].format(fonts=font_count))
     if not mismatches:
         return None
     return _emit(

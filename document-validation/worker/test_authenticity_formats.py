@@ -234,6 +234,24 @@ def test_document_profiles_match_their_schema_and_profile_goldens():
     assert profile_types == {"pay-stub", "bank-statement", "employment-letter"}
 
 
+def test_a_profile_mismatch_reads_in_the_report_language():
+    fields = string.Formatter()
+    entry = a.CATALOGUE["signals"]["DOC-PROFILE-001"]
+    assert entry["fr"]["mismatches"].keys() == entry["en"]["mismatches"].keys()
+    for key in entry["fr"]["mismatches"]:
+        fr = {f for _, f, _, _ in fields.parse(entry["fr"]["mismatches"][key]) if f}
+        en = {f for _, f, _, _ in fields.parse(entry["en"]["mismatches"][key]) if f}
+        assert fr == en, key
+    profile = a.DOCUMENT_PROFILES["pay-stub"]
+    english = a._document_profile_signal(profile, "en", ("SomeEditor 1.0",), 9, 40)
+    assert english["observation"].startswith("The file differs")
+    for french in ("polices", "producteur", "logiciel"):
+        assert french not in english["observation"], english["observation"]
+    assert "9 page(s)" in english["observation"] and "40 distinct fonts" in english["observation"]
+    french = a._document_profile_signal(profile, "fr", ("SomeEditor 1.0",), 9, 40)
+    assert "40 polices distinctes" in french["observation"]
+
+
 def test_an_absent_or_unknown_document_profile_preserves_the_current_report():
     raw = _clean()
     baseline = a.analyse(raw)
