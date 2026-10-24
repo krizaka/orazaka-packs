@@ -1,0 +1,881 @@
+{
+  "studio": "tenant-screening-qc",
+  "cases": [
+    {
+      "id": "clean-applicant-runs-all-three-stages",
+      "input": {
+        "subject": {
+          "subjectId": "fictional-applicant-1",
+          "lastName": "Gagnon",
+          "firstName": "Camille",
+          "birthDate": "1990-01-01"
+        },
+        "consentedPurposes": [
+          "DOCUMENTS",
+          "COURT_RECORDS",
+          "CREDIT"
+        ],
+        "authenticityReport": {
+          "signals": [
+            {
+              "signalId": "producer-known",
+              "level": "observé"
+            },
+            {
+              "signalId": "font-mix",
+              "level": "inhabituel"
+            }
+          ]
+        },
+        "leaseReport": {
+          "findings": [
+            {
+              "ruleId": "QC-LEASE-004",
+              "verdict": "FAIL"
+            },
+            {
+              "ruleId": "QC-LEASE-001",
+              "verdict": "PASS"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "tenant-screening-qc",
+          "rulesetVersion": "2026-10-24",
+          "rulesetRevision": 1,
+          "subjectRef": "fictional-applicant-1",
+          "status": "COMPLETED",
+          "stoppedAt": null,
+          "stopCode": null,
+          "ruleId": null,
+          "stages": [
+            {
+              "stage": "documents",
+              "purpose": "DOCUMENTS",
+              "state": "RAN",
+              "outcome": "CLEAR",
+              "facts": {
+                "majorSignals": 0,
+                "unusualSignals": 1,
+                "leaseFailures": 1
+              },
+              "consent": "GRANTED",
+              "charged": true,
+              "credits": 10
+            },
+            {
+              "stage": "courts",
+              "purpose": "COURT_RECORDS",
+              "state": "RAN",
+              "outcome": "NO_MATCH",
+              "facts": {
+                "outcome": "NO_MATCH"
+              },
+              "consent": "GRANTED",
+              "charged": true,
+              "credits": 30
+            },
+            {
+              "stage": "credit",
+              "purpose": "CREDIT",
+              "state": "RAN",
+              "outcome": "NO_MATCH",
+              "facts": {
+                "outcome": "NO_MATCH"
+              },
+              "consent": "GRANTED",
+              "charged": true,
+              "credits": 20
+            }
+          ],
+          "ledger": {
+            "unit": "credits",
+            "payer": "LANDLORD",
+            "creditCap": 0,
+            "total": 60,
+            "byStage": {
+              "documents": 10,
+              "courts": 30,
+              "credit": 20
+            }
+          },
+          "limits": [
+            "MOCK_PROVIDER_ONLY",
+            "NO_DECISION_ON_THE_APPLICANT",
+            "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "AN_OUTCOME_IS_NOT_THE_RECORD",
+            "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
+          ]
+        },
+        "status": "COMPLETED"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "COMPLETED"
+        },
+        {
+          "path": [
+            "report",
+            "status"
+          ],
+          "equals": "COMPLETED"
+        },
+        {
+          "path": [
+            "report",
+            "stoppedAt"
+          ],
+          "equals": null
+        },
+        {
+          "path": [
+            "report",
+            "stopCode"
+          ],
+          "equals": null
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "total"
+          ],
+          "equals": 60
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "byStage"
+          ],
+          "equals": {
+            "documents": 10,
+            "courts": 30,
+            "credit": 20
+          }
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "payer"
+          ],
+          "equals": "LANDLORD"
+        },
+        {
+          "path": [
+            "report",
+            "limits"
+          ],
+          "includes": "NO_DECISION_ON_THE_APPLICANT"
+        }
+      ]
+    },
+    {
+      "id": "doctored-pay-stub-stops-at-documents",
+      "input": {
+        "subject": {
+          "subjectId": "fictional-applicant-2",
+          "lastName": "Gagnon",
+          "firstName": "Camille",
+          "birthDate": "1990-01-01"
+        },
+        "consentedPurposes": [
+          "DOCUMENTS",
+          "COURT_RECORDS",
+          "CREDIT"
+        ],
+        "authenticityReport": {
+          "signals": [
+            {
+              "signalId": "edited-after-issue",
+              "level": "incohérent"
+            },
+            {
+              "signalId": "font-mix",
+              "level": "inhabituel"
+            }
+          ]
+        },
+        "leaseReport": {
+          "findings": [
+            {
+              "ruleId": "QC-LEASE-004",
+              "verdict": "FAIL"
+            },
+            {
+              "ruleId": "QC-LEASE-001",
+              "verdict": "PASS"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "tenant-screening-qc",
+          "rulesetVersion": "2026-10-24",
+          "rulesetRevision": 1,
+          "subjectRef": "fictional-applicant-2",
+          "status": "STOPPED",
+          "stoppedAt": "documents",
+          "stopCode": "CUTOFF",
+          "ruleId": "CUT-DOC-MAJOR-SIGNALS",
+          "stages": [
+            {
+              "stage": "documents",
+              "purpose": "DOCUMENTS",
+              "state": "RAN",
+              "outcome": "SIGNALS",
+              "facts": {
+                "majorSignals": 1,
+                "unusualSignals": 1,
+                "leaseFailures": 1
+              },
+              "consent": "GRANTED",
+              "charged": true,
+              "credits": 10
+            },
+            {
+              "stage": "courts",
+              "purpose": "COURT_RECORDS",
+              "state": "NOT_RUN",
+              "outcome": null,
+              "facts": {},
+              "consent": null,
+              "charged": false,
+              "credits": 0
+            },
+            {
+              "stage": "credit",
+              "purpose": "CREDIT",
+              "state": "NOT_RUN",
+              "outcome": null,
+              "facts": {},
+              "consent": null,
+              "charged": false,
+              "credits": 0
+            }
+          ],
+          "ledger": {
+            "unit": "credits",
+            "payer": "LANDLORD",
+            "creditCap": 0,
+            "total": 10,
+            "byStage": {
+              "documents": 10,
+              "courts": 0,
+              "credit": 0
+            }
+          },
+          "limits": [
+            "MOCK_PROVIDER_ONLY",
+            "NO_DECISION_ON_THE_APPLICANT",
+            "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "AN_OUTCOME_IS_NOT_THE_RECORD",
+            "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
+          ]
+        },
+        "status": "STOPPED"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "STOPPED"
+        },
+        {
+          "path": [
+            "report",
+            "status"
+          ],
+          "equals": "STOPPED"
+        },
+        {
+          "path": [
+            "report",
+            "stoppedAt"
+          ],
+          "equals": "documents"
+        },
+        {
+          "path": [
+            "report",
+            "stopCode"
+          ],
+          "equals": "CUTOFF"
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "total"
+          ],
+          "equals": 10
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "byStage"
+          ],
+          "equals": {
+            "documents": 10,
+            "courts": 0,
+            "credit": 0
+          }
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "payer"
+          ],
+          "equals": "LANDLORD"
+        },
+        {
+          "path": [
+            "report",
+            "limits"
+          ],
+          "includes": "NO_DECISION_ON_THE_APPLICANT"
+        },
+        {
+          "path": [
+            "report",
+            "ruleId"
+          ],
+          "equals": "CUT-DOC-MAJOR-SIGNALS"
+        }
+      ]
+    },
+    {
+      "id": "tal-file-found-stops-before-credit",
+      "input": {
+        "subject": {
+          "subjectId": "fictional-applicant-3",
+          "lastName": "Tremblay",
+          "firstName": "Camille",
+          "birthDate": "1990-01-01"
+        },
+        "consentedPurposes": [
+          "DOCUMENTS",
+          "COURT_RECORDS",
+          "CREDIT"
+        ],
+        "authenticityReport": {
+          "signals": [
+            {
+              "signalId": "producer-known",
+              "level": "observé"
+            },
+            {
+              "signalId": "font-mix",
+              "level": "inhabituel"
+            }
+          ]
+        },
+        "leaseReport": {
+          "findings": [
+            {
+              "ruleId": "QC-LEASE-004",
+              "verdict": "FAIL"
+            },
+            {
+              "ruleId": "QC-LEASE-001",
+              "verdict": "PASS"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "tenant-screening-qc",
+          "rulesetVersion": "2026-10-24",
+          "rulesetRevision": 1,
+          "subjectRef": "fictional-applicant-3",
+          "status": "STOPPED",
+          "stoppedAt": "courts",
+          "stopCode": "CUTOFF",
+          "ruleId": "CUT-COURT-FILE-FOUND",
+          "stages": [
+            {
+              "stage": "documents",
+              "purpose": "DOCUMENTS",
+              "state": "RAN",
+              "outcome": "CLEAR",
+              "facts": {
+                "majorSignals": 0,
+                "unusualSignals": 1,
+                "leaseFailures": 1
+              },
+              "consent": "GRANTED",
+              "charged": true,
+              "credits": 10
+            },
+            {
+              "stage": "courts",
+              "purpose": "COURT_RECORDS",
+              "state": "RAN",
+              "outcome": "MATCH",
+              "facts": {
+                "outcome": "MATCH"
+              },
+              "consent": "GRANTED",
+              "charged": true,
+              "credits": 30
+            },
+            {
+              "stage": "credit",
+              "purpose": "CREDIT",
+              "state": "NOT_RUN",
+              "outcome": null,
+              "facts": {},
+              "consent": null,
+              "charged": false,
+              "credits": 0
+            }
+          ],
+          "ledger": {
+            "unit": "credits",
+            "payer": "LANDLORD",
+            "creditCap": 0,
+            "total": 40,
+            "byStage": {
+              "documents": 10,
+              "courts": 30,
+              "credit": 0
+            }
+          },
+          "limits": [
+            "MOCK_PROVIDER_ONLY",
+            "NO_DECISION_ON_THE_APPLICANT",
+            "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "AN_OUTCOME_IS_NOT_THE_RECORD",
+            "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
+          ]
+        },
+        "status": "STOPPED"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "STOPPED"
+        },
+        {
+          "path": [
+            "report",
+            "status"
+          ],
+          "equals": "STOPPED"
+        },
+        {
+          "path": [
+            "report",
+            "stoppedAt"
+          ],
+          "equals": "courts"
+        },
+        {
+          "path": [
+            "report",
+            "stopCode"
+          ],
+          "equals": "CUTOFF"
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "total"
+          ],
+          "equals": 40
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "byStage"
+          ],
+          "equals": {
+            "documents": 10,
+            "courts": 30,
+            "credit": 0
+          }
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "payer"
+          ],
+          "equals": "LANDLORD"
+        },
+        {
+          "path": [
+            "report",
+            "limits"
+          ],
+          "includes": "NO_DECISION_ON_THE_APPLICANT"
+        },
+        {
+          "path": [
+            "report",
+            "ruleId"
+          ],
+          "equals": "CUT-COURT-FILE-FOUND"
+        }
+      ]
+    },
+    {
+      "id": "provider-error-is-not-charged",
+      "input": {
+        "subject": {
+          "subjectId": "fictional-applicant-4",
+          "lastName": "Roy",
+          "firstName": "Camille",
+          "birthDate": "1990-01-01"
+        },
+        "consentedPurposes": [
+          "DOCUMENTS",
+          "COURT_RECORDS",
+          "CREDIT"
+        ],
+        "authenticityReport": {
+          "signals": [
+            {
+              "signalId": "producer-known",
+              "level": "observé"
+            },
+            {
+              "signalId": "font-mix",
+              "level": "inhabituel"
+            }
+          ]
+        },
+        "leaseReport": {
+          "findings": [
+            {
+              "ruleId": "QC-LEASE-004",
+              "verdict": "FAIL"
+            },
+            {
+              "ruleId": "QC-LEASE-001",
+              "verdict": "PASS"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "tenant-screening-qc",
+          "rulesetVersion": "2026-10-24",
+          "rulesetRevision": 1,
+          "subjectRef": "fictional-applicant-4",
+          "status": "INCOMPLETE",
+          "stoppedAt": "courts",
+          "stopCode": "PROVIDER_ERROR",
+          "ruleId": null,
+          "stages": [
+            {
+              "stage": "documents",
+              "purpose": "DOCUMENTS",
+              "state": "RAN",
+              "outcome": "CLEAR",
+              "facts": {
+                "majorSignals": 0,
+                "unusualSignals": 1,
+                "leaseFailures": 1
+              },
+              "consent": "GRANTED",
+              "charged": true,
+              "credits": 10
+            },
+            {
+              "stage": "courts",
+              "purpose": "COURT_RECORDS",
+              "state": "UNAVAILABLE",
+              "outcome": "PROVIDER_ERROR",
+              "facts": {
+                "outcome": "PROVIDER_ERROR"
+              },
+              "consent": "GRANTED",
+              "charged": false,
+              "credits": 0
+            },
+            {
+              "stage": "credit",
+              "purpose": "CREDIT",
+              "state": "NOT_RUN",
+              "outcome": null,
+              "facts": {},
+              "consent": null,
+              "charged": false,
+              "credits": 0
+            }
+          ],
+          "ledger": {
+            "unit": "credits",
+            "payer": "LANDLORD",
+            "creditCap": 0,
+            "total": 10,
+            "byStage": {
+              "documents": 10,
+              "courts": 0,
+              "credit": 0
+            }
+          },
+          "limits": [
+            "MOCK_PROVIDER_ONLY",
+            "NO_DECISION_ON_THE_APPLICANT",
+            "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "AN_OUTCOME_IS_NOT_THE_RECORD",
+            "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
+          ]
+        },
+        "status": "INCOMPLETE"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "INCOMPLETE"
+        },
+        {
+          "path": [
+            "report",
+            "status"
+          ],
+          "equals": "INCOMPLETE"
+        },
+        {
+          "path": [
+            "report",
+            "stoppedAt"
+          ],
+          "equals": "courts"
+        },
+        {
+          "path": [
+            "report",
+            "stopCode"
+          ],
+          "equals": "PROVIDER_ERROR"
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "total"
+          ],
+          "equals": 10
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "byStage"
+          ],
+          "equals": {
+            "documents": 10,
+            "courts": 0,
+            "credit": 0
+          }
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "payer"
+          ],
+          "equals": "LANDLORD"
+        },
+        {
+          "path": [
+            "report",
+            "limits"
+          ],
+          "includes": "NO_DECISION_ON_THE_APPLICANT"
+        }
+      ]
+    },
+    {
+      "id": "missing-court-consent-stops-visibly",
+      "input": {
+        "subject": {
+          "subjectId": "fictional-applicant-5",
+          "lastName": "Gagnon",
+          "firstName": "Camille",
+          "birthDate": "1990-01-01"
+        },
+        "consentedPurposes": [
+          "DOCUMENTS",
+          "CREDIT"
+        ],
+        "authenticityReport": {
+          "signals": [
+            {
+              "signalId": "producer-known",
+              "level": "observé"
+            },
+            {
+              "signalId": "font-mix",
+              "level": "inhabituel"
+            }
+          ]
+        },
+        "leaseReport": {
+          "findings": [
+            {
+              "ruleId": "QC-LEASE-004",
+              "verdict": "FAIL"
+            },
+            {
+              "ruleId": "QC-LEASE-001",
+              "verdict": "PASS"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "tenant-screening-qc",
+          "rulesetVersion": "2026-10-24",
+          "rulesetRevision": 1,
+          "subjectRef": "fictional-applicant-5",
+          "status": "INCOMPLETE",
+          "stoppedAt": "courts",
+          "stopCode": "NO_CONSENT",
+          "ruleId": null,
+          "stages": [
+            {
+              "stage": "documents",
+              "purpose": "DOCUMENTS",
+              "state": "RAN",
+              "outcome": "CLEAR",
+              "facts": {
+                "majorSignals": 0,
+                "unusualSignals": 1,
+                "leaseFailures": 1
+              },
+              "consent": "GRANTED",
+              "charged": true,
+              "credits": 10
+            },
+            {
+              "stage": "courts",
+              "purpose": "COURT_RECORDS",
+              "state": "REFUSED",
+              "outcome": null,
+              "facts": {},
+              "consent": "REFUSED",
+              "charged": false,
+              "credits": 0
+            },
+            {
+              "stage": "credit",
+              "purpose": "CREDIT",
+              "state": "NOT_RUN",
+              "outcome": null,
+              "facts": {},
+              "consent": null,
+              "charged": false,
+              "credits": 0
+            }
+          ],
+          "ledger": {
+            "unit": "credits",
+            "payer": "LANDLORD",
+            "creditCap": 0,
+            "total": 10,
+            "byStage": {
+              "documents": 10,
+              "courts": 0,
+              "credit": 0
+            }
+          },
+          "limits": [
+            "MOCK_PROVIDER_ONLY",
+            "NO_DECISION_ON_THE_APPLICANT",
+            "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "AN_OUTCOME_IS_NOT_THE_RECORD",
+            "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
+          ]
+        },
+        "status": "INCOMPLETE"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "INCOMPLETE"
+        },
+        {
+          "path": [
+            "report",
+            "status"
+          ],
+          "equals": "INCOMPLETE"
+        },
+        {
+          "path": [
+            "report",
+            "stoppedAt"
+          ],
+          "equals": "courts"
+        },
+        {
+          "path": [
+            "report",
+            "stopCode"
+          ],
+          "equals": "NO_CONSENT"
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "total"
+          ],
+          "equals": 10
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "byStage"
+          ],
+          "equals": {
+            "documents": 10,
+            "courts": 0,
+            "credit": 0
+          }
+        },
+        {
+          "path": [
+            "report",
+            "ledger",
+            "payer"
+          ],
+          "equals": "LANDLORD"
+        },
+        {
+          "path": [
+            "report",
+            "limits"
+          ],
+          "includes": "NO_DECISION_ON_THE_APPLICANT"
+        }
+      ]
+    }
+  ]
+}

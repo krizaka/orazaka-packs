@@ -1,0 +1,14 @@
+pack:
+  label: Vérification de locataire, Québec
+  tagline: Une vérification de candidat à la location, une étape à la fois, arrêtée par les règles du gestionnaire.
+  description: >-
+    Les documents, puis les plumitifs et le TAL, puis le crédit. Une étape s'exécute et se facture seulement si la précédente a passé
+    son seuil d'arrêt, et chaque seuil est une règle du gestionnaire. Le consentement est vérifié par finalité avant chaque étape
+    payante. Des codes seulement : le locateur décide.
+studios:
+  tenant-screening-qc:
+    label: Vérification de locataire, Québec
+    tagline: Une vérification qui s'arrête où les règles du gestionnaire le disent et ne facture que ce qui a tourné.
+    description: >-
+      Trois étapes avec un seuil d'arrêt après chacune, un consentement vérifié avant chaque étape payante, des crédits débités par
+      étape, et un rapport qui dit où elle s'est arrêtée et pourquoi. Le candidat ne paie rien par défaut.

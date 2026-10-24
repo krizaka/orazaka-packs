@@ -1,0 +1,563 @@
+{
+  "version": "1.0.0",
+  "status": "DRAFT",
+  "estimatedCredits": 60,
+  "changelog": "1.0.0 — saga à trois étapes (documents, plumitifs et TAL, crédit) : consentement par finalité avant chaque étape payante, règles d'arrêt en données, crédits débités par étape, connecteur de démonstration seulement (orazaka-packs#123).",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "tenant-screening-qc",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "plan",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.plan",
+        "dependsOn": [],
+        "inputs": {
+          "subject": "{{inputs.subject}}",
+          "authenticityReport": "{{inputs.authenticityReport}}",
+          "leaseReport": "{{inputs.leaseReport:}}",
+          "cutoffs": "{{inputs.cutoffs:}}",
+          "creditCap": "{{inputs.creditCap:0}}",
+          "applicantPaysFees": "{{config.applicantPaysFees:false}}"
+        },
+        "out": "plan",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "consent_documents",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.consent.check",
+        "dependsOn": [
+          "plan"
+        ],
+        "inputs": {
+          "purpose": "DOCUMENTS",
+          "consentedPurposes": "{{inputs.consentedPurposes}}"
+        },
+        "out": "consent_documents",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "documents",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.documents.assess",
+        "dependsOn": [
+          "plan",
+          "consent_documents"
+        ],
+        "condition": "{{steps.consent_documents.status}} == 'GRANTED'",
+        "inputs": {
+          "plan": "{{steps.plan.planJson}}",
+          "authenticityReport": "{{inputs.authenticityReport}}",
+          "leaseReport": "{{inputs.leaseReport:}}",
+          "consentedPurposes": "{{inputs.consentedPurposes}}"
+        },
+        "out": "documents",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "gate_documents",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.cutoff.decide",
+        "dependsOn": [
+          "plan",
+          "consent_documents",
+          "documents"
+        ],
+        "inputs": {
+          "plan": "{{steps.plan.planJson}}",
+          "stage": "documents",
+          "consent": "{{steps.consent_documents.status}}",
+          "result": "{{steps.documents.resultJson:}}",
+          "spentCredits": "0"
+        },
+        "out": "gate_documents",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "consent_courts",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.consent.check",
+        "dependsOn": [
+          "gate_documents"
+        ],
+        "condition": "{{steps.gate_documents.decision}} == 'CONTINUE'",
+        "inputs": {
+          "purpose": "COURT_RECORDS",
+          "consentedPurposes": "{{inputs.consentedPurposes}}"
+        },
+        "out": "consent_courts",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "courts",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.courts.check",
+        "dependsOn": [
+          "plan",
+          "consent_courts"
+        ],
+        "condition": "{{steps.consent_courts.status}} == 'GRANTED'",
+        "inputs": {
+          "plan": "{{steps.plan.planJson}}",
+          "subject": "{{inputs.subject}}",
+          "consentedPurposes": "{{inputs.consentedPurposes}}"
+        },
+        "out": "courts",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "gate_courts",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.cutoff.decide",
+        "dependsOn": [
+          "plan",
+          "gate_documents",
+          "consent_courts",
+          "courts"
+        ],
+        "condition": "{{steps.consent_courts.status}} is not null",
+        "inputs": {
+          "plan": "{{steps.plan.planJson}}",
+          "stage": "courts",
+          "consent": "{{steps.consent_courts.status}}",
+          "result": "{{steps.courts.resultJson:}}",
+          "spentCredits": "{{steps.gate_documents.spentCredits}}"
+        },
+        "out": "gate_courts",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "consent_credit",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.consent.check",
+        "dependsOn": [
+          "gate_courts"
+        ],
+        "condition": "{{steps.gate_courts.decision}} == 'CONTINUE'",
+        "inputs": {
+          "purpose": "CREDIT",
+          "consentedPurposes": "{{inputs.consentedPurposes}}"
+        },
+        "out": "consent_credit",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "credit",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.credit.check",
+        "dependsOn": [
+          "plan",
+          "consent_credit"
+        ],
+        "condition": "{{steps.consent_credit.status}} == 'GRANTED'",
+        "inputs": {
+          "plan": "{{steps.plan.planJson}}",
+          "subject": "{{inputs.subject}}",
+          "consentedPurposes": "{{inputs.consentedPurposes}}"
+        },
+        "out": "credit",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT2M"
+      },
+      {
+        "id": "gate_credit",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.cutoff.decide",
+        "dependsOn": [
+          "plan",
+          "gate_courts",
+          "consent_credit",
+          "credit"
+        ],
+        "condition": "{{steps.consent_credit.status}} is not null",
+        "inputs": {
+          "plan": "{{steps.plan.planJson}}",
+          "stage": "credit",
+          "consent": "{{steps.consent_credit.status}}",
+          "result": "{{steps.credit.resultJson:}}",
+          "spentCredits": "{{steps.gate_courts.spentCredits}}"
+        },
+        "out": "gate_credit",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      },
+      {
+        "id": "report",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.screening.report.assemble",
+        "dependsOn": [
+          "plan",
+          "consent_documents",
+          "documents",
+          "gate_documents",
+          "consent_courts",
+          "courts",
+          "gate_courts",
+          "consent_credit",
+          "credit",
+          "gate_credit"
+        ],
+        "inputs": {
+          "plan": "{{steps.plan.planJson}}",
+          "documentsResult": "{{steps.documents.resultJson:}}",
+          "documentsGate": "{{steps.gate_documents.decisionJson:}}",
+          "documentsConsent": "{{steps.consent_documents.status:}}",
+          "courtsResult": "{{steps.courts.resultJson:}}",
+          "courtsGate": "{{steps.gate_courts.decisionJson:}}",
+          "courtsConsent": "{{steps.consent_courts.status:}}",
+          "creditResult": "{{steps.credit.resultJson:}}",
+          "creditGate": "{{steps.gate_credit.decisionJson:}}",
+          "creditConsent": "{{steps.consent_credit.status:}}"
+        },
+        "out": "report",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "report",
+        "label": "Rapport de vérification, en codes",
+        "from": "{{steps.report.reportJson}}",
+        "type": "JSON",
+        "x-i18n": {
+          "en": {
+            "label": "Screening report, as codes"
+          },
+          "fr": {
+            "label": "Rapport de vérification, en codes"
+          }
+        },
+        "schema": {
+          "type": "object",
+          "required": [
+            "status",
+            "stages",
+            "ledger",
+            "limits",
+            "subjectRef"
+          ],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "COMPLETED",
+                "STOPPED",
+                "INCOMPLETE"
+              ]
+            },
+            "stoppedAt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "stopCode": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "ruleId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "subjectRef": {
+              "type": "string",
+              "minLength": 1
+            },
+            "stages": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "stage",
+                  "state",
+                  "charged",
+                  "credits"
+                ],
+                "properties": {
+                  "stage": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "RAN",
+                      "REFUSED",
+                      "UNAVAILABLE",
+                      "NOT_RUN"
+                    ]
+                  },
+                  "charged": {
+                    "type": "boolean"
+                  },
+                  "credits": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            },
+            "ledger": {
+              "type": "object",
+              "required": [
+                "total",
+                "byStage",
+                "payer"
+              ],
+              "properties": {
+                "total": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "payer": {
+                  "type": "string",
+                  "enum": [
+                    "LANDLORD",
+                    "APPLICANT"
+                  ]
+                }
+              }
+            },
+            "limits": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      {
+        "key": "status",
+        "label": "Issue de la vérification",
+        "from": "{{steps.report.status}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Screening outcome"
+          },
+          "fr": {
+            "label": "Issue de la vérification"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "subject",
+      "consentedPurposes",
+      "authenticityReport"
+    ],
+    "properties": {
+      "subject": {
+        "type": "object",
+        "required": [
+          "subjectId",
+          "lastName",
+          "firstName"
+        ],
+        "properties": {
+          "subjectId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "title": "La personne à vérifier",
+        "description": "Son identifiant opaque, son nom et son prénom. Le nom ne sort jamais d'une étape.",
+        "x-i18n": {
+          "en": {
+            "title": "Applicant",
+            "description": "Opaque id, last name and first name. The name never leaves a stage."
+          },
+          "fr": {
+            "title": "La personne à vérifier",
+            "description": "Identifiant opaque, nom et prénom. Le nom ne sort jamais d'une étape."
+          }
+        }
+      },
+      "consentedPurposes": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "DOCUMENTS",
+            "COURT_RECORDS",
+            "CREDIT"
+          ]
+        },
+        "uniqueItems": true,
+        "title": "Consentements du candidat",
+        "description": "Les finalités auxquelles le candidat a consenti. Sans consentement, l'étape s'arrête.",
+        "x-i18n": {
+          "en": {
+            "title": "Applicant's consents",
+            "description": "The purposes the applicant consented to. Without consent, the stage stops.",
+            "placeholder": "DOCUMENTS, COURT_RECORDS, CREDIT"
+          },
+          "fr": {
+            "title": "Consentements du candidat",
+            "description": "Les finalités consenties par le candidat. Sans consentement, l'étape s'arrête.",
+            "placeholder": "DOCUMENTS, COURT_RECORDS, CREDIT"
+          }
+        }
+      },
+      "authenticityReport": {
+        "type": "object",
+        "title": "Authenticité des documents",
+        "description": "La sortie « signals » du Studio document-authenticity, pour les pièces du dossier.",
+        "x-i18n": {
+          "en": {
+            "title": "Document authenticity",
+            "description": "The \"signals\" output of the document-authenticity Studio, for the file's documents."
+          },
+          "fr": {
+            "title": "Authenticité des documents",
+            "description": "La sortie « signals » du Studio document-authenticity."
+          }
+        }
+      },
+      "leaseReport": {
+        "type": "object",
+        "title": "Contrôle du bail (facultatif)",
+        "description": "Le rapport du Studio compliance-check sur le bail proposé.",
+        "x-i18n": {
+          "en": {
+            "title": "Lease check (optional)",
+            "description": "The compliance-check Studio's report on the proposed lease."
+          },
+          "fr": {
+            "title": "Contrôle du bail (facultatif)",
+            "description": "Le rapport du Studio compliance-check sur le bail proposé."
+          }
+        }
+      },
+      "cutoffs": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "fact",
+              "op",
+              "value"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9-]{2,39}$"
+              },
+              "fact": {
+                "type": "string"
+              },
+              "op": {
+                "type": "string",
+                "enum": [
+                  "equals",
+                  "atLeast",
+                  "in"
+                ]
+              },
+              "value": {}
+            }
+          }
+        },
+        "title": "Règles d'arrêt (facultatif)",
+        "description": "Par étape, les règles du gestionnaire qui remplacent celles par défaut. Une liste vide retire l'arrêt.",
+        "x-i18n": {
+          "en": {
+            "title": "Cut-off rules (optional)",
+            "description": "Per stage, the manager's rules that replace the defaults. An empty list removes the cut-off."
+          },
+          "fr": {
+            "title": "Règles d'arrêt (facultatif)",
+            "description": "Par étape, les règles du gestionnaire qui remplacent celles par défaut. Liste vide : aucun arrêt."
+          }
+        }
+      },
+      "creditCap": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000000,
+        "default": 0,
+        "title": "Plafond de crédits (facultatif)",
+        "description": "Un arrêt si l'étape suivante dépasse ce plafond. 0 : seul le plafond du moteur s'applique.",
+        "x-i18n": {
+          "en": {
+            "title": "Credit cap (optional)",
+            "description": "Stops if the next stage would pass this cap. 0: only the engine's cap applies."
+          },
+          "fr": {
+            "title": "Plafond de crédits (facultatif)",
+            "description": "Arrêt si l'étape suivante dépasse ce plafond. 0 : seul le plafond du moteur s'applique."
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "applicantPaysFees": {
+        "type": "boolean",
+        "default": false,
+        "title": "Frais payés par le candidat",
+        "description": "Faux par défaut : le candidat ne paie rien (C.c.Q. art. 1904).",
+        "x-i18n": {
+          "en": {
+            "title": "Fees paid by the applicant",
+            "description": "Off by default: the applicant pays nothing (C.c.Q. art. 1904)."
+          },
+          "fr": {
+            "title": "Frais payés par le candidat",
+            "description": "Faux par défaut : le candidat ne paie rien (C.c.Q. art. 1904)."
+          }
+        }
+      }
+    }
+  }
+}

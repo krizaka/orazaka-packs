@@ -26,6 +26,7 @@ updates:
       - "/media-safety"
       - "/message-authenticity"
       - "/profile-photo-check"
+      - "/tenant-screening-qc"
     schedule:
       interval: monthly
       time: "06:00"
