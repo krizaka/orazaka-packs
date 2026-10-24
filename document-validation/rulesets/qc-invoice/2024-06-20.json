@@ -100,6 +100,7 @@
       "title": "Numéro de TPS mal formé",
       "severity": "MAJOR",
       "method": "DETERMINISTIC",
+      "subject": "(?i)\\b(?:TPS|TVH|GST|HST)\\b",
       "citation": "Format : ARC, numéro de compte de la TPS/TVH (numéro d'entreprise à 9 chiffres, RT, 4 chiffres)",
       "check": {
         "type": "FORBIDDEN_PATTERN",
@@ -125,6 +126,7 @@
       "title": "Numéro de TVQ mal formé",
       "severity": "MAJOR",
       "method": "DETERMINISTIC",
+      "subject": "(?i)\\b(?:TVQ|QST)\\b",
       "citation": "Format : Revenu Québec, format du numéro d'inscription au fichier de la TVQ (10 chiffres, TQ, 4 chiffres) (l'exigence de le porter sur la facture n'est pas encodée : texte non lu à la source)",
       "check": {
         "type": "FORBIDDEN_PATTERN",

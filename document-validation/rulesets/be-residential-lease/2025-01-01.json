@@ -65,6 +65,7 @@
       "title": "Équilibre des clauses pénales",
       "severity": "ADVISORY",
       "method": "JUDGMENT",
+      "subject": "(?i)clause\\s+p[ée]nale|p[ée]nalit[ée]s?|indemnit[ée]\\s+forfaitaire",
       "citation": "Code civil belge, art. 5.88",
       "question": "Ce bail contient-il une clause pénale manifestement disproportionnée au regard du préjudice sanctionné ?",
       "onPass": "Aucune clause pénale manifestement disproportionnée relevée.",
