@@ -1,0 +1,12 @@
+Facture (formulaire vierge de démonstration)
+N° de facture : ____________
+Date : ____________
+Émise par : ____________
+N° d'inscription à la TPS : ____________
+N° d'inscription à la TVQ : ____________
+Facturée à : ____________
+Description : ____________
+Sous-total : ________ $
+TPS (5 %) : ________ $
+TVQ (9,975 %) : ________ $
+Total : ________ $

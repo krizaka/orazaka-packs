@@ -1,0 +1,13 @@
+Facture
+N° de facture : DEMO-0042
+Date : 2026-10-14
+Émise par : Atelier Fictif inc., 200, rue Exemple, Montréal (Québec) H2X 3Y4
+N° d'inscription à la TPS : 123456789 RT 0001
+N° d'inscription à la TVQ : 1234567890 TQ 0001
+Facturée à : Café Imaginaire inc.
+Conception d'une affiche : 400,00 $
+Sous-total : 400,00 $
+TPS (5 %) : 20,00 $
+TVQ (9,975 %) : 39,90 $
+Total : 459,90 $
+Payable dans les 30 jours.

@@ -31,6 +31,7 @@ import yaml
 
 import authenticity
 import broker
+import identify
 import rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -190,12 +191,40 @@ def _signals(payload: dict) -> dict:
     }
 
 
+def _identify(payload: dict) -> dict:
+    """What the document IS (ADR-089 §1): kind, jurisdiction, date, language, compared with what was declared.
+
+    Deterministic, no model: ``identify.identify`` over the kinds shipped as data. The caller's ``ruleset`` still
+    overrides everything (a 1.x call), and an unknown one is refused by name.
+    """
+    text = str(payload.get("document") or "")
+    if not text.strip():
+        raise InvalidJobPayload("aucun document fourni : le champ 'document' est vide")
+    try:
+        found = identify.identify(
+            text,
+            today=time.strftime("%Y-%m-%d"),
+            declared_kind=str(payload.get("declaredKind") or ""),
+            jurisdiction=str(payload.get("jurisdiction") or ""),
+            as_of=str(payload.get("asOf") or ""),
+            ruleset=str(payload.get("ruleset") or ""),
+        )
+    except identify.UnknownRuleset as unknown:
+        raise InvalidJobPayload(str(unknown)) from unknown
+    except ValueError as bad:
+        raise InvalidJobPayload(f"asOf doit être une date ISO (AAAA-MM-JJ): {bad}") from bad
+    # A blueprint step addresses FIELDS, not a nested value: the whole identification is also given as JSON text.
+    return dict(found, identificationJson=json.dumps(found, ensure_ascii=False))
+
+
 HANDLERS = {
     "job.validation.screen": _screen,
     "job.validation.assemble": _assemble,
     # The same worker process, one more routing key. No new worker: this pack already ships one,
     # and the authenticity Studio is drained by it (ADR-056 §2).
     "job.validation.signals": _signals,
+    # Stage 1 of ADR-089: the kind of a document, before any ruleset. No model, no new worker.
+    "job.validation.identify": _identify,
 }
 
 

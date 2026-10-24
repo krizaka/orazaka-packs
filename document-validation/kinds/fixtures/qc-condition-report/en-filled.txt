@@ -1,0 +1,11 @@
+DWELLING CONDITION REPORT
+Demonstration sample, fictional people and address.
+Date of inspection: September 1, 2026
+Landlord: Ms. Helen Roy. Tenant: Mr. Karim Haddad.
+Dwelling: 45 Beaubien Street, Montréal, Québec H2G 1K7
+Kitchen: condition: good, counter chip-free, a stain on the floor near the sink.
+Living room: condition: good, a small hole in the east wall.
+Bedroom: condition: fair, paint worn behind the door.
+Bathroom: condition: good, caulking to redo.
+Keys handed over: three keys handed to the tenant.
+Signatures: ____________________

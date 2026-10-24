@@ -1,0 +1,10 @@
+DWELLING CONDITION REPORT
+Blank demonstration form. Fill it in with the tenant and the landlord, and sign it at the end of the visit.
+Date of inspection: ____________________
+Landlord: ____________________  Tenant: ____________________
+Kitchen: condition: ____________________
+Living room: condition: ____________________
+Bedroom: condition: ____________________
+Bathroom: condition: ____________________
+Keys handed over: number of keys: ____
+Signatures: ____________________
