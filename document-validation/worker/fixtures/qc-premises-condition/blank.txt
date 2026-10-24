@@ -1,0 +1,9 @@
+ÉTAT DES LIEUX (modèle vierge)
+Logement : ____________________
+Locateur : ____________________
+Locataire : ____________________
+Date de la remise des clés : ____________________
+Propreté : ☐ bonne ☐ moyenne ☐ à reprendre
+Habitabilité : ☐ bonne ☐ moyenne ☐ à reprendre
+Remarques : ____________________
+Signature du locateur : ____________ Signature du locataire : ____________

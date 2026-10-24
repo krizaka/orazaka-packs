@@ -10,6 +10,7 @@ import json
 import re
 import sys
 import os
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -388,9 +389,10 @@ def test_qc_waiver_of_the_rent_increase_regime_is_flagged_and_the_lawful_clauses
 
 def test_qc_revision_records_the_correction_and_the_law_is_unchanged():
     ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
-    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 3
+    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 4  # 4: the language rule (orazaka-packs#126)
     assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
-    assert "dépôt" in ruleset["revisionNote"].lower() and "augmentation" in ruleset["revisionNote"].lower()
+    assert "langue" in ruleset["revisionNote"].lower() and "dépôt" in ruleset["revisionNote"].lower()
+    assert "augmentation" in ruleset["revisionNote"].lower()
     assert "pénalité" in ruleset["revisionNote"].lower() and "règlement" in ruleset["revisionNote"].lower()
 
 
@@ -464,7 +466,9 @@ def test_every_invoice_rule_cites_its_source_and_says_it_awaits_review():
 
 def test_the_invoice_is_opt_in_the_lease_stays_the_default_of_quebec():
     assert rules.jurisdictions()["QC"] == "qc-residential-lease"
-    assert set(rules.rulesets_by_jurisdiction()["QC"]) == {"qc-residential-lease", "qc-invoice", "qc-service-contract"}
+    assert set(rules.rulesets_by_jurisdiction()["QC"]) == {
+        "qc-residential-lease", "qc-invoice", "qc-service-contract", "qc-visit-notice", "qc-premises-condition",
+    }
 
 
 # --- qc-service-contract: only what federal law, read at its source, says (Interest Act s. 4, Copyright Act s. 13(4), 14.1) ---
@@ -748,6 +752,94 @@ def test_the_contract_ruleset_leaves_the_termination_right_to_a_lawyer_and_encod
     ruleset = rules.resolve("qc-service-contract", "2026-10-21")
     assert "2125" in ruleset["reviewNote"]
     assert not any("2125" in (r.get("citation") or "") for r in ruleset["rules"])
+
+
+# --- qc-visit-notice, qc-premises-condition and the language rule they share with the lease (orazaka-packs#125, #126) ---
+
+
+def test_the_visit_notice_and_the_condition_form_are_opt_in_quebec_rulesets_in_force_from_their_date():
+    assert {"qc-visit-notice", "qc-premises-condition"} <= set(rules.rulesets_by_jurisdiction()["QC"])
+    assert rules.jurisdictions()["QC"] == "qc-residential-lease"  # the new kinds are named, never the default
+    for ruleset_id in ("qc-visit-notice", "qc-premises-condition"):
+        ruleset = rules.resolve(ruleset_id, "2026-10-22")
+        assert ruleset["optIn"] is True and ruleset["effectiveFrom"] == "2023-06-01", ruleset_id
+        assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER", ruleset_id
+    try:
+        rules.resolve("qc-visit-notice", "2023-05-31")
+    except rules.RulesetNotFound:
+        return
+    raise AssertionError("the visit notice ruleset must not be applied before its date")
+
+
+def test_the_language_rule_is_one_rule_shared_by_the_three_document_kinds():
+    shared = [
+        next(r for r in rules.resolve(i, "2026-10-22")["rules"] if r["ruleId"] == "QC-LANG-001")
+        for i in ("qc-residential-lease", "qc-visit-notice", "qc-premises-condition")
+    ]
+    assert shared[0] == shared[1] == shared[2]
+    assert shared[0]["method"] == "DETERMINISTIC" and [b["ref"] for b in shared[0]["law"]] == ["55", "55", "1897"]
+
+
+def test_an_english_only_document_fails_the_language_rule_and_a_bilingual_one_passes_it():
+    assert _verdicts("qc-residential-lease", "en-not-read.txt")["QC-LANG-001"] == rules.FAIL
+    bilingual = _verdicts("qc-residential-lease", "bilingual-compliant.txt")
+    assert bilingual["QC-LANG-001"] == rules.PASS
+    assert rules.FAIL not in bilingual.values()
+
+
+def test_a_visit_notice_is_judged_article_by_article():
+    compliant = _verdicts("qc-visit-notice", "compliant.txt")
+    assert rules.FAIL not in compliant.values(), compliant
+    assert compliant["QC-VISIT-001"] == rules.PASS and compliant["QC-VISIT-002"] == rules.PASS
+    defective = _verdicts("qc-visit-notice", "defective.txt")
+    assert {k for k, v in defective.items() if v == rules.FAIL} == {"QC-VISIT-001", "QC-VISIT-003", "QC-VISIT-004", "QC-VISIT-005"}
+    assert defective["QC-VISIT-002"] == rules.PASS  # the intention is stated, so it is not the defect
+
+
+def test_a_notice_period_is_read_in_hours_and_the_singular_is_read_too():
+    ruleset = rules.resolve("qc-visit-notice", "2026-10-22")
+    finding = _by_id(rules.screen(ruleset, "Préavis de 2 heures.")[0])["QC-VISIT-001"]
+    assert finding["verdict"] == rules.FAIL and "heure(s)" in finding["explanation"] and "an(s)" not in finding["explanation"]
+    assert _by_id(rules.screen(ruleset, "Préavis de 1 heure.")[0])["QC-VISIT-001"]["verdict"] == rules.FAIL
+
+
+def test_a_condition_form_is_judged_on_what_no_clause_may_do():
+    assert rules.FAIL not in _verdicts("qc-premises-condition", "compliant.txt").values()
+    defective = _verdicts("qc-premises-condition", "defective.txt")
+    assert {k for k, v in defective.items() if v == rules.FAIL} == {"QC-COND-001", "QC-COND-002", "QC-COND-003", "QC-COND-004"}
+
+
+def test_every_rule_of_the_new_kinds_and_of_the_lease_declares_a_subject_that_compiles():
+    # orazaka-packs#127 asks it of every rule: what the law is about, whatever the check.
+    for ruleset_id in ("qc-visit-notice", "qc-premises-condition", "qc-residential-lease"):
+        for rule in rules.resolve(ruleset_id, "2026-10-22")["rules"]:
+            assert rule.get("subject"), f"{ruleset_id} {rule['ruleId']} declares no subject"
+            re.compile(rule["subject"])
+
+
+def test_a_blank_form_never_passes_a_rule_it_does_not_address():
+    # A blank form states the labels of the rules, never their content: no rule of the kind may PASS on it.
+    for ruleset_id, prefix in (("qc-visit-notice", "QC-VISIT-"), ("qc-premises-condition", "QC-COND-")):
+        content = {k: v for k, v in _verdicts(ruleset_id, "blank.txt").items() if k.startswith(prefix)}
+        assert rules.PASS not in content.values(), (ruleset_id, content)
+    assert _verdicts("qc-visit-notice", "blank.txt")["QC-VISIT-002"] == rules.FAIL  # the intention is missing
+    assert _verdicts("qc-visit-notice", "blank.txt")["QC-VISIT-001"] == rules.INSUFFICIENT_EVIDENCE  # no period is written
+
+
+def test_every_rule_of_the_new_kinds_and_the_language_rule_cites_a_dated_hashed_article_it_names():
+    for ruleset_id in ("qc-visit-notice", "qc-premises-condition", "qc-residential-lease"):
+        ruleset = rules.resolve(ruleset_id, "2026-10-22")
+        for rule in ruleset["rules"]:
+            if not rule["ruleId"].startswith(("QC-VISIT", "QC-COND", "QC-LANG")):
+                continue
+            assert rule["law"], rule["ruleId"]
+            for block in rule["law"]:
+                assert block["ref"] in rule["citation"], (rule["ruleId"], block["ref"])
+                assert re.fullmatch(r"[0-9a-f]{64}", block["contentHash"]), rule["ruleId"]
+                assert block["officialUrl"].startswith("https://www.legisquebec.gouv.qc.ca/fr/version/lc/"), rule["ruleId"]
+                assert block["readAt"] == "2026-10-23" and len(block["quote"]) <= 300, rule["ruleId"]
+                # The article is in force on the day the ruleset is: a rule may not cite a text the law does not yet hold.
+                assert date.fromisoformat(block["inForceFrom"]) <= date.fromisoformat(ruleset["effectiveFrom"]), rule["ruleId"]
 
 
 if __name__ == "__main__":

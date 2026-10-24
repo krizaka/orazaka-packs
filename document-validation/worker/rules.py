@@ -340,7 +340,7 @@ def _numeric_min(rule: dict, source) -> dict:
         rule,
         FAIL,
         doc.span(match),
-        f"{rule['onFail']} Constaté : {value:g} an(s).",
+        f"{rule['onFail']} Constaté : {value:g} {check.get('unit', 'an(s)')}.",
     )
 
 
