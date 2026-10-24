@@ -165,16 +165,26 @@ def test_a_1x_request_answers_the_1x_shape_exactly_as_recorded():
         assert "contract" not in report and "identification" not in report and isinstance(report["findings"][0]["citation"], str)
 
 
-def test_a_1x_shaped_call_to_2x_gives_the_lease_by_default_with_the_mismatch_computed():
-    # jurisdiction QC, no kind, no ruleset, a text no kind recognises: the lease, as 1.x did, and said so.
+def test_2x_has_no_default_kind_the_lease_by_jurisdiction_is_legacy_1x_only():
+    # jurisdiction QC, no kind, a text no kind recognises: 2.0 says KIND_UNKNOWN; only a pinned 1.x blueprint judges it
+    # by the jurisdiction's lease (CTO, orazaka-studio#80, point 4).
     text = "Entre le locateur Monsieur Marc Tremblay, domicilié à Montréal, et la locataire Madame Léa Roy."
-    report, _ = run(text, judge="[]", jurisdiction="QC", asOf="2026-10-22")
-    assert report["outcome"] == compliance.CHECKED and report["ruleset"]["id"] == "qc-residential-lease"
-    assert report["identification"]["kindSource"] == "DEFAULT" and report["identification"]["kindMismatch"] is False
-    # A recognised notice is never the lease's, even under a 1.x-shaped call: the mismatch with a declared lease shows.
+    report, calls = run(text, jurisdiction="QC", asOf="2026-10-22")
+    assert report["outcome"] == "KIND_UNKNOWN" and report["findings"] == [] and calls == []
+    assert worker._screen({"document": text, "jurisdiction": "QC", "asOf": "2026-10-22"})["rulesetId"] == "qc-residential-lease"
+    # A recognised notice is never the lease's: the mismatch with a declared lease shows.
     notice, _ = run(kind_text("qc-visit-notice", "fr-filled.txt"), jurisdiction="QC", declaredKind="LEASE")
     assert notice["outcome"] == "UNSUPPORTED_KIND" and notice["identification"]["kindMismatch"] is True
     assert notice["findings"] == [] and "ruleset" not in notice
+
+
+def test_a_citation_that_pins_no_article_says_so_on_every_finding():
+    rec = recording("errors")
+    report, _ = run(rec["document"], judge=recorded_judge(rec["report"]), **rec["inputs"])
+    for finding in report["findings"]:
+        assert finding["checks"]["citation"] == "NOT_PINNED" and finding["citation"]["pinned"] is False
+        assert finding["citation"]["notice"]["fr"].startswith("Citation non épinglée"), finding["ruleId"]
+        assert finding["citation"]["notice"]["en"].startswith("Unpinned citation")
 
 
 def test_the_2x_blueprint_is_versioned_so_pinned_1x_installations_keep_their_steps():
@@ -330,6 +340,60 @@ def test_two_identical_runs_give_the_same_report():
     first, _ = run(rec["document"], judge=recorded_judge(rec["report"]), **rec["inputs"])
     second, _ = run(rec["document"], judge=recorded_judge(rec["report"]), **rec["inputs"])
     assert first == second
+
+
+def _report_step(document: str, **inputs) -> dict:
+    """The output of the report step itself (what the platform reads ``resultCacheable`` from)."""
+    ident = worker._identify({"document": document, **inputs})
+    resolved = worker._resolve({"identification": ident["identificationJson"], "document": document})
+    screened = worker._screen({"resolved": resolved["resolvedJson"], "document": document}) if resolved["outcome"] == "CHECK" else None
+    return worker._report({"resolved": resolved["resolvedJson"], "screened": screened["screenedJson"] if screened else "", "judgment": "[]"})
+
+
+def test_a_run_whose_day_came_from_the_clock_is_never_cacheable():
+    lease = kind_text("qc-residential-lease", "fr-filled.txt")  # signed on 2026-06-12: a date the document gives
+    assert _report_step(lease, asOf="2026-10-22")["resultCacheable"] is True, "explicit asOf"
+    dated = _report_step(lease)
+    assert dated["report"]["identification"]["asOfSource"] == "DOCUMENT" and dated["resultCacheable"] is True
+    undated = _report_step(kind_text("qc-residential-lease", "fr-blank.txt"))
+    assert undated["report"]["identification"]["asOfSource"] == "TODAY" and undated["resultCacheable"] is False
+    unknown = _report_step(kind_text("_unknown", "unrelated.txt"))
+    assert unknown["resultCacheable"] is False, "no kind, no date: today's day is not an input"
+    # 1.x: a call without asOf is judged on today's law and never reused; with asOf it may be.
+    assert worker._screen({"document": lease, "jurisdiction": "QC"})["resultCacheable"] is False
+    assert worker._screen({"document": lease, "jurisdiction": "QC", "asOf": "2026-10-22"})["resultCacheable"] is True
+
+
+def test_the_held_articles_are_a_snapshot_whose_hash_must_be_the_corpus_row():
+    held = TEST_ARTICLES
+    assert citations.corpus_mismatches(held, lambda a: {"contentHash": a["contentHash"]}) == []
+    changed = citations.corpus_mismatches(held, lambda a: {"contentHash": "f" * 64})
+    assert len(changed) == 1 and "TEST-1 art. 9999" in changed[0] and "corpus ffffffffffff" in changed[0]
+    assert "LAW_VERSION_UNKNOWN" in citations.corpus_mismatches(held, lambda a: None)[0]
+
+
+def test_the_shipped_snapshot_matches_the_corpus_when_it_is_reachable():
+    # Behind the corpus switch, off by default (ADR-089 cut 3): AI_LAW_CORPUS_ENABLED=true and AI_LAW_LOOKUP_URL, an
+    # endpoint answering lookupStatute as JSON ({contentHash, …}, 404 for LAW_VERSION_UNKNOWN).
+    if os.environ.get("AI_LAW_CORPUS_ENABLED") != "true" or not os.environ.get("AI_LAW_LOOKUP_URL"):
+        print("    (skipped: the law corpus switch is off)")
+        return
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+
+    def lookup(article):
+        query = urllib.parse.urlencode({"jurisdiction": "QC", "instrument": article["instrument"], "reference": article["ref"],
+                                        "language": article["language"], "asOf": article["inForceFrom"]})
+        try:
+            with urllib.request.urlopen(f"{os.environ['AI_LAW_LOOKUP_URL']}?{query}", timeout=10) as answer:
+                return json.load(answer)
+        except urllib.error.HTTPError as missing:
+            if missing.code == 404:
+                return None
+            raise
+
+    assert citations.corpus_mismatches(citations.load_articles(), lookup) == []
 
 
 def test_the_judge_is_asked_only_when_a_rule_needs_it():

@@ -79,7 +79,8 @@ def _screen(payload: dict) -> dict:
         return _screened(rules.resolve(resolved["ruleset"]["id"], as_of), text, as_of)
 
     jurisdiction = str(payload.get("jurisdiction") or "").strip()
-    as_of = str(payload.get("asOf") or "").strip() or time.strftime("%Y-%m-%d")
+    given = str(payload.get("asOf") or "").strip()
+    as_of = given or time.strftime("%Y-%m-%d")
 
     known = rules.jurisdictions()
     if jurisdiction not in known:
@@ -100,7 +101,8 @@ def _screen(payload: dict) -> dict:
                 f"disponibles: {', '.join(rules.rulesets_by_jurisdiction().get(jurisdiction, []))}"
             )
         ruleset_id = named
-    return _screened(rules.resolve(ruleset_id, as_of), text, as_of)
+    # A 1.x call without asOf is judged on today's law: never reused on another day (orazaka-studio#80).
+    return dict(_screened(rules.resolve(ruleset_id, as_of), text, as_of), resultCacheable=bool(given))
 
 
 def _screened(ruleset: dict, text: str, as_of: str) -> dict:
@@ -239,8 +241,6 @@ def _identify(payload: dict) -> dict:
             jurisdiction=jurisdiction,
             as_of=str(payload.get("asOf") or ""),
             ruleset=str(payload.get("ruleset") or ""),
-            # A 1.x-shaped call (a jurisdiction, no kind): its own ruleset, for a text no kind recognises.
-            default_ruleset=rules.jurisdictions().get(jurisdiction),
         )
     except identify.UnknownRuleset as unknown:
         raise InvalidJobPayload(str(unknown)) from unknown
@@ -281,6 +281,9 @@ def _report(payload: dict) -> dict:
         "report": report,
         "reportJson": json.dumps(report, ensure_ascii=False, indent=2),
         "outcome": report["outcome"],
+        # A day read from the clock is not an input: an answer computed on it must never be served on another day
+        # (orazaka-studio#80). Only an explicit asOf, or one read in the document, makes the run reusable.
+        "resultCacheable": compliance.cacheable(resolved["identification"]),
     }
 
 

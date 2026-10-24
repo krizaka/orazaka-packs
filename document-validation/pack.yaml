@@ -64,6 +64,7 @@ requires:
           judgmentPrompt: { type: string }
           judgmentCount: { type: integer }
           needsJudgment: { type: boolean, description: "Vrai quand une règle de jugement attend le modèle. 2.0 n'appelle le modèle que dans ce cas." }
+          resultCacheable: { type: boolean, description: "Faux quand l'appel 1.x ne donne pas asOf (le jour vient de l'horloge) : ce run n'est jamais repris du cache." }
         required: [rulesetId, rulesetVersion, jurisdiction, asOf, source, screenedJson, judgmentPrompt, needsJudgment]
     - key: orazaka.validation.document.identify
       routingKey: job.validation.identify
@@ -88,7 +89,7 @@ requires:
           kindUsed: { type: [string, "null"] }
           kindLabel: { type: [object, "null"] }
           kindStatus: { type: [string, "null"] }
-          kindSource: { type: [string, "null"], description: "DETECTED | DECLARED | CLASSIFIED | DEFAULT | RULESET_INPUT" }
+          kindSource: { type: [string, "null"], description: "DETECTED | DECLARED | CLASSIFIED | RULESET_INPUT" }
           kindEvidence: { type: array, items: { type: object }, description: "Les passages du document qui ont fait reconnaître le type (vérifiés dans le texte)." }
           kindMismatch: { type: boolean, description: "Vrai quand le document est d'un autre type que celui déclaré. Toujours montré." }
           ruleset: { type: [string, "null"] }
@@ -145,7 +146,8 @@ requires:
           report: { type: object, description: "Le rapport 2.0 : identification, outcome, ruleset, constats dont les deux citations sont vérifiées." }
           reportJson: { type: string, description: "Le même rapport en JSON, pour un pas aval." }
           outcome: { type: string, description: "CHECKED | UNSUPPORTED_KIND | KIND_UNKNOWN" }
-        required: [report, reportJson, outcome]
+          resultCacheable: { type: boolean, description: "Faux quand le jour du contrôle vient de l'horloge (asOfSource TODAY) : la plateforme ne reprend jamais ce run de son cache (orazaka-studio#80)." }
+        required: [report, reportJson, outcome, resultCacheable]
     - key: orazaka.validation.document.signals
       routingKey: job.validation.signals
       handlerKey: validation.signals

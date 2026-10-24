@@ -27,6 +27,12 @@ NOT_PINNED = "NOT_PINNED"
 ARTICLE_NOT_HELD = "ARTICLE_NOT_HELD"
 QUOTE_NOT_IN_ARTICLE = "QUOTE_NOT_IN_ARTICLE"
 
+#: What a finding whose rule pins no article shows beside its citation, in both languages.
+UNPINNED_NOTICE = {
+    "fr": "Citation non épinglée : l'article est cité en toutes lettres, sans texte daté ni empreinte à vérifier.",
+    "en": "Unpinned citation: the article is cited in words, with no dated, hashed text to check.",
+}
+
 #: What a finding's citation carries of a ``law`` block.
 FIELDS = ("instrument", "ref", "language", "officialUrl", "inForceFrom", "contentHash", "quote")
 
@@ -78,11 +84,29 @@ def cite(rule: dict, articles: dict) -> tuple:
     ``VERIFIED``; a rule with no ``law`` block is ``NOT_PINNED``.
     """
     blocks = rule.get("law") or []
-    citation = {"reference": rule.get("citation")}
+    citation = {"reference": rule.get("citation"), "pinned": bool(blocks)}
     if not blocks:
-        return citation, NOT_PINNED
+        # Never silent (CTO, orazaka-studio#80): the finding says its article is cited in words only.
+        return dict(citation, notice=UNPINNED_NOTICE), NOT_PINNED
     citation.update({k: blocks[0].get(k) for k in FIELDS})
     if len(blocks) > 1:
         citation["also"] = [{k: b.get(k) for k in FIELDS} for b in blocks[1:]]
     statuses = [check(b, articles) for b in blocks]
     return citation, next((s for s in statuses if s != VERIFIED), VERIFIED)
+
+
+def corpus_mismatches(articles: dict, lookup) -> list:
+    """The held article versions whose hash is not the corpus row's (ADR-089 cut 3, ``lookupStatute``).
+
+    ``law/`` is a snapshot for offline verification, never a second corpus: when the corpus is reachable, each held
+    version must be the row in force on its ``inForceFrom``. ``lookup(article)`` returns the corpus answer
+    (``{contentHash, …}``) or ``None`` for ``LAW_VERSION_UNKNOWN``; each mismatch is named, never repaired.
+    """
+    found = []
+    for content_hash, article in sorted(articles.items()):
+        row = lookup(article)
+        if row is None or row.get("contentHash") != content_hash:
+            corpus = row["contentHash"][:12] if row and row.get("contentHash") else "LAW_VERSION_UNKNOWN"
+            found.append(f"{article['instrument']} art. {article['ref']} ({article['language']}, {article['inForceFrom']}): "
+                         f"held {content_hash[:12]}, corpus {corpus}")
+    return found

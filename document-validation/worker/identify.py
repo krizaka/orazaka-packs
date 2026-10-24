@@ -177,7 +177,7 @@ def _candidate(scored: dict, min_weight: int) -> dict:
 
 
 def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as_of=None, ruleset=None,
-             default_ruleset=None, classified=None, min_signal_weight: int = MIN_SIGNAL_WEIGHT, kinds=None) -> dict:
+             classified=None, min_signal_weight: int = MIN_SIGNAL_WEIGHT, kinds=None) -> dict:
     """Identify ``text``: the kind, the jurisdiction, the date and the language, compared with what was declared.
 
     ``today`` (ISO date) is given, never read: the caller owns the clock. ``as_of`` is validated as an ISO date
@@ -185,8 +185,8 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
 
     ``classified`` is the model's answer to a tie (``{"kindId", "quote"}``, the ``classify`` step of
     ``compliance-check`` 2.0): kept only when it names one of the tied kinds (or ``OTHER``) and its quote is a passage
-    of ``text``. ``default_ruleset`` is the jurisdiction's own ruleset for a 1.x-shaped call (a jurisdiction, no kind,
-    no ruleset): it judges only a text in which no kind was recognised at all, as 1.x did (``kindSource: DEFAULT``).
+    of ``text``. There is no default kind: a text no kind recognises is ``KIND_UNKNOWN``. Judging it by the jurisdiction's
+    lease is 1.x behaviour, kept only by the 1.x blueprint (legacy, ADR-089 cut 5).
     """
     text = unicodedata.normalize("NFC", text or "")
     declared = (declared_kind or "").strip() or None
@@ -226,10 +226,6 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
             chosen = next((k for k in tied if k["kindId"] == classification["kindId"]), None)
             if classification["accepted"] and chosen:
                 used, source = chosen, "CLASSIFIED"
-        elif default_ruleset and not declared and not eligible:
-            defaulting = [k for k in scope if k["ruleset"] == default_ruleset]
-            if len(defaulting) == 1:
-                used, source = defaulting[0], "DEFAULT"
 
     mismatch = bool(detected and declared and not ruleset and declared not in detected["kind"]["declaredAs"])
 

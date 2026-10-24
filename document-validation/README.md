@@ -134,8 +134,9 @@ the highest weight wins **if it is alone at the top**; a tie is not broken by a 
 of the **tied** kinds, else the model may choose among them (`classifyAmong`, the `classify` step of `compliance-check` 2.0: its answer
 is kept only if it names a tied kind or `OTHER` and its quote is in the document — `kindSource: CLASSIFIED`), else `KIND_UNKNOWN`. With
 no candidate at all, the declared kind is used if it names exactly one kind of the scope. A declared jurisdiction restricts the kinds to
-its own, never another country's. An explicit `ruleset` (a 1.x call) still overrides everything (`RULESET_INPUT`); a 1.x-shaped call (a
-jurisdiction, no kind) gives the jurisdiction's own ruleset to a text in which **no** kind is recognised, as 1.x did (`DEFAULT`).
+its own, never another country's. An explicit `ruleset` still overrides everything (`RULESET_INPUT`). There is no default kind in 2.0:
+judging an unrecognised text by the jurisdiction's lease is **legacy 1.x behaviour**, kept only by installations pinned on a 1.x
+blueprint.
 
 ```bash
 cd worker && python3 test_identify.py     # each kind's fixtures (filled, blank, a document that must not match), every signal's pass/fail,
@@ -179,10 +180,15 @@ The report (`job.validation.report`), held by the platform to the `outputContrac
 **Both quotes are checked.** `checks.passage` is `VERIFIED` (the passage is in the document), `ABSENT` or `NOT_IN_DOCUMENT`;
 `checks.citation` is `VERIFIED` (the rule's `law` quote is in the article text the pack holds for its `contentHash`, `law/` — one JSON per
 article version, refused at load if its text does not hash to it), `NOT_PINNED` (a rule written before ADR-089 that cites its article in
-words only), `ARTICLE_NOT_HELD` or `QUOTE_NOT_IN_ARTICLE`. A PASS or FAIL whose passage or citation fails is `INSUFFICIENT_EVIDENCE`,
+words only: the verdict is kept for now, and the finding says so — `citation.pinned: false` and the notice « citation non épinglée »;
+pinning the shipped rules is packs#125/#126), `ARTICLE_NOT_HELD` or `QUOTE_NOT_IN_ARTICLE`. `law/` is a **snapshot for offline
+verification, not a second corpus**: with `AI_LAW_CORPUS_ENABLED=true` and `AI_LAW_LOOKUP_URL` (off by default), `test_check.py` also
+requires each held hash to be the corpus row `lookupStatute` returns (ADR-089 cut 3). A PASS or FAIL whose passage or citation fails is `INSUFFICIENT_EVIDENCE`,
 and no passage is never a PASS. A 1.x installation stays pinned on its 1.x blueprint, and the worker answers `screen` and `assemble` as
 before: yomizaka#305's recordings replay byte for byte (`worker/fixtures/compliance-check/`). The Studio is listed in
-`run.result-cache.studios`: an identical run answers from the recorded report.
+`run.result-cache.studios`: an identical run answers from the recorded report — **only when its day was given (`asOf`) or read in the
+document**. The report step returns `resultCacheable: false` when the day came from the clock (`asOfSource: TODAY`), and so does a 1.x
+`screen` without `asOf`; the platform never reuses such a run.
 
 ```bash
 cd worker && python3 test_check.py   # plays the blueprint step by step: the recordings, each outcome, a 1.x call, both quotes

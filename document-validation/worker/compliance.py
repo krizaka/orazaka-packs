@@ -113,6 +113,11 @@ def report(resolved: dict, ruleset, screened: dict, judgment: str, articles: dic
     return out
 
 
+def cacheable(identification: dict) -> bool:
+    """Whether a run may answer again from the cache: its day was given or read in the document, never the clock's."""
+    return identification.get("asOfSource") in ("INPUT", "DOCUMENT")
+
+
 def _checked(finding: dict, rule: dict, text: str, articles: dict) -> dict:
     """One finding with both of its quotes checked, and its verdict withdrawn when either fails."""
     passage = _passage(finding.get("evidenceSpan"), text)
