@@ -4,12 +4,12 @@
     "QC-LEASE-001": "FAIL",
     "QC-LEASE-002": "FAIL",
     "QC-LEASE-003": "FAIL",
-    "QC-LEASE-004": "PASS",
-    "QC-LEASE-005": "PASS",
-    "QC-LEASE-006": "PASS",
-    "QC-LEASE-007": "PASS",
+    "QC-LEASE-004": "NOT_APPLICABLE",
+    "QC-LEASE-005": "NOT_APPLICABLE",
+    "QC-LEASE-006": "NOT_APPLICABLE",
+    "QC-LEASE-007": "NOT_APPLICABLE",
     "QC-LEASE-008": "FAIL",
-    "QC-LEASE-009": "PASS"
+    "QC-LEASE-009": "NOT_APPLICABLE"
   },
   "judgments": [
     "QC-LEASE-010",

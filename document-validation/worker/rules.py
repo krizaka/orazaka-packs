@@ -225,12 +225,39 @@ def _required_pattern(rule: dict, source) -> dict:
     return _finding(rule, FAIL, None, rule["onFail"])
 
 
+def _subject_match(rule: dict, doc: "_Document"):
+    """The first passage of the document that addresses the rule's subject (a deposit, the children, a penalty), or None.
+
+    The subject is what the law is about, not the wording it forbids: a document that never mentions it has nothing to
+    pass or fail on, and that is NOT_APPLICABLE, never a PASS (orazaka-packs#124).
+    """
+    subject = rule.get("subject")
+    return re.search(subject, doc.text) if subject else None
+
+
+def _without_passage(rule: dict, doc: "_Document", explanation: str) -> dict:
+    """The verdict of a rule the document gives no passage for. It is never PASS, and its evidence is always empty.
+
+    NOT_APPLICABLE when the document does not address the rule's subject; INSUFFICIENT_EVIDENCE otherwise. A rule that
+    declares no subject cannot say whether the document addresses it, so it is INSUFFICIENT_EVIDENCE: a gap in the pack,
+    not a finding about the document.
+    """
+    if rule.get("subject") and _subject_match(rule, doc) is None:
+        return _finding(rule, NOT_APPLICABLE, None, "Le document n'aborde pas ce sujet ; la règle ne s'applique pas.")
+    return _finding(rule, INSUFFICIENT_EVIDENCE, None, explanation)
+
+
 def _forbidden_pattern(rule: dict, source) -> dict:
     doc = _document(source)
     match = re.search(rule["check"]["pattern"], doc.text)
     if match:
         return _finding(rule, FAIL, doc.span(match), rule["onFail"])
-    return _finding(rule, PASS, None, rule["onPass"])
+    # Nothing forbidden. A PASS still needs a passage of the document that addresses the subject: the absence of the
+    # wording is not a passage to quote.
+    addressed = _subject_match(rule, doc)
+    if addressed is not None:
+        return _finding(rule, PASS, doc.span(addressed), rule["onPass"])
+    return _without_passage(rule, doc, "La règle ne déclare pas son sujet ; elle ne peut pas être évaluée.")
 
 
 def _numeric_ratio_max(rule: dict, source) -> dict:
@@ -361,13 +388,39 @@ def screen(ruleset: dict, text: str) -> tuple:
     return findings, judgments
 
 
-def merge_judgments(ruleset: dict, deterministic: list, model_answer: str) -> list:
+def _quoted_passage(quote: str, doc: "_Document"):
+    """The span of the document that a model's quote is, or None when the document does not say it.
+
+    Case, line breaks, runs of spaces and the apostrophe's form are not differences; any other word is. The offsets are
+    into the document as given, and the quote is read back from it, so an evidence field is always a passage of the text
+    and never a sentence the model wrote.
+    """
+    words = quote.split()
+    if not words:
+        return None
+    pattern = r"\s+".join("".join("['’]" if c in "'’" else re.escape(c) for c in word) for word in words)
+    match = re.search(pattern, doc.original, re.IGNORECASE)
+    if match is None:
+        return None
+    passage = doc.original[match.start() : match.end()]
+    return {
+        "start": match.start(),
+        "end": match.end(),
+        "quote": passage[:MAX_QUOTE] + ("…" if len(passage) > MAX_QUOTE else ""),
+    }
+
+
+def merge_judgments(ruleset: dict, deterministic: list, model_answer: str, text: str) -> list:
     """Fold the model's answers into the report, refusing anything that is not a verdict.
 
     The model is given one job and can fail it three ways: unparseable output, a verdict outside
     the enum, or an answer about a rule nobody asked about. All three degrade to
-    ``INSUFFICIENT_EVIDENCE`` for the rule concerned. A wrong verdict on a compliance report is
-    worse than an absent one — the user forwards this to their counterparty.
+    ``INSUFFICIENT_EVIDENCE`` for the rule concerned (or ``NOT_APPLICABLE`` when the document does
+    not address the rule's subject). A wrong verdict on a compliance report is worse than an absent
+    one — the user forwards this to their counterparty.
+
+    A PASS is kept only when the quote the model gave is a passage of ``text``. Without one it is not a
+    PASS: the verdict falls back as for any rule with no passage (orazaka-packs#124).
     """
     by_id = {rule["ruleId"]: rule for rule in ruleset["rules"] if rule["method"] == "JUDGMENT"}
     if not by_id:
@@ -382,26 +435,39 @@ def merge_judgments(ruleset: dict, deterministic: list, model_answer: str) -> li
         if rule_id in by_id and item.get("verdict") in (PASS, FAIL, INSUFFICIENT_EVIDENCE):
             answers[rule_id] = item
 
+    doc = _Document(text, ruleset.get("textLayout"))
     out = list(deterministic)
     for rule_id, rule in by_id.items():
         answer = answers.get(rule_id)
         if answer is None:
             out.append(
-                _finding(
-                    rule,
-                    INSUFFICIENT_EVIDENCE,
-                    None,
-                    "Le modèle n'a pas rendu de verdict exploitable pour cette règle.",
+                _without_passage(
+                    rule, doc, "Le modèle n'a pas rendu de verdict exploitable pour cette règle."
                 )
             )
             continue
-        quote = str(answer.get("quote") or "").strip()
-        span = {"start": None, "end": None, "quote": quote[:MAX_QUOTE]} if quote else None
         verdict = answer["verdict"]
-        explanation = rule["onPass"] if verdict == PASS else rule["onFail"]
-        if verdict == INSUFFICIENT_EVIDENCE:
-            explanation = "Le modèle n'a pas trouvé dans le document de quoi trancher cette règle."
-        out.append(_finding(rule, verdict, span, explanation))
+        span = _quoted_passage(str(answer.get("quote") or ""), doc)
+        if verdict == FAIL:
+            out.append(_finding(rule, FAIL, span, rule["onFail"]))
+        elif span is not None and verdict == PASS:
+            out.append(_finding(rule, PASS, span, rule["onPass"]))
+        elif span is not None:
+            out.append(
+                _finding(
+                    rule,
+                    INSUFFICIENT_EVIDENCE,
+                    span,
+                    "Le modèle n'a pas trouvé dans le document de quoi trancher cette règle.",
+                )
+            )
+        else:
+            reason = (
+                "Le modèle a répondu PASS sans citer de passage du document : le verdict n'est pas retenu."
+                if verdict == PASS
+                else "Le modèle n'a pas trouvé dans le document de quoi trancher cette règle."
+            )
+            out.append(_without_passage(rule, doc, reason))
     return out
 
 

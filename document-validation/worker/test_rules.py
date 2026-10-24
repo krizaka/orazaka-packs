@@ -7,6 +7,7 @@ is a pure function of (ruleset, text) with no broker and no model in it.
 """
 
 import json
+import re
 import sys
 import os
 from pathlib import Path
@@ -64,10 +65,14 @@ def test_the_law_changing_changes_the_verdict_on_the_same_document():
     assert new["FR-LEASE-008"]["severity"] == "BLOCKING"
 
 
-def test_a_clean_lease_passes_every_deterministic_rule():
+def test_a_clean_lease_passes_or_is_not_applicable_on_every_deterministic_rule():
+    # A rule whose subject the lease never mentions has nothing to pass on: NOT_APPLICABLE, never a PASS
+    # with no passage (orazaka-packs#124). Every PASS quotes the document.
     ruleset = rules.resolve("fr-residential-lease", "2025-03-01")
     findings, judgments = rules.screen(ruleset, CLEAN)
-    assert all(f["verdict"] == rules.PASS for f in findings), _by_id(findings)
+    assert all(f["verdict"] in (rules.PASS, rules.NOT_APPLICABLE) for f in findings), _by_id(findings)
+    assert all(f["evidenceSpan"] for f in findings if f["verdict"] == rules.PASS), _by_id(findings)
+    assert _by_id(findings)["FR-LEASE-006"]["verdict"] == rules.NOT_APPLICABLE
     assert [j["ruleId"] for j in judgments] == ["FR-LEASE-020"]
 
 
@@ -128,23 +133,34 @@ def test_the_model_is_asked_only_about_judgment_rules():
     assert not set(j["ruleId"] for j in judgments) & set(deterministic)
 
 
+PENALTY_LEASE = "Bail de 12 mois. Le loyer est de 850 €. Une pénalité de 5000 € par jour de retard est due."
+
+
 def test_an_unparseable_model_answer_degrades_to_insufficient_evidence():
     ruleset = rules.resolve("fr-residential-lease", "2025-03-01")
-    merged = _by_id(rules.merge_judgments(ruleset, [], "Je pense que ce bail est plutôt correct."))
+    merged = _by_id(rules.merge_judgments(ruleset, [], "Je pense que ce bail est plutôt correct.", PENALTY_LEASE))
     assert merged["FR-LEASE-020"]["verdict"] == rules.INSUFFICIENT_EVIDENCE
+    assert merged["FR-LEASE-020"]["evidenceSpan"] is None
+
+
+def test_an_unparseable_answer_about_a_lease_without_penalties_is_not_applicable():
+    ruleset = rules.resolve("fr-residential-lease", "2025-03-01")
+    merged = _by_id(rules.merge_judgments(ruleset, [], "Je pense que ce bail est plutôt correct.", "Bail de 12 mois. Loyer : 850 €."))
+    assert merged["FR-LEASE-020"]["verdict"] == rules.NOT_APPLICABLE
+    assert merged["FR-LEASE-020"]["evidenceSpan"] is None
 
 
 def test_a_verdict_outside_the_enum_is_refused():
     ruleset = rules.resolve("fr-residential-lease", "2025-03-01")
     answer = '[{"ruleId": "FR-LEASE-020", "verdict": "PROBABLEMENT_OK", "quote": "x"}]'
-    merged = _by_id(rules.merge_judgments(ruleset, [], answer))
+    merged = _by_id(rules.merge_judgments(ruleset, [], answer, PENALTY_LEASE))
     assert merged["FR-LEASE-020"]["verdict"] == rules.INSUFFICIENT_EVIDENCE
 
 
 def test_a_verdict_about_a_rule_nobody_asked_about_is_dropped():
     ruleset = rules.resolve("fr-residential-lease", "2025-03-01")
     answer = '[{"ruleId": "FR-LEASE-999", "verdict": "FAIL", "quote": "inventé"}]'
-    merged = rules.merge_judgments(ruleset, [], answer)
+    merged = rules.merge_judgments(ruleset, [], answer, PENALTY_LEASE)
     assert [f["ruleId"] for f in merged] == ["FR-LEASE-020"]
     assert merged[0]["verdict"] == rules.INSUFFICIENT_EVIDENCE
 
@@ -152,7 +168,7 @@ def test_a_verdict_about_a_rule_nobody_asked_about_is_dropped():
 def test_a_fenced_json_answer_is_still_read():
     ruleset = rules.resolve("fr-residential-lease", "2025-03-01")
     answer = 'Voici:\n```json\n[{"ruleId":"FR-LEASE-020","verdict":"FAIL","quote":"pénalité de 5000 €"}]\n```'
-    merged = _by_id(rules.merge_judgments(ruleset, [], answer))
+    merged = _by_id(rules.merge_judgments(ruleset, [], answer, PENALTY_LEASE))
     assert merged["FR-LEASE-020"]["verdict"] == rules.FAIL
     assert merged["FR-LEASE-020"]["evidenceSpan"]["quote"] == "pénalité de 5000 €"
 
@@ -254,10 +270,15 @@ def test_every_deterministic_rule_distinguishes_its_own_fixtures():
             checked += 1
             for expected, fragments in (("PASS", fixtures["pass"]), ("FAIL", fixtures["fail"])):
                 for fragment in _as_list(fragments):
+                    want = expected
+                    # A pass fixture of a forbidden-wording rule that never mentions the rule's subject is
+                    # NOT_APPLICABLE: the absence of the wording is not a passage (orazaka-packs#124).
+                    if expected == "PASS" and rule["check"]["type"] == "FORBIDDEN_PATTERN" and not re.search(rule["subject"], fragment):
+                        want = rules.NOT_APPLICABLE
                     got = rules.evaluate(ruleset, rule, fragment)["verdict"]
-                    if got != expected:
+                    if got != want:
                         failures.append(
-                            f"{rule['ruleId']} expected {expected} and returned {got} on: "
+                            f"{rule['ruleId']} expected {want} and returned {got} on: "
                             f"{fragment[:72]}"
                         )
     assert checked > 0, "no deterministic rule was checked — this asserts nothing"
@@ -284,8 +305,10 @@ def test_quebec_rules_catch_what_the_civil_code_forbids_and_say_they_await_a_law
     for rule_id in ("QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-008"):
         assert found[rule_id]["verdict"] == rules.FAIL, rule_id
     assert "1 450 $" in found["QC-LEASE-004"]["evidenceSpan"]["quote"]
-    for rule_id in ("QC-LEASE-001", "QC-LEASE-002", "QC-LEASE-003", "QC-LEASE-007"):
+    for rule_id in ("QC-LEASE-001", "QC-LEASE-002", "QC-LEASE-003"):
         assert found[rule_id]["verdict"] == rules.PASS, rule_id
+    # The defective lease never mentions a renunciation to the tenancy: NOT_APPLICABLE, never a PASS (orazaka-packs#124).
+    assert found["QC-LEASE-007"]["verdict"] == rules.NOT_APPLICABLE
 
 
 # A deposit is forbidden however the lease words it (C.c.Q., art. 1904, al. 1: only the first term of rent may be asked in
@@ -327,6 +350,11 @@ QC_INCREASE_PASS = [
 ]
 
 
+def _lawful_verdict(rule, text):
+    """A lawful sentence is a PASS when it addresses the rule's subject, and NOT_APPLICABLE when it does not (orazaka-packs#124)."""
+    return rules.PASS if re.search(rule["subject"], text) else rules.NOT_APPLICABLE
+
+
 def _qc_rule(rule_id):
     ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
     return next(r for r in ruleset["rules"] if r["ruleId"] == rule_id)
@@ -336,7 +364,7 @@ def test_qc_deposit_is_caught_however_it_is_worded_and_lawful_wordings_pass():
     rule = _qc_rule("QC-LEASE-004")
     check = rules.CHECKS[rule["check"]["type"]]
     missed = [t for t in QC_DEPOSIT_FAIL if check(rule, t)["verdict"] != rules.FAIL]
-    wrong = [t for t in QC_DEPOSIT_PASS if check(rule, t)["verdict"] != rules.PASS]
+    wrong = [t for t in QC_DEPOSIT_PASS if check(rule, t)["verdict"] != _lawful_verdict(rule, t)]
     assert not missed, "deposit wordings not caught:\n  " + "\n  ".join(missed)
     assert not wrong, "lawful wordings flagged:\n  " + "\n  ".join(wrong)
 
@@ -352,7 +380,7 @@ def test_qc_waiver_of_the_rent_increase_regime_is_flagged_and_the_lawful_clauses
     assert rule["method"] == "DETERMINISTIC" and "1942" in rule["citation"] and "1945" in rule["citation"]
     check = rules.CHECKS[rule["check"]["type"]]
     assert [t for t in QC_INCREASE_FAIL if check(rule, t)["verdict"] != rules.FAIL] == []
-    assert [t for t in QC_INCREASE_PASS if check(rule, t)["verdict"] != rules.PASS] == []
+    assert [t for t in QC_INCREASE_PASS if check(rule, t)["verdict"] != _lawful_verdict(rule, t)] == []
     fixtures = rule["fixtures"]
     assert set(QC_INCREASE_FAIL) <= set(_as_list(fixtures["fail"]))
     assert set(QC_INCREASE_PASS) <= set(_as_list(fixtures["pass"]))
@@ -474,7 +502,8 @@ def test_assigning_copyright_in_silence_on_moral_rights_is_only_advice():
     text = "Le prestataire cède au client tous les droits d'auteur sur les livrables. Signé à Montréal."
     findings = _contract(text)
     assert findings["QC-SVC-003"]["verdict"] == rules.FAIL and findings["QC-SVC-003"]["severity"] == "ADVISORY"
-    assert findings["QC-SVC-002"]["verdict"] == rules.PASS
+    # The contract is silent on moral rights: nothing to pass on, so NOT_APPLICABLE, never a PASS (orazaka-packs#124).
+    assert findings["QC-SVC-002"]["verdict"] == rules.NOT_APPLICABLE
 
 
 def test_the_contract_ruleset_says_what_it_does_not_encode_and_cites_the_federal_texts_only():
@@ -604,18 +633,76 @@ def test_the_layout_reading_is_the_invoice_rulesets_and_says_so_in_its_revision(
     assert "textLayout" not in rules.resolve("qc-residential-lease", "2026-10-15")
 
 
-if __name__ == "__main__":
-    failures = 0
-    for name, fn in sorted(globals().items()):
-        if name.startswith("test_") and callable(fn):
-            try:
-                fn()
-                print(f"  ok   {name}")
-            except AssertionError as exc:
-                failures += 1
-                print(f"  FAIL {name}: {exc}")
-    print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
-    sys.exit(1 if failures else 0)
+def _same_words(a, b):
+    return " ".join(a.split()) == " ".join(b.split())
+
+
+def test_every_pass_quotes_a_passage_of_the_document_it_judges():
+    # orazaka-packs#124: a PASS requires a quoted passage found in the text, and the quote is that text.
+    checked = 0
+    for ruleset_dir in sorted(p for p in FIXTURES_ROOT.iterdir() if (RULESET_DIR / p.name).is_dir()):
+        ruleset = rules.resolve(ruleset_dir.name, "2026-10-22")
+        for document in sorted(ruleset_dir.glob("*.txt")):
+            text = document.read_text(encoding="utf-8")
+            findings, _ = rules.screen(ruleset, text)
+            for finding in findings:
+                if finding["verdict"] != rules.PASS:
+                    continue
+                checked += 1
+                span = finding["evidenceSpan"]
+                assert span is not None, f"{document.name}: {finding['ruleId']} is PASS with no passage"
+                assert _same_words(text[span["start"]:span["end"]], span["quote"]), f"{document.name}: {finding['ruleId']}"
+    assert checked > 0
+
+
+def test_a_rule_whose_subject_is_absent_is_not_applicable_and_never_pass():
+    # Golden document: a lease that says nothing about a deposit, children, a renunciation, a rent increase or a cheque.
+    text = (FIXTURES_ROOT / "qc-residential-lease" / "subject-absent.txt").read_text(encoding="utf-8")
+    found = _by_id(rules.screen(rules.resolve("qc-residential-lease", "2026-10-22"), text)[0])
+    for rule_id in ("QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-007", "QC-LEASE-009"):
+        assert found[rule_id]["verdict"] == rules.NOT_APPLICABLE, rule_id
+        assert found[rule_id]["evidenceSpan"] is None, rule_id
+
+
+def test_every_forbidden_or_judgment_rule_declares_the_subject_it_is_about():
+    for ruleset_path in _current_ruleset_versions():
+        for rule in json.loads(ruleset_path.read_text())["rules"]:
+            if rule["method"] == "JUDGMENT" or rule["check"]["type"] == "FORBIDDEN_PATTERN":
+                assert rule.get("subject"), f"{ruleset_path.name} {rule['ruleId']} has no subject"
+                re.compile(rule["subject"])
+
+
+PENALTY_ANSWER = '[{"ruleId": "QC-LEASE-010", "verdict": "%s", "quote": "%s"}]'
+
+
+def test_a_judgment_pass_without_a_quote_the_document_says_is_not_a_pass():
+    ruleset = rules.resolve("qc-residential-lease", "2026-10-22")
+    for answer in (
+        PENALTY_ANSWER % ("PASS", "Le locateur est un modèle de bonne foi."),
+        PENALTY_ANSWER % ("PASS", ""),
+    ):
+        found = _by_id(rules.merge_judgments(ruleset, [], answer, PENALTY_LEASE))["QC-LEASE-010"]
+        assert found["verdict"] == rules.INSUFFICIENT_EVIDENCE, answer
+        assert found["evidenceSpan"] is None, answer
+
+
+def test_a_judgment_quote_is_kept_only_where_the_document_says_it():
+    ruleset = rules.resolve("qc-residential-lease", "2026-10-22")
+    # Case, line breaks and spacing are not differences: the passage is read back from the document as given.
+    found = _by_id(rules.merge_judgments(ruleset, [], PENALTY_ANSWER % ("PASS", "UNE PÉNALITÉ  de 5000 €\\n par jour"), PENALTY_LEASE))
+    assert found["QC-LEASE-010"]["verdict"] == rules.PASS
+    assert found["QC-LEASE-010"]["evidenceSpan"]["quote"] == "Une pénalité de 5000 € par jour"  # the document's own words
+    # A quote with a figure the document does not hold is not evidence.
+    found = _by_id(rules.merge_judgments(ruleset, [], PENALTY_ANSWER % ("PASS", "pénalité de 7000 € par jour"), PENALTY_LEASE))
+    assert found["QC-LEASE-010"]["verdict"] == rules.INSUFFICIENT_EVIDENCE
+    assert found["QC-LEASE-010"]["evidenceSpan"] is None
+
+
+def test_a_judgment_fail_keeps_its_verdict_but_never_an_invented_quote():
+    ruleset = rules.resolve("qc-residential-lease", "2026-10-22")
+    found = _by_id(rules.merge_judgments(ruleset, [], PENALTY_ANSWER % ("FAIL", "Aucune pénalité n'est prévue."), PENALTY_LEASE))
+    assert found["QC-LEASE-010"]["verdict"] == rules.FAIL
+    assert found["QC-LEASE-010"]["evidenceSpan"] is None
 
 
 # --- the three Québec rulesets on whole demo documents, FR and EN (Yomizaka launch, 2026-10-21) -------------------------
@@ -631,7 +718,7 @@ def _verdicts(ruleset_id, name):
 
 
 def test_a_complete_quebec_lease_in_french_passes_every_deterministic_rule():
-    assert set(_verdicts("qc-residential-lease", "fr-compliant.txt").values()) == {rules.PASS}
+    assert set(_verdicts("qc-residential-lease", "fr-compliant.txt").values()) <= {rules.PASS, rules.NOT_APPLICABLE}
 
 
 def test_a_quebec_lease_breaking_the_civil_code_fails_exactly_what_it_breaks():
@@ -647,7 +734,7 @@ def test_a_lease_in_english_is_not_read_and_never_comes_back_clean():
 
 
 def test_a_service_contract_in_french_with_the_yearly_rate_and_a_signature_passes():
-    assert set(_verdicts("qc-service-contract", "fr-compliant.txt").values()) == {rules.PASS}
+    assert set(_verdicts("qc-service-contract", "fr-compliant.txt").values()) <= {rules.PASS, rules.NOT_APPLICABLE}
 
 
 def test_a_service_contract_is_checked_the_same_in_french_and_english():
@@ -661,3 +748,17 @@ def test_the_contract_ruleset_leaves_the_termination_right_to_a_lawyer_and_encod
     ruleset = rules.resolve("qc-service-contract", "2026-10-21")
     assert "2125" in ruleset["reviewNote"]
     assert not any("2125" in (r.get("citation") or "") for r in ruleset["rules"])
+
+
+if __name__ == "__main__":
+    failures = 0
+    for name, fn in sorted(globals().items()):
+        if name.startswith("test_") and callable(fn):
+            try:
+                fn()
+                print(f"  ok   {name}")
+            except AssertionError as exc:
+                failures += 1
+                print(f"  FAIL {name}: {exc}")
+    print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
+    sys.exit(1 if failures else 0)

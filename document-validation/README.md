@@ -28,6 +28,12 @@ never calls a model itself.
 An answer the model gets wrong in shape — unparseable, a verdict outside the enum, or about a rule
 nobody asked about — becomes `INSUFFICIENT_EVIDENCE` for that rule. Guessing would be worse.
 
+A PASS always quotes a passage of the document, and that passage is found in its text (orazaka-packs#124). A rule the
+document gives no passage for is never a PASS: it is `NOT_APPLICABLE` when the document does not address the rule's
+`subject` (the regex naming what the law is about: a deposit, the children, a penalty), and `INSUFFICIENT_EVIDENCE`
+otherwise. A quote the model gives that the document does not contain is discarded, and the evidence field is never a
+sentence written about the document.
+
 ## Rulesets
 
 ```

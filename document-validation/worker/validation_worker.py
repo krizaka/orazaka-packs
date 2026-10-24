@@ -99,6 +99,9 @@ def _screen(payload: dict) -> tuple:
         "asOf": as_of,
         "source": ruleset["source"],
         "deterministicFindings": findings,
+        # The judge's quotes are checked against the document as given (orazaka-packs#124): a PASS needs a passage
+        # the text really holds, and the assembly step reads the text from here.
+        "documentText": text,
     }
     # A ruleset not yet reviewed by a lawyer says so in every report built on it.
     if ruleset.get("reviewStatus"):
@@ -134,6 +137,7 @@ def _assemble(payload: dict) -> dict:
         ruleset,
         screened.get("deterministicFindings") or [],
         str(payload.get("judgment") or ""),
+        str(screened.get("documentText") or ""),
     )
     findings.sort(key=lambda f: f["ruleId"])
     report = {

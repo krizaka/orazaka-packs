@@ -99,6 +99,7 @@
       "title": "Clause de solidarité au-delà du congé — réputée non écrite",
       "severity": "BLOCKING",
       "method": "DETERMINISTIC",
+      "subject": "(?i)solidarit[ée]",
       "citation": "Loi 89-462, art. 4",
       "check": {
         "type": "FORBIDDEN_PATTERN",
@@ -116,6 +117,7 @@
       "title": "Interdiction de recevoir des visites — réputée non écrite",
       "severity": "BLOCKING",
       "method": "DETERMINISTIC",
+      "subject": "(?i)visites?\\b",
       "citation": "Loi 89-462, art. 4 g)",
       "check": {
         "type": "FORBIDDEN_PATTERN",
@@ -150,6 +152,7 @@
       "title": "Équilibre des clauses pénales",
       "severity": "ADVISORY",
       "method": "JUDGMENT",
+      "subject": "(?i)p[ée]nalit[ée]s?|clause\\s+p[ée]nale|int[ée]r[êe]ts?\\s+de\\s+retard|frais\\s+de\\s+retard",
       "citation": "Code civil, art. 1231-5",
       "question": "Ce bail contient-il une clause pénale ou une indemnité forfaitaire manifestement disproportionnée au regard du préjudice qu'elle sanctionne ?",
       "onPass": "Aucune clause pénale manifestement disproportionnée relevée.",

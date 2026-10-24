@@ -17,6 +17,7 @@
       "title": "Intérêt de retard exprimé par mois, par semaine ou par jour sans taux annuel",
       "severity": "MAJOR",
       "method": "DETERMINISTIC",
+      "subject": "(?i)int[ée]r[êe]ts?|retard",
       "citation": "Loi sur l'intérêt (L.R.C. 1985, ch. I-15), art. 4 (un taux pour une période de moins d'un an, sans énoncé exprès du taux annuel équivalent : intérêt limité à 5 % par année)",
       "check": {
         "type": "FORBIDDEN_PATTERN",
@@ -42,6 +43,7 @@
       "title": "Cession des droits moraux",
       "severity": "MAJOR",
       "method": "DETERMINISTIC",
+      "subject": "(?i)droits?\\s+moraux|moral\\w*\\s+rights?",
       "citation": "Loi sur le droit d'auteur (L.R.C. 1985, ch. C-42), art. 14.1(2) et (3)",
       "check": {
         "type": "FORBIDDEN_PATTERN",
@@ -67,6 +69,7 @@
       "title": "Cession du droit d'auteur sans mention des droits moraux",
       "severity": "ADVISORY",
       "method": "DETERMINISTIC",
+      "subject": "(?i)droits?\\s+d['’]auteur|cession|c[ée]d\\w*|copyright",
       "citation": "Loi sur le droit d'auteur (L.R.C. 1985, ch. C-42), art. 14.1(2) et (3) (céder le droit d'auteur n'emporte pas renonciation aux droits moraux)",
       "check": {
         "type": "FORBIDDEN_PATTERN",
