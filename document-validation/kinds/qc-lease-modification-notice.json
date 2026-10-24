@@ -1,0 +1,83 @@
+{
+  "$schema": "./kind.schema.json",
+  "kindId": "qc-lease-modification-notice",
+  "jurisdiction": "QC",
+  "label": {
+    "fr": "Avis de modification du bail",
+    "en": "Notice of lease change"
+  },
+  "family": "residential-lease",
+  "declaredAs": [
+    "NOTICE",
+    "OTHER"
+  ],
+  "signals": [
+    {
+      "id": "title",
+      "weight": 2,
+      "pattern": "(?i)avis\\s+de\\s+modification(?:\\s+du\\s+bail)?|avis\\s+de\\s+(?:hausse|augmentation)\\s+(?:du\\s+)?loyer|notice\\s+of\\s+(?:lease\\s+change|rent\\s+increase|change\\s+to\\s+the\\s+lease)"
+    },
+    {
+      "id": "new-rent",
+      "weight": 1,
+      "pattern": "(?i)nouveau\\s+loyer|new\\s+rent"
+    },
+    {
+      "id": "response",
+      "weight": 1,
+      "pattern": "(?i)\\bun\\s+mois\\s+pour\\s+r[ée]pondre|one\\s+month\\s+to\\s+respond|vous\\s+pouvez\\s+refuser|you\\s+may\\s+refuse"
+    }
+  ],
+  "jurisdictionHints": [
+    {
+      "id": "tal",
+      "weight": 1,
+      "pattern": "(?i)tribunal\\s+administratif\\s+du\\s+logement|housing\\s+tribunal"
+    },
+    {
+      "id": "ccq",
+      "weight": 1,
+      "pattern": "C\\.c\\.Q\\.|(?i:code\\s+civil\\s+du\\s+qu[ée]bec)|(?i:civil\\s+code\\s+of\\s+qu[ée]bec)"
+    },
+    {
+      "id": "postal-code",
+      "weight": 1,
+      "pattern": "\\b[A-HJ-NPR-TVXY]\\d[A-HJ-NPR-TV-Z] ?\\d[A-HJ-NPR-TV-Z]\\d\\b"
+    },
+    {
+      "id": "place",
+      "weight": 1,
+      "pattern": "\\b(?:Qu[ée]bec|Montr[ée]al|Laval)\\b"
+    }
+  ],
+  "excludes": [],
+  "dateSignals": [
+    {
+      "id": "notice-date",
+      "pattern": "(?i)(?:date\\s+de\\s+l['’]avis|date\\s+of\\s+(?:the\\s+)?notice|notice\\s+date|fait\\s+le)\\s*:?\\s*(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}(?:er)?\\s+[A-Za-zÀ-ÿ]+\\s+\\d{4}|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})"
+    }
+  ],
+  "asOfFrom": "notice-date",
+  "ruleset": null,
+  "status": "KNOWN",
+  "fixtures": [
+    {
+      "file": "fixtures/qc-lease-modification-notice/fr-filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "fr",
+      "documentDate": "2026-10-01"
+    },
+    {
+      "file": "fixtures/qc-lease-modification-notice/en-filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "en",
+      "documentDate": "2026-10-01"
+    },
+    {
+      "file": "fixtures/qc-lease-modification-notice/no-match-visit-notice.txt",
+      "expect": "NO_MATCH"
+    }
+  ]
+}

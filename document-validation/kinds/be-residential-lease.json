@@ -1,0 +1,67 @@
+{
+  "$schema": "./kind.schema.json",
+  "kindId": "be-residential-lease",
+  "jurisdiction": "BE-WAL",
+  "label": {
+    "fr": "Bail d'habitation (Wallonie)",
+    "en": "Residential lease (Wallonia)"
+  },
+  "family": "residential-lease",
+  "declaredAs": [
+    "LEASE"
+  ],
+  "signals": [
+    {
+      "id": "title",
+      "weight": 2,
+      "pattern": "(?i)bail\\s+de\\s+r[ée]sidence\\s+principale|contrat\\s+de\\s+bail|bail\\s+d['’]habitation\\s+wallon"
+    },
+    {
+      "id": "parties",
+      "weight": 1,
+      "pattern": "(?is)\\bbailleur\\b.{0,500}?\\bpreneur\\b"
+    },
+    {
+      "id": "monthly-rent",
+      "weight": 1,
+      "pattern": "(?i)\\bloyer\\s+mensuel\\b"
+    }
+  ],
+  "jurisdictionHints": [
+    {
+      "id": "decret-wallon",
+      "weight": 2,
+      "pattern": "(?i)d[ée]cret\\s+wallon|r[ée]gion\\s+wallonne|\\bWallonie\\b"
+    },
+    {
+      "id": "euro",
+      "weight": 1,
+      "pattern": "€|(?i:\\beuros?\\b)"
+    }
+  ],
+  "excludes": [
+    "(?i)loi\\s+(?:n°\\s*)?89-462|tribunal\\s+administratif\\s+du\\s+logement"
+  ],
+  "dateSignals": [
+    {
+      "id": "signature-date",
+      "pattern": "(?i)fait\\s+[àa]\\s+[\\wÀ-ÿ' -]+,?\\s+le\\s+(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}(?:er)?\\s+[A-Za-zÀ-ÿ]+\\s+\\d{4}|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})"
+    }
+  ],
+  "asOfFrom": "signature-date",
+  "ruleset": "be-residential-lease",
+  "status": "PROMOTED",
+  "fixtures": [
+    {
+      "file": "fixtures/be-residential-lease/filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "fr",
+      "documentDate": "2026-10-20"
+    },
+    {
+      "file": "fixtures/be-residential-lease/no-match-fr-lease.txt",
+      "expect": "NO_MATCH"
+    }
+  ]
+}

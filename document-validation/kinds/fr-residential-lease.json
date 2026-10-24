@@ -1,0 +1,73 @@
+{
+  "$schema": "./kind.schema.json",
+  "kindId": "fr-residential-lease",
+  "jurisdiction": "FR",
+  "label": {
+    "fr": "Bail d'habitation (France)",
+    "en": "Residential lease (France)"
+  },
+  "family": "residential-lease",
+  "declaredAs": [
+    "LEASE"
+  ],
+  "signals": [
+    {
+      "id": "title",
+      "weight": 2,
+      "pattern": "(?i)contrat\\s+de\\s+location|bail\\s+(?:meubl[ée]|mobilit[ée])|location\\s+(?:meubl[ée]e|vide)"
+    },
+    {
+      "id": "parties",
+      "weight": 1,
+      "pattern": "(?is)\\bbailleur\\b.{0,500}?\\blocataire\\b"
+    },
+    {
+      "id": "monthly-rent",
+      "weight": 1,
+      "pattern": "(?i)\\bloyer\\s+mensuel\\b"
+    }
+  ],
+  "jurisdictionHints": [
+    {
+      "id": "loi-1989",
+      "weight": 2,
+      "pattern": "(?i)loi\\s+(?:n°\\s*)?89-462|6\\s+juillet\\s+1989"
+    },
+    {
+      "id": "dpe",
+      "weight": 1,
+      "pattern": "\\bDPE\\b|(?i:diagnostic\\s+de\\s+performance\\s+[ée]nerg[ée]tique)"
+    },
+    {
+      "id": "euro",
+      "weight": 1,
+      "pattern": "€|(?i:\\beuros?\\b)"
+    }
+  ],
+  "excludes": [
+    "(?i)tribunal\\s+administratif\\s+du\\s+logement",
+    "(?i)d[ée]cret\\s+wallon|r[ée]gion\\s+wallonne"
+  ],
+  "dateSignals": [
+    {
+      "id": "signature-date",
+      "pattern": "(?i)fait\\s+[àa]\\s+[\\wÀ-ÿ' -]+,?\\s+le\\s+(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}(?:er)?\\s+[A-Za-zÀ-ÿ]+\\s+\\d{4}|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})"
+    }
+  ],
+  "asOfFrom": "signature-date",
+  "ruleset": "fr-residential-lease",
+  "status": "PROMOTED",
+  "fixtures": [
+    {
+      "file": "fixtures/fr-residential-lease/filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "fr",
+      "documentDate": "2026-09-03"
+    },
+    {
+      "file": "fixtures/fr-residential-lease/no-match-qc-lease.txt",
+      "expect": "NO_MATCH"
+    }
+  ]
+}

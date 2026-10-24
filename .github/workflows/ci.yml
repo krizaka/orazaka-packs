@@ -107,6 +107,7 @@ jobs:
         python test_authenticity.py
         python test_authenticity_formats.py
         python test_screening.py
+        python test_identify.py
 
   py-authenticity:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.

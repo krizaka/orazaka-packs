@@ -1,0 +1,99 @@
+{
+  "$schema": "./kind.schema.json",
+  "kindId": "qc-residential-lease",
+  "jurisdiction": "QC",
+  "label": {
+    "fr": "Bail de logement",
+    "en": "Residential lease"
+  },
+  "family": "residential-lease",
+  "declaredAs": [
+    "LEASE"
+  ],
+  "signals": [
+    {
+      "id": "title",
+      "weight": 2,
+      "pattern": "(?i)\\bbail\\s+(?:de\\s+logement|r[ée]sidentiel)|\\b(?:residential|housing)\\s+lease\\b|\\bformulaire\\s+obligatoire\\s+de\\s+bail\\b"
+    },
+    {
+      "id": "parties",
+      "weight": 1,
+      "pattern": "(?is)\\b(?:locateur|locatrice|bailleur|landlord)\\b.{0,500}?\\b(?:locataire|tenant)\\b"
+    },
+    {
+      "id": "monthly-rent",
+      "weight": 1,
+      "pattern": "(?i)\\bloyer\\s+mensuel\\b|\\bmonthly\\s+rent\\b"
+    },
+    {
+      "id": "term",
+      "weight": 1,
+      "pattern": "(?i)\\bbail\\s+de\\s+\\S+\\s+mois|(?:\\bdur[ée]e|\\bterm)\\b[^.\\n]{0,60}\\b\\S+\\s+(?:mois|months)\\b"
+    },
+    {
+      "id": "lowest-rent",
+      "weight": 1,
+      "pattern": "(?i)loyer\\s+le\\s+plus\\s+bas|lowest\\s+rent"
+    }
+  ],
+  "jurisdictionHints": [
+    {
+      "id": "tal",
+      "weight": 1,
+      "pattern": "(?i)tribunal\\s+administratif\\s+du\\s+logement|housing\\s+tribunal"
+    },
+    {
+      "id": "ccq",
+      "weight": 1,
+      "pattern": "C\\.c\\.Q\\.|(?i:code\\s+civil\\s+du\\s+qu[ée]bec)|(?i:civil\\s+code\\s+of\\s+qu[ée]bec)"
+    },
+    {
+      "id": "postal-code",
+      "weight": 1,
+      "pattern": "\\b[A-HJ-NPR-TVXY]\\d[A-HJ-NPR-TV-Z] ?\\d[A-HJ-NPR-TV-Z]\\d\\b"
+    },
+    {
+      "id": "place",
+      "weight": 1,
+      "pattern": "\\b(?:Qu[ée]bec|Montr[ée]al|Laval)\\b"
+    }
+  ],
+  "excludes": [],
+  "dateSignals": [
+    {
+      "id": "signature-date",
+      "pattern": "(?i)sign[ée]\\s+(?:[àa]\\s+[\\wÀ-ÿ'-]+\\s+)?le\\s+(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}(?:er)?\\s+[A-Za-zÀ-ÿ]+\\s+\\d{4}|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})|signed\\s+(?:in\\s+[\\wÀ-ÿ'-]+\\s+)?on\\s+(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}(?:er)?\\s+[A-Za-zÀ-ÿ]+\\s+\\d{4}|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})"
+    }
+  ],
+  "asOfFrom": "signature-date",
+  "ruleset": "qc-residential-lease",
+  "status": "PROMOTED",
+  "fixtures": [
+    {
+      "file": "fixtures/qc-residential-lease/fr-filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "fr",
+      "documentDate": "2026-06-12"
+    },
+    {
+      "file": "fixtures/qc-residential-lease/en-filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "en",
+      "documentDate": "2026-06-12"
+    },
+    {
+      "file": "fixtures/qc-residential-lease/fr-blank.txt",
+      "expect": "MATCH",
+      "form": "BLANK",
+      "language": "fr",
+      "documentDate": null
+    },
+    {
+      "file": "fixtures/qc-residential-lease/no-match-service-contract.txt",
+      "expect": "NO_MATCH"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+BAIL DE LOGEMENT (formulaire vierge de démonstration)
+Section A — Parties
+Locateur : ____________________
+Locataire : ____________________
+Section C — Durée
+Bail de ____ mois, du ____________ au ____________.
+Section D — Loyer
+Loyer mensuel : ________ $
+Section G — Avis du loyer le plus bas
+Le loyer le plus bas payé au cours des douze derniers mois : ________ $
+Signé à ____________ le ____________.

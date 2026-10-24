@@ -1,0 +1,89 @@
+{
+  "$schema": "./kind.schema.json",
+  "kindId": "qc-invoice",
+  "jurisdiction": "QC",
+  "label": {
+    "fr": "Facture",
+    "en": "Invoice"
+  },
+  "family": "invoice",
+  "declaredAs": [
+    "INVOICE"
+  ],
+  "signals": [
+    {
+      "id": "title",
+      "weight": 2,
+      "pattern": "(?im)^[ \\t]*(?:facture|invoice)\\b"
+    },
+    {
+      "id": "invoice-number",
+      "weight": 1,
+      "pattern": "(?i)n[°o]\\.?\\s*de\\s+facture|invoice\\s*(?:no\\.?|number|#)"
+    },
+    {
+      "id": "sales-taxes",
+      "weight": 1,
+      "pattern": "\\b(?:TPS|TVQ|GST|QST|HST)\\b"
+    },
+    {
+      "id": "total-line",
+      "weight": 1,
+      "pattern": "(?im)^[ \\t]*(?:sous-total|sub-?total|total)\\b"
+    }
+  ],
+  "jurisdictionHints": [
+    {
+      "id": "postal-code",
+      "weight": 1,
+      "pattern": "\\b[A-HJ-NPR-TVXY]\\d[A-HJ-NPR-TV-Z] ?\\d[A-HJ-NPR-TV-Z]\\d\\b"
+    },
+    {
+      "id": "place",
+      "weight": 1,
+      "pattern": "\\b(?:Qu[ée]bec|Montr[ée]al|Laval)\\b"
+    },
+    {
+      "id": "qst",
+      "weight": 1,
+      "pattern": "\\b(?:TVQ|QST)\\b|\\d{10}\\s?TQ\\s?\\d{4}"
+    }
+  ],
+  "excludes": [],
+  "dateSignals": [
+    {
+      "id": "invoice-date",
+      "pattern": "(?im)^[ \\t]*(?:date(?:\\s+de\\s+(?:la\\s+)?facture)?|invoice\\s+date|date\\s+of\\s+invoice)\\s*:?\\s*(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}(?:er)?\\s+[A-Za-zÀ-ÿ]+\\s+\\d{4}|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})"
+    }
+  ],
+  "asOfFrom": "invoice-date",
+  "ruleset": "qc-invoice",
+  "status": "PROMOTED",
+  "fixtures": [
+    {
+      "file": "fixtures/qc-invoice/fr-filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "fr",
+      "documentDate": "2026-10-14"
+    },
+    {
+      "file": "fixtures/qc-invoice/en-filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "en",
+      "documentDate": "2026-10-14"
+    },
+    {
+      "file": "fixtures/qc-invoice/fr-blank.txt",
+      "expect": "MATCH",
+      "form": "BLANK",
+      "language": "fr",
+      "documentDate": null
+    },
+    {
+      "file": "fixtures/qc-invoice/no-match-visit-notice.txt",
+      "expect": "NO_MATCH"
+    }
+  ]
+}

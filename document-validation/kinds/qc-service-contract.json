@@ -1,0 +1,101 @@
+{
+  "$schema": "./kind.schema.json",
+  "kindId": "qc-service-contract",
+  "jurisdiction": "QC",
+  "label": {
+    "fr": "Contrat de services",
+    "en": "Service contract"
+  },
+  "family": "service-contract",
+  "declaredAs": [
+    "SERVICE_CONTRACT"
+  ],
+  "signals": [
+    {
+      "id": "title",
+      "weight": 2,
+      "pattern": "(?im)^[ \\t]*(?:contrat|entente)\\s+de\\s+services?\\b|^[ \\t]*(?:professional\\s+)?services?\\s+(?:agreement|contract)\\b"
+    },
+    {
+      "id": "parties",
+      "weight": 1,
+      "pattern": "(?is)\\b(?:prestataire|contractor|service\\s+provider)\\b.{0,400}?\\b(?:client|customer)\\b"
+    },
+    {
+      "id": "price",
+      "weight": 1,
+      "pattern": "(?i)\\b(?:prix|price|honoraires|fees?)\\b[^.\\n]{0,60}(?:\\d|_{3,})"
+    },
+    {
+      "id": "deliverables",
+      "weight": 1,
+      "pattern": "(?i)\\blivrables?\\b|\\bdeliverables?\\b"
+    },
+    {
+      "id": "authors-rights",
+      "weight": 1,
+      "pattern": "(?i)droits?\\s+d['’]auteur|\\bcopyright\\b|droits?\\s+moraux|moral\\s+rights"
+    }
+  ],
+  "jurisdictionHints": [
+    {
+      "id": "tal",
+      "weight": 1,
+      "pattern": "(?i)tribunal\\s+administratif\\s+du\\s+logement|housing\\s+tribunal"
+    },
+    {
+      "id": "ccq",
+      "weight": 1,
+      "pattern": "C\\.c\\.Q\\.|(?i:code\\s+civil\\s+du\\s+qu[ée]bec)|(?i:civil\\s+code\\s+of\\s+qu[ée]bec)"
+    },
+    {
+      "id": "postal-code",
+      "weight": 1,
+      "pattern": "\\b[A-HJ-NPR-TVXY]\\d[A-HJ-NPR-TV-Z] ?\\d[A-HJ-NPR-TV-Z]\\d\\b"
+    },
+    {
+      "id": "place",
+      "weight": 1,
+      "pattern": "\\b(?:Qu[ée]bec|Montr[ée]al|Laval)\\b"
+    }
+  ],
+  "excludes": [
+    "(?i)\\bbail\\s+de\\s+logement|\\bresidential\\s+lease"
+  ],
+  "dateSignals": [
+    {
+      "id": "signature-date",
+      "pattern": "(?i)sign[ée]\\s+(?:[àa]\\s+[\\wÀ-ÿ'-]+\\s+)?le\\s+(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}(?:er)?\\s+[A-Za-zÀ-ÿ]+\\s+\\d{4}|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})|signed\\s+(?:in\\s+[\\wÀ-ÿ'-]+\\s+)?on\\s+(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}(?:er)?\\s+[A-Za-zÀ-ÿ]+\\s+\\d{4}|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})"
+    }
+  ],
+  "asOfFrom": "signature-date",
+  "ruleset": "qc-service-contract",
+  "status": "PROMOTED",
+  "fixtures": [
+    {
+      "file": "fixtures/qc-service-contract/fr-filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "fr",
+      "documentDate": "2026-10-14"
+    },
+    {
+      "file": "fixtures/qc-service-contract/en-filled.txt",
+      "expect": "MATCH",
+      "form": "FILLED",
+      "language": "en",
+      "documentDate": "2026-10-14"
+    },
+    {
+      "file": "fixtures/qc-service-contract/fr-blank.txt",
+      "expect": "MATCH",
+      "form": "BLANK",
+      "language": "fr",
+      "documentDate": null
+    },
+    {
+      "file": "fixtures/qc-service-contract/no-match-invoice.txt",
+      "expect": "NO_MATCH"
+    }
+  ]
+}

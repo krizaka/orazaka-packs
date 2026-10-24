@@ -1,0 +1,13 @@
+Invoice
+Invoice number: DEMO-0043
+Invoice date: October 14, 2026
+Issued by: Fictional Workshop Inc., 200 Example Street, Montréal, Québec H2X 3Y4
+GST/HST registration no.: 123456789 RT 0001
+QST registration no.: 1234567890 TQ 0001
+Billed to: Imaginary Café Inc.
+Poster design: $400.00
+Subtotal: $400.00
+GST (5%): $20.00
+QST (9.975%): $39.90
+Total: $459.90
+Payment is due within 30 days of the date of this invoice, and the amount that is not paid will bear interest.

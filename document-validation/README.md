@@ -14,8 +14,9 @@ The user forwards this output to their counterparty. That single fact decides ev
 |:---|:---|
 | Tier | `WORKER` — it brings its own worker; the deterministic rules are code, not a prompt |
 | `regulatoryClass` | `SENSITIVE` — it receives the five controls of ADR-051 and declares a `scopeGuard` |
-| Studios | `compliance-check` |
+| Studios | `compliance-check` · `document-authenticity` |
 | Jurisdictions | `QC` (Québec — to be reviewed by a lawyer), `FR`, `BE-WAL` |
+| Document kinds | `kinds/*.json`, recognised by `identify` before any ruleset (below) |
 | Document types | the residential lease (every jurisdiction, the default) and, for `QC`, the supplier's **invoice** (`ruleset: qc-invoice`, opt-in) |
 
 ## Deterministic first, model second
@@ -92,6 +93,55 @@ assigning copyright in silence on moral rights (s. 14.1(3), advice); no mention 
 only in writing signed by the owner, advice). **Not encoded** — the Civil Code of Québec could not be read at its source
 (legisquebec.gouv.qc.ca and CanLII refuse automated reads): non-competition limits (art. 2089 is about employment contracts; for a
 service contract the limit is case law), termination (art. 2125, 2129), penal clauses, payment deadlines (no statute requires one).
+
+## Kinds and `identify` — what a document is, before any ruleset (ADR-089 §1)
+
+Until now the jurisdiction's default ruleset (the lease) judged every document. A visit notice or an état des lieux came
+back with rent failures it can never satisfy. The first stage of [ADR-089](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-089-rules-from-the-law.md)
+reads **what the document is** and only then picks the ruleset.
+
+**Kinds are pack data**: `kinds/<kindId>.json`, validated by `kinds/kind.schema.json`, beside the document profiles. One file per
+kind, with its `signals` (a weight and a regular expression an auditor can read), its `jurisdictionHints` (a tribunal, a code,
+a postal code), what it `excludes`, its `dateSignals` (and which one gives the `asOf`), the declared kinds it agrees with
+(`declaredAs`), its `ruleset` and its fixtures. Adding a kind is adding a file and its fixtures, no code.
+
+| `status` | Meaning |
+|:---|:---|
+| `PROMOTED` | a ruleset exists (`ruleset`): the check runs it |
+| `KNOWN` | recognised, no ruleset yet: the run says `UNSUPPORTED_KIND` with the kind's label, and **no ruleset runs, never the lease's** |
+| `RETIRED` | no longer detected |
+
+Shipped: `qc-residential-lease`, `qc-invoice`, `qc-service-contract`, `fr-residential-lease`, `be-residential-lease` (`PROMOTED`),
+`qc-visit-notice`, `qc-condition-report` (état des lieux), `qc-lease-modification-notice` (`KNOWN`: their rulesets are
+[#125](https://github.com/krizaka/orazaka-packs/issues/125) and [#126](https://github.com/krizaka/orazaka-packs/issues/126)).
+
+**`identify`** (`worker/identify.py`, capability `orazaka.validation.document.identify`, routing key `job.validation.identify`, the
+validation worker) has **no model and no clock**: a pure function of the text, the declared kind, the jurisdiction, `asOf` and today. It returns:
+
+| Field | |
+|:---|:---|
+| `detectedKind`, `kindUsed`, `kindSource` | what the text is; the kind that judges; `DETECTED` · `DECLARED` · `RULESET_INPUT` |
+| `kindEvidence` | the passages of the document behind it, each checked to be in the text |
+| `declaredKind`, `kindMismatch` | what the user said; true when the text is another kind. **Always surfaced, never silently resolved** |
+| `jurisdiction`, `jurisdictionSource` | `DECLARED` or `DETECTED` (from the kind, else from the hints) |
+| `documentDate`, `dateEvidence`, `asOf`, `asOfSource` | `INPUT` (the caller's) · `DOCUMENT` (the kind's date signal, with its passage) · `TODAY`. A blank form has no date |
+| `languages` | `fr`, `en` or both, a fact for the language rules and never a verdict |
+| `outcome` | `CHECK` · `UNSUPPORTED_KIND` · `KIND_UNKNOWN` |
+
+A kind is a candidate when its signals weigh at least `min_signal_weight` (setting `law.identify.min-signal-weight`, default 2) and
+none of its `excludes` matches; the jurisdiction hints add to its weight but never make it a candidate alone. The candidate with
+the highest weight wins **if it is alone at the top**; a tie is not broken by a guess: the declared kind is used if it names exactly one
+kind (within the declared jurisdiction), else `KIND_UNKNOWN`. A declared jurisdiction restricts the kinds to its own, never another country's.
+An explicit `ruleset` (a 1.x call) still overrides everything. The model step of §1 (a `classify` choice from the closed list, quote checked)
+is a blueprint step and arrives with `compliance-check` 2.0, not here.
+
+```bash
+cd worker && python3 test_identify.py     # each kind's fixtures (filled, blank, a document that must not match), every signal's pass/fail,
+                                          # the mismatch, the ambiguous and the unknown document, the worker's capability
+cd .. && node --test ../tests/document-kinds.test.mjs   # the files against kinds/kind.schema.json
+```
+
+Every fixture under `kinds/fixtures/` is fictional and written for this suite; no real template is quoted or copied.
 
 ## Known limits (demo documents under `worker/fixtures/`)
 

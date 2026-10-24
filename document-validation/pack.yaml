@@ -13,7 +13,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: document-validation
-version: 1.7.4
+version: 1.8.0
 tier: WORKER
 distribution: CLOUD
 regulatoryClass: SENSITIVE
@@ -63,6 +63,44 @@ requires:
           judgmentPrompt: { type: string }
           judgmentCount: { type: integer }
         required: [rulesetId, rulesetVersion, jurisdiction, asOf, source, screenedJson, judgmentPrompt]
+    - key: orazaka.validation.document.identify
+      routingKey: job.validation.identify
+      handlerKey: validation.identify
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          document: { type: string, description: "Le document dont on veut savoir ce qu'il est, tel que l'étape amont l'a publié." }
+          declaredKind: { type: string, enum: [LEASE, NOTICE, CONDITION_REPORT, INVOICE, SERVICE_CONTRACT, OTHER], description: "Ce que l'utilisateur dit que c'est. Comparé au type détecté, jamais cru sur parole." }
+          jurisdiction: { type: string, description: "La juridiction déclarée, quand elle l'est. Sinon elle est détectée." }
+          asOf: { type: string, description: "La date à laquelle les règles sont évaluées. Sinon : la date du document, sinon aujourd'hui." }
+          ruleset: { type: string, description: "Le corpus nommé (appel 1.x) : il l'emporte sur tout, et la réponse le dit (RULESET_INPUT)." }
+        required: [document]
+      outputSchema:
+        type: object
+        properties:
+          declaredKind: { type: [string, "null"] }
+          detectedKind: { type: [string, "null"] }
+          kindUsed: { type: [string, "null"] }
+          kindLabel: { type: [object, "null"] }
+          kindStatus: { type: [string, "null"] }
+          kindSource: { type: [string, "null"], description: "DETECTED | DECLARED | RULESET_INPUT" }
+          kindEvidence: { type: array, items: { type: object }, description: "Les passages du document qui ont fait reconnaître le type (vérifiés dans le texte)." }
+          kindMismatch: { type: boolean, description: "Vrai quand le document est d'un autre type que celui déclaré. Toujours montré." }
+          ruleset: { type: [string, "null"] }
+          jurisdiction: { type: [string, "null"] }
+          jurisdictionSource: { type: [string, "null"] }
+          documentDate: { type: [string, "null"] }
+          dateEvidence: { type: [object, "null"] }
+          asOf: { type: string }
+          asOfSource: { type: string, description: "INPUT | DOCUMENT | TODAY" }
+          languages: { type: array, items: { type: string } }
+          outcome: { type: string, description: "CHECK | UNSUPPORTED_KIND | KIND_UNKNOWN" }
+          candidates: { type: array, items: { type: object } }
+          identificationJson: { type: string, description: "La même identification, en JSON : un pas de blueprint adresse des CHAMPS, pas une valeur imbriquée." }
+        required: [kindMismatch, asOf, asOfSource, languages, outcome, identificationJson]
     - key: orazaka.validation.document.signals
       routingKey: job.validation.signals
       handlerKey: validation.signals

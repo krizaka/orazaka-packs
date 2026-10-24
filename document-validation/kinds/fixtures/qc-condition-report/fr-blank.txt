@@ -1,0 +1,10 @@
+CONSTAT DE L'ÉTAT DES LIEUX
+Formulaire vierge de démonstration.
+Date de l'inspection : ____________________
+Locateur : ____________________  Locataire : ____________________
+Cuisine : état : ____________________
+Salon : état : ____________________
+Chambre : état : ____________________
+Salle de bain : état : ____________________
+Remise des clés : nombre de clés remises : ____
+Signatures : ____________________

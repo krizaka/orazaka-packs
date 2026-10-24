@@ -1,0 +1,11 @@
+RESIDENTIAL LEASE (demonstration sample, fictional people and address)
+Section A — Parties
+Landlord: Ms. Helen Roy, 120 Parc Avenue, Montréal, Québec H2V 4E7.
+Tenant: Mr. Karim Haddad, 45 Beaubien Street, Laval, Québec H7N 2A1.
+Section C — Term
+Term: 12 months, from September 1, 2026 to August 31, 2027.
+Section D — Rent
+Monthly rent: $1,120, payable on the first day of each month.
+Section G — Lowest rent notice
+The lowest rent paid in the last twelve months was $1,090 a month.
+Signed in Montréal on June 12, 2026.
