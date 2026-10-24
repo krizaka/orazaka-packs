@@ -1,0 +1,146 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# tenant-screening-qc — a gated saga that screens a rental applicant in Québec, one stage at a time (orazaka-packs#123).
+#
+#   1. documents    the evidence of the two document Studios (authenticity signals, lease check against the C.c.Q.)
+#   2. courts       the TAL and the plumitifs, through the engine's external-check port (orazaka-ai-engine#73, #75)
+#   3. credit       a credit report, through the same port
+#
+# A stage runs, and is charged, only if the one before it passed its CUT-OFF. A cut-off is manager data: a dated default
+# ruleset in this pack, replaced stage by stage by the manager's own rules. A stopped saga never charges a later stage, and the
+# report says where it stopped and why. Consent is checked per purpose before each paid stage: a missing consent stops that
+# stage visibly and nothing is called. The applicant does not pay by default (installation setting, C.c.Q. 1904).
+#
+# MOCKS ONLY: the connector is the mock. No provider, no network, no account until a pilot customer says go. The Studio is DRAFT.
+#
+# SENSITIVE: personal data and a credit file. Data class, shortened retention, append-only audit, scope guard (ADR-051). The
+# pack decides nothing about the applicant: it returns codes, and the landlord decides.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: tenant-screening-qc
+version: 1.0.0
+tier: WORKER
+distribution: CLOUD
+regulatoryClass: SENSITIVE
+
+scopeGuard:
+  refusedTerms:
+    - refuser ce candidat
+    - accepter ce candidat
+    - refuser ce locataire
+    - dois-je refuser
+    - reject this applicant
+    - accept this applicant
+    - should i reject
+    - should i accept
+  refusal: >-
+    Je déroule les étapes d'une vérification de candidat, dans l'ordre, avec les règles d'arrêt du gestionnaire, et je rapporte
+    des codes. Je ne décide rien sur le candidat et je ne dis pas s'il faut l'accepter ou le refuser : c'est la décision du locateur.
+
+requires:
+  capabilities:
+    - key: orazaka.screening.plan
+      routingKey: job.screening.plan
+      handlerKey: screening.plan
+      enabled: true
+      inputSchema:
+        type: object
+        properties: {"subject": {"type": "object", "description": "La personne : subjectId (opaque), lastName, firstName, birthDate facultative."}, "authenticityReport": {"type": "object", "description": "La sortie « signals » du Studio document-authenticity."}, "leaseReport": {"type": ["object", "string"], "description": "Le rapport du Studio compliance-check, facultatif."}, "cutoffs": {"type": ["object", "string"], "description": "Les règles d'arrêt du gestionnaire, par étape : remplacent celles par défaut."}, "creditCap": {"type": ["integer", "string"], "description": "Le plafond de crédits de l'exécution ; 0 = celui du moteur seul."}, "applicantPaysFees": {"type": "string", "description": "Réglage de l'installation (faux par défaut) : les frais sont payés par le candidat."}}
+        required: ["subject", "authenticityReport"]
+      outputSchema:
+        type: object
+        properties: {"planJson": {"type": "string", "description": "Le plan gelé de l'exécution : règles, prix par étape, payeur."}, "status": {"type": "string"}, "worstCaseCredits": {"type": "integer"}, "payer": {"type": "string", "enum": ["LANDLORD", "APPLICANT"]}}
+        required: ["planJson", "status"]
+    - key: orazaka.screening.consent.check
+      routingKey: job.screening.consent
+      handlerKey: screening.consent
+      enabled: true
+      inputSchema:
+        type: object
+        properties: {"purpose": {"type": "string", "enum": ["DOCUMENTS", "COURT_RECORDS", "CREDIT"]}, "consentedPurposes": {"type": "array", "items": {"type": "string"}, "description": "Les finalités auxquelles le candidat a consenti."}}
+        required: ["purpose"]
+      outputSchema:
+        type: object
+        properties: {"purpose": {"type": "string"}, "status": {"type": "string", "enum": ["GRANTED", "REFUSED"]}, "reason": {"type": ["string", "null"]}}
+        required: ["purpose", "status"]
+    - key: orazaka.screening.documents.assess
+      routingKey: job.screening.documents
+      handlerKey: screening.documents
+      billableCapability: AGENT
+      billableUnit: CALL
+      enabled: true
+      inputSchema:
+        type: object
+        properties: {"plan": {"type": "string"}, "authenticityReport": {"type": "object"}, "leaseReport": {"type": ["object", "string"]}, "consentedPurposes": {"type": "array", "items": {"type": "string"}}}
+        required: ["plan", "authenticityReport"]
+      outputSchema:
+        type: object
+        properties: {"stage": {"type": "string"}, "purpose": {"type": "string"}, "outcome": {"type": "string"}, "facts": {"type": "object"}, "charged": {"type": "boolean"}, "credits": {"type": "integer"}, "subjectRef": {"type": "string"}, "providerRef": {"type": "string"}, "resultJson": {"type": "string"}}
+        required: ["stage", "outcome", "charged", "credits", "resultJson"]
+    - key: orazaka.screening.courts.check
+      routingKey: job.screening.courts
+      handlerKey: screening.courts
+      billableCapability: AGENT
+      billableUnit: CALL
+      enabled: true
+      inputSchema:
+        type: object
+        properties: {"plan": {"type": "string"}, "subject": {"type": "object"}, "consentedPurposes": {"type": "array", "items": {"type": "string"}}}
+        required: ["plan", "subject"]
+      outputSchema:
+        type: object
+        properties: {"stage": {"type": "string"}, "purpose": {"type": "string"}, "outcome": {"type": "string"}, "facts": {"type": "object"}, "charged": {"type": "boolean"}, "credits": {"type": "integer"}, "subjectRef": {"type": "string"}, "providerRef": {"type": "string"}, "resultJson": {"type": "string"}}
+        required: ["stage", "outcome", "charged", "credits", "resultJson"]
+    - key: orazaka.screening.credit.check
+      routingKey: job.screening.credit
+      handlerKey: screening.credit
+      billableCapability: AGENT
+      billableUnit: CALL
+      enabled: true
+      inputSchema:
+        type: object
+        properties: {"plan": {"type": "string"}, "subject": {"type": "object"}, "consentedPurposes": {"type": "array", "items": {"type": "string"}}}
+        required: ["plan", "subject"]
+      outputSchema:
+        type: object
+        properties: {"stage": {"type": "string"}, "purpose": {"type": "string"}, "outcome": {"type": "string"}, "facts": {"type": "object"}, "charged": {"type": "boolean"}, "credits": {"type": "integer"}, "subjectRef": {"type": "string"}, "providerRef": {"type": "string"}, "resultJson": {"type": "string"}}
+        required: ["stage", "outcome", "charged", "credits", "resultJson"]
+    - key: orazaka.screening.cutoff.decide
+      routingKey: job.screening.cutoff
+      handlerKey: screening.cutoff
+      enabled: true
+      inputSchema:
+        type: object
+        properties: {"plan": {"type": "string"}, "stage": {"type": "string", "enum": ["documents", "courts", "credit"]}, "consent": {"type": "string"}, "result": {"type": "string"}, "spentCredits": {"type": ["integer", "string"]}}
+        required: ["plan", "stage"]
+      outputSchema:
+        type: object
+        properties: {"stage": {"type": "string"}, "decision": {"type": "string", "enum": ["CONTINUE", "STOP"]}, "code": {"type": "string"}, "ruleId": {"type": ["string", "null"]}, "spentCredits": {"type": "integer"}, "next": {"type": ["string", "null"]}, "decisionJson": {"type": "string"}}
+        required: ["stage", "decision", "code", "spentCredits", "decisionJson"]
+    - key: orazaka.screening.report.assemble
+      routingKey: job.screening.report
+      handlerKey: screening.report
+      enabled: true
+      inputSchema:
+        type: object
+        properties: {"plan": {"type": "string", "description": "Le plan gelé de l'exécution."}, "documentsResult": {"type": "string", "description": "Le résultat JSON de l'étape documents, vide si elle n'a pas tourné."}, "documentsGate": {"type": "string", "description": "La décision JSON après l'étape documents, vide si elle n'a pas eu lieu."}, "documentsConsent": {"type": "string", "description": "Le consentement pour l'étape documents, vide si non vérifié."}, "courtsResult": {"type": "string", "description": "Le résultat JSON de l'étape courts, vide si elle n'a pas tourné."}, "courtsGate": {"type": "string", "description": "La décision JSON après l'étape courts, vide si elle n'a pas eu lieu."}, "courtsConsent": {"type": "string", "description": "Le consentement pour l'étape courts, vide si non vérifié."}, "creditResult": {"type": "string", "description": "Le résultat JSON de l'étape credit, vide si elle n'a pas tourné."}, "creditGate": {"type": "string", "description": "La décision JSON après l'étape credit, vide si elle n'a pas eu lieu."}, "creditConsent": {"type": "string", "description": "Le consentement pour l'étape credit, vide si non vérifié."}}
+        required: ["plan"]
+      outputSchema:
+        type: object
+        properties: {"report": {"type": "object"}, "reportJson": {"type": "string"}, "status": {"type": "string", "enum": ["COMPLETED", "STOPPED", "INCOMPLETE"]}}
+        required: ["report", "reportJson", "status"]
+  workers:
+    - name: orazaka-worker-screening
+      bindings:
+        - "job.screening.*"
+      concurrency: 1
+
+studios:
+  - key: tenant-screening-qc
+    profession: real-estate
+    iconKey: shield-check
+    pricing: FREE
+    entitlementKey: studio.tenant-screening-qc
+    status: DRAFT
+    publisherId: orazaka
+    sortWeight: 70
+    blueprint: studios/tenant-screening-qc/blueprint.json

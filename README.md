@@ -40,6 +40,7 @@ DAGs) and, optionally, its own worker.
 | `orazaka-media` | Media generation studios |
 | `outbound-prospection` | Prospection workflows |
 | `realestate-studio` | Real-estate reels |
+| `tenant-screening-qc` | Tenant screening, Québec — a gated saga (documents, then court records, then credit) whose cut-offs are manager rules and whose credits are debited per stage; mocks only, `DRAFT` |
 | `trade-showcase` | Trade showcase studio |
 | `wellbeing` | Wellbeing — guided journaling, session preparation, mood tracking (`REGULATED`; never "therapy": what a person brings to a professional, not a care); `wellbeing/listening/` holds the listening moment's data — presences, voices, the ear — and the risk fixtures the crisis guard is tested with) |
 

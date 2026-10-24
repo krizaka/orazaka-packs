@@ -1,0 +1,41 @@
+{
+  "rulesetId": "tenant-screening-qc",
+  "version": "2026-10-24",
+  "revision": 1,
+  "provider": "mock",
+  "operators": ["equals", "atLeast", "in"],
+  "documents": {
+    "majorLevels": ["incohérent"],
+    "unusualLevels": ["inhabituel"]
+  },
+  "stages": [
+    {
+      "id": "documents",
+      "purpose": "DOCUMENTS",
+      "credits": 10,
+      "facts": ["majorSignals", "unusualSignals", "leaseFailures"],
+      "cutoffs": [{ "id": "CUT-DOC-MAJOR-SIGNALS", "fact": "majorSignals", "op": "atLeast", "value": 1 }]
+    },
+    {
+      "id": "courts",
+      "purpose": "COURT_RECORDS",
+      "credits": 30,
+      "facts": ["outcome"],
+      "cutoffs": [{ "id": "CUT-COURT-FILE-FOUND", "fact": "outcome", "op": "equals", "value": "MATCH" }]
+    },
+    {
+      "id": "credit",
+      "purpose": "CREDIT",
+      "credits": 20,
+      "facts": ["outcome"],
+      "cutoffs": []
+    }
+  ],
+  "limits": [
+    "MOCK_PROVIDER_ONLY",
+    "NO_DECISION_ON_THE_APPLICANT",
+    "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+    "AN_OUTCOME_IS_NOT_THE_RECORD",
+    "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
+  ]
+}

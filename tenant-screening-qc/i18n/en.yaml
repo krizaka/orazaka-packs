@@ -1,0 +1,14 @@
+pack:
+  label: Tenant screening, Québec
+  tagline: A rental applicant check, one stage at a time, stopped by the manager's rules.
+  description: >-
+    Documents, then court records (TAL and plumitifs), then credit. A stage runs and is charged only if the one before it passed
+    its cut-off, and each cut-off is the manager's rule. Consent is checked per purpose before each paid stage. Codes only: the
+    landlord decides.
+studios:
+  tenant-screening-qc:
+    label: Tenant screening, Québec
+    tagline: A gated check that stops where the manager's rules say, and charges only what ran.
+    description: >-
+      Three stages with a cut-off after each, a consent check before each paid stage, credits debited per stage, and a report that
+      says where it stopped and why. The applicant pays nothing by default.

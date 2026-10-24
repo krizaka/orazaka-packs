@@ -131,6 +131,17 @@ jobs:
       test-command: |
         python test_safety.py
 
+  py-screening:
+    # tenant-screening-qc's worker (the gated saga): every path of the saga on the mock — all clear, a stop after the documents, a stop
+    # after the court records with credit never called, a provider error, a missing consent — no model, no network.
+    permissions:
+      contents: read
+    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    with:
+      working-directory: tenant-screening-qc/worker
+      extra-packages: pika pyyaml
+      test-command: python test_screening.py
+
   py-common:
     # The broker connection every worker shares (worker-common/worker_broker.py): tested once.
     permissions:
