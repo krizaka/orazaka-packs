@@ -52,6 +52,33 @@
       }
     },
     "asOfFrom": { "type": ["string", "null"], "description": "The id of the date signal whose date is the `asOf` of the check." },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["targets", "question"],
+      "description": "Stage 2 of ADR-089: the articles of the corpus this kind is judged by, and the question the grounded call is asked. Optional; a kind without it retrieves nothing.",
+      "properties": {
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["instrument", "refs"],
+            "properties": {
+              "instrument": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9.-]*$", "description": "The instrument code of the corpus (law_instrument.code), such as CCQ-1991." },
+              "refs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:\\([0-9a-z]+\\))*$" }, "description": "The articles of that instrument, only these are read: nothing outside them reaches the model." }
+            }
+          }
+        },
+        "question": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fr", "en"],
+          "properties": { "fr": { "type": "string", "minLength": 1 }, "en": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
     "ruleset": { "type": ["string", "null"], "description": "The ruleset that judges this kind; null while the kind is only KNOWN." },
     "status": { "type": "string", "enum": ["PROMOTED", "KNOWN", "RETIRED"], "description": "PROMOTED: a ruleset exists. KNOWN: recognised, no ruleset (the run says so). RETIRED: no longer detected." },
     "fixtures": {

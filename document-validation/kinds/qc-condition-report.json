@@ -63,6 +63,23 @@
     }
   ],
   "asOfFrom": "inspection-date",
+  "retrieval": {
+    "targets": [
+      {
+        "instrument": "CCQ-1991",
+        "refs": [
+          "1893",
+          "1900",
+          "1910",
+          "1911"
+        ]
+      }
+    ],
+    "question": {
+      "fr": "Quels articles encadrent l'état des lieux et la remise d'un logement au Québec ?",
+      "en": "Which articles govern the condition report and the delivery of a dwelling in Québec?"
+    }
+  },
   "ruleset": null,
   "status": "KNOWN",
   "fixtures": [
