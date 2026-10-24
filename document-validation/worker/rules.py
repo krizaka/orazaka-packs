@@ -45,9 +45,16 @@ class RulesetNotFound(Exception):
     """No published ruleset covers this (jurisdiction, date) pair — say so, do not fall back."""
 
 
+# A ruleset id names a folder of this pack: lower-case words joined by hyphens, never a path (Sonar pythonsecurity:S2083).
+_RULESET_ID = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+
+
 def _load_all(ruleset_id: str) -> list:
-    directory = os.path.join(RULESETS_DIR, ruleset_id)
-    if not os.path.isdir(directory):
+    if not isinstance(ruleset_id, str) or not _RULESET_ID.fullmatch(ruleset_id):
+        raise RulesetNotFound(f"no ruleset '{ruleset_id}' is shipped with this pack")
+    root = os.path.realpath(RULESETS_DIR)
+    directory = os.path.realpath(os.path.join(root, ruleset_id))
+    if os.path.dirname(directory) != root or not os.path.isdir(directory):
         raise RulesetNotFound(f"no ruleset '{ruleset_id}' is shipped with this pack")
     out = []
     for name in sorted(os.listdir(directory)):
