@@ -66,6 +66,22 @@
     }
   ],
   "asOfFrom": "notice-date",
+  "retrieval": {
+    "targets": [
+      {
+        "instrument": "CCQ-1991",
+        "refs": [
+          "1931",
+          "1932",
+          "1933"
+        ]
+      }
+    ],
+    "question": {
+      "fr": "Quels articles régissent un avis de visite d'un logement au Québec ?",
+      "en": "Which articles govern a notice of visit to a dwelling in Québec?"
+    }
+  },
   "ruleset": null,
   "status": "KNOWN",
   "fixtures": [

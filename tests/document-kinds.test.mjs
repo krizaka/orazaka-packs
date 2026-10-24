@@ -36,6 +36,22 @@ test("the schema refuses a kind without signals, a status outside the closed lis
   }
 });
 
+test("a retrieval names its instrument and articles and a question in both languages (ADR-089 §2)", () => {
+  const good = load("qc-visit-notice.json");
+  assert.deepEqual(good.retrieval.targets, [{ instrument: "CCQ-1991", refs: ["1931", "1932", "1933"] }]);
+  for (const bad of [
+    { ...good, retrieval: { ...good.retrieval, targets: [] } },
+    { ...good, retrieval: { ...good.retrieval, targets: [{ instrument: "CCQ-1991", refs: [] }] } },
+    { ...good, retrieval: { ...good.retrieval, targets: [{ instrument: "CCQ-1991", refs: ["1931", "1931"] }] } },
+    { ...good, retrieval: { ...good.retrieval, targets: [{ instrument: "CCQ-1991", refs: ["art. 1931"] }] } },
+    { ...good, retrieval: { ...good.retrieval, question: { fr: "q" } } },
+    { ...good, retrieval: { ...good.retrieval, invented: true } },
+  ]) {
+    assert.equal(validate(bad), false, JSON.stringify(bad.retrieval));
+  }
+  assert.ok(validate({ ...good, retrieval: undefined }), "retrieval is optional: a kind without it retrieves nothing");
+});
+
 test("a kind is named by its file, and every fixture it lists exists", () => {
   for (const name of kindFiles) {
     const kind = load(name);

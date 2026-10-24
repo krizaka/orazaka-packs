@@ -143,6 +143,20 @@ cd .. && node --test ../tests/document-kinds.test.mjs   # the files against kind
 
 Every fixture under `kinds/fixtures/` is fictional and written for this suite; no real template is quoted or copied.
 
+## Retrieval — which articles a kind is judged by (ADR-089 §2)
+
+A kind may carry a `retrieval` block (optional, `kinds/kind.schema.json`): the **`targets`** — instrument codes of the law corpus
+and the articles of each, such as `CCQ-1991` art. 1931 to 1933 for `qc-visit-notice` — and the **`question`** in French and English
+the grounded call is asked. `identify.retrieval_request(kind, language, asOf)` turns it into the input of the grounded step
+(`orazaka.core.research.grounded` with `sources: ["law-corpus"]`): the engine
+([orazaka-ai-engine](https://github.com/krizaka/orazaka-ai-engine), `LawRetrievalService`) reads **those articles only**, at `asOf`,
+from the dated corpus — a visit notice brings art. 1931 to 1933 and no rent article — has the model write claims, checks every
+quote with the ADR-087 verifier, and caches the result per (jurisdiction, kind, as-of bucket) until a cited article changes. The
+engine never names an article: this file does. A kind without the block retrieves nothing; a language other than `fr`/`en` or an
+`asOf` that is not an ISO date is refused by name. Tested in `worker/test_identify.py` (the golden case) and
+`tests/document-kinds.test.mjs` (the schema). Every switch is off as seeded (`law.corpus.enabled`, `research.enabled`, the
+`law-corpus` source).
+
 ## Known limits (demo documents under `worker/fixtures/`)
 
 - The **lease** rules read French wording (the language of the mandatory form). An English lease is not read: it comes

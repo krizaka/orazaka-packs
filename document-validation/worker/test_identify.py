@@ -375,6 +375,58 @@ def test_the_worker_refuses_an_empty_document_and_a_malformed_date_by_name():
         raise AssertionError(f"{payload} must be refused as INPUT_INVALID")
 
 
+# --- Stage 2: the retrieval a kind asks for (ADR-089 §2, orazaka-ai-engine#81) -------------------------------------
+
+def _kind(kind_id):
+    return next(k for k in all_kinds() if k["kindId"] == kind_id)
+
+
+def test_a_visit_notice_asks_for_art_1931_to_1933_and_no_rent_article():
+    request = identify.retrieval_request(_kind("qc-visit-notice"), "fr", "2026-10-20")
+    assert request["sources"] == ["law-corpus"]
+    assert request["jurisdiction"] == "QC" and request["asOf"] == "2026-10-20" and request["language"] == "fr"
+    assert request["targets"] == [{"instrument": "CCQ-1991", "refs": ["1931", "1932", "1933"]}]
+    assert request["question"] == "Quels articles régissent un avis de visite d'un logement au Québec ?"
+    refs = {int(r) for t in request["targets"] for r in t["refs"]}
+    assert not refs & (set(range(1903, 1909)) | set(range(1936, 1956))), "no rent article"
+
+
+def test_the_question_is_in_the_language_asked():
+    en = identify.retrieval_request(_kind("qc-visit-notice"), "en", "2026-10-20")
+    assert en["question"].startswith("Which articles govern a notice of visit")
+
+
+def test_a_retrieval_is_refused_by_name_not_guessed():
+    for kind, language, as_of in (
+        (_kind("qc-invoice"), "fr", "2026-10-20"),                  # no retrieval block
+        (_kind("qc-visit-notice"), "de", "2026-10-20"),             # not fr/en
+        (_kind("qc-visit-notice"), "fr", "yesterday"),              # not ISO
+        (_kind("qc-visit-notice"), "fr", ""),
+    ):
+        try:
+            identify.retrieval_request(kind, language, as_of)
+        except ValueError:
+            continue
+        raise AssertionError(f"{kind['kindId']} {language} {as_of!r} must be refused")
+
+
+def test_every_retrieval_names_only_what_the_kind_is_judged_by():
+    for kind in all_kinds():
+        retrieval = kind.get("retrieval")
+        if not retrieval:
+            continue
+        assert kind["jurisdiction"] == "QC", "the corpus holds Québec and federal law; a kind targets its own"
+        for target in retrieval["targets"]:
+            assert target["refs"] and len(set(target["refs"])) == len(target["refs"]), kind["kindId"]
+
+
+def test_the_request_has_exactly_the_keys_the_engine_reads():
+    # orazaka-ai-engine LawRetrievalRequest: jurisdiction, kindId, question, language, asOf, targets{instrument, refs}.
+    request = identify.retrieval_request(_kind("qc-condition-report"), "fr", "2026-10-20", run_id="r-1")
+    assert set(request) == {"sources", "jurisdiction", "kindId", "asOf", "language", "question", "targets", "runId"}
+    assert set(request["targets"][0]) == {"instrument", "refs"}
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):

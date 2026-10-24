@@ -272,3 +272,40 @@ def _jurisdiction_from_hints(scored: list, min_weight: int):
     if ranked and ranked[0][1] >= min_weight and (len(ranked) == 1 or ranked[0][1] > ranked[1][1]):
         return ranked[0][0], "DETECTED"
     return None, None
+
+
+# --- Stage 2: what the retrieval of the law is asked ---------------------------------------------------------------
+
+#: The research source of the corpus (``research_source.source_key``): grounded research reads the law through it.
+LAW_CORPUS_SOURCE = "law-corpus"
+
+
+def retrieval_request(kind: dict, language: str, as_of: str, *, run_id=None) -> dict:
+    """The input of the grounded step that retrieves the law of a kind (ADR-089 §2), built from the kind's data.
+
+    ``orazaka.core.research.grounded`` is called with ``sources: ["law-corpus"]``, the jurisdiction, ``asOf`` and a
+    question; ``targets`` names the instruments and articles the engine reads in the corpus, and nothing else is read:
+    a visit notice brings art. 1931 to 1933 and no rent article. Pure data: no model, no clock, no network.
+
+    A kind with no ``retrieval`` block (or a language other than ``fr``/``en``, or a date that is not ISO) is refused
+    by name, never answered with a guess.
+    """
+    retrieval = kind.get("retrieval")
+    if not retrieval:
+        raise ValueError(f"{kind.get('kindId')}: this kind declares no retrieval")
+    if language not in ("fr", "en"):
+        raise ValueError("language must be fr or en")
+    if not _ISO.match(as_of or ""):
+        raise ValueError("asOf must be an ISO date (YYYY-MM-DD)")
+    request = {
+        "sources": [LAW_CORPUS_SOURCE],
+        "jurisdiction": kind["jurisdiction"],
+        "kindId": kind["kindId"],
+        "asOf": as_of,
+        "language": language,
+        "question": retrieval["question"][language],
+        "targets": [{"instrument": t["instrument"], "refs": list(t["refs"])} for t in retrieval["targets"]],
+    }
+    if run_id:
+        request["runId"] = run_id
+    return request
