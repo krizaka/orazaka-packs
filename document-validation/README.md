@@ -131,9 +131,12 @@ validation worker) has **no model and no clock**: a pure function of the text, t
 A kind is a candidate when its signals weigh at least `min_signal_weight` (setting `law.identify.min-signal-weight`, default 2) and
 none of its `excludes` matches; the jurisdiction hints add to its weight but never make it a candidate alone. The candidate with
 the highest weight wins **if it is alone at the top**; a tie is not broken by a guess: the declared kind is used if it names exactly one
-kind (within the declared jurisdiction), else `KIND_UNKNOWN`. A declared jurisdiction restricts the kinds to its own, never another country's.
-An explicit `ruleset` (a 1.x call) still overrides everything. The model step of §1 (a `classify` choice from the closed list, quote checked)
-is a blueprint step and arrives with `compliance-check` 2.0, not here.
+of the **tied** kinds, else the model may choose among them (`classifyAmong`, the `classify` step of `compliance-check` 2.0: its answer
+is kept only if it names a tied kind or `OTHER` and its quote is in the document — `kindSource: CLASSIFIED`), else `KIND_UNKNOWN`. With
+no candidate at all, the declared kind is used if it names exactly one kind of the scope. A declared jurisdiction restricts the kinds to
+its own, never another country's. An explicit `ruleset` still overrides everything (`RULESET_INPUT`). There is no default kind in 2.0:
+judging an unrecognised text by the jurisdiction's lease is **legacy 1.x behaviour**, kept only by installations pinned on a 1.x
+blueprint.
 
 ```bash
 cd worker && python3 test_identify.py     # each kind's fixtures (filled, blank, a document that must not match), every signal's pass/fail,
@@ -156,6 +159,40 @@ engine never names an article: this file does. A kind without the block retrieve
 `asOf` that is not an ISO date is refused by name. Tested in `worker/test_identify.py` (the golden case) and
 `tests/document-kinds.test.mjs` (the schema). Every switch is off as seeded (`law.corpus.enabled`, `research.enabled`, the
 `law-corpus` source).
+
+## `compliance-check` 2.0 — identify, then the ruleset of that kind (ADR-089 §4)
+
+`identify` → `classify` (only on a tie) → `resolve` → `screen` → `judge` (only when a rule asks the model) → `report`. Inputs:
+`document`, `jurisdiction` (now optional), `declaredKind` (`LEASE`, `NOTICE`, `CONDITION_REPORT`, `INVOICE`, `SERVICE_CONTRACT`,
+`OTHER`), `asOf`, `ruleset` (override). `resolve` (`job.validation.resolve`) keeps or discards the model's choice and resolves the
+ruleset in force at `asOf` **for the kind used**; a kind with no promoted ruleset never runs another kind's rules.
+
+The report (`job.validation.report`), held by the platform to the `outputContract` of the `report` step (orazaka-studio#59):
+
+| Field | |
+|:---|:---|
+| `contract` | `2.0` |
+| `outcome` | `CHECKED` · `UNSUPPORTED_KIND` (a known kind without a ruleset: no rule runs) · `KIND_UNKNOWN` (no rule runs) |
+| `identification` | the object of `identify`, the model's choice and why it was kept or not included |
+| `ruleset` | `{id, version, revision, reviewStatus}`, when one ran |
+| `findings[]` | as 1.x, with `citation: {reference, instrument, ref, language, officialUrl, inForceFrom, contentHash, quote}` and `checks: {passage, citation}` |
+
+**Both quotes are checked.** `checks.passage` is `VERIFIED` (the passage is in the document), `ABSENT` or `NOT_IN_DOCUMENT`;
+`checks.citation` is `VERIFIED` (the rule's `law` quote is in the article text the pack holds for its `contentHash`, `law/` — one JSON per
+article version, refused at load if its text does not hash to it), `NOT_PINNED` (a rule written before ADR-089 that cites its article in
+words only: the verdict is kept for now, and the finding says so — `citation.pinned: false` and the notice « citation non épinglée »;
+pinning the shipped rules is packs#125/#126), `ARTICLE_NOT_HELD` or `QUOTE_NOT_IN_ARTICLE`. `law/` is a **snapshot for offline
+verification, not a second corpus**: with `AI_LAW_CORPUS_ENABLED=true` and `AI_LAW_LOOKUP_URL` (off by default), `test_check.py` also
+requires each held hash to be the corpus row `lookupStatute` returns (ADR-089 cut 3). A PASS or FAIL whose passage or citation fails is `INSUFFICIENT_EVIDENCE`,
+and no passage is never a PASS. A 1.x installation stays pinned on its 1.x blueprint, and the worker answers `screen` and `assemble` as
+before: yomizaka#305's recordings replay byte for byte (`worker/fixtures/compliance-check/`). The Studio is listed in
+`run.result-cache.studios`: an identical run answers from the recorded report — **only when its day was given (`asOf`) or read in the
+document**. The report step returns `resultCacheable: false` when the day came from the clock (`asOfSource: TODAY`), and so does a 1.x
+`screen` without `asOf`; the platform never reuses such a run.
+
+```bash
+cd worker && python3 test_check.py   # plays the blueprint step by step: the recordings, each outcome, a 1.x call, both quotes
+```
 
 ## Known limits (demo documents under `worker/fixtures/`)
 

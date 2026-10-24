@@ -13,8 +13,9 @@ The decisions, in the order ADR-089 §1 gives them:
   postal code) add to its weight and name the jurisdiction, but never make a kind a candidate on their own. A text that
   matches one of the kind's ``excludes`` is never that kind.
 * **The detected kind wins** when exactly one candidate has the highest weight. Two candidates with the same highest
-  weight are ambiguous: the declared kind is used if it names exactly one kind, else the outcome is ``KIND_UNKNOWN``
-  — a tie is never broken by a guess.
+  weight are ambiguous: the declared kind is used if it names exactly one of the tied kinds, else the model may choose
+  among them (``classified``, its quote checked in the text), else the outcome is ``KIND_UNKNOWN`` — a tie is never
+  broken by a guess.
 * **A mismatch is always surfaced**, never silently resolved: ``kindMismatch`` is true when the text is a kind the
   declared one does not agree with, and the detected kind is the one that judges.
 * **A kind with no promoted ruleset says so** (``UNSUPPORTED_KIND``): no ruleset runs, and never the lease's.
@@ -22,8 +23,9 @@ The decisions, in the order ADR-089 §1 gives them:
   ``today`` (``TODAY``) — passed in, so two runs of the same document read the same ruleset.
 * **The language** is a fact for the language rules (``fr``, ``en``, both), never a verdict by itself.
 
-The model step of §1 (a ``classify`` choice among the closed list of kinds when the signals are ambiguous) is not
-here: it is a blueprint step, so it is metered like any other inference, and it arrives with ``compliance-check`` 2.0.
+The model step of §1 (a ``classify`` choice among the tied kinds) is not called here: it is a step of
+``compliance-check`` 2.0, metered like any other inference, and its answer comes back as ``classified``. This module
+only decides whether that answer is kept.
 """
 
 import json
@@ -31,6 +33,8 @@ import os
 import re
 import unicodedata
 from datetime import date
+
+import quotes
 
 KINDS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "kinds")
 
@@ -41,6 +45,9 @@ MAX_QUOTE = 160
 CHECK = "CHECK"
 KIND_UNKNOWN = "KIND_UNKNOWN"
 UNSUPPORTED_KIND = "UNSUPPORTED_KIND"
+
+#: The answer of a model that recognises none of the tied kinds: the document stays ``KIND_UNKNOWN``.
+OTHER = "OTHER"
 
 PROMOTED = "PROMOTED"
 KNOWN = "KNOWN"
@@ -170,11 +177,16 @@ def _candidate(scored: dict, min_weight: int) -> dict:
 
 
 def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as_of=None, ruleset=None,
-             min_signal_weight: int = MIN_SIGNAL_WEIGHT, kinds=None) -> dict:
+             classified=None, min_signal_weight: int = MIN_SIGNAL_WEIGHT, kinds=None) -> dict:
     """Identify ``text``: the kind, the jurisdiction, the date and the language, compared with what was declared.
 
     ``today`` (ISO date) is given, never read: the caller owns the clock. ``as_of`` is validated as an ISO date
     (``ValueError`` otherwise). ``ruleset`` is the explicit 1.x override and wins over everything.
+
+    ``classified`` is the model's answer to a tie (``{"kindId", "quote"}``, the ``classify`` step of
+    ``compliance-check`` 2.0): kept only when it names one of the tied kinds (or ``OTHER``) and its quote is a passage
+    of ``text``. There is no default kind: a text no kind recognises is ``KIND_UNKNOWN``. Judging it by the jurisdiction's
+    lease is 1.x behaviour, kept only by the 1.x blueprint (legacy, ADR-089 cut 5).
     """
     text = unicodedata.normalize("NFC", text or "")
     declared = (declared_kind or "").strip() or None
@@ -194,7 +206,8 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
     leaders = [s for s in eligible if s["weight"] == top]
     detected = leaders[0] if len(leaders) == 1 else None
 
-    used, source = None, None
+    tied = [s["kind"] for s in leaders] if len(leaders) > 1 else []
+    used, source, classification = None, None, None
     if ruleset:
         carrying = [k for k in scope if k["ruleset"] == ruleset]
         if not carrying:
@@ -202,10 +215,17 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
         used, source = carrying[0], "RULESET_INPUT"
     elif detected:
         used, source = detected["kind"], "DETECTED"
-    elif declared:
-        agreeing = [k for k in scope if declared in k["declaredAs"]]
+    else:
+        # A tie is broken by the declared kind only when it names exactly one of the TIED kinds (packs#129, point 1);
+        # with no candidate at all, by the declared kind that names exactly one kind of the scope.
+        agreeing = [k for k in (tied or scope) if declared and declared in k["declaredAs"]]
         if len(agreeing) == 1:
             used, source = agreeing[0], "DECLARED"
+        elif tied and classified:
+            classification = _classification(classified, tied, text)
+            chosen = next((k for k in tied if k["kindId"] == classification["kindId"]), None)
+            if classification["accepted"] and chosen:
+                used, source = chosen, "CLASSIFIED"
 
     mismatch = bool(detected and declared and not ruleset and declared not in detected["kind"]["declaredAs"])
 
@@ -217,9 +237,11 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
         outcome = UNSUPPORTED_KIND
 
     evidence = []
-    if source == "RULESET_INPUT" or source == "DETECTED":
+    if source in ("RULESET_INPUT", "DETECTED"):
         used_scored = next(s for s in scored if s["kind"] is used)
         evidence = _evidence(used_scored)
+    elif source == "CLASSIFIED":
+        evidence = [{"signal": "classify", "quote": classification["quote"], "verified": True}]
 
     if jurisdiction:
         jurisdiction_out, jurisdiction_source = jurisdiction, "DECLARED"
@@ -255,7 +277,23 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
         "languages": languages(text),
         "outcome": outcome,
         "candidates": candidates,
+        # The closed list a model may choose from when the signals tie and nothing else decided (ADR-089 §1).
+        "classifyAmong": [k["kindId"] for k in tied] if used is None and not ruleset else [],
+        "classification": classification,
     }
+
+
+def _classification(answer: dict, tied: list, text: str) -> dict:
+    """The model's choice among the tied kinds, kept only if it is one of them (or ``OTHER``) and quotes the text."""
+    kind_id = str(answer.get("kindId") or "").strip()
+    quote = str(answer.get("quote") or "").strip()
+    if kind_id != OTHER and kind_id not in {k["kindId"] for k in tied}:
+        reason = "NOT_OFFERED"
+    elif kind_id != OTHER and not quotes.contains(text, quote):
+        reason = "QUOTE_NOT_IN_DOCUMENT"
+    else:
+        reason = None
+    return {"kindId": kind_id, "quote": quote[:MAX_QUOTE], "accepted": reason is None, "reason": reason}
 
 
 def _jurisdiction_from_hints(scored: list, min_weight: int):

@@ -1,0 +1,10 @@
+{
+  "instrument": "TEST-1",
+  "ref": "9999",
+  "language": "fr",
+  "inForceFrom": "2020-01-01",
+  "contentHash": "46765835920af21365ee23356f5703798b7b5fb125aac85390bca0e39cbf18be",
+  "officialUrl": "https://example.invalid/TEST-1/9999",
+  "source": "Fictional article written for test_check.py; no legal force.",
+  "text": "Article 9999 (article fictif, écrit pour les tests de ce pack). Le bailleur d’un logement imaginaire remet à son locataire, avant la visite, un avis écrit de vingt-quatre heures. Cet avis indique le motif de la visite."
+}
