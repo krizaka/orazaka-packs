@@ -228,7 +228,10 @@ def test_an_ambiguous_document_takes_the_declared_kind_when_it_names_exactly_one
     assert got["kindMismatch"] is False
     assert ident(text, declared_kind="OTHER")["outcome"] == "KIND_UNKNOWN", "OTHER names no single kind"
     assert ident(text, declared_kind="LEASE")["outcome"] == "KIND_UNKNOWN", "LEASE names three kinds when no jurisdiction is declared"
-    assert ident(text, declared_kind="LEASE", jurisdiction="QC")["kindUsed"] == "qc-residential-lease"
+    # The declared kind breaks a tie only when it names one of the TIED kinds (packs#129, point 1): a lease declared on
+    # a text that ties an invoice and a service contract is never judged as a lease.
+    assert ident(text, declared_kind="LEASE", jurisdiction="QC")["outcome"] == "KIND_UNKNOWN"
+    assert ident("Bail.", declared_kind="LEASE", jurisdiction="QC")["kindUsed"] == "qc-residential-lease", "no candidate: the declared kind"
 
 
 def test_a_text_that_is_none_of_the_kinds_is_kind_unknown():
@@ -344,7 +347,8 @@ def test_the_same_input_gives_the_same_identification():
 def test_identify_calls_no_model_and_reads_no_clock_without_being_asked():
     source = Path(identify.__file__).read_text(encoding="utf-8")
     imported = set(re.findall(r"^(?:import|from)\s+([A-Za-z_][\w.]*)", source, re.M))
-    assert imported <= {"json", "os", "re", "unicodedata", "datetime", "__future__"}, imported
+    # `quotes` is this pack's own pure comparison of a quote with a text (no model, no clock, no network).
+    assert imported <= {"json", "os", "re", "unicodedata", "datetime", "__future__", "quotes"}, imported
     assert "time.time" not in source and "now()" not in source
 
 

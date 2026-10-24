@@ -13,7 +13,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: document-validation
-version: 1.8.0
+version: 1.9.0
 tier: WORKER
 distribution: CLOUD
 regulatoryClass: SENSITIVE
@@ -48,7 +48,8 @@ requires:
           jurisdiction: { type: string, description: "Le ruleset applicable." }
           asOf: { type: string, description: "La date à laquelle les règles sont évaluées." }
           ruleset: { type: string, description: "Le corpus nommé, quand la juridiction en porte plusieurs (une facture, par exemple). Par défaut : le bail de la juridiction." }
-        required: [document, jurisdiction]
+          resolved: { type: string, description: "compliance-check 2.0 : la sortie de l'étape resolve (JSON). Le corpus est celui qu'elle a résolu pour le type du document ; juridiction et corpus nommé ne sont alors pas lus." }
+        required: [document]
       outputSchema:
         type: object
         properties:
@@ -62,7 +63,8 @@ requires:
           screenedJson: { type: string, description: "La structure ci-dessus en JSON : un pas de blueprint adresse des CHAMPS, pas une valeur entière (ADR-052 §6)." }
           judgmentPrompt: { type: string }
           judgmentCount: { type: integer }
-        required: [rulesetId, rulesetVersion, jurisdiction, asOf, source, screenedJson, judgmentPrompt]
+          needsJudgment: { type: boolean, description: "Vrai quand une règle de jugement attend le modèle. 2.0 n'appelle le modèle que dans ce cas." }
+        required: [rulesetId, rulesetVersion, jurisdiction, asOf, source, screenedJson, judgmentPrompt, needsJudgment]
     - key: orazaka.validation.document.identify
       routingKey: job.validation.identify
       handlerKey: validation.identify
@@ -86,7 +88,7 @@ requires:
           kindUsed: { type: [string, "null"] }
           kindLabel: { type: [object, "null"] }
           kindStatus: { type: [string, "null"] }
-          kindSource: { type: [string, "null"], description: "DETECTED | DECLARED | RULESET_INPUT" }
+          kindSource: { type: [string, "null"], description: "DETECTED | DECLARED | CLASSIFIED | DEFAULT | RULESET_INPUT" }
           kindEvidence: { type: array, items: { type: object }, description: "Les passages du document qui ont fait reconnaître le type (vérifiés dans le texte)." }
           kindMismatch: { type: boolean, description: "Vrai quand le document est d'un autre type que celui déclaré. Toujours montré." }
           ruleset: { type: [string, "null"] }
@@ -99,8 +101,51 @@ requires:
           languages: { type: array, items: { type: string } }
           outcome: { type: string, description: "CHECK | UNSUPPORTED_KIND | KIND_UNKNOWN" }
           candidates: { type: array, items: { type: object } }
+          classifyAmong: { type: array, items: { type: string }, description: "Les types à égalité parmi lesquels le modèle peut choisir (plus OTHER). Vide : rien à demander." }
+          classification: { type: [object, "null"], description: "Le choix du modèle et s'il a été retenu (type proposé, citation trouvée dans le document)." }
           identificationJson: { type: string, description: "La même identification, en JSON : un pas de blueprint adresse des CHAMPS, pas une valeur imbriquée." }
-        required: [kindMismatch, asOf, asOfSource, languages, outcome, identificationJson]
+          needsClassify: { type: boolean, description: "Vrai quand deux types sont à égalité : l'étape classify pose alors la question au modèle." }
+          classifyPrompt: { type: string, description: "La question de l'étape classify ; vide quand il n'y a rien à demander." }
+        required: [kindMismatch, asOf, asOfSource, languages, outcome, classifyAmong, identificationJson, needsClassify, classifyPrompt]
+    - key: orazaka.validation.document.resolve
+      routingKey: job.validation.resolve
+      handlerKey: validation.resolve
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          identification: { type: string, description: "La sortie de l'étape identify (JSON)." }
+          classification: { type: string, description: "La réponse du modèle à l'étape classify, quand elle a eu lieu : gardée seulement si elle nomme un type à égalité et cite le document." }
+          document: { type: string, description: "Le document, pour vérifier la citation du modèle." }
+        required: [identification, document]
+      outputSchema:
+        type: object
+        properties:
+          outcome: { type: string, description: "CHECK | UNSUPPORTED_KIND | KIND_UNKNOWN" }
+          resolvedJson: { type: string, description: "L'identification retenue et le corpus en vigueur à asOf pour le type utilisé {id, version, revision, reviewStatus}, en JSON." }
+        required: [outcome, resolvedJson]
+    - key: orazaka.validation.document.report
+      routingKey: job.validation.report
+      handlerKey: validation.report
+      billableCapability: CHAT
+      billableUnit: KILOTOKEN
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          resolved: { type: string, description: "La sortie de l'étape resolve (JSON)." }
+          screened: { type: string, description: "La sortie de l'étape screen (JSON) ; vide quand aucun corpus ne s'applique." }
+          judgment: { type: string, description: "La réponse du modèle aux règles de jugement ; vide quand il n'a pas été appelé." }
+        required: [resolved]
+      outputSchema:
+        type: object
+        properties:
+          report: { type: object, description: "Le rapport 2.0 : identification, outcome, ruleset, constats dont les deux citations sont vérifiées." }
+          reportJson: { type: string, description: "Le même rapport en JSON, pour un pas aval." }
+          outcome: { type: string, description: "CHECKED | UNSUPPORTED_KIND | KIND_UNKNOWN" }
+        required: [report, reportJson, outcome]
     - key: orazaka.validation.document.signals
       routingKey: job.validation.signals
       handlerKey: validation.signals

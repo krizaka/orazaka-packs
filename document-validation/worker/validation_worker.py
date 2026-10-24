@@ -16,6 +16,10 @@ Two routing keys, and the split between them is the design:
     Takes the model's answer to those questions and folds it in, refusing anything that is not a
     verdict from the enum. Returns the report.
 
+``compliance-check`` 2.0 (ADR-089 §4) puts three more around them: ``job.validation.identify`` (what the document
+is), ``job.validation.resolve`` (the ruleset of that kind at ``asOf``) and ``job.validation.report`` (the report, both
+quotes of every finding checked). 1.x blueprints keep calling ``screen`` and ``assemble``, answered as before.
+
 The model call sits BETWEEN them, as an ordinary chat step in the blueprint, so what it costs is
 metered by the platform like any other inference. A worker that called a model itself would bill
 nothing and nobody would notice — which is [BILL-001] in the one place it would be easiest to
@@ -31,6 +35,8 @@ import yaml
 
 import authenticity
 import broker
+import citations
+import compliance
 import identify
 import rules
 
@@ -45,6 +51,9 @@ DLQ = f"{QUEUE}.dlq"
 
 SEEN: set = set()
 
+#: The article versions the rulesets pin, read once: a citation is checked against them (ADR-089 §4).
+ARTICLES = citations.load_articles()
+
 JUDGMENT_INSTRUCTIONS = (
     "Tu évalues des règles de conformité sur le document ci-dessous. Réponds UNIQUEMENT par un "
     'tableau JSON, un objet par règle, de la forme {"ruleId": "...", "verdict": "PASS|FAIL|'
@@ -54,9 +63,21 @@ JUDGMENT_INSTRUCTIONS = (
 )
 
 
-def _screen(payload: dict) -> tuple:
-    """Deterministic pass. Returns the report so far and the prompt the model must be given."""
+def _screen(payload: dict) -> dict:
+    """Deterministic pass. Returns the report so far and the prompt the model must be given.
+
+    Two callers. ``compliance-check`` 1.x sends the jurisdiction (and a named ruleset) and is answered exactly as
+    before. 2.0 sends ``resolved``, the output of the ``resolve`` step: the ruleset is the one resolved there for the
+    kind of the document, and nothing here chooses another.
+    """
     text = str(payload.get("document") or "")
+    if payload.get("resolved"):
+        resolved = _json_field(payload, "resolved")
+        if resolved.get("outcome") != identify.CHECK:
+            raise InvalidJobPayload(f"rien à contrôler : le document est {resolved.get('outcome')}")
+        as_of = resolved["identification"]["asOf"]
+        return _screened(rules.resolve(resolved["ruleset"]["id"], as_of), text, as_of)
+
     jurisdiction = str(payload.get("jurisdiction") or "").strip()
     as_of = str(payload.get("asOf") or "").strip() or time.strftime("%Y-%m-%d")
 
@@ -79,7 +100,11 @@ def _screen(payload: dict) -> tuple:
                 f"disponibles: {', '.join(rules.rulesets_by_jurisdiction().get(jurisdiction, []))}"
             )
         ruleset_id = named
-    ruleset = rules.resolve(ruleset_id, as_of)
+    return _screened(rules.resolve(ruleset_id, as_of), text, as_of)
+
+
+def _screened(ruleset: dict, text: str, as_of: str) -> dict:
+    """Every deterministic rule of ``ruleset`` on ``text``, and the questions left for the model."""
     findings, judgments = rules.screen(ruleset, text)
 
     if judgments:
@@ -89,8 +114,8 @@ def _screen(payload: dict) -> tuple:
             f"Document:\n---\n{text}\n---"
         )
     else:
-        # A ruleset with no question for a model (the invoice rules are all deterministic): the judge step
-        # still runs, so it is given nothing to read and an empty answer to give.
+        # A ruleset with no question for a model (the invoice rules are all deterministic): 1.x still runs the
+        # judge step, so it is given nothing to read and an empty answer to give. 2.0 skips it (needsJudgment).
         prompt = "Réponds exactement par un tableau JSON vide : []"
     screened = {
         "rulesetId": ruleset["rulesetId"],
@@ -117,22 +142,27 @@ def _screen(payload: dict) -> tuple:
         screenedJson=json.dumps(screened, ensure_ascii=False),
         judgmentPrompt=prompt,
         judgmentCount=len(judgments),
+        # 2.0 asks the model only when a rule needs it (1.x always called it, with an empty question).
+        needsJudgment=bool(judgments),
     )
+
+
+def _json_field(payload: dict, name: str) -> dict:
+    """A structure a blueprint carried across steps as JSON text (ADR-052 §6), parsed — or refused by name."""
+    value = payload.get(name)
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except json.JSONDecodeError as bad:
+            # Say what arrived. A parse error whose message is only "line 1 column 1" tells the
+            # pack author nothing about which side of the seam failed.
+            raise InvalidJobPayload(f"le champ '{name}' n'est pas du JSON ({bad}); reçu: {value[:200]!r}") from bad
+    return value or {}
 
 
 def _assemble(payload: dict) -> dict:
     """Fold the model's answer into the deterministic report and emit the whole thing."""
-    screened = payload.get("screened")
-    if isinstance(screened, str):
-        try:
-            screened = json.loads(screened)
-        except json.JSONDecodeError as bad:
-            # Say what arrived. A parse error whose message is only "line 1 column 1" tells the
-            # pack author nothing about which side of the seam failed.
-            raise InvalidJobPayload(
-                f"le champ 'screened' n'est pas du JSON ({bad}); reçu: {screened[:200]!r}"
-            ) from bad
-    screened = screened or {}
+    screened = _json_field(payload, "screened")
     ruleset = rules.resolve(screened["rulesetId"], screened["asOf"])
     findings = rules.merge_judgments(
         ruleset,
@@ -200,21 +230,58 @@ def _identify(payload: dict) -> dict:
     text = str(payload.get("document") or "")
     if not text.strip():
         raise InvalidJobPayload("aucun document fourni : le champ 'document' est vide")
+    jurisdiction = str(payload.get("jurisdiction") or "").strip()
     try:
         found = identify.identify(
             text,
             today=time.strftime("%Y-%m-%d"),
             declared_kind=str(payload.get("declaredKind") or ""),
-            jurisdiction=str(payload.get("jurisdiction") or ""),
+            jurisdiction=jurisdiction,
             as_of=str(payload.get("asOf") or ""),
             ruleset=str(payload.get("ruleset") or ""),
+            # A 1.x-shaped call (a jurisdiction, no kind): its own ruleset, for a text no kind recognises.
+            default_ruleset=rules.jurisdictions().get(jurisdiction),
         )
     except identify.UnknownRuleset as unknown:
         raise InvalidJobPayload(str(unknown)) from unknown
     except ValueError as bad:
         raise InvalidJobPayload(f"asOf doit être une date ISO (AAAA-MM-JJ): {bad}") from bad
+    prompt = compliance.classify_prompt(found, text)
     # A blueprint step addresses FIELDS, not a nested value: the whole identification is also given as JSON text.
-    return dict(found, identificationJson=json.dumps(found, ensure_ascii=False))
+    return dict(
+        found,
+        identificationJson=json.dumps(found, ensure_ascii=False),
+        needsClassify=bool(prompt),
+        classifyPrompt=prompt,
+    )
+
+
+def _resolve(payload: dict) -> dict:
+    """``compliance-check`` 2.0, step 3: the kind kept (the model's tie-break checked) and its ruleset at ``asOf``."""
+    try:
+        resolved = compliance.resolve(
+            _json_field(payload, "identification"),
+            str(payload.get("classification") or ""),
+            str(payload.get("document") or ""),
+        )
+    except rules.RulesetNotFound as missing:
+        # A date no version of the kind's ruleset covers: said by name, never the closest version.
+        raise InvalidJobPayload(str(missing)) from missing
+    return {"outcome": resolved["outcome"], "resolvedJson": json.dumps(resolved, ensure_ascii=False)}
+
+
+def _report(payload: dict) -> dict:
+    """``compliance-check`` 2.0, the last step: the report, both quotes of every finding checked (ADR-089 §4)."""
+    resolved = _json_field(payload, "resolved")
+    screened = _json_field(payload, "screened") if payload.get("screened") else {}
+    checked = resolved.get("outcome") == identify.CHECK
+    ruleset = rules.resolve(resolved["ruleset"]["id"], resolved["identification"]["asOf"]) if checked else None
+    report = compliance.report(resolved, ruleset, screened, str(payload.get("judgment") or ""), ARTICLES)
+    return {
+        "report": report,
+        "reportJson": json.dumps(report, ensure_ascii=False, indent=2),
+        "outcome": report["outcome"],
+    }
 
 
 HANDLERS = {
@@ -225,6 +292,9 @@ HANDLERS = {
     "job.validation.signals": _signals,
     # Stage 1 of ADR-089: the kind of a document, before any ruleset. No model, no new worker.
     "job.validation.identify": _identify,
+    # compliance-check 2.0 (ADR-089 §4): the ruleset of the kind, then the report with both quotes checked.
+    "job.validation.resolve": _resolve,
+    "job.validation.report": _report,
 }
 
 

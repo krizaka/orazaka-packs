@@ -1,0 +1,193 @@
+{
+  "source": "krizaka/yomizaka apps/web/content/demo-lease-runs/errors.json at c085f9c (yomizaka#305), recorded 2026-10-24T03:19:44.487Z on dev, blueprint 1.4.0; fictional document",
+  "generator": {
+    "id": "bail-rosemont-5-clause-illegale",
+    "seed": 20261023
+  },
+  "document": "DOCUMENT FICTIF — bail de logement\nJeu de données de démonstration Yomizaka : personnes, adresses et montants inventés.\n\nBAIL DE LOGEMENT\nLogement : 363, boulevard Imaginaire, Montréal (Québec) H7D 5D6\nLocateur : Camille Exemple-Lavoie (fictif), domicilié au 4343, rue du Modèle, Montréal (Québec) H1D 2D8\nLocataire : Mathis Simulé-Pelletier (fictif), domicilié à Montréal.\nDurée : 12 mois, du 1er juillet 2026 au 30 juin 2027.\nLoyer mensuel : 950,00 $, payable le premier jour du mois.\nLe loyer le plus bas payé au cours des douze derniers mois précédant le début du bail était de 925,00 $ par mois.\nLe loyer comprend le chauffage et l'eau chaude.\nLe locataire a droit au maintien dans les lieux à la fin du bail.\nLe locateur peut proposer une hausse de loyer selon les règles du Tribunal administratif du logement.\n\nLe locateur remet au locataire l'avis « Renseignements au nouveau locataire d'un logement » du Tribunal administratif du logement (TAL).\nIl est interdit d'avoir des enfants dans le logement.\nLe locataire verse un dépôt de sécurité de 950,00 $ à la signature.\nLe locataire remet douze chèques postdatés.\n\nSigné à Montréal le 15 juin 2026 : Camille Exemple-Lavoie (fictif) et Mathis Simulé-Pelletier (fictif).",
+  "inputs": {
+    "jurisdiction": "QC",
+    "asOf": "2026-10-23"
+  },
+  "report": {
+    "rulesetId": "qc-residential-lease",
+    "rulesetVersion": "2024-02-21",
+    "rulesetRevision": 3,
+    "jurisdiction": "QC",
+    "asOf": "2026-10-23",
+    "source": "Code civil du Québec, art. 1851 et suiv. (bail de logement : art. 1892 à 1978), Règlement sur les formulaires de bail obligatoires et sur les mentions de l'avis au nouveau locataire (RLRQ c. T-15.01, r. 3), Tribunal administratif du logement",
+    "summary": {
+      "byVerdict": {
+        "PASS": 6,
+        "FAIL": 4,
+        "NOT_APPLICABLE": 2
+      },
+      "blockingFailures": 3,
+      "rulesEvaluated": 12
+    },
+    "findings": [
+      {
+        "ruleId": "QC-LEASE-001",
+        "title": "Identification du locateur",
+        "severity": "BLOCKING",
+        "verdict": "PASS",
+        "evidenceSpan": {
+          "start": 202,
+          "end": 255,
+          "quote": "Locateur : Camille Exemple-Lavoie (fictif), domicilié"
+        },
+        "explanation": "Le locateur est identifié au bail.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1895 ; Règlement sur les formulaires de bail obligatoires, section A"
+      },
+      {
+        "ruleId": "QC-LEASE-002",
+        "title": "Identification du locataire",
+        "severity": "BLOCKING",
+        "verdict": "PASS",
+        "evidenceSpan": {
+          "start": 306,
+          "end": 361,
+          "quote": "Locataire : Mathis Simulé-Pelletier (fictif), domicilié"
+        },
+        "explanation": "Le locataire est identifié au bail.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1895 ; Règlement sur les formulaires de bail obligatoires, section A"
+      },
+      {
+        "ruleId": "QC-LEASE-003",
+        "title": "Montant du loyer",
+        "severity": "BLOCKING",
+        "verdict": "PASS",
+        "evidenceSpan": {
+          "start": 428,
+          "end": 452,
+          "quote": "Loyer mensuel : 950,00 $"
+        },
+        "explanation": "Le loyer est chiffré au bail.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1855 et 1903 ; Règlement sur les formulaires de bail obligatoires, section D"
+      },
+      {
+        "ruleId": "QC-LEASE-004",
+        "title": "Dépôt de garantie interdit — seul le premier mois peut être exigé d'avance",
+        "severity": "BLOCKING",
+        "verdict": "FAIL",
+        "evidenceSpan": {
+          "start": 1031,
+          "end": 1060,
+          "quote": "dépôt de sécurité de 950,00 $"
+        },
+        "explanation": "Le bail exige une somme autre que le loyer, sous forme de dépôt ou autrement. L'article 1904 ne permet au locateur d'exiger d'avance que le premier terme de loyer.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1904, al. 1"
+      },
+      {
+        "ruleId": "QC-LEASE-005",
+        "title": "Chèques postdatés interdits",
+        "severity": "BLOCKING",
+        "verdict": "FAIL",
+        "evidenceSpan": {
+          "start": 1102,
+          "end": 1119,
+          "quote": "chèques postdatés"
+        },
+        "explanation": "Le bail exige des chèques postdatés. L'article 1904 interdit au locateur d'exiger la remise de chèques ou d'autres effets postdatés.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1904, al. 2"
+      },
+      {
+        "ruleId": "QC-LEASE-006",
+        "title": "Refus des enfants — sans effet",
+        "severity": "BLOCKING",
+        "verdict": "FAIL",
+        "evidenceSpan": {
+          "start": 962,
+          "end": 990,
+          "quote": "interdit d'avoir des enfants"
+        },
+        "explanation": "Une clause écarte les enfants. L'article 1899 interdit au locateur de refuser un locataire, ou de maintenir une clause, en raison de la présence d'enfants.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1899"
+      },
+      {
+        "ruleId": "QC-LEASE-007",
+        "title": "Renonciation au droit au maintien dans les lieux — sans effet",
+        "severity": "BLOCKING",
+        "verdict": "PASS",
+        "evidenceSpan": {
+          "start": 673,
+          "end": 696,
+          "quote": "maintien dans les lieux"
+        },
+        "explanation": "Aucune renonciation au maintien dans les lieux.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1936 et 1893"
+      },
+      {
+        "ruleId": "QC-LEASE-008",
+        "title": "Avis du loyer le plus bas des douze derniers mois",
+        "severity": "MAJOR",
+        "verdict": "PASS",
+        "evidenceSpan": {
+          "start": 490,
+          "end": 507,
+          "quote": "loyer le plus bas"
+        },
+        "explanation": "L'avis du loyer le plus bas payé au cours des douze derniers mois est donné.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1896 ; Règlement sur les formulaires de bail obligatoires, section G"
+      },
+      {
+        "ruleId": "QC-LEASE-009",
+        "title": "Renonciation anticipée aux règles de l'augmentation de loyer — sans effet",
+        "severity": "MAJOR",
+        "verdict": "PASS",
+        "evidenceSpan": {
+          "start": 745,
+          "end": 751,
+          "quote": "hausse"
+        },
+        "explanation": "Aucune clause n'écarte d'avance l'avis, ni le droit du locataire de refuser une modification du loyer.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1942, 1943 et 1945 ; art. 1893"
+      },
+      {
+        "ruleId": "QC-LEASE-010",
+        "title": "Peines et frais de retard — appréciation contextuelle",
+        "severity": "ADVISORY",
+        "verdict": "NOT_APPLICABLE",
+        "evidenceSpan": null,
+        "explanation": "Le document n'aborde pas ce sujet ; la règle ne s'applique pas.",
+        "method": "JUDGMENT",
+        "citation": "C.c.Q., art. 1901"
+      },
+      {
+        "ruleId": "QC-LEASE-011",
+        "title": "Règlement de l'immeuble — remise avant la conclusion du bail",
+        "severity": "ADVISORY",
+        "verdict": "NOT_APPLICABLE",
+        "evidenceSpan": null,
+        "explanation": "Le document n'aborde pas ce sujet ; la règle ne s'applique pas.",
+        "method": "JUDGMENT",
+        "citation": "C.c.Q., art. 1894"
+      },
+      {
+        "ruleId": "QC-LEASE-020",
+        "title": "Clause abusive",
+        "severity": "ADVISORY",
+        "verdict": "FAIL",
+        "evidenceSpan": {
+          "start": 955,
+          "end": 1008,
+          "quote": "Il est interdit d'avoir des enfants dans le logement."
+        },
+        "explanation": "Une clause paraît abusive ; l'article 1901 permet au Tribunal administratif du logement de l'annuler ou d'en réduire l'obligation.",
+        "method": "JUDGMENT",
+        "citation": "C.c.Q., art. 1901"
+      }
+    ],
+    "reviewStatus": "TO_REVIEW_BY_LAWYER",
+    "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration."
+  }
+}
