@@ -16,7 +16,7 @@ The user forwards this output to their counterparty. That single fact decides ev
 | `regulatoryClass` | `SENSITIVE` — it receives the five controls of ADR-051 and declares a `scopeGuard` |
 | Studios | `compliance-check` |
 | Jurisdictions | `QC` (Québec — to be reviewed by a lawyer), `FR`, `BE-WAL` |
-| Document types | the residential lease (every jurisdiction, the default) and, for `QC`, the supplier's **invoice** (`ruleset: qc-invoice`, opt-in) |
+| Document types | the residential lease (every jurisdiction, the default) and, for `QC`, the supplier's **invoice** (`ruleset: qc-invoice`, opt-in), the **service contract** (`qc-service-contract`), the **visit notice** (`qc-visit-notice`) and the **état des lieux** (`qc-premises-condition`), all three opt-in |
 
 ## Deterministic first, model second
 
@@ -101,6 +101,20 @@ service contract the limit is case law), termination (art. 2125, 2129), penal cl
 - The **service contract** does not encode the Civil Code (art. 2098 and following), among them the client's right to
   terminate (art. 2125): the text could not be read at its source. The report must say « non vérifié : droit de résiliation,
   art. 2125 C.c.Q., à faire relire par un avocat ».
+
+## Québec visit notice and état des lieux — `qc-visit-notice`, `qc-premises-condition` (opt-in, orazaka-packs#125)
+
+Chosen by name (`ruleset: "qc-visit-notice"` or `"qc-premises-condition"`); both in force from 2023-06-01, the date of the Charter's art. 55 that the language rule reads. Sources: the consolidated Code civil du Québec read in the open-data XML of Données Québec (snapshot 2026-10-21, read 2026-10-23), each rule pinning the SHA-256 of its article and its official Légis Québec URL. Légis Québec and CanLII are not read by this pack.
+
+- **Visit notice**: a 24-hour notice (art. 1931, numeric, in hours); the intention stated (art. 1931); no visit fixed outside 9 h to 21 h (art. 1932); no works fixed outside 7 h to 19 h unless urgent (art. 1933); no waiver of the tenant's right to refuse a visit (art. 1932, void under art. 1893).
+- **État des lieux**: no statute prescribes its form, so the rules check only what a clause cannot do: no acknowledgement of habitability (art. 1910, al. 2), no cleaning after the landlord's works charged to the tenant (art. 1911, al. 2), no acceptance of a dwelling delivered without its cleanliness (art. 1911, al. 1), no exoneration of the landlord on habitability (art. 1900).
+- A blank form never PASSes a rule of these kinds: the rules read sentences, not labels, and a notice period with no figure is INSUFFICIENT_EVIDENCE.
+
+Not encoded: urgency (the document does not establish it), the mode of delivery of the notice, computing hours from a signature date, the content of the état (no article requires it), and arts. 1912–1913 (safety and unfit dwelling), whose content is a matter of fact.
+
+## Language — `QC-LANG-001`, shared by the three Québec document kinds (orazaka-packs#126)
+
+The same rule is in the lease (`qc-residential-lease`, version 2026-10-24: a copy of 2024-02-21 plus this rule; the 2024 version is not edited, and a check dated before 2026-10-24 is judged without it), the visit notice and the état des lieux. It is a `REQUIRED_PATTERN`: a French contractual passage (« le locateur », « la locataire »…), or a sentence stating that a French version was handed over (« version française remise »), passes it. An English-only document fails it: the Charter's art. 55 requires French for an adhesion contract and the documents attached to it, and another language binds only after the French version was given to the adherent and the parties' express will is stated (art. 55, al. 2; C.c.Q. art. 1897 for the lease). The rule does not verify the express will: that stays with a human. A bilingual document passes.
 
 ## Adding a jurisdiction
 

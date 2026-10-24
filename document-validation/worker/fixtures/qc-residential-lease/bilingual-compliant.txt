@@ -1,0 +1,27 @@
+BAIL DE LOGEMENT (modèle de démonstration, personnes et adresse fictives)
+Section A — Parties
+Locateur : Madame Hélène Roy, 120, avenue du Parc, Montréal (Québec).
+Locataire : Monsieur Karim Haddad, 45, rue Beaubien, Laval (Québec).
+Section B — Logement
+3½ situé au 120, avenue du Parc, Montréal.
+Section C — Durée
+Bail de 12 mois, du 1er septembre 2026 au 31 août 2027.
+Section D — Loyer
+Loyer mensuel : 1 120 $, payable le premier jour de chaque mois.
+Aucun dépôt de garantie n'est exigé.
+Paiement par virement ou par chèque remis chaque mois.
+Section G — Avis du loyer le plus bas
+Le loyer le plus bas payé au cours des douze derniers mois précédant le début du bail était de 1 090 $ par mois.
+Signé à Montréal le 12 juin 2026.
+
+VERSION ANGLAISE (traduction de la version française ci-dessus)
+Lease summary, translated.
+Landlord: Ms. Helen Roy, 120 Park Avenue, Montréal (Québec).
+Tenant: Mr. Karim Haddad, 45 Beaubien Street, Laval (Québec).
+Dwelling: 3½ at 120 Park Avenue, Montréal.
+Term: 12 months, from September 1, 2026 to August 31, 2027.
+Monthly rent: $1,120, payable on the first day of each month.
+No security deposit is required.
+Payment by bank transfer or by cheque given each month.
+Lowest rent paid in the twelve months before the lease began: $1,090 per month.
+Signed at Montréal on June 12, 2026.

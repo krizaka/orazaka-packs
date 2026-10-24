@@ -1,12 +1,12 @@
 {
-  "version": "1.7.2",
+  "version": "1.8.0",
   "status": "PUBLISHED",
   "estimatedCredits": 120,
-  "changelog": "1.7.2 — qc-invoice : un « sub-total » anglais n'est plus pris pour le total (QC-INV-002). 1.7.1 — qc-invoice lit la mise en page d'une facture réelle (colonnes alignées, calcul entre crochets, libellé et valeur sur deux lignes) : fin des faux échecs sur la date, le total et les taxes (orazaka-packs#81) ; la preuve citée reste le passage exact. 1.7.0 — libellés des sorties en anglais et français (x-i18n). 1.6.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.5.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Contrôle de conformité documentaire — déterministe d'abord, modèle en second. 1.0.1 : la structure traverse l'appel au modèle en JSON explicite. 1.0.2 : jugement en onError=FAIL, faute de pouvoir distinguer un refus d'une panne. 1.1.0 : la distinction existe (ADR-053). SKIP quand le modèle est tombé — un rapport 9/10 déterministe reste utile, et la règle de jugement se rend en INSUFFICIENT_EVIDENCE, ce qui est vrai. FAIL sur GUARD_REFUSAL — un refus doit atteindre l'utilisateur, jamais être avalé dans un rapport qu'il croira complet. 1.1.1 : justification écrite du SKIP, exigée par BlueprintFitnessTest. 1.2.0 : juridiction QC (bail de logement, Code civil du Québec art. 1851 et suiv.), corpus marqué à faire relire par un avocat. 1.3.0 : `ruleset` optionnel — un second corpus de la même juridiction (la facture du Québec) se choisit par son nom ; sans lui, le bail, comme avant. 1.4.0 : second corpus nommé, `qc-service-contract` (contrat de service du Québec, première étape : droit fédéral lu à la source).",
+  "changelog": "1.8.0 — deux corpus nommés de plus : avis de visite du logement (C.c.Q. art. 1931 à 1933) et état des lieux (C.c.Q. art. 1900, 1910, 1911, 1893) ; la règle de langue (Charte art. 55 ; C.c.Q. art. 1897) est commune aux trois documents et s'applique au bail par une version nouvelle, 2026-10-24, copie de la version 2024-02-21 plus cette règle (orazaka-packs#125, #126). 1.7.2 — qc-invoice : un « sub-total » anglais n'est plus pris pour le total (QC-INV-002). 1.7.1 — qc-invoice lit la mise en page d'une facture réelle (colonnes alignées, calcul entre crochets, libellé et valeur sur deux lignes) : fin des faux échecs sur la date, le total et les taxes (orazaka-packs#81) ; la preuve citée reste le passage exact. 1.7.0 — libellés des sorties en anglais et français (x-i18n). 1.6.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.5.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Contrôle de conformité documentaire — déterministe d'abord, modèle en second. 1.0.1 : la structure traverse l'appel au modèle en JSON explicite. 1.0.2 : jugement en onError=FAIL, faute de pouvoir distinguer un refus d'une panne. 1.1.0 : la distinction existe (ADR-053). SKIP quand le modèle est tombé — un rapport 9/10 déterministe reste utile, et la règle de jugement se rend en INSUFFICIENT_EVIDENCE, ce qui est vrai. FAIL sur GUARD_REFUSAL — un refus doit atteindre l'utilisateur, jamais être avalé dans un rapport qu'il croira complet. 1.1.1 : justification écrite du SKIP, exigée par BlueprintFitnessTest. 1.2.0 : juridiction QC (bail de logement, Code civil du Québec art. 1851 et suiv.), corpus marqué à faire relire par un avocat. 1.3.0 : `ruleset` optionnel — un second corpus de la même juridiction (la facture du Québec) se choisit par son nom ; sans lui, le bail, comme avant. 1.4.0 : second corpus nommé, `qc-service-contract` (contrat de service du Québec, première étape : droit fédéral lu à la source).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "compliance-check",
-    "version": "1.7.2",
+    "version": "1.8.0",
     "steps": [
       {
         "id": "screen",
@@ -155,24 +155,28 @@
       },
       "ruleset": {
         "type": "string",
-        "enum": ["qc-invoice", "qc-service-contract"],
+        "enum": ["qc-invoice", "qc-service-contract", "qc-visit-notice", "qc-premises-condition"],
         "title": "Corpus nommé",
-        "description": "Un second corpus de la juridiction (la facture du Québec). Vide : le bail.",
+        "description": "Un corpus nommé de la juridiction : la facture, le contrat de service, l'avis de visite ou l'état des lieux du Québec. Vide : le bail.",
         "x-i18n": {
           "en": {
             "title": "Named ruleset",
-            "description": "A second ruleset of the jurisdiction (Québec invoice). Empty: its lease rules.",
+            "description": "A named ruleset of the jurisdiction: Québec invoice, service contract, visit notice or état des lieux. Empty: the lease.",
             "options": {
               "qc-invoice": "Québec invoice",
-              "qc-service-contract": "Québec service contract"
+              "qc-service-contract": "Québec service contract",
+              "qc-visit-notice": "Québec visit notice",
+              "qc-premises-condition": "Québec état des lieux"
             }
           },
           "fr": {
             "title": "Corpus nommé",
-            "description": "Un second corpus de la juridiction (la facture du Québec). Vide : le bail.",
+            "description": "Un corpus nommé de la juridiction : la facture, le contrat de service, l'avis de visite ou l'état des lieux du Québec. Vide : le bail.",
             "options": {
               "qc-invoice": "Facture du Québec",
-              "qc-service-contract": "Contrat de service du Québec"
+              "qc-service-contract": "Contrat de service du Québec",
+              "qc-visit-notice": "Avis de visite du Québec",
+              "qc-premises-condition": "État des lieux du Québec"
             }
           }
         }

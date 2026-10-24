@@ -1,0 +1,291 @@
+{
+  "rulesetId": "qc-visit-notice",
+  "label": "Avis de visite du logement — Québec",
+  "jurisdiction": "QC",
+  "version": "2023-06-01",
+  "effectiveFrom": "2023-06-01",
+  "effectiveTo": null,
+  "optIn": true,
+  "source": "Code civil du Québec, art. 1931 à 1933 (en vigueur depuis le 1er janvier 1994) et art. 1893 ; Charte de la langue française, art. 55 (texte à jour au 1er juin 2023)",
+  "revision": 1,
+  "reviewStatus": "TO_REVIEW_BY_LAWYER",
+  "reviewNote": "Corpus rédigé à partir du texte du Code civil du Québec lu dans le jeu de données ouvertes Données Québec (« Lois et règlements codifiés du Québec », instantané du 2026-10-21, lu le 2026-10-23) ; chaque règle porte son article, sa date d'entrée en vigueur et l'empreinte SHA-256 de l'article. Les articles 1931 à 1933 n'ont été modifiés depuis le Code (note historique : « 1991, c. 64 ») : ils sont en vigueur depuis le 1er janvier 1994. La règle de langue (art. 55 de la Charte) fixe la date de la version. Non encodé : l'urgence (art. 1931, 1932, 1933), qui n'est pas établie par le document ; le mode de remise de l'avis, que la loi ne prescrit pas ; le calcul des heures à partir d'une date de signature ; la personne qui visite. À faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration.",
+  "rules": [
+    {
+      "ruleId": "QC-VISIT-001",
+      "title": "Préavis de 24 heures de la visite",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)pr[ée]avis|\\bavis\\b",
+      "citation": "C.c.Q., art. 1931 (sauf urgence)",
+      "check": {
+        "type": "NUMERIC_MIN",
+        "quantity": "(?i)(?:pr[ée]avis|avis)\\s+(?:d['’]au\\s+moins\\s+|minimal\\s+de\\s+|de\\s+)?(\\d{1,3})\\s*(?:heures?|h)\\b",
+        "min": 24,
+        "unit": "heure(s)"
+      },
+      "onPass": "Le préavis donné est d'au moins 24 heures.",
+      "onFail": "Le préavis est inférieur à 24 heures. L'article 1931 exige au locateur un préavis de 24 heures, sauf urgence ; une visite annoncée plus tôt n'est pas conforme.",
+      "fixtures": {
+        "pass": [
+          "Préavis de 24 heures donné le 1er novembre 2026.",
+          "Préavis de 48 heures, remis par courriel."
+        ],
+        "fail": [
+          "Préavis de 2 heures avant la visite.",
+          "Préavis de 0 heure : la visite a lieu dès la remise de l'avis."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1931",
+          "language": "fr",
+          "inForceFrom": "1994-01-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "01276b0b87cae0dfe45b87e6b025bcbf9993c5e997d5bcb06960ed8dd7b28400",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1931",
+          "readAt": "2026-10-23",
+          "quote": "Le locateur est tenu, à moins d’une urgence, de donner au locataire un préavis de 24 heures de son intention de vérifier l’état du logement",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/CCQ-1991/FR/CCQ-1991_FR.xml",
+          "dateEev": "19990401"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-VISIT-002",
+      "title": "Intention de visite énoncée",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)visite|intention|motif",
+      "citation": "C.c.Q., art. 1931",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)(?:le\\s+locateur|la\\s+locatrice|je|nous)\\s+(?:entend|souhaite|d[ée]sire|pr[ée]voit|projette)\\s+[^.\\n_]{0,60}?(?:v[ée]rifier|effectuer|faire\\s+visiter|visiter)"
+      },
+      "onPass": "L'avis énonce l'intention du locateur : vérifier l'état du logement, effectuer des travaux ou faire visiter le logement.",
+      "onFail": "L'avis n'énonce pas l'intention du locateur. L'article 1931 vise la visite pour vérifier l'état du logement, y effectuer des travaux ou la faire visiter par un acquéreur éventuel.",
+      "fixtures": {
+        "pass": [
+          "Le locateur entend vérifier l'état du logement.",
+          "Le locateur souhaite faire visiter le logement à un acquéreur éventuel."
+        ],
+        "fail": [
+          "Le présent avis concerne le logement du troisième étage.",
+          "Motif : ____________________."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1931",
+          "language": "fr",
+          "inForceFrom": "1994-01-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "01276b0b87cae0dfe45b87e6b025bcbf9993c5e997d5bcb06960ed8dd7b28400",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1931",
+          "readAt": "2026-10-23",
+          "quote": "Le locateur est tenu, à moins d’une urgence, de donner au locataire un préavis de 24 heures de son intention de vérifier l’état du logement",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/CCQ-1991/FR/CCQ-1991_FR.xml",
+          "dateEev": "19990401"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-VISIT-003",
+      "title": "Heure de visite entre 9 h et 21 h",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)visit(?:e|er|es)\\b[^.\\n]{0,60}?(?:aura\\s+lieu|sera\\s+(?:effectu|faite|tenue)|se\\s+tiendra|pr[ée]vue?)",
+      "citation": "C.c.Q., art. 1932, al. 1",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)visit(?:e|er|es)\\b[^.\\n]{0,80}?(?<![\\d])(?<!avant )(?<!apr[èe]s )(?:0?[0-8]\\s*(?:h|heures)\\b|2[2-3]\\s*(?:h|heures)\\b|21\\s*h\\s*[3-5]\\d\\b)"
+      },
+      "onPass": "Aucune visite n'est fixée hors de la plage de 9 h à 21 h.",
+      "onFail": "La visite est fixée hors de la plage de 9 h à 21 h. L'article 1932 permet au locataire de refuser une visite avant 9 heures et après 21 heures.",
+      "fixtures": {
+        "pass": [
+          "La visite aura lieu le 2 novembre 2026 entre 10 h et 12 h.",
+          "La visite prévue à 20 h 30 est reportée au lendemain."
+        ],
+        "fail": [
+          "La visite aura lieu le 3 novembre 2026 à 7 h.",
+          "La visite aura lieu le 3 novembre 2026 à 22 heures."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1932",
+          "language": "fr",
+          "inForceFrom": "1994-01-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "3c3c7ba8063d9f40da965d3cbc380b368d67d860b537b2502ccf33f9cadef360",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1932",
+          "readAt": "2026-10-23",
+          "quote": "Le locataire peut, à moins d’une urgence, refuser que le logement soit visité par un locataire ou un acquéreur éventuel, si la visite doit avoir lieu avant 9 heures et après 21 heures",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/CCQ-1991/FR/CCQ-1991_FR.xml",
+          "dateEev": "19990401"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-VISIT-004",
+      "title": "Travaux entre 7 h et 19 h, sauf urgence",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)travaux[^.\\n]{0,80}?(?:auront\\s+lieu|seront\\s+(?:effectu|r[ée]alis)\\w*|se\\s+d[ée]rouleront|d[ée]buteront|commenceront)",
+      "citation": "C.c.Q., art. 1933, al. 2",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?![^.\\n]*urgen)travaux[^.\\n]{0,80}?(?<![\\d])(?<!avant )(?<!apr[èe]s )(?:0?[0-6]\\s*(?:h|heures)\\b|19\\s*h\\s*[1-5]\\d\\b|2[0-3]\\s*(?:h|heures)\\b)"
+      },
+      "onPass": "Aucuns travaux ne sont fixés hors de la plage de 7 h à 19 h sans urgence.",
+      "onFail": "Les travaux sont fixés hors de la plage de 7 h à 19 h, sans urgence. L'article 1933 permet au locataire de refuser l'accès avant 7 heures et après 19 heures, sauf travaux urgents.",
+      "fixtures": {
+        "pass": [
+          "Des travaux auront lieu le 4 novembre 2026 entre 8 h et 16 h, à moins d'urgence.",
+          "Des travaux auront lieu le 4 novembre 2026 à 6 h 30 : travaux urgents de fuite d'eau."
+        ],
+        "fail": [
+          "Des travaux auront lieu le 4 novembre 2026 à 6 h 30.",
+          "Les travaux se dérouleront de 18 h à 20 h."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1933",
+          "language": "fr",
+          "inForceFrom": "1994-01-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "aa2582f67fcbe33e70b5d66eb6d41427349fd721372d6a6099762e3b4566ec48",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1933",
+          "readAt": "2026-10-23",
+          "quote": "Il peut, néanmoins, en refuser l’accès avant 7 heures et après 19 heures, à moins que le locateur ne doive y effectuer des travaux urgents.",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/CCQ-1991/FR/CCQ-1991_FR.xml",
+          "dateEev": "19990401"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-VISIT-005",
+      "title": "Refus de visite non écarté",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)visite[^.\\n]{0,60}?(?:refus\\w*|peut\\s+refuser)|refus\\w*[^.\\n]{0,60}?visite",
+      "citation": "C.c.Q., art. 1932, al. 2 ; art. 1893 (clause sans effet)",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)renon\\w*[^.\\n]{0,100}?(?:refus\\w*|s['’]opposer)[^.\\n]{0,60}?(?:visite|acc[èe]s)|\\blocataire\\s+ne\\s+(?:peut|pourra)\\s+(?:jamais\\s+|pas\\s+)?refuser\\s+(?:aucune?\\s+|la\\s+)?(?:visite|acc[èe]s)"
+      },
+      "onPass": "Le droit du locataire de refuser une visite n'est pas écarté.",
+      "onFail": "Une clause écarte le droit du locataire de refuser une visite. L'article 1932 donne ce droit ; l'article 1893 rend sans effet la clause qui déroge à la section.",
+      "fixtures": {
+        "pass": [
+          "Le locataire peut refuser la visite si le locateur ne peut être présent.",
+          "Le locataire peut refuser la visite avant 9 heures et après 21 heures."
+        ],
+        "fail": [
+          "Le locataire renonce à son droit de refuser la visite.",
+          "Le locataire ne peut refuser la visite."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1932",
+          "language": "fr",
+          "inForceFrom": "1994-01-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "3c3c7ba8063d9f40da965d3cbc380b368d67d860b537b2502ccf33f9cadef360",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1932",
+          "readAt": "2026-10-23",
+          "quote": "Il peut, dans tous les cas, refuser la visite si le locateur ne peut être présent.",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/CCQ-1991/FR/CCQ-1991_FR.xml",
+          "dateEev": "19990401"
+        },
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1893",
+          "language": "fr",
+          "inForceFrom": "1994-01-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "264ecd4eb4e34ab8a4c4a73aa285f1c15f51b97743e4c47b3cfd53d68f4040dc",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1893",
+          "readAt": "2026-10-23",
+          "quote": "Est sans effet la clause d’un bail portant sur un logement, qui déroge aux dispositions de la présente section",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/CCQ-1991/FR/CCQ-1991_FR.xml",
+          "dateEev": "19990401"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-LANG-001",
+      "title": "Langue française — le document est en français, ou comporte une version française",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)langue|fran[çc]ais|anglais|english|french|traduction|version",
+      "citation": "Charte de la langue française, art. 55 ; C.c.Q., art. 1897 (pour le bail)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)\\blocat(?:eur|rice|aire)s?\\b|version\\s+fran[çc]aise[^.\\n]{0,160}?(?:remise|remis|transmise?)|(?:remise|remis|transmise?)[^.\\n]{0,160}?version\\s+fran[çc]aise"
+      },
+      "onPass": "Le document est rédigé en français, ou comporte une version française.",
+      "onFail": "Le document ne comporte pas de version française. L'article 55 de la Charte exige que le contrat d'adhésion et les documents qui s'y rattachent soient rédigés en français ; une autre langue ne lie les parties que si la version française a été remise à l'adhérent et si leur volonté expresse est exprimée. Constat informatif : vérification humaine requise.",
+      "fixtures": {
+        "pass": [
+          "Le locateur Monsieur Marc Tremblay et le locataire Madame Sophie Gagnon conviennent du présent document.",
+          "Version française remise au locataire le 1er septembre 2026 ; une version anglaise est jointe.",
+          "La locataire Sophie Gagnon reçoit une copie en français de l'avis."
+        ],
+        "fail": [
+          "The landlord, Mr. Marc Tremblay, and the tenant, Ms. Sophie Gagnon, agree to the following notice.",
+          "The monthly rent is 1,450 $, payable on the first day of each month."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "C-11",
+          "ref": "55",
+          "language": "fr",
+          "inForceFrom": "2023-06-01",
+          "consolidatedTo": "2026-04-02",
+          "contentHash": "02e976a4ed3e78f308ba03a55fdee04f0b03af10853afca7ed68e8ec1cddaa1e",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/C-11?code=se:55",
+          "readAt": "2026-10-23",
+          "quote": "Les contrats d’adhésion ainsi que les documents qui s’y rattachent sont rédigés en français.",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/C-11/FR/C-11_FR.xml",
+          "dateEev": "20230601"
+        },
+        {
+          "instrument": "C-11",
+          "ref": "55",
+          "language": "fr",
+          "inForceFrom": "2023-06-01",
+          "consolidatedTo": "2026-04-02",
+          "contentHash": "02e976a4ed3e78f308ba03a55fdee04f0b03af10853afca7ed68e8ec1cddaa1e",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/C-11?code=se:55",
+          "readAt": "2026-10-23",
+          "quote": "Les parties à un tel contrat peuvent être liées seulement par sa version dans une autre langue que le français si, après que sa version française a été remise à l’adhérent, telle est leur volonté expresse.",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/C-11/FR/C-11_FR.xml",
+          "dateEev": "20230601"
+        },
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1897",
+          "language": "fr",
+          "inForceFrom": "1994-01-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "dee591aef5291a138b6fda543f3552b6f58215cac7f6e629a57177a979fd42dd",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1897",
+          "readAt": "2026-10-23",
+          "quote": "Le bail, ainsi que le règlement de l’immeuble, doivent être rédigés en français.",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/CCQ-1991/FR/CCQ-1991_FR.xml",
+          "dateEev": "19990401"
+        }
+      ]
+    }
+  ]
+}
