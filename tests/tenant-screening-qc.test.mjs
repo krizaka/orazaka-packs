@@ -3,6 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
+import YAML from "yaml";
 
 const root = new URL("../tenant-screening-qc/", import.meta.url).pathname;
 const text = (p) => readFileSync(`${root}${p}`, "utf8");
@@ -40,6 +41,20 @@ test("a step input only reads inputs the Studio declares, the configuration it d
       }
     }
     earlier.add(s.id);
+  }
+});
+
+test("a step passes only inputs its capability declares, and reads only output fields the producer declares (the Studio service's fitness test)", () => {
+  const caps = Object.fromEntries(YAML.parse(pack).requires.capabilities.map((c) => [c.key, c]));
+  for (const s of steps) {
+    const declared = Object.keys(caps[s.featureKey].inputSchema.properties);
+    for (const key of Object.keys(s.inputs)) assert.ok(declared.includes(key), `${s.id} passes '${key}', which ${s.featureKey} does not declare`);
+    for (const value of Object.values(s.inputs)) {
+      for (const m of String(value).matchAll(/\{\{steps\.([A-Za-z0-9_]+)\.([A-Za-z0-9]+)/g)) {
+        const producer = steps.find((t) => t.out === m[1]);
+        assert.ok(Object.hasOwn(caps[producer.featureKey].outputSchema.properties, m[2]), `${s.id} reads ${m[1]}.${m[2]}, which ${producer.featureKey} does not declare`);
+      }
+    }
   }
 });
 

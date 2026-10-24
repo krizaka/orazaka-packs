@@ -44,7 +44,7 @@ requires:
       enabled: true
       inputSchema:
         type: object
-        properties: {"subject": {"type": "object", "description": "La personne : subjectId (opaque), lastName, firstName, birthDate facultative."}, "authenticityReport": {"type": "object", "description": "La sortie « signals » du Studio document-authenticity."}, "leaseReport": {"type": "object", "description": "Le rapport du Studio compliance-check, facultatif."}, "cutoffs": {"type": "object", "description": "Les règles d'arrêt du gestionnaire, par étape : remplacent celles par défaut."}, "creditCap": {"type": "integer", "minimum": 0, "description": "Le plafond de crédits de l'exécution ; 0 = celui du moteur seul."}, "applicantPaysFees": {"type": "string", "description": "Réglage de l'installation (faux par défaut) : les frais sont payés par le candidat."}}
+        properties: {"subject": {"type": "object", "description": "La personne : subjectId (opaque), lastName, firstName, birthDate facultative."}, "authenticityReport": {"type": "object", "description": "La sortie « signals » du Studio document-authenticity."}, "leaseReport": {"type": ["object", "string"], "description": "Le rapport du Studio compliance-check, facultatif."}, "cutoffs": {"type": ["object", "string"], "description": "Les règles d'arrêt du gestionnaire, par étape : remplacent celles par défaut."}, "creditCap": {"type": ["integer", "string"], "description": "Le plafond de crédits de l'exécution ; 0 = celui du moteur seul."}, "applicantPaysFees": {"type": "string", "description": "Réglage de l'installation (faux par défaut) : les frais sont payés par le candidat."}}
         required: ["subject", "authenticityReport"]
       outputSchema:
         type: object
@@ -70,7 +70,7 @@ requires:
       enabled: true
       inputSchema:
         type: object
-        properties: {"plan": {"type": "string"}, "authenticityReport": {"type": "object"}, "leaseReport": {"type": "object"}, "consentedPurposes": {"type": "array", "items": {"type": "string"}}}
+        properties: {"plan": {"type": "string"}, "authenticityReport": {"type": "object"}, "leaseReport": {"type": ["object", "string"]}, "consentedPurposes": {"type": "array", "items": {"type": "string"}}}
         required: ["plan", "authenticityReport"]
       outputSchema:
         type: object
@@ -110,7 +110,7 @@ requires:
       enabled: true
       inputSchema:
         type: object
-        properties: {"plan": {"type": "string"}, "stage": {"type": "string", "enum": ["documents", "courts", "credit"]}, "consent": {"type": "string"}, "result": {"type": "string"}, "spentCredits": {"type": "integer", "minimum": 0}}
+        properties: {"plan": {"type": "string"}, "stage": {"type": "string", "enum": ["documents", "courts", "credit"]}, "consent": {"type": "string"}, "result": {"type": "string"}, "spentCredits": {"type": ["integer", "string"]}}
         required: ["plan", "stage"]
       outputSchema:
         type: object
@@ -122,7 +122,7 @@ requires:
       enabled: true
       inputSchema:
         type: object
-        properties: {"plan": {"type": "string"}}
+        properties: {"plan": {"type": "string", "description": "Le plan gelé de l'exécution."}, "documentsResult": {"type": "string", "description": "Le résultat JSON de l'étape documents, vide si elle n'a pas tourné."}, "documentsGate": {"type": "string", "description": "La décision JSON après l'étape documents, vide si elle n'a pas eu lieu."}, "documentsConsent": {"type": "string", "description": "Le consentement pour l'étape documents, vide si non vérifié."}, "courtsResult": {"type": "string", "description": "Le résultat JSON de l'étape courts, vide si elle n'a pas tourné."}, "courtsGate": {"type": "string", "description": "La décision JSON après l'étape courts, vide si elle n'a pas eu lieu."}, "courtsConsent": {"type": "string", "description": "Le consentement pour l'étape courts, vide si non vérifié."}, "creditResult": {"type": "string", "description": "Le résultat JSON de l'étape credit, vide si elle n'a pas tourné."}, "creditGate": {"type": "string", "description": "La décision JSON après l'étape credit, vide si elle n'a pas eu lieu."}, "creditConsent": {"type": "string", "description": "Le consentement pour l'étape credit, vide si non vérifié."}}
         required: ["plan"]
       outputSchema:
         type: object
