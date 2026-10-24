@@ -9,8 +9,7 @@
     "QC-LEASE-006": "NOT_APPLICABLE",
     "QC-LEASE-007": "NOT_APPLICABLE",
     "QC-LEASE-008": "FAIL",
-    "QC-LEASE-009": "NOT_APPLICABLE",
-    "QC-LANG-001": "FAIL"
+    "QC-LEASE-009": "NOT_APPLICABLE"
   },
   "judgments": [
     "QC-LEASE-010",

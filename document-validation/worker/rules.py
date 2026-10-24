@@ -65,12 +65,17 @@ def resolve(ruleset_id: str, as_of: str) -> dict:
     not an invitation to use the closest one.
     """
     day = date.fromisoformat(as_of)
+    covering = []
     for candidate in _load_all(ruleset_id):
         start = date.fromisoformat(candidate["effectiveFrom"])
         end = candidate.get("effectiveTo")
         if start <= day and (end is None or day <= date.fromisoformat(end)):
-            return candidate
-    raise RulesetNotFound(f"ruleset '{ruleset_id}' has no version in force on {as_of}")
+            covering.append(candidate)
+    if not covering:
+        raise RulesetNotFound(f"ruleset '{ruleset_id}' has no version in force on {as_of}")
+    # A version is never edited to be superseded: a later version begins on its own date, and where an earlier
+    # version has no end date, the one that began last is the one in force (orazaka-packs#128).
+    return max(covering, key=lambda candidate: candidate["effectiveFrom"])
 
 
 def jurisdictions() -> dict:

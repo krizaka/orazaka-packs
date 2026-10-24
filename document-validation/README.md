@@ -114,7 +114,7 @@ Not encoded: urgency (the document does not establish it), the mode of delivery 
 
 ## Language — `QC-LANG-001`, shared by the three Québec document kinds (orazaka-packs#126)
 
-The same rule is in the lease (revision 4 of `qc-residential-lease`), the visit notice and the état des lieux. It is a `REQUIRED_PATTERN`: a French contractual passage (« le locateur », « la locataire »…), or a sentence stating that a French version was handed over (« version française remise »), passes it. An English-only document fails it: the Charter's art. 55 requires French for an adhesion contract and the documents attached to it, and another language binds only after the French version was given to the adherent and the parties' express will is stated (art. 55, al. 2; C.c.Q. art. 1897 for the lease). The rule does not verify the express will: that stays with a human. A bilingual document passes.
+The same rule is in the lease (`qc-residential-lease`, version 2026-10-24: a copy of 2024-02-21 plus this rule; the 2024 version is not edited, and a check dated before 2026-10-24 is judged without it), the visit notice and the état des lieux. It is a `REQUIRED_PATTERN`: a French contractual passage (« le locateur », « la locataire »…), or a sentence stating that a French version was handed over (« version française remise »), passes it. An English-only document fails it: the Charter's art. 55 requires French for an adhesion contract and the documents attached to it, and another language binds only after the French version was given to the adherent and the parties' express will is stated (art. 55, al. 2; C.c.Q. art. 1897 for the lease). The rule does not verify the express will: that stays with a human. A bilingual document passes.
 
 ## Adding a jurisdiction
 

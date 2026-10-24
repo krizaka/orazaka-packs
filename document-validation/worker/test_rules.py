@@ -389,10 +389,9 @@ def test_qc_waiver_of_the_rent_increase_regime_is_flagged_and_the_lawful_clauses
 
 def test_qc_revision_records_the_correction_and_the_law_is_unchanged():
     ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
-    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 4  # 4: the language rule (orazaka-packs#126)
+    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 3
     assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
-    assert "langue" in ruleset["revisionNote"].lower() and "dépôt" in ruleset["revisionNote"].lower()
-    assert "augmentation" in ruleset["revisionNote"].lower()
+    assert "dépôt" in ruleset["revisionNote"].lower() and "augmentation" in ruleset["revisionNote"].lower()
     assert "pénalité" in ruleset["revisionNote"].lower() and "règlement" in ruleset["revisionNote"].lower()
 
 
@@ -715,6 +714,12 @@ def test_a_judgment_fail_keeps_its_verdict_but_never_an_invented_quote():
 FIXTURES_ROOT = Path(__file__).resolve().parent / "fixtures"
 
 
+def _verdicts_at(ruleset_id, name, as_of):
+    text = (FIXTURES_ROOT / ruleset_id / name).read_text(encoding="utf-8")
+    findings, _ = rules.screen(rules.resolve(ruleset_id, as_of), text)
+    return {f["ruleId"]: f["verdict"] for f in findings}
+
+
 def _verdicts(ruleset_id, name):
     text = (FIXTURES_ROOT / ruleset_id / name).read_text(encoding="utf-8")
     findings, _ = rules.screen(rules.resolve(ruleset_id, "2026-10-21"), text)
@@ -773,16 +778,25 @@ def test_the_visit_notice_and_the_condition_form_are_opt_in_quebec_rulesets_in_f
 
 def test_the_language_rule_is_one_rule_shared_by_the_three_document_kinds():
     shared = [
-        next(r for r in rules.resolve(i, "2026-10-22")["rules"] if r["ruleId"] == "QC-LANG-001")
+        next(r for r in rules.resolve(i, "2026-10-24")["rules"] if r["ruleId"] == "QC-LANG-001")
         for i in ("qc-residential-lease", "qc-visit-notice", "qc-premises-condition")
     ]
     assert shared[0] == shared[1] == shared[2]
     assert shared[0]["method"] == "DETERMINISTIC" and [b["ref"] for b in shared[0]["law"]] == ["55", "55", "1897"]
 
 
+def test_a_check_dated_before_the_language_version_has_no_language_rule_and_one_dated_after_has_it():
+    # The lease 2024-02-21 is not edited: a check dated before 2026-10-24 is judged by it, without the language rule.
+    before = rules.resolve("qc-residential-lease", "2026-10-23")
+    assert before["version"] == "2024-02-21" and "QC-LANG-001" not in [r["ruleId"] for r in before["rules"]]
+    after = rules.resolve("qc-residential-lease", "2026-10-24")
+    assert after["version"] == "2026-10-24" and "QC-LANG-001" in [r["ruleId"] for r in after["rules"]]
+
+
 def test_an_english_only_document_fails_the_language_rule_and_a_bilingual_one_passes_it():
-    assert _verdicts("qc-residential-lease", "en-not-read.txt")["QC-LANG-001"] == rules.FAIL
-    bilingual = _verdicts("qc-residential-lease", "bilingual-compliant.txt")
+    # Judged on a date the language version is in force (the goldens pin both dates).
+    assert _verdicts_at("qc-residential-lease", "en-not-read.txt", "2026-10-24")["QC-LANG-001"] == rules.FAIL
+    bilingual = _verdicts_at("qc-residential-lease", "bilingual-compliant.txt", "2026-10-24")
     assert bilingual["QC-LANG-001"] == rules.PASS
     assert rules.FAIL not in bilingual.values()
 
@@ -809,10 +823,12 @@ def test_a_condition_form_is_judged_on_what_no_clause_may_do():
     assert {k for k, v in defective.items() if v == rules.FAIL} == {"QC-COND-001", "QC-COND-002", "QC-COND-003", "QC-COND-004"}
 
 
-def test_every_rule_of_the_new_kinds_and_of_the_lease_declares_a_subject_that_compiles():
+def test_every_rule_of_the_new_kinds_and_the_language_rule_declares_a_subject_that_compiles():
     # orazaka-packs#127 asks it of every rule: what the law is about, whatever the check.
-    for ruleset_id in ("qc-visit-notice", "qc-premises-condition", "qc-residential-lease"):
-        for rule in rules.resolve(ruleset_id, "2026-10-22")["rules"]:
+    for ruleset_id, as_of in (("qc-visit-notice", "2026-10-22"), ("qc-premises-condition", "2026-10-22"), ("qc-residential-lease", "2026-10-24")):
+        for rule in rules.resolve(ruleset_id, as_of)["rules"]:
+            if ruleset_id == "qc-residential-lease" and not rule["ruleId"].startswith("QC-LANG"):
+                continue  # the lease's older REQUIRED rules are not edited here
             assert rule.get("subject"), f"{ruleset_id} {rule['ruleId']} declares no subject"
             re.compile(rule["subject"])
 
@@ -827,8 +843,8 @@ def test_a_blank_form_never_passes_a_rule_it_does_not_address():
 
 
 def test_every_rule_of_the_new_kinds_and_the_language_rule_cites_a_dated_hashed_article_it_names():
-    for ruleset_id in ("qc-visit-notice", "qc-premises-condition", "qc-residential-lease"):
-        ruleset = rules.resolve(ruleset_id, "2026-10-22")
+    for ruleset_id, as_of in (("qc-visit-notice", "2026-10-22"), ("qc-premises-condition", "2026-10-22"), ("qc-residential-lease", "2026-10-24")):
+        ruleset = rules.resolve(ruleset_id, as_of)
         for rule in ruleset["rules"]:
             if not rule["ruleId"].startswith(("QC-VISIT", "QC-COND", "QC-LANG")):
                 continue

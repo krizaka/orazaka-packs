@@ -1,0 +1,322 @@
+{
+  "rulesetId": "qc-residential-lease",
+  "label": "Bail de logement — Québec",
+  "jurisdiction": "QC",
+  "version": "2026-10-24",
+  "effectiveFrom": "2026-10-24",
+  "effectiveTo": null,
+  "source": "Code civil du Québec, art. 1851 et suiv. (bail de logement : art. 1892 à 1978), Règlement sur les formulaires de bail obligatoires et sur les mentions de l'avis au nouveau locataire (RLRQ c. T-15.01, r. 3), Tribunal administratif du logement. Version 2026-10-24 : copie de la version 2024-02-21 (révision 3) plus la règle de langue QC-LANG-001 (Charte de la langue française, art. 55 ; C.c.Q., art. 1897), seul changement.",
+  "revision": 4,
+  "reviewStatus": "TO_REVIEW_BY_LAWYER",
+  "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration.",
+  "rules": [
+    {
+      "ruleId": "QC-LEASE-001",
+      "title": "Identification du locateur",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1895 ; Règlement sur les formulaires de bail obligatoires, section A",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)locat(?:eur|rice)[^.\\n]{0,140}?(?:M\\.|Mme|Monsieur|Madame|inc\\.|soci[ée]t[ée]|domicili\\w+|demeurant|NEQ)"
+      },
+      "onPass": "Le locateur est identifié au bail.",
+      "onFail": "Le locateur n'est pas identifié. Le formulaire obligatoire du bail de logement (section A) exige son nom et son adresse.",
+      "fixtures": {
+        "pass": "Entre le locateur Monsieur Marc Tremblay, domicilié à Montréal.",
+        "fail": "Le présent bail porte sur un logement de quatre pièces et demie."
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-002",
+      "title": "Identification du locataire",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1895 ; Règlement sur les formulaires de bail obligatoires, section A",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)locataire[^.\\n]{0,140}?(?:M\\.|Mme|Monsieur|Madame|domicili\\w+|demeurant)"
+      },
+      "onPass": "Le locataire est identifié au bail.",
+      "onFail": "Le locataire n'est pas identifié. Le formulaire obligatoire (section A) exige son nom.",
+      "fixtures": {
+        "pass": "et la locataire Madame Sophie Gagnon.",
+        "fail": "Le présent bail porte sur un logement de quatre pièces et demie."
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-003",
+      "title": "Montant du loyer",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1855 et 1903 ; Règlement sur les formulaires de bail obligatoires, section D",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)loyer[^.\\n]{0,80}?\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?)"
+      },
+      "onPass": "Le loyer est chiffré au bail.",
+      "onFail": "Le loyer n'est pas chiffré en dollars. La section D du formulaire obligatoire exige le loyer et ses modalités de paiement.",
+      "fixtures": {
+        "pass": "Le loyer mensuel est de 1 450 $, payable le premier jour du mois.",
+        "fail": "Le loyer sera convenu plus tard entre les parties."
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-004",
+      "title": "Dépôt de garantie interdit — seul le premier mois peut être exigé d'avance",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)d[ée]p[ôo]ts?\\b|cautionnement|\\bcaution\\b|somme\\s+d['’]argent|frais\\s+de\\s+(?:dommages|cl[ée]s?)|(?:en|à\\s+titre\\s+de)\\s+garantie|d['’]avance|premier\\s+mois|mois\\s+de\\s+loyer",
+      "citation": "C.c.Q., art. 1904, al. 1",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?:(?<!aucun )(?<!aucune )(?<!sans )(?<!pas de )(?<!pas d['’])(?<!ni )(?<!nul )(?<!exiger de )(?<!exiger d['’])(?<!exige de )(?<!exige d['’])(?<!exigé de )(?<!exigé d['’])(?:somme\\s+d['’]argent\\s+autre\\s+que\\s+le\\s+loyer|d[ée]p[ôo]ts?\\s+(?:de\\s+|en\\s+|pour\\s+)?(?:garantie|s[ée]curit[ée]|dommages?|cl[ée]s?)|d[ée]p[ôo]ts?\\s+(?:[ée]quivalant|[ée]gal|correspondant|d['’]un\\s+mois|de\\s+\\d)|caution(?:nement)?\\s+(?:en\\s+argent|de\\s+\\d)|frais\\s+de\\s+(?:dommages|cl[ée]s?)\\s+remboursables?|(?:en|à\\s+titre\\s+de)\\s+(?:garantie|d[ée]p[ôo]t|caution)(?=[^.\\n]{0,60}?\\d)|mois\\s+de\\s+loyer[^.\\n]{0,40}?(?:en|à\\s+titre\\s+de)\\s+(?:garantie|d[ée]p[ôo]t|caution))(?!\\s*:\\s*(?:n[ée]ant|aucun|sans\\s+objet|0\\s*\\$))(?![^.\\n]{0,30}?(?:n['’]est|ne\\s+sera|ne\\s+peut)\\s+(?:pas\\s+|jamais\\s+)?(?:exig|requis|demand|per[çc]u))(?:[^.\\n]{0,80}?\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?|%))?|(?:deux|trois|quatre|[2-9])\\s+mois\\s+de\\s+loyer\\s+(?:payables?\\s+)?(?:d['’]avance|à\\s+la\\s+signature))"
+      },
+      "onPass": "Aucune somme autre que le loyer n'est exigée.",
+      "onFail": "Le bail exige une somme autre que le loyer, sous forme de dépôt ou autrement. L'article 1904 ne permet au locateur d'exiger d'avance que le premier terme de loyer.",
+      "fixtures": {
+        "pass": [
+          "Le premier mois de loyer, 1 450 $, est payable à la signature.",
+          "Aucun dépôt de garantie n'est exigé.",
+          "Le locateur n'exige aucun dépôt de sécurité.",
+          "Dépôt de garantie : néant.",
+          "Le locateur ne peut exiger de dépôt de garantie (art. 1904).",
+          "Le loyer est payé par dépôt direct dans le compte du locateur.",
+          "Le locataire verse le loyer du premier mois à la signature.",
+          "Le locateur détient une garantie légale de bon état du logement.",
+          "Aucune somme d'argent autre que le loyer n'est exigée."
+        ],
+        "fail": [
+          "La locataire verse un dépôt de sécurité de 1 450 $ à la signature.",
+          "Un dépôt de garantie équivalant à un mois de loyer est exigé à la signature.",
+          "Dépôt de garantie : un mois de loyer.",
+          "Un dépôt de 10 % du loyer annuel est requis à la signature.",
+          "Le locataire verse, à titre de garantie, la somme de 500 $ à la signature.",
+          "Le locataire remet un mois de loyer additionnel en garantie.",
+          "Un cautionnement en argent de 800 $ est exigé.",
+          "Des frais de clés remboursables de 50 $ sont exigés.",
+          "Le locataire paie deux mois de loyer d'avance à la signature.",
+          "Dépôt pour dommages : 300 $.",
+          "Le locataire doit verser une somme d'argent autre que le loyer : 100 $."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-005",
+      "title": "Chèques postdatés interdits",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)postdat[ée]s?",
+      "citation": "C.c.Q., art. 1904, al. 2",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?:ch[èe]ques?|effets?)\\s+postdat[ée]s?"
+      },
+      "onPass": "Aucune remise de chèques postdatés n'est exigée.",
+      "onFail": "Le bail exige des chèques postdatés. L'article 1904 interdit au locateur d'exiger la remise de chèques ou d'autres effets postdatés.",
+      "fixtures": {
+        "pass": "Le loyer est payé par virement Interac le premier du mois.",
+        "fail": "Le locataire remet douze chèques postdatés à la signature."
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-006",
+      "title": "Refus des enfants — sans effet",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)enfants?\\b",
+      "citation": "C.c.Q., art. 1899",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?:interdi\\w*|pas\\s+d['’]|aucun\\w*|ne\\s+(?:peut|doit)\\s+pas[^.\\n]{0,30}?(?:avoir|loger|h[ée]berger))[^.\\n]{0,40}?enfants?"
+      },
+      "onPass": "Aucune clause n'écarte les enfants.",
+      "onFail": "Une clause écarte les enfants. L'article 1899 interdit au locateur de refuser un locataire, ou de maintenir une clause, en raison de la présence d'enfants.",
+      "fixtures": {
+        "pass": "Le logement convient à une famille avec enfants.",
+        "fail": "Il est interdit au locataire d'avoir des enfants dans le logement."
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-007",
+      "title": "Renonciation au droit au maintien dans les lieux — sans effet",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)maintien\\s+dans\\s+les\\s+lieux|reconduc\\w*|reconduit\\w*|renouvel\\w*",
+      "citation": "C.c.Q., art. 1936 et 1893",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)renon\\w+[^.\\n]{0,80}?(?:maintien\\s+dans\\s+les\\s+lieux|renouvel\\w+|reconduction)"
+      },
+      "onPass": "Aucune renonciation au maintien dans les lieux.",
+      "onFail": "Le locataire y renonce à son droit au maintien dans les lieux. L'article 1936 lui garantit ce droit et l'article 1893 rend sans effet toute clause qui y déroge.",
+      "fixtures": {
+        "pass": "Le bail se reconduit de plein droit aux mêmes conditions.",
+        "fail": "Le locataire renonce à la reconduction du bail à son échéance."
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-008",
+      "title": "Avis du loyer le plus bas des douze derniers mois",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1896 ; Règlement sur les formulaires de bail obligatoires, section G",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)loyer\\s+le\\s+plus\\s+bas"
+      },
+      "onPass": "L'avis du loyer le plus bas payé au cours des douze derniers mois est donné.",
+      "onFail": "Le bail ne mentionne pas le loyer le plus bas payé au cours des douze mois précédant le début du bail (section G). L'article 1896 oblige le locateur à le remettre au nouveau locataire.",
+      "fixtures": {
+        "pass": "Loyer le plus bas payé au cours des douze derniers mois : 1 390 $.",
+        "fail": "Le loyer mensuel est de 1 450 $."
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-009",
+      "title": "Renonciation anticipée aux règles de l'augmentation de loyer — sans effet",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)augment\\w*|hausse|modifi\\w*\\s+(?:du\\s+|le\\s+)?loyer|loyer\\s+pourra\\s+(?:être\\s+)?modifi\\w*|refuser",
+      "citation": "C.c.Q., art. 1942, 1943 et 1945 ; art. 1893",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?:renon\\w+[^.\\n]{0,80}?(?:refuser|contester)[^.\\n]{0,60}?(?:augmentation|hausse|modification)|(?:accept\\w*|consent\\w*)\\s+d['’]avance[^.\\n]{0,60}?(?:augmentation|hausse|modification)|(?:augmentation|hausse)[^.\\n]{0,40}?loyer[^.\\n]{0,60}?sans\\s+(?:aucun\\s+)?(?:pr[ée])?avis|loyer[^.\\n]{0,40}?(?:augment|major)\\w*[^.\\n]{0,60}?sans\\s+(?:aucun\\s+)?(?:pr[ée])?avis)"
+      },
+      "onPass": "Aucune clause n'écarte d'avance l'avis, ni le droit du locataire de refuser une modification du loyer.",
+      "onFail": "Une clause écarte d'avance l'avis de modification du loyer ou le droit du locataire de le refuser. Le locateur qui veut augmenter le loyer lors de la reconduction doit en aviser le locataire (art. 1942 et 1943), qui peut refuser dans le mois de la réception (art. 1945) ; l'article 1893 rend sans effet la clause qui déroge à ces droits.",
+      "fixtures": {
+        "pass": [
+          "Le loyer pourra être modifié lors de la reconduction, sur avis donné au locataire dans les délais prévus par la loi.",
+          "Le loyer de 1 450 $ est payable le premier jour du mois.",
+          "Le locataire peut refuser toute augmentation de loyer dans le mois de la réception de l'avis."
+        ],
+        "fail": [
+          "Le locataire renonce à son droit de refuser toute augmentation de loyer.",
+          "Le locataire accepte d'avance toute hausse du loyer décidée par le locateur.",
+          "Le loyer sera augmenté de 5 % chaque année sans avis."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-010",
+      "title": "Peines et frais de retard — appréciation contextuelle",
+      "severity": "ADVISORY",
+      "method": "JUDGMENT",
+      "subject": "(?i)p[ée]nalit[ée]s?|frais\\s+de\\s+retard|int[ée]r[êe]ts?\\s+de\\s+retard",
+      "citation": "C.c.Q., art. 1901",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1901",
+      "question": "Le libellé prévoit-il une peine ou des frais de retard qui dépassent explicitement le préjudice réellement subi par le locateur, ou qui imposent au locataire une obligation déraisonnable compte tenu des circonstances ? La seule mention d'un montant fixe ne suffit pas à trancher : ne présume pas le préjudice réel et signale toute incertitude pour vérification humaine.",
+      "onPass": "Aucune formulation explicitement disproportionnée n'est relevée. Le préjudice réel et l'application de la clause ne sont pas vérifiés.",
+      "onFail": "Le libellé de la peine ou des frais de retard paraît dépasser le préjudice décrit ou imposer une obligation déraisonnable. Vérification humaine requise ; ce constat informatif n'est pas un avis juridique.",
+      "fixtures": {
+        "pass": [
+          "En cas de retard, seuls les frais réels directement engagés seront réclamés.",
+          "Les intérêts applicables sont ceux prévus par la loi."
+        ],
+        "fail": [
+          "Tout retard entraîne des frais fixes de 100 $, même si le préjudice subi est inférieur ou nul.",
+          "Une pénalité de 250 $ est due automatiquement pour tout jour de retard, sans égard au préjudice réel."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-011",
+      "title": "Règlement de l'immeuble — remise avant la conclusion du bail",
+      "severity": "ADVISORY",
+      "method": "JUDGMENT",
+      "subject": "(?i)r[èe]glement",
+      "citation": "C.c.Q., art. 1894",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1894",
+      "question": "Si un règlement de l'immeuble portant sur la jouissance, l'usage ou l'entretien des logements ou des lieux communs s'applique, le document indique-t-il qu'un exemplaire a été remis au locataire avant la conclusion du bail et qu'il fait partie du bail ? Ne présume pas qu'un règlement existe ou a été matériellement remis. Si le document ne permet pas de le vérifier, signale cette limite plutôt que de conclure.",
+      "onPass": "Le texte indique la remise préalable du règlement applicable et son intégration au bail ; la remise matérielle n'est pas vérifiée.",
+      "onFail": "Le texte prévoit une remise après la conclusion du bail ou ne permet pas de vérifier la remise préalable d'un règlement applicable. Vérification humaine requise ; ce constat informatif n'est pas un avis juridique.",
+      "fixtures": {
+        "pass": [
+          "Le règlement de l'immeuble ci-joint, remis au locataire avant la conclusion du bail, en fait partie. Il porte sur la jouissance, l'usage et l'entretien des logements et des lieux d'usage commun."
+        ],
+        "fail": [
+          "Le règlement de l'immeuble sera remis au locataire après la signature du bail."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-LANG-001",
+      "title": "Langue française — le document est en français, ou comporte une version française",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)langue|fran[çc]ais|anglais|english|french|traduction|version",
+      "citation": "Charte de la langue française, art. 55 ; C.c.Q., art. 1897 (pour le bail)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)\\blocat(?:eur|rice|aire)s?\\b|version\\s+fran[çc]aise[^.\\n]{0,160}?(?:remise|remis|transmise?)|(?:remise|remis|transmise?)[^.\\n]{0,160}?version\\s+fran[çc]aise"
+      },
+      "onPass": "Le document est rédigé en français, ou comporte une version française.",
+      "onFail": "Le document ne comporte pas de version française. L'article 55 de la Charte exige que le contrat d'adhésion et les documents qui s'y rattachent soient rédigés en français ; une autre langue ne lie les parties que si la version française a été remise à l'adhérent et si leur volonté expresse est exprimée. Constat informatif : vérification humaine requise.",
+      "fixtures": {
+        "pass": [
+          "Le locateur Monsieur Marc Tremblay et le locataire Madame Sophie Gagnon conviennent du présent document.",
+          "Version française remise au locataire le 1er septembre 2026 ; une version anglaise est jointe.",
+          "La locataire Sophie Gagnon reçoit une copie en français de l'avis."
+        ],
+        "fail": [
+          "The landlord, Mr. Marc Tremblay, and the tenant, Ms. Sophie Gagnon, agree to the following notice.",
+          "The monthly rent is 1,450 $, payable on the first day of each month."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "C-11",
+          "ref": "55",
+          "language": "fr",
+          "inForceFrom": "2023-06-01",
+          "consolidatedTo": "2026-04-02",
+          "contentHash": "02e976a4ed3e78f308ba03a55fdee04f0b03af10853afca7ed68e8ec1cddaa1e",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/C-11?code=se:55",
+          "readAt": "2026-10-23",
+          "quote": "Les contrats d’adhésion ainsi que les documents qui s’y rattachent sont rédigés en français.",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/C-11/FR/C-11_FR.xml",
+          "dateEev": "20230601"
+        },
+        {
+          "instrument": "C-11",
+          "ref": "55",
+          "language": "fr",
+          "inForceFrom": "2023-06-01",
+          "consolidatedTo": "2026-04-02",
+          "contentHash": "02e976a4ed3e78f308ba03a55fdee04f0b03af10853afca7ed68e8ec1cddaa1e",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/C-11?code=se:55",
+          "readAt": "2026-10-23",
+          "quote": "Les parties à un tel contrat peuvent être liées seulement par sa version dans une autre langue que le français si, après que sa version française a été remise à l’adhérent, telle est leur volonté expresse.",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/C-11/FR/C-11_FR.xml",
+          "dateEev": "20230601"
+        },
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1897",
+          "language": "fr",
+          "inForceFrom": "1994-01-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "dee591aef5291a138b6fda543f3552b6f58215cac7f6e629a57177a979fd42dd",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1897",
+          "readAt": "2026-10-23",
+          "quote": "Le bail, ainsi que le règlement de l’immeuble, doivent être rédigés en français.",
+          "source": "Données Québec, Lois et règlements codifiés du Québec, snapshot 20261021_lois.zip (SHA-256 550c1b6066db484db84037d982ec1b1c27161681a0f4dc7979901eb0301974fe), Statutes/CCQ-1991/FR/CCQ-1991_FR.xml",
+          "dateEev": "19990401"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-LEASE-020",
+      "title": "Clause abusive",
+      "severity": "ADVISORY",
+      "method": "JUDGMENT",
+      "subject": "(?i)\\bclause\\b|\\bcondition\\b",
+      "citation": "C.c.Q., art. 1901",
+      "question": "Ce bail contient-il une clause abusive, c'est-à-dire excessivement et déraisonnablement préjudiciable au locataire (par exemple une pénalité disproportionnée) ?",
+      "onPass": "Aucune clause manifestement abusive relevée.",
+      "onFail": "Une clause paraît abusive ; l'article 1901 permet au Tribunal administratif du logement de l'annuler ou d'en réduire l'obligation."
+    }
+  ],
+  "revisionNote": "Révision 4, portée par la version 2026-10-24 (notre lecture corrigée, la loi n'a pas changé) : QC-LANG-001 ajoute la règle de langue : le bail et les documents qui s'y rattachent sont rédigés en français (Charte art. 55 ; C.c.Q. art. 1897). Un document bilingue, ou dont la version française a été remise à l'adhérent, satisfait la règle ; la volonté expresse reste à vérifier par un humain ; une version anglaise seule n'est pas tenue pour conforme. Les versions antérieures (2024-02-21, révision 3) ne contiennent pas cette règle et restent appliquées aux dates qu'elles couvrent. Révision 3 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-010 ajoute une question d'appréciation des pénalités et frais de retard au regard du préjudice réellement subi (art. 1901) ; QC-LEASE-011 vérifie informativement la mention de remise préalable du règlement applicable et de son intégration au bail (art. 1894), sans prétendre vérifier sa remise matérielle. QC-LEASE-004 précise que l'article 1904 couvre toute somme autre que le loyer, sous forme de dépôt ou autrement, tout en permettant d'exiger d'avance le premier terme de loyer. Révision 2 avait ajouté QC-LEASE-009 sur la renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat. Chaque nouvel élément reste à faire relire par un avocat ou une avocate membre du Barreau du Québec."
+}
