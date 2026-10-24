@@ -750,6 +750,17 @@ def test_the_contract_ruleset_leaves_the_termination_right_to_a_lawyer_and_encod
     assert not any("2125" in (r.get("citation") or "") for r in ruleset["rules"])
 
 
+def test_a_ruleset_id_is_a_name_never_a_path():
+    """A requested ruleset id that is a path is refused before any file is read (Sonar pythonsecurity:S2083)."""
+    for bad in ["../rulesets", "../../etc", "qc-residential-lease/../x", "/etc", "QC-Lease", "", "qc lease"]:
+        try:
+            rules.resolve(bad, "2026-10-24")
+        except rules.RulesetNotFound:
+            continue
+        raise AssertionError(f"{bad!r} was not refused")
+
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):
