@@ -1,0 +1,38 @@
+{
+  "reason": "SUBJECT_MISSING",
+  "why": "A FORBIDDEN_PATTERN rule with no subject would PASS a document that never addresses visiting hours.",
+  "plantedRuleId": "QC-PLANT-SUBJECT",
+  "rules": [
+    {
+      "ruleId": "QC-PLANT-SUBJECT",
+      "title": "Visite entre 9 h et 21 h",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1932",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1932",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)\\b(?:[0-8]|2[23])\\s*h(?:eures?)?\\b"
+      },
+      "onPass": "La visite est prévue entre 9 heures et 21 heures.",
+      "onFail": "L'avis fixe une visite avant 9 heures ou après 21 heures ; le locataire peut la refuser, à moins d'une urgence (art. 1932).",
+      "fixtures": {
+        "pass": [
+          "La visite aura lieu le 22 octobre à 10 h."
+        ],
+        "fail": [
+          "La visite aura lieu le 22 octobre à 7 h."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1932",
+          "language": "fr",
+          "contentHash": "3c3c7ba8063d9f40da965d3cbc380b368d67d860b537b2502ccf33f9cadef360",
+          "quote": "si la visite doit avoir lieu avant 9 heures et après 21 heures"
+        }
+      ]
+    }
+  ]
+}

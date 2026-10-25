@@ -1,0 +1,26 @@
+{
+  "reason": "SCHEMA_INVALID",
+  "why": "A JUDGMENT proposal is always ADVISORY.",
+  "plantedRuleId": "QC-PLANT-SCHEMA",
+  "rules": [
+    {
+      "ruleId": "QC-PLANT-SCHEMA",
+      "title": "Travaux entre 7 h et 19 h",
+      "severity": "BLOCKING",
+      "method": "JUDGMENT",
+      "subject": "(?i)travaux",
+      "question": "L'avis annonce-t-il des travaux non urgents avant 7 heures ou après 19 heures ? Citez le passage de l'avis.",
+      "citation": "C.c.Q., art. 1933",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1933",
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1933",
+          "language": "fr",
+          "contentHash": "aa2582f67fcbe33e70b5d66eb6d41427349fd721372d6a6099762e3b4566ec48",
+          "quote": "en refuser l’accès avant 7 heures et après 19 heures"
+        }
+      ]
+    }
+  ]
+}

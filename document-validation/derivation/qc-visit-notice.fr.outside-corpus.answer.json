@@ -1,0 +1,69 @@
+{
+  "note": "A recorded answer that cites an article the corpus does not hold (a rent article): it is REJECTED_AUTO, LAW_VERSION_UNKNOWN.",
+  "rules": [
+    {
+      "ruleId": "QC-VISIT-001",
+      "title": "Préavis de 24 heures",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1931",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1931",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)\\b24\\s*(?:h\\b|heures?)|vingt-quatre\\s+heures"
+      },
+      "onPass": "L'avis annonce un préavis de 24 heures.",
+      "onFail": "L'avis n'annonce pas de préavis de 24 heures. Le locateur doit le donner, à moins d'une urgence (art. 1931).",
+      "fixtures": {
+        "pass": [
+          "Le locateur vous donne un préavis de 24 heures avant la visite.",
+          "Préavis : vingt-quatre heures."
+        ],
+        "fail": [
+          "Le locateur visitera le logement demain matin."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1931",
+          "language": "fr",
+          "contentHash": "01276b0b87cae0dfe45b87e6b025bcbf9993c5e997d5bcb06960ed8dd7b28400",
+          "quote": "donner au locataire un préavis de 24 heures"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-VISIT-090",
+      "title": "Somme exigée avec l'avis",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1904",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1904",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)v[ée]rifier\\s+l['’][ée]tat|effectuer\\s+des\\s+travaux|faire\\s+visiter|visite\\s+(?:par|d['’]un)\\s+(?:un\\s+)?(?:acqu[ée]reur|locataire)"
+      },
+      "onPass": "L'avis n'exige aucune somme.",
+      "onFail": "L'avis exige une somme autre que le loyer (art. 1904).",
+      "fixtures": {
+        "pass": [
+          "Le locateur souhaite faire visiter le logement par un acquéreur éventuel.",
+          "Objet : vérifier l'état du logement."
+        ],
+        "fail": [
+          "Le locateur passera au logement."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1904",
+          "language": "fr",
+          "contentHash": "7777777777777777777777777777777777777777777777777777777777777777",
+          "quote": "exiger une somme d’argent autre que le loyer"
+        }
+      ]
+    }
+  ]
+}

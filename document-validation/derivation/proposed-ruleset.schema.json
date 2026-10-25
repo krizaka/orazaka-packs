@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/krizaka/orazaka-packs/document-validation/derivation/proposed-ruleset.schema.json",
+  "title": "The answer of the propose step of a derivation (ADR-089 §3)",
+  "description": "What the derivation model answers for one article: rules in the shape of a ruleset rule, each with the article it rests on (law) and a fixture pair written from the article's requirement. The engine reads it (orazaka-ai-engine ProposedRulesJson) and vets every rule (RuleProposalVet) before it is written to rule_proposal. A rule that breaks this shape is REJECTED_AUTO with SCHEMA_INVALID; the other reasons (a pattern, a quote, a number, a fixture pair, a subject, a version) are decided by vet, not by this schema. A derived rule uses REQUIRED_PATTERN, FORBIDDEN_PATTERN or JUDGMENT only: the numeric checks stay written by hand.",
+  "type": "object",
+  "required": ["rules"],
+  "properties": {
+    "rules": { "type": "array", "items": { "$ref": "#/$defs/rule" } }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "fragments": {
+      "oneOf": [
+        { "$ref": "#/$defs/text" },
+        { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/text" } }
+      ]
+    },
+    "law": {
+      "type": "object",
+      "required": ["instrument", "ref", "language", "contentHash", "quote"],
+      "additionalProperties": false,
+      "properties": {
+        "instrument": { "$ref": "#/$defs/text" },
+        "ref": { "$ref": "#/$defs/text" },
+        "language": { "enum": ["fr", "en"] },
+        "contentHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "quote": { "$ref": "#/$defs/text" }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "required": ["ruleId", "title", "severity", "method", "citation", "sourceUrl", "law"],
+      "properties": {
+        "ruleId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$" },
+        "title": { "$ref": "#/$defs/text" },
+        "severity": { "enum": ["BLOCKING", "MAJOR", "ADVISORY"] },
+        "method": { "enum": ["DETERMINISTIC", "JUDGMENT"] },
+        "subject": { "$ref": "#/$defs/text" },
+        "citation": { "$ref": "#/$defs/text" },
+        "sourceUrl": { "type": "string", "pattern": "^https://" },
+        "check": {
+          "type": "object",
+          "required": ["type", "pattern"],
+          "properties": {
+            "type": { "enum": ["REQUIRED_PATTERN", "FORBIDDEN_PATTERN"] },
+            "pattern": { "$ref": "#/$defs/text" }
+          }
+        },
+        "question": { "$ref": "#/$defs/text" },
+        "onPass": { "$ref": "#/$defs/text" },
+        "onFail": { "$ref": "#/$defs/text" },
+        "fixtures": {
+          "type": "object",
+          "required": ["pass", "fail"],
+          "properties": { "pass": { "$ref": "#/$defs/fragments" }, "fail": { "$ref": "#/$defs/fragments" } }
+        },
+        "law": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/law" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "method": { "const": "DETERMINISTIC" } }, "required": ["method"] },
+          "then": { "required": ["check", "onPass", "onFail", "fixtures"] }
+        },
+        {
+          "if": { "properties": { "method": { "const": "JUDGMENT" } }, "required": ["method"] },
+          "then": {
+            "required": ["question"],
+            "properties": { "severity": { "const": "ADVISORY", "description": "A JUDGMENT proposal is always ADVISORY (ADR-089 §3)." } }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "reason": "LAW_VERSION_UNKNOWN",
+  "why": "The corpus holds no version of art. 1934 in force on the day.",
+  "plantedRuleId": "QC-PLANT-LAW",
+  "rules": [
+    {
+      "ruleId": "QC-PLANT-LAW",
+      "title": "Motif de l'accès au logement",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1934",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1934",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)v[ée]rifier\\s+l['’][ée]tat|effectuer\\s+des\\s+travaux|faire\\s+visiter|visite\\s+(?:par|d['’]un)\\s+(?:un\\s+)?(?:acqu[ée]reur|locataire)"
+      },
+      "onPass": "L'avis dit pourquoi le locateur entrera dans le logement.",
+      "onFail": "L'avis ne dit pas pourquoi le locateur entrera.",
+      "fixtures": {
+        "pass": [
+          "Le locateur souhaite faire visiter le logement par un acquéreur éventuel.",
+          "Objet : vérifier l'état du logement."
+        ],
+        "fail": [
+          "Le locateur passera au logement."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1934",
+          "language": "fr",
+          "contentHash": "01276b0b87cae0dfe45b87e6b025bcbf9993c5e997d5bcb06960ed8dd7b28400",
+          "quote": "de son intention de vérifier l’état du logement, d’y effectuer des travaux ou de le faire visiter par un acquéreur éventuel"
+        }
+      ]
+    }
+  ]
+}
