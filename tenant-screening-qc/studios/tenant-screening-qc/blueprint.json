@@ -1,12 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "DRAFT",
   "estimatedCredits": 60,
-  "changelog": "1.0.0 — saga à trois étapes (documents, plumitifs et TAL, crédit) : consentement par finalité avant chaque étape payante, règles d'arrêt en données, crédits débités par étape, connecteur de démonstration seulement (orazaka-packs#123).",
+  "changelog": "1.1.0 — les plumitifs, le TAL et le crédit passent par les contrôles du moteur (orazaka.core.checks.courtrecords, orazaka.core.checks.credit) : une seule porte, le pack ne garde ni capacité ni connecteur de contrôle ; crédits débités seulement pour l'appel que le moteur a fait (calls = 1) ; la catégorie du dossier (TAL_NON_PAYMENT, TAL_OTHER, CRIMINAL, CIVIL, NONE) devient un fait des règles d'arrêt (règles 2026-10-25) ; toujours sur le connecteur de démonstration jusqu'au feu vert du pilote (orazaka-packs#138). 1.0.0 — saga à trois étapes (documents, plumitifs et TAL, crédit) : consentement par finalité avant chaque étape payante, règles d'arrêt en données, crédits débités par étape, connecteur de démonstration seulement (orazaka-packs#123).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "tenant-screening-qc",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
         "id": "plan",
@@ -103,14 +103,12 @@
       {
         "id": "courts",
         "kind": "CAPABILITY",
-        "featureKey": "orazaka.screening.courts.check",
+        "featureKey": "orazaka.core.checks.courtrecords",
         "dependsOn": [
-          "plan",
           "consent_courts"
         ],
         "condition": "{{steps.consent_courts.status}} == 'GRANTED'",
         "inputs": {
-          "plan": "{{steps.plan.planJson}}",
           "subject": "{{inputs.subject}}",
           "consentedPurposes": "{{inputs.consentedPurposes}}"
         },
@@ -162,14 +160,12 @@
       {
         "id": "credit",
         "kind": "CAPABILITY",
-        "featureKey": "orazaka.screening.credit.check",
+        "featureKey": "orazaka.core.checks.credit",
         "dependsOn": [
-          "plan",
           "consent_credit"
         ],
         "condition": "{{steps.consent_credit.status}} == 'GRANTED'",
         "inputs": {
-          "plan": "{{steps.plan.planJson}}",
           "subject": "{{inputs.subject}}",
           "consentedPurposes": "{{inputs.consentedPurposes}}"
         },

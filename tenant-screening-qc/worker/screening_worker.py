@@ -20,7 +20,7 @@ EXCHANGES = {"orazaka.jobs": "topic", "orazaka.events": "topic", "orazaka.dlx": 
 QUEUE = f"orazaka.jobs.{DECLARATION['family']}"
 #: What a refused payload is called (the one cause that bills) and what any other failure is called (refunded).
 CAUSES = {"refused": "INPUT_INVALID", "fault": "EXECUTOR_FAULT"}
-REFUSALS = (screening.InvalidInput, screening.connectors.ProviderNotEnabled)
+REFUSALS = (screening.InvalidInput,)  # ProviderNotEnabled is one
 
 
 class Consumer:

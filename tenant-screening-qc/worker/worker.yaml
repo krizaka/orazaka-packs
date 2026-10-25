@@ -2,7 +2,7 @@ name: orazaka-worker-screening
 family: screening
 bindings:
   - "job.screening.*"
-version: "1.0.0"
+version: "2.0.0"
 concurrency: 1
 
 run:

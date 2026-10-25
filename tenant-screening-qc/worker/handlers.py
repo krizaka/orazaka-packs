@@ -6,15 +6,15 @@ HANDLERS = {
     "job.screening.plan": screening.plan,
     "job.screening.consent": screening.consent,
     "job.screening.documents": screening.documents,
-    "job.screening.courts": screening.courts,
-    "job.screening.credit": screening.credit,
     "job.screening.cutoff": screening.cutoff,
     "job.screening.report": screening.report,
 }
 
 
 def consumption(result: dict) -> dict:
-    """A paid stage says how many provider calls it was charged for (one, or none when it was refused or failed)."""
+    """The pack's paid stage (documents) says whether it was charged: one call, or none when it was refused.
+
+    The court-records and credit stages are the engine's checks: their consumption is the engine's own ``{calls}``."""
     if "charged" in result:
         return {"tokens": 0, "calls": 1 if result["charged"] else 0}
     return {"tokens": 0}

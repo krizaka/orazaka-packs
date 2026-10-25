@@ -1,7 +1,8 @@
 """The screening saga's rules: pure functions over what the blueprint's steps pass along.
 
 Three stages, in order: ``documents`` (the evidence of the two document Studios), ``courts`` (the TAL and the plumitifs),
-``credit``. A stage runs, and is charged, only if the one before it passed its **cut-off**. A cut-off is data: the dated
+``credit``. The last two are the engine's checks (``orazaka.core.checks.courtrecords`` and ``.credit``, orazaka-ai-engine#90):
+this module reads their answer, it never calls a provider. A stage runs, and is charged, only if the one before it passed its **cut-off**. A cut-off is data: the dated
 default ruleset (``rules/screening-cutoffs``), replaced stage by stage by the manager's own rules. A stop is a rule of the
 process, never a verdict on the applicant: the pack words nothing and decides nothing, it returns codes.
 
@@ -14,21 +15,34 @@ import os
 import re
 from typing import Optional
 
-import connectors
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 RULESETS = os.path.join(HERE, "..", "rules", "screening-cutoffs")
 
 CONTINUE, STOP = "CONTINUE", "STOP"
 GRANTED, REFUSED_CONSENT = "GRANTED", "REFUSED"
+#: The engine's check answer, its closed sets (``CheckStepResult``; tests/contracts/orazaka-core-checks.json).
+ENGINE_OUTCOMES = ("MATCH", "NO_MATCH", "PROVIDER_ERROR", "TIMEOUT", "REFUSED")
+ENGINE_ANSWERED = ("MATCH", "NO_MATCH")
+ENGINE_REFUSALS = ("NO_CONSENT", "NO_KEY", "BUDGET_EXHAUSTED")
+ENGINE_CATEGORIES = ("TAL_NON_PAYMENT", "TAL_OTHER", "CRIMINAL", "CIVIL", "NONE")
+#: The purposes the engine checks: a stage consented to for one of them reads the engine's answer.
+ENGINE_PURPOSES = ("COURT_RECORDS", "CREDIT", "IDENTITY")
 #: What a stage that did not answer is called. It is never charged.
-UNAVAILABLE = (connectors.PROVIDER_ERROR, connectors.TIMEOUT, "REFUSED")
+UNAVAILABLE = ("PROVIDER_ERROR", "TIMEOUT", "REFUSED")
+#: The stop code of an engine refusal: a refused consent stays a refused consent, a spent budget is the saga's BUDGET.
+REFUSAL_CODES = {"NO_CONSENT": "NO_CONSENT", "NO_KEY": "NO_KEY", "BUDGET_EXHAUSTED": "BUDGET"}
+#: The providers this pack may run on: the mock, until a pilot customer says go.
+PROVIDERS = ("mock",)
 MAX_RULES_PER_STAGE = 8
 RULE_ID = re.compile(r"^[A-Z0-9][A-Z0-9-]{2,39}$")
 
 
 class InvalidInput(ValueError):
     """The payload was checked and is unusable. Raised before any paid stage whenever it can be."""
+
+
+class ProviderNotEnabled(InvalidInput):
+    """Only the mock runs: a ruleset naming any other provider fails the plan, before any charge."""
 
 
 # ── data ────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -106,6 +120,11 @@ def _validate_rule(ruleset: dict, stage: dict, rule: object) -> dict:
         raise InvalidInput(f"{where}.{rule['id']}: equals takes a string, a number or a boolean")
     if rule["op"] == "in" and not (isinstance(value, list) and value and all(isinstance(v, str) for v in value)):
         raise InvalidInput(f"{where}.{rule['id']}: in takes a non-empty list of strings")
+    closed = stage.get("values", {}).get(rule["fact"])
+    if closed is not None:
+        # a closed fact (an outcome, a category): a rule names values it can take, or it would silently never hold
+        if rule["op"] == "atLeast" or not set(value if isinstance(value, list) else [value]) <= set(closed):
+            raise InvalidInput(f"{where}.{rule['id']}: {rule['fact']} is one of {', '.join(closed)}")
     return {key: rule[key] for key in ("id", "fact", "op", "value")}
 
 
@@ -157,7 +176,8 @@ def _evidence(payload: dict) -> tuple:
 def plan(payload: dict) -> dict:
     """Validates everything that can be validated before the first paid stage, and freezes the run's rules."""
     ruleset = load_ruleset()
-    connectors.connector_for(ruleset["provider"])
+    if ruleset["provider"] not in PROVIDERS:
+        raise ProviderNotEnabled("this pack runs on the mock provider only, until a pilot customer says go")
     subject = _obj(payload.get("subject"), "subject")
     for key in ("subjectId", "lastName", "firstName"):
         if not isinstance(subject.get(key), str) or not subject[key].strip():
@@ -196,7 +216,7 @@ def consent(payload: dict) -> dict:
     return {"purpose": purpose, "status": GRANTED if granted else REFUSED_CONSENT, "reason": None if granted else "NO_CONSENT"}
 
 
-def _stage_result(stage: dict, subject_ref: str, outcome: str, facts: dict, credits: int, provider_ref: Optional[str] = None) -> dict:
+def _stage_result(stage: dict, subject_ref: str, outcome: str, facts: dict, credits: int, refusal: Optional[str] = None) -> dict:
     charged = credits > 0 and outcome not in UNAVAILABLE
     result = {
         "stage": stage["id"],
@@ -207,8 +227,8 @@ def _stage_result(stage: dict, subject_ref: str, outcome: str, facts: dict, cred
         "credits": credits if charged else 0,
         "subjectRef": subject_ref,
     }
-    if provider_ref:
-        result["providerRef"] = provider_ref
+    if refusal:
+        result["refusal"] = refusal
     return dict(result, resultJson=json.dumps(result))
 
 
@@ -229,26 +249,34 @@ def documents(payload: dict) -> dict:
     return _stage_result(stage, plan_["subjectRef"], "SIGNALS" if facts["majorSignals"] else "CLEAR", facts, stage["credits"])
 
 
-def _external(stage_id: str, payload: dict, connector) -> dict:
-    plan_ = _obj(payload.get("plan"), "plan")
-    stage = _stage(plan_, stage_id)
-    if not consent_granted(stage["purpose"], payload.get("consentedPurposes")):
-        return _stage_result(stage, plan_["subjectRef"], "REFUSED", {"outcome": "REFUSED"}, 0)  # before any provider call
-    raw = _obj(payload.get("subject"), "subject")
-    if raw.get("subjectId") != plan_["subjectRef"]:
-        raise InvalidInput("'subject' is not the subject of the plan")
-    subject = connectors.Subject(raw["subjectId"], raw["lastName"], raw["firstName"], raw.get("birthDate"))
-    connector = connector or connectors.connector_for(plan_["provider"])
-    answer = connector.verify_court_records(subject) if stage_id == "courts" else connector.verify_credit(subject)
-    return _stage_result(stage, plan_["subjectRef"], answer.outcome, {"outcome": answer.outcome}, stage["credits"], answer.provider_ref)
+def engine_stage_result(stage: dict, subject_ref: str, answer: dict) -> dict:
+    """The stage result of an engine check (``CheckStepResult``): its closed codes, and credits only for the call it made.
+
+    Only the closed fields are read: whatever else the answer carries (its opaque provider reference included) never
+    reaches a result, a gate or the report. An answer that does not hold together is refused, never charged or guessed.
+    """
+    outcome, refusal, category, calls = (answer.get(k) for k in ("outcome", "refusal", "category", "calls"))
+    category = "NONE" if category is None else category
+    where = f"{stage['id']}Result"
+    if outcome not in ENGINE_OUTCOMES:
+        raise InvalidInput(f"'{where}.outcome' is one of {', '.join(ENGINE_OUTCOMES)}")
+    if (refusal is None) == (outcome == "REFUSED") or (refusal is not None and refusal not in ENGINE_REFUSALS):
+        raise InvalidInput(f"'{where}.refusal' is one of {', '.join(ENGINE_REFUSALS)} exactly when the outcome is REFUSED")
+    if category not in ENGINE_CATEGORIES or (category != "NONE" and outcome != "MATCH"):
+        raise InvalidInput(f"'{where}.category' is one of {', '.join(ENGINE_CATEGORIES)}, and NONE unless it matched")
+    if isinstance(calls, bool) or calls not in (0, 1) or (calls == 1) != (outcome in ENGINE_ANSWERED):
+        raise InvalidInput(f"'{where}.calls' is 1 when the provider answered and 0 otherwise")
+    known = {"outcome": outcome, "category": category}
+    facts = {fact: known[fact] for fact in stage["facts"] if fact in known}
+    return _stage_result(stage, subject_ref, outcome, facts, stage["credits"] if calls == 1 else 0, refusal)
 
 
-def courts(payload: dict, connector=None) -> dict:
-    return _external("courts", payload, connector)
-
-
-def credit(payload: dict, connector=None) -> dict:
-    return _external("credit", payload, connector)
+def _result(plan_: dict, stage: dict, payload: dict, name: str) -> Optional[dict]:
+    """A stage's result as the gates read it: the pack's own (documents) or the engine's answer (an engine purpose)."""
+    raw = _obj(payload.get(name), name, required=False)
+    if raw is None or stage["purpose"] not in ENGINE_PURPOSES:
+        return raw
+    return engine_stage_result(stage, plan_["subjectRef"], raw)
 
 
 def cutoff(payload: dict) -> dict:
@@ -257,7 +285,7 @@ def cutoff(payload: dict) -> dict:
     stage_id = payload.get("stage")
     stage = _stage(plan_, stage_id)
     spent = _int(payload.get("spentCredits"), "spentCredits", 0, 10_000_000, 0)
-    result = _obj(payload.get("result"), "result", required=False)
+    result = _result(plan_, stage, payload, "result")
     index = [s["id"] for s in plan_["stages"]].index(stage_id)
     following = plan_["stages"][index + 1] if index + 1 < len(plan_["stages"]) else None
     stops = {"decision": STOP, "ruleId": None}
@@ -266,7 +294,7 @@ def cutoff(payload: dict) -> dict:
     elif result is None:
         stops["code"] = "STAGE_NOT_RUN"
     elif result["outcome"] in UNAVAILABLE:
-        stops["code"] = result["outcome"]
+        stops["code"] = REFUSAL_CODES.get(result.get("refusal"), result["outcome"])
     else:
         spent += result["credits"]
         hit = next((rule for rule in stage["cutoffs"] if rule_holds(rule, dict(result["facts"], outcome=result["outcome"]))), None)
@@ -286,7 +314,7 @@ def report(payload: dict) -> dict:
     entries, stop = [], None
     for stage in plan_["stages"]:
         sid = stage["id"]
-        result = _obj(payload.get(f"{sid}Result"), f"{sid}Result", required=False)
+        result = _result(plan_, stage, payload, f"{sid}Result")
         gate = _obj(payload.get(f"{sid}Gate"), f"{sid}Gate", required=False)
         consented = payload.get(f"{sid}Consent")
         if gate is None:

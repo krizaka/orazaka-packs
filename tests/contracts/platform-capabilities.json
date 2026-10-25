@@ -1,0 +1,7 @@
+{
+  "about": "Capabilities a blueprint may name that are neither its pack's nor in the engine's orazaka.core namespace: rows the job service seeds in its own capability registry (ADR-034, ADR-080). Each names the migration that declares it. A new entry is a registry row first, then a line here.",
+  "keys": {
+    "orazaka.studio.media.compose": "krizaka/orazaka-job-service infra/initdb/30-jobs-config.sql (ADR-034)",
+    "orazaka.studio.media.sound": "krizaka/orazaka-job-service infra/initdb/30-jobs-config.sql (ADR-080)"
+  }
+}

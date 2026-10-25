@@ -14,16 +14,34 @@ Screens a rental applicant in Québec, **one stage at a time**, and stops where 
 | Stage | What it does | Purpose consented to | Credits (default ruleset) |
 |:---|:---|:---|---:|
 | 1. `documents` | Counts the signals of the evidence the two document Studios produced: `document-authenticity` (« signals ») and, optionally, `compliance-check` (the lease against the C.c.Q.). It re-runs and re-bills neither. | `DOCUMENTS` | 10 |
-| 2. `courts` | The TAL and the plumitifs, through the engine's `ExternalCheckConnector` port (`verifyCourtRecords`). | `COURT_RECORDS` | 30 |
-| 3. `credit` | A credit report, through the same port (`verifyCredit`). | `CREDIT` | 20 |
+| 2. `courts` | The TAL and the plumitifs: the engine's check `orazaka.core.checks.courtrecords`. | `COURT_RECORDS` | 30 |
+| 3. `credit` | A credit report: the engine's check `orazaka.core.checks.credit`. | `CREDIT` | 20 |
+
+## One door: the engine's checks
+
+The court-records and credit stages are **the engine's capabilities** (orazaka-ai-engine#90, `ExternalCheckCapability`), not
+this pack's: the pack declares no check capability, no handler and no connector of its own. Per call the engine does, in
+order: HMAC subject ref → consent → key → one `CALL` held → provider (the mock) → audit → settle (answered) or release.
+
+The step contract (`tests/contracts/orazaka-core-checks.json`, the one the job-service executor answers):
+
+* **inputs** `subject` (`{subjectId, lastName, firstName, birthDate?, address?}`) and `consentedPurposes` (the same list the
+  pack's consent steps read: the engine grants a purpose only when it is listed);
+* **outputs** `outcome` (`MATCH`, `NO_MATCH`, `PROVIDER_ERROR`, `TIMEOUT`, `REFUSED`), `refusal` (`NO_CONSENT`, `NO_KEY`,
+  `BUDGET_EXHAUSTED` or null), `category` (`TAL_NON_PAYMENT`, `TAL_OTHER`, `CRIMINAL`, `CIVIL`, `NONE`), `providerRef` (opaque),
+  `calls` (0 or 1) and `resultJson` (the same object as JSON); consumption `{calls}`.
+
+The cut-off and report steps read `resultJson` and keep only the closed codes: a stage is charged its credits only when
+`calls` is 1, `providerRef` stays in the engine's audit, and an answer that does not hold together (a call without an answer, a
+category without a match, a refusal without its reason) fails the run rather than being guessed.
 
 A stage runs, and is charged, **only if the one before it passed its cut-off**. A stopped saga never charges a later stage,
 and its steps never run: the blueprint skips them (`condition`), it does not charge and refund.
 
 ## Cut-offs are data
 
-* The **default** cut-offs are the dated ruleset `rules/screening-cutoffs/2026-10-24.json`: stop on a major document signal
-  (level `incohérent`), stop on a court-records `MATCH`. The worker's code names no rule.
+* The **default** cut-offs are the latest dated ruleset in `rules/screening-cutoffs/` (`2026-10-25.json`): stop on a major
+  document signal (level `incohérent`), stop on any court-records `MATCH`, whatever its category. The worker's code names no rule.
 * The **manager's** rules replace the default of a stage. They are the Studio input `cutoffs`, by stage; an empty list removes the
   cut-off of that stage:
 
@@ -32,25 +50,35 @@ and its steps never run: the blueprint skips them (`condition`), it does not cha
   ```
 
   A rule is exactly `{id, fact, op, value}`. Operators: `equals`, `atLeast`, `in`. Facts per stage: `documents` has `majorSignals`,
-  `unusualSignals`, `leaseFailures`; `courts` and `credit` have `outcome`. At most 8 rules a stage. An invalid rule fails the
+  `unusualSignals`, `leaseFailures`; `courts` has `outcome` and `category` (the engine's closed category of a file found, since the
+  ruleset `2026-10-25`), `credit` has `outcome`. A rule on `outcome` or `category` names values from their closed set
+  (`MATCH`/`NO_MATCH`; `TAL_NON_PAYMENT`, `TAL_OTHER`, `CRIMINAL`, `CIVIL`, `NONE`), so a typo fails the plan instead of never
+  holding. At most 8 rules a stage. To stop only on a TAL non-payment file:
+
+  ```json
+  { "courts": [{ "id": "CUT-TAL-NON-PAYMENT", "fact": "category", "op": "equals", "value": "TAL_NON_PAYMENT" }] }
+  ```
+* A ruleset is **dated data**: a change is a new file (`2026-10-25.json` added `category`); the older ones are never rewritten. An invalid rule fails the
   run at the `plan` step, **before any charge**.
-* The first reason to stop wins, and the report says which: `CUTOFF` (with the `ruleId`), `NO_CONSENT`, `PROVIDER_ERROR`,
-  `TIMEOUT`, `BUDGET`.
+* The first reason to stop wins, and the report says which: `CUTOFF` (with the `ruleId`), `NO_CONSENT` (the pack's consent
+  step or the engine's refusal), `PROVIDER_ERROR`, `TIMEOUT`, `NO_KEY` (the engine has no key for the provider), `BUDGET` (the
+  pack's cap, or the engine's `BUDGET_EXHAUSTED`).
 * A stop is a rule of the process, **not a verdict on the applicant**. The pack words nothing and decides nothing; the landlord
   decides.
 
 ## Consent per purpose
 
 The product passes the purposes the applicant consented to (`consentedPurposes`). Consent is checked **before each paid
-stage**, by one function used twice: the `consent` step (so the stage is skipped and the report shows `REFUSED`) and the stage
-handler itself (so no route can skip the gate). A missing purpose stops that stage visibly (`NO_CONSENT`) and nothing is
-called. The engine's `ConsentRegistry` stays the authority when the real connectors are wired.
+stage**, twice: by the pack's `consent` step (so the stage is skipped and the report shows `REFUSED`), and where the stage runs
+— the documents handler itself, and the engine's checks, which receive the same `consentedPurposes` and refuse with
+`NO_CONSENT` before any key or call. No route skips the gate. A missing purpose stops that stage visibly (`NO_CONSENT`) and
+nothing is called.
 
 ## Credits, per stage, under the run budget
 
 * Each paid stage is metered by the call (`billableUnit: CALL`); the control steps (plan, consent, cut-off, report) are not.
-* A stage is charged only if it **answered**: `MATCH` or `NO_MATCH`. `PROVIDER_ERROR`, `TIMEOUT` and a refusal for lack of
-  consent cost nothing (`charged: false`, `consumption.calls: 0`), and the saga stops as `INCOMPLETE` rather than spend on the
+* A stage is charged only if it **answered**: `MATCH` or `NO_MATCH` (the engine's `calls: 1`). `PROVIDER_ERROR`, `TIMEOUT` and
+  a refusal (consent, key, budget) cost nothing (`charged: false`, `consumption.calls: 0`: the engine releases its hold), and the saga stops as `INCOMPLETE` rather than spend on the
   next stage blind.
 * The `report`'s `ledger` lists the credits per stage; it equals the stages that ran.
 * The run budget is the engine's (ADR-088). The input `creditCap` adds a pack-level stop (`BUDGET`) before a stage the cap
@@ -63,30 +91,34 @@ manager turns it on, the report says `payer: APPLICANT` and adds the limit `APPL
 
 ## No raw personal data
 
-The subject is its opaque `subjectId` (as in ai-engine#75). Names and birth date travel in the payload of the court-records and
-credit steps and nowhere else: no step output, report, error message or log line carries them. The log is the job id and the
+The subject is its opaque `subjectId` (as in ai-engine#75). Names and birth date travel in the payload of the engine's
+court-records and credit checks and nowhere else: no step output, report, error message or log line carries them, and only the
+closed codes of the engine's answer are read (whatever else it carried never reaches a result). The log is the job id and the
 routing key. `SENSITIVE` (30-day retention at most, append-only audit, data class, scope guard).
 
 ## Mocks only
 
-The connector is `MockConnector` (`worker/connectors.py`), recorded answers chosen by the last name, no network: `Tremblay`
-matches, `Gagnon` does not, `Roy` is a provider error, `Bouchard` a timeout, anyone else has no match. Any other provider is
-refused. The Studio is `DRAFT`. Spending starts when a pilot customer says go, and then the engine's `ExternalCheckService`
-replaces `connectors.py`; the saga, the rules and the report do not change.
+Still on mocks until the pilot's go. The connector is the engine's `MockConnector`, recorded answers chosen by the last name,
+no network: `Tremblay` has a TAL non-payment file, `Côté` another TAL file, `Morin` a criminal one, `Lavoie` a civil one,
+`Gagnon` none, `Roy` is a provider error, `Bouchard` a timeout, anyone else has no match. The ruleset names the mock, and a
+ruleset naming any other provider fails the plan. The Studio is `DRAFT`. The saga's tests answer the engine's steps with
+`FakeEngine` (`worker/test_screening.py`), the same contract and fixtures.
 
 ## Tests
 
 ```bash
-cd worker && python3 test_screening.py      # the real blueprint, interpreted step by step, on every path
+cd worker && python3 test_screening.py      # the real blueprint, interpreted step by step, on every path (engine faked)
 npm test                                    # manifest, blueprint, ruleset, goldens (tests/golden/tenant-screening-qc.json)
 ```
 
 Paths covered on the mock: all clear; a stop after the documents (no provider call); a stop after the court records (credit never
-called, never charged); a provider error (no charge for that stage); a timeout; a missing consent (per stage, and none at all);
-the manager's rules; the budget; the fees setting; no personal data in any output or log.
+called, never charged); a provider error (no charge for that stage); a timeout; a missing consent (per stage, none at all, and
+refused by the engine); the engine refusing for lack of key or budget; a cut-off on the category; an engine answer that does not
+hold together; the manager's rules; the budget; the fees setting; no personal data in any output or log.
 
 ## Not in this pack (needs another repository)
 
-* The engine exposing the external checks as capabilities (`orazaka.core.checks.*`), the `calls` consumption key in the job service,
-  a category in the port's result (to tell a TAL non-payment file from another file), and a provider reference that does not carry the
-  last name (the engine's `MockConnector` puts it in `providerRef`): follow-ups in orazaka-ai-engine and orazaka-job-service.
+* orazaka-job-service: the executor and capability rows of `orazaka.core.checks.*`, answering the contract above
+  (orazaka-packs#138). Until they exist, the courts and credit steps have no executor and the Studio cannot run end to end.
+* orazaka-ai-engine: the meter (pricebook hold) and pepper (sealed settings) adapters; krizaka-billing: an `EXTERNAL_CHECK`
+  billable capability (orazaka-packs#138).
