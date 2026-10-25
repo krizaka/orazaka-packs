@@ -196,15 +196,21 @@ def test_the_sound_rules_beside_a_plant_pass_every_check():
             assert all(citations.check(b, HELD) == citations.VERIFIED for b in rule["law"]), rule["ruleId"]
 
 
+def _run_all() -> int:
+    """Runs every test of this file, prints one line each, and returns how many failed."""
+    tests = [(name, fn) for name, fn in sorted(globals().items()) if name.startswith("test_") and callable(fn)]
+    failed = []
+    for name, fn in tests:
+        try:
+            fn()
+        except Exception as exc:  # noqa: BLE001 — a failing check is reported, never raised past the summary
+            failed.append(name)
+            print(f"  FAIL {name}: {exc!r}")
+        else:
+            print(f"  ok   {name}")
+    print(f"\n{len(tests) - len(failed)}/{len(tests)} green" + (f", failed: {', '.join(failed)}" if failed else ""))
+    return len(failed)
+
+
 if __name__ == "__main__":
-    failures = 0
-    for name, fn in sorted(globals().items()):
-        if name.startswith("test_") and callable(fn):
-            try:
-                fn()
-                print(f"  ok   {name}")
-            except Exception as exc:  # noqa: BLE001
-                failures += 1
-                print(f"  FAIL {name}: {exc!r}")
-    print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
-    sys.exit(1 if failures else 0)
+    sys.exit(1 if _run_all() else 0)
