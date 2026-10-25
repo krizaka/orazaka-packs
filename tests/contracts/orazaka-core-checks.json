@@ -1,0 +1,18 @@
+{
+  "about": "The step contract of the engine's external checks, as a blueprint step sees it: orazaka-ai-engine#90 (ExternalCheckCapability.run(featureKey, call), CheckStepResult) and the job-service executor of those keys (orazaka-packs#138). A blueprint calls them with exactly these inputs and reads only these outputs; the executor answers exactly these fields.",
+  "featureKeys": {
+    "orazaka.core.checks.courtrecords": "COURT_RECORDS",
+    "orazaka.core.checks.credit": "CREDIT",
+    "orazaka.core.checks.identity": "IDENTITY"
+  },
+  "inputs": {
+    "subject": { "type": "object", "required": ["subjectId", "lastName", "firstName"], "optional": ["birthDate", "address"] },
+    "consentedPurposes": { "type": "array", "items": "string" }
+  },
+  "outputs": ["outcome", "refusal", "category", "providerRef", "calls", "resultJson"],
+  "outcome": ["MATCH", "NO_MATCH", "PROVIDER_ERROR", "TIMEOUT", "REFUSED"],
+  "answered": ["MATCH", "NO_MATCH"],
+  "refusal": ["NO_CONSENT", "NO_KEY", "BUDGET_EXHAUSTED"],
+  "category": ["TAL_NON_PAYMENT", "TAL_OTHER", "CRIMINAL", "CIVIL", "NONE"],
+  "consumption": ["calls"]
+}

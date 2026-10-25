@@ -43,7 +43,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-24",
+          "rulesetVersion": "2026-10-25",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-1",
           "status": "COMPLETED",
@@ -71,7 +71,8 @@
               "state": "RAN",
               "outcome": "NO_MATCH",
               "facts": {
-                "outcome": "NO_MATCH"
+                "outcome": "NO_MATCH",
+                "category": "NONE"
               },
               "consent": "GRANTED",
               "charged": true,
@@ -218,7 +219,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-24",
+          "rulesetVersion": "2026-10-25",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-2",
           "status": "STOPPED",
@@ -396,7 +397,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-24",
+          "rulesetVersion": "2026-10-25",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-3",
           "status": "STOPPED",
@@ -424,7 +425,8 @@
               "state": "RAN",
               "outcome": "MATCH",
               "facts": {
-                "outcome": "MATCH"
+                "outcome": "MATCH",
+                "category": "TAL_NON_PAYMENT"
               },
               "consent": "GRANTED",
               "charged": true,
@@ -576,7 +578,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-24",
+          "rulesetVersion": "2026-10-25",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-4",
           "status": "INCOMPLETE",
@@ -604,7 +606,8 @@
               "state": "UNAVAILABLE",
               "outcome": "PROVIDER_ERROR",
               "facts": {
-                "outcome": "PROVIDER_ERROR"
+                "outcome": "PROVIDER_ERROR",
+                "category": "NONE"
               },
               "consent": "GRANTED",
               "charged": false,
@@ -748,7 +751,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-24",
+          "rulesetVersion": "2026-10-25",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-5",
           "status": "INCOMPLETE",

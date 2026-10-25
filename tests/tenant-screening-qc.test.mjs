@@ -9,16 +9,24 @@ const root = new URL("../tenant-screening-qc/", import.meta.url).pathname;
 const text = (p) => readFileSync(`${root}${p}`, "utf8");
 const pack = text("pack.yaml");
 const blueprint = JSON.parse(text("studios/tenant-screening-qc/blueprint.json"));
-const ruleset = JSON.parse(text("rules/screening-cutoffs/2026-10-24.json"));
+const rulesets = readdirSync(`${root}rules/screening-cutoffs/`).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort();
+const ruleset = JSON.parse(text(`rules/screening-cutoffs/${rulesets.at(-1)}`)); // the one in force: the latest date
+const checks = JSON.parse(readFileSync(new URL("./contracts/orazaka-core-checks.json", import.meta.url), "utf8"));
+// The engine's capabilities, as this pack's steps see them (the contract the job-service executor answers).
+const engine = Object.fromEntries(Object.keys(checks.featureKeys).map((key) => [key, {
+  key,
+  inputSchema: { properties: Object.fromEntries(Object.keys(checks.inputs).map((k) => [k, {}])) },
+  outputSchema: { properties: Object.fromEntries(checks.outputs.map((k) => [k, {}])) },
+}]));
 const golden = JSON.parse(text("tests/golden/tenant-screening-qc.json"));
 const steps = blueprint.definition.steps;
 const stepOf = (id) => steps.find((s) => s.id === id);
 const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? (d.name === ".venv" || d.name === "__pycache__" ? [] : walk(`${dir}${d.name}/`)) : [`${dir}${d.name}`]));
 
-test("every capability the blueprint uses is contributed here, and drained by the worker", () => {
+test("every capability the blueprint uses is contributed here or is the engine's, and the pack's own are drained by the worker", () => {
   const contributed = [...pack.matchAll(/^    - key: (orazaka\.[a-z.]+)$/gm)].map((m) => m[1]);
-  assert.equal(contributed.length, 7);
-  for (const s of steps) assert.ok(contributed.includes(s.featureKey), s.featureKey);
+  assert.equal(contributed.length, 5);
+  for (const s of steps) assert.ok(contributed.includes(s.featureKey) || Object.hasOwn(engine, s.featureKey), s.featureKey);
   assert.match(text("worker/worker.yaml"), /- "job\.screening\.\*"/);
   assert.match(pack, /name: orazaka-worker-screening\n\s+bindings:\n\s+- "job\.screening\.\*"/);
   const handlers = text("worker/handlers.py");
@@ -45,7 +53,7 @@ test("a step input only reads inputs the Studio declares, the configuration it d
 });
 
 test("a step passes only inputs its capability declares, and reads only output fields the producer declares (the Studio service's fitness test)", () => {
-  const caps = Object.fromEntries(YAML.parse(pack).requires.capabilities.map((c) => [c.key, c]));
+  const caps = { ...engine, ...Object.fromEntries(YAML.parse(pack).requires.capabilities.map((c) => [c.key, c])) };
   for (const s of steps) {
     const declared = Object.keys(caps[s.featureKey].inputSchema.properties);
     for (const key of Object.keys(s.inputs)) assert.ok(declared.includes(key), `${s.id} passes '${key}', which ${s.featureKey} does not declare`);
@@ -75,11 +83,22 @@ test("no step is skipped on error: a failed step fails the run and the hold is r
   for (const s of steps) assert.equal(s.onError, "FAIL", s.id);
 });
 
-test("the paid stages are metered by the call, the control steps are not", () => {
-  for (const key of ["documents.assess", "courts.check", "credit.check"]) {
-    const block = pack.split(`- key: orazaka.screening.${key}`)[1].split("      inputSchema:")[0];
-    assert.match(block, /billableUnit: CALL/);
+test("one door: the court records and the credit are the engine's checks, called with its contract, never the pack's own", () => {
+  assert.equal(stepOf("courts").featureKey, "orazaka.core.checks.courtrecords");
+  assert.equal(stepOf("credit").featureKey, "orazaka.core.checks.credit");
+  for (const stage of ["courts", "credit"]) {
+    assert.deepEqual(stepOf(stage).inputs, { subject: "{{inputs.subject}}", consentedPurposes: "{{inputs.consentedPurposes}}" });
+    const purpose = ruleset.stages.find((s) => s.id === stage).purpose;
+    assert.equal(checks.featureKeys[stepOf(stage).featureKey], purpose, `${stage} is consented to as ${purpose}`);
   }
+  assert.doesNotMatch(pack, /orazaka\.screening\.(courts|credit)\.check|job\.screening\.(courts|credit)\b/);
+  assert.doesNotMatch(text("worker/handlers.py"), /job\.screening\.(courts|credit)|screening\.(courts|credit)\b/);
+  assert.equal(walk(`${root}worker/`).some((f) => f.endsWith("/connectors.py")), false, "the pack keeps no connector of its own");
+});
+
+test("the paid stages are metered by the call, the control steps are not", () => {
+  const block = pack.split("- key: orazaka.screening.documents.assess")[1].split("      inputSchema:")[0];
+  assert.match(block, /billableUnit: CALL/);
   for (const key of ["plan", "consent.check", "cutoff.decide", "report.assemble"]) {
     const block = pack.split(new RegExp(`- key: orazaka\\.screening\\.${key.replace(".", "\\.")}\\n`))[1].split("      inputSchema:")[0];
     assert.doesNotMatch(block, /billable/);
@@ -92,18 +111,19 @@ test("the cut-offs are data: the ruleset holds them, the worker's code names no 
     for (const rule of stage.cutoffs) {
       assert.ok(stage.facts.includes(rule.fact), `${rule.id}: ${rule.fact}`);
       assert.ok(ruleset.operators.includes(rule.op));
+      for (const v of [rule.value].flat()) if (stage.values?.[rule.fact]) assert.ok(stage.values[rule.fact].includes(v), `${rule.id}: ${v}`);
     }
   }
   assert.deepEqual(ruleset.stages[0].cutoffs.map((r) => r.id), ["CUT-DOC-MAJOR-SIGNALS"]);
   assert.deepEqual(ruleset.stages[1].cutoffs.map((r) => r.id), ["CUT-COURT-FILE-FOUND"]);
-  for (const f of ["screening.py", "handlers.py", "connectors.py", "screening_worker.py"]) assert.doesNotMatch(text(`worker/${f}`), /CUT-[A-Z]/, f);
+  for (const f of ["screening.py", "handlers.py", "screening_worker.py"]) assert.doesNotMatch(text(`worker/${f}`), /CUT-[A-Z]/, f);
   assert.ok(blueprint.inputSchema.properties.cutoffs, "the manager's rules are an input");
 });
 
 test("mocks only: the ruleset names the mock, the worker has no network client and names no provider endpoint", () => {
   assert.equal(ruleset.provider, "mock");
   assert.ok(ruleset.limits.includes("MOCK_PROVIDER_ONLY"));
-  for (const f of ["screening.py", "handlers.py", "connectors.py", "screening_worker.py"]) {
+  for (const f of ["screening.py", "handlers.py", "screening_worker.py"]) {
     const body = text(`worker/${f}`).replace(/^\s*#.*$/gm, "");
     assert.doesNotMatch(body, /\b(requests|urllib|http\.client|httpx|aiohttp|socket)\b|https?:\/\//, f);
   }
@@ -149,9 +169,36 @@ test("the goldens cover the five paths and are all fictional", () => {
   assert.equal(by["tal-file-found-stops-before-credit"].ledger.byStage.credit, 0);
   assert.equal(by["clean-applicant-runs-all-three-stages"].ledger.total, ruleset.stages.reduce((n, s) => n + s.credits, 0));
   assert.equal(by["provider-error-is-not-charged"].stages[1].credits, 0);
+  assert.deepEqual(by["tal-file-found-stops-before-credit"].stages[1].facts, { outcome: "MATCH", category: "TAL_NON_PAYMENT" });
+  for (const c of golden.cases) assert.equal(c.expected.report.rulesetVersion, ruleset.version, `${c.id} reads the ruleset in force`);
   for (const c of golden.cases) assert.match(c.input.subject.subjectId, /^fictional-/);
 });
 
 test("the Studio is worded in both languages", () => {
   for (const lang of ["en", "fr"]) assert.match(text(`i18n/${lang}.yaml`), /^  tenant-screening-qc:\n    label:/m);
+});
+
+test("a ruleset is dated data: a change is a new dated file, the older ones stay as they were", () => {
+  assert.deepEqual(rulesets, ["2026-10-24.json", "2026-10-25.json"]);
+  for (const file of rulesets) assert.equal(JSON.parse(text(`rules/screening-cutoffs/${file}`)).version, file.slice(0, 10));
+  const first = JSON.parse(text("rules/screening-cutoffs/2026-10-24.json"));
+  assert.deepEqual(first.stages.find((s) => s.id === "courts").facts, ["outcome"], "2026-10-24 is never rewritten");
+});
+
+test("the engine's court-records category is a fact a cut-off can read, from the engine's closed set", () => {
+  const courts = ruleset.stages.find((s) => s.id === "courts");
+  assert.deepEqual(courts.facts, ["outcome", "category"]);
+  assert.deepEqual(courts.values.category, checks.category);
+  assert.deepEqual(courts.values.outcome, checks.answered, "a cut-off reads an answer; the rest stops before any rule");
+  const credit = ruleset.stages.find((s) => s.id === "credit");
+  assert.deepEqual(credit.facts, ["outcome"], "credit answers no category");
+});
+
+test("the versions say what changed: the pack lost two capabilities (major), the Studio is still a DRAFT on mocks", () => {
+  assert.match(pack, /^version: 2\.0\.0$/m);
+  assert.match(text("worker/worker.yaml"), /^version: "2\.0\.0"$/m);
+  assert.equal(blueprint.version, "1.1.0");
+  assert.equal(blueprint.definition.version, blueprint.version);
+  assert.match(blueprint.changelog, /^1\.1\.0 — /);
+  assert.match(blueprint.changelog, /orazaka\.core\.checks/);
 });

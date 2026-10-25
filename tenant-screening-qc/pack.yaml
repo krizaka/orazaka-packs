@@ -2,22 +2,27 @@
 # tenant-screening-qc — a gated saga that screens a rental applicant in Québec, one stage at a time (orazaka-packs#123).
 #
 #   1. documents    the evidence of the two document Studios (authenticity signals, lease check against the C.c.Q.)
-#   2. courts       the TAL and the plumitifs, through the engine's external-check port (orazaka-ai-engine#73, #75)
-#   3. credit       a credit report, through the same port
+#   2. courts       the TAL and the plumitifs: the engine's check orazaka.core.checks.courtrecords (orazaka-ai-engine#90)
+#   3. credit       a credit report: the engine's check orazaka.core.checks.credit
+#
+# One door: the court-records and credit stages are the ENGINE's capabilities (consent, key, one call held, provider, audit,
+# settle or release), never this pack's. The pack plans, gates on consent, decides the cut-offs and writes the report from the
+# engine's closed answer (outcome, refusal, category, calls); it calls no provider and keeps no connector (orazaka-packs#138).
 #
 # A stage runs, and is charged, only if the one before it passed its CUT-OFF. A cut-off is manager data: a dated default
 # ruleset in this pack, replaced stage by stage by the manager's own rules. A stopped saga never charges a later stage, and the
 # report says where it stopped and why. Consent is checked per purpose before each paid stage: a missing consent stops that
 # stage visibly and nothing is called. The applicant does not pay by default (installation setting, C.c.Q. 1904).
 #
-# MOCKS ONLY: the connector is the mock. No provider, no network, no account until a pilot customer says go. The Studio is DRAFT.
+# MOCKS ONLY: the engine's connector is its mock, and the ruleset names the mock. No provider, no network, no account until a
+# pilot customer says go. The Studio is DRAFT.
 #
 # SENSITIVE: personal data and a credit file. Data class, shortened retention, append-only audit, scope guard (ADR-051). The
 # pack decides nothing about the applicant: it returns codes, and the landlord decides.
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: tenant-screening-qc
-version: 1.0.0
+version: 2.0.0
 tier: WORKER
 distribution: CLOUD
 regulatoryClass: SENSITIVE
@@ -76,34 +81,6 @@ requires:
         type: object
         properties: {"stage": {"type": "string"}, "purpose": {"type": "string"}, "outcome": {"type": "string"}, "facts": {"type": "object"}, "charged": {"type": "boolean"}, "credits": {"type": "integer"}, "subjectRef": {"type": "string"}, "providerRef": {"type": "string"}, "resultJson": {"type": "string"}}
         required: ["stage", "outcome", "charged", "credits", "resultJson"]
-    - key: orazaka.screening.courts.check
-      routingKey: job.screening.courts
-      handlerKey: screening.courts
-      billableCapability: AGENT
-      billableUnit: CALL
-      enabled: true
-      inputSchema:
-        type: object
-        properties: {"plan": {"type": "string"}, "subject": {"type": "object"}, "consentedPurposes": {"type": "array", "items": {"type": "string"}}}
-        required: ["plan", "subject"]
-      outputSchema:
-        type: object
-        properties: {"stage": {"type": "string"}, "purpose": {"type": "string"}, "outcome": {"type": "string"}, "facts": {"type": "object"}, "charged": {"type": "boolean"}, "credits": {"type": "integer"}, "subjectRef": {"type": "string"}, "providerRef": {"type": "string"}, "resultJson": {"type": "string"}}
-        required: ["stage", "outcome", "charged", "credits", "resultJson"]
-    - key: orazaka.screening.credit.check
-      routingKey: job.screening.credit
-      handlerKey: screening.credit
-      billableCapability: AGENT
-      billableUnit: CALL
-      enabled: true
-      inputSchema:
-        type: object
-        properties: {"plan": {"type": "string"}, "subject": {"type": "object"}, "consentedPurposes": {"type": "array", "items": {"type": "string"}}}
-        required: ["plan", "subject"]
-      outputSchema:
-        type: object
-        properties: {"stage": {"type": "string"}, "purpose": {"type": "string"}, "outcome": {"type": "string"}, "facts": {"type": "object"}, "charged": {"type": "boolean"}, "credits": {"type": "integer"}, "subjectRef": {"type": "string"}, "providerRef": {"type": "string"}, "resultJson": {"type": "string"}}
-        required: ["stage", "outcome", "charged", "credits", "resultJson"]
     - key: orazaka.screening.cutoff.decide
       routingKey: job.screening.cutoff
       handlerKey: screening.cutoff
@@ -122,7 +99,7 @@ requires:
       enabled: true
       inputSchema:
         type: object
-        properties: {"plan": {"type": "string", "description": "Le plan gelé de l'exécution."}, "documentsResult": {"type": "string", "description": "Le résultat JSON de l'étape documents, vide si elle n'a pas tourné."}, "documentsGate": {"type": "string", "description": "La décision JSON après l'étape documents, vide si elle n'a pas eu lieu."}, "documentsConsent": {"type": "string", "description": "Le consentement pour l'étape documents, vide si non vérifié."}, "courtsResult": {"type": "string", "description": "Le résultat JSON de l'étape courts, vide si elle n'a pas tourné."}, "courtsGate": {"type": "string", "description": "La décision JSON après l'étape courts, vide si elle n'a pas eu lieu."}, "courtsConsent": {"type": "string", "description": "Le consentement pour l'étape courts, vide si non vérifié."}, "creditResult": {"type": "string", "description": "Le résultat JSON de l'étape credit, vide si elle n'a pas tourné."}, "creditGate": {"type": "string", "description": "La décision JSON après l'étape credit, vide si elle n'a pas eu lieu."}, "creditConsent": {"type": "string", "description": "Le consentement pour l'étape credit, vide si non vérifié."}}
+        properties: {"plan": {"type": "string", "description": "Le plan gelé de l'exécution."}, "documentsResult": {"type": "string", "description": "Le résultat JSON de l'étape documents, vide si elle n'a pas tourné."}, "documentsGate": {"type": "string", "description": "La décision JSON après l'étape documents, vide si elle n'a pas eu lieu."}, "documentsConsent": {"type": "string", "description": "Le consentement pour l'étape documents, vide si non vérifié."}, "courtsResult": {"type": "string", "description": "La réponse JSON du contrôle du moteur (orazaka.core.checks.courtrecords), vide s'il n'a pas tourné."}, "courtsGate": {"type": "string", "description": "La décision JSON après l'étape courts, vide si elle n'a pas eu lieu."}, "courtsConsent": {"type": "string", "description": "Le consentement pour l'étape courts, vide si non vérifié."}, "creditResult": {"type": "string", "description": "La réponse JSON du contrôle du moteur (orazaka.core.checks.credit), vide s'il n'a pas tourné."}, "creditGate": {"type": "string", "description": "La décision JSON après l'étape credit, vide si elle n'a pas eu lieu."}, "creditConsent": {"type": "string", "description": "Le consentement pour l'étape credit, vide si non vérifié."}}
         required: ["plan"]
       outputSchema:
         type: object

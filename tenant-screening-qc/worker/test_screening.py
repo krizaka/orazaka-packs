@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """The screening saga, every path, on the mock: the real blueprint is interpreted step by step (its conditions, its templates)
-and each step runs the real handler. The only stand-in is the connector, which is the mock and counts its calls.
+and each of the pack's steps runs the real handler. The court-records and credit steps are the engine's checks
+(``orazaka.core.checks.*``, orazaka-packs#138): the only stand-in is ``FakeEngine``, which answers them exactly as the
+job-service executor does (the contract ``tests/contracts/orazaka-core-checks.json``, the fixtures of the engine's
+``MockConnector``) and counts its provider calls.
 
     python test_screening.py
 """
@@ -16,14 +19,15 @@ from unittest import mock
 
 import yaml
 
-import connectors
 import handlers
 import screening
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BLUEPRINT = json.load(open(os.path.join(HERE, "..", "studios", "tenant-screening-qc", "blueprint.json"), encoding="utf-8"))
+BLUEPRINT_STEPS = {s["id"]: s for s in BLUEPRINT["definition"]["steps"]}
 PACK = yaml.safe_load(open(os.path.join(HERE, "..", "pack.yaml"), encoding="utf-8"))
 ROUTING = {c["key"]: c["routingKey"] for c in PACK["requires"]["capabilities"]}
+CONTRACT = json.load(open(os.path.join(HERE, "..", "..", "tests", "contracts", "orazaka-core-checks.json"), encoding="utf-8"))
 
 PLACEHOLDER = re.compile(r"\{\{([^{}]*)}}")
 LONE = re.compile(r"\s*\{\{([^{}]*)}}\s*")
@@ -34,9 +38,56 @@ class RunFailed(Exception):
     """A step refused its payload: the run fails, nothing after it ran."""
 
 
+class FakeEngine:
+    """The engine's checks as a step sees them: consent from ``consentedPurposes``, then the key, then one provider call.
+
+    The answers are the engine's ``MockConnector`` fixtures, chosen by the last name (orazaka-ai-engine#90): Tremblay has a TAL
+    non-payment file, Côté another TAL file, Morin a criminal one, Lavoie a civil one, Gagnon none, Roy is a provider error,
+    Bouchard a timeout; anyone else has no match. Only court records answer a category. ``calls`` lists the purposes that
+    reached the provider, so a test proves a stage was never called.
+    """
+
+    FIXTURES = {
+        "Tremblay": ("MATCH", "TAL_NON_PAYMENT", "mock-fixture-01"),
+        "Côté": ("MATCH", "TAL_OTHER", "mock-fixture-02"),
+        "Morin": ("MATCH", "CRIMINAL", "mock-fixture-03"),
+        "Lavoie": ("MATCH", "CIVIL", "mock-fixture-04"),
+        "Gagnon": ("NO_MATCH", "NONE", "mock-fixture-05"),
+        "Roy": ("PROVIDER_ERROR", "NONE", "mock-fixture-06"),
+        "Bouchard": ("TIMEOUT", "NONE", "mock-fixture-07"),
+    }
+
+    def __init__(self, refusal=None):
+        self.calls, self.refusal = [], refusal
+
+    def __call__(self, feature_key, payload):
+        purpose = CONTRACT["featureKeys"][feature_key]
+        assert set(payload) == set(CONTRACT["inputs"]), f"{feature_key} called with {sorted(payload)}"
+        subject = payload["subject"]
+        assert isinstance(subject, dict) and {"subjectId", "lastName", "firstName"} <= set(subject)
+        consented = payload["consentedPurposes"]
+        refusal = "NO_CONSENT" if not (isinstance(consented, list) and purpose in consented) else self.refusal
+        if refusal:
+            result = {"outcome": "REFUSED", "refusal": refusal, "category": "NONE", "providerRef": None, "calls": 0}
+        else:
+            self.calls.append(purpose)
+            outcome, category, ref = self.FIXTURES.get(subject["lastName"], ("NO_MATCH", "NONE", None))
+            matched = outcome == "MATCH"
+            result = {
+                "outcome": outcome,
+                "refusal": None,
+                "category": category if matched and purpose == "COURT_RECORDS" else "NONE",
+                "providerRef": ref if matched else None,
+                "calls": 1 if outcome in CONTRACT["answered"] else 0,
+            }
+        out = dict(result, resultJson=json.dumps(result))
+        assert sorted(out) == sorted(CONTRACT["outputs"])
+        return out, {"calls": result["calls"]}
+
+
 class Run:
-    def __init__(self, outputs, executed, consumption, connector):
-        self.outputs, self.executed, self.consumption, self.connector = outputs, executed, consumption, connector
+    def __init__(self, outputs, executed, consumption, engine):
+        self.outputs, self.executed, self.consumption, self.engine = outputs, executed, consumption, engine
 
     @property
     def report(self):
@@ -78,27 +129,29 @@ def holds(condition, inputs, config, steps):
     return equal == (operator == "==")
 
 
-def run(inputs, config=None, fixtures=None, blueprint=BLUEPRINT):
+def run(inputs, config=None, engine=None, blueprint=BLUEPRINT):
     config = config or {}
-    shared = connectors.MockConnector(**({"fixtures": fixtures} if fixtures else {}))
+    engine = engine or FakeEngine()
     steps, executed, consumption = {}, [], {}
     seen = set()
-    with mock.patch.object(connectors, "connector_for", lambda provider: shared):
-        for step in blueprint["definition"]["steps"]:
-            assert set(step["dependsOn"]) <= seen, f"{step['id']} depends on a step that comes later"
-            seen.add(step["id"])
-            if step.get("condition") and not holds(step["condition"], inputs, config, steps):
-                continue
-            payload = {k: render(v, inputs, config, steps) for k, v in step["inputs"].items()}
-            try:
+    for step in blueprint["definition"]["steps"]:
+        assert set(step["dependsOn"]) <= seen, f"{step['id']} depends on a step that comes later"
+        seen.add(step["id"])
+        if step.get("condition") and not holds(step["condition"], inputs, config, steps):
+            continue
+        payload = {k: render(v, inputs, config, steps) for k, v in step["inputs"].items()}
+        try:
+            if step["featureKey"] in CONTRACT["featureKeys"]:
+                result, used = engine(step["featureKey"], payload)
+            else:
                 result, used = handlers.handle(ROUTING[step["featureKey"]], payload)
-            except (screening.InvalidInput, connectors.ProviderNotEnabled) as bad:
-                raise RunFailed(f"{step['id']}: {bad}") from bad
-            steps[step["out"]] = result
-            executed.append(step["id"])
-            consumption[step["id"]] = used
+        except screening.InvalidInput as bad:
+            raise RunFailed(f"{step['id']}: {bad}") from bad
+        steps[step["out"]] = result
+        executed.append(step["id"])
+        consumption[step["id"]] = used
     outputs = {o["key"]: {"report": json.loads(resolve(PLACEHOLDER.fullmatch(o["from"]).group(1), {}, {}, steps))} if o["key"] == "report" else resolve(PLACEHOLDER.fullmatch(o["from"]).group(1), {}, {}, steps) for o in blueprint["definition"]["outputs"]}
-    return Run(outputs, executed, consumption, shared)
+    return Run(outputs, executed, consumption, engine)
 
 
 ALL = ["DOCUMENTS", "COURT_RECORDS", "CREDIT"]
@@ -124,15 +177,17 @@ class AllPaths(unittest.TestCase):
         self.assertEqual([s["state"] for s in r.report["stages"]], ["RAN", "RAN", "RAN"])
         self.assertEqual(r.report["ledger"]["byStage"], {"documents": 10, "courts": 30, "credit": 20})
         self.assertEqual(r.report["ledger"]["total"], 60)
-        self.assertEqual(r.connector.calls, ["COURT_RECORDS", "CREDIT"])
+        self.assertEqual(r.engine.calls, ["COURT_RECORDS", "CREDIT"])
         self.assertEqual([r.consumption[s]["calls"] for s in ("documents", "courts", "credit")], [1, 1, 1])
         self.assertEqual(r.report["stages"][0]["facts"], {"majorSignals": 0, "unusualSignals": 1, "leaseFailures": 1})
+        self.assertEqual(r.report["stages"][1]["facts"], {"outcome": "NO_MATCH", "category": "NONE"})
+        self.assertEqual(r.report["stages"][2]["facts"], {"outcome": "NO_MATCH"})
 
     def test_a_stop_after_documents_never_reaches_a_provider(self):
         r = run(applicant(report=DOCTORED))
         self.assertEqual((r.report["status"], r.report["stoppedAt"], r.report["stopCode"], r.report["ruleId"]), ("STOPPED", "documents", "CUTOFF", "CUT-DOC-MAJOR-SIGNALS"))
         self.assertEqual([s["state"] for s in r.report["stages"]], ["RAN", "NOT_RUN", "NOT_RUN"])
-        self.assertEqual(r.connector.calls, [])
+        self.assertEqual(r.engine.calls, [])
         self.assertEqual(r.report["ledger"]["total"], 10)
         for later in ("consent_courts", "courts", "consent_credit", "credit"):
             self.assertNotIn(later, r.executed)
@@ -140,7 +195,7 @@ class AllPaths(unittest.TestCase):
     def test_a_stop_after_court_records_never_calls_credit_and_never_charges_it(self):
         r = run(applicant("Tremblay"))
         self.assertEqual((r.report["status"], r.report["stoppedAt"], r.report["ruleId"]), ("STOPPED", "courts", "CUT-COURT-FILE-FOUND"))
-        self.assertEqual(r.connector.calls, ["COURT_RECORDS"])
+        self.assertEqual(r.engine.calls, ["COURT_RECORDS"])
         credit = r.report["stages"][2]
         self.assertEqual((credit["state"], credit["charged"], credit["credits"]), ("NOT_RUN", False, 0))
         self.assertEqual(r.report["ledger"]["byStage"], {"documents": 10, "courts": 30, "credit": 0})
@@ -154,7 +209,7 @@ class AllPaths(unittest.TestCase):
         self.assertEqual((r.report["status"], r.report["stopCode"]), ("INCOMPLETE", "PROVIDER_ERROR"))
         self.assertEqual(r.consumption["courts"]["calls"], 0)
         self.assertEqual(r.report["ledger"]["total"], 10)
-        self.assertEqual(r.connector.calls, ["COURT_RECORDS"])
+        self.assertEqual(r.engine.calls, ["COURT_RECORDS"])
 
     def test_a_timeout_is_not_charged_either(self):
         r = run(applicant("Bouchard"))
@@ -166,14 +221,14 @@ class AllPaths(unittest.TestCase):
         courts = r.report["stages"][1]
         self.assertEqual((courts["state"], courts["consent"], courts["charged"]), ("REFUSED", "REFUSED", False))
         self.assertEqual((r.report["status"], r.report["stopCode"], r.report["stoppedAt"]), ("INCOMPLETE", "NO_CONSENT", "courts"))
-        self.assertEqual(r.connector.calls, [])
+        self.assertEqual(r.engine.calls, [])
         self.assertEqual(r.report["ledger"]["total"], 10)
         self.assertNotIn("courts", r.executed)
 
     def test_a_missing_consent_for_credit_stops_after_court_records(self):
         r = run(applicant(consents=["DOCUMENTS", "COURT_RECORDS"]))
         self.assertEqual((r.report["stages"][2]["state"], r.report["stopCode"], r.report["stoppedAt"]), ("REFUSED", "NO_CONSENT", "credit"))
-        self.assertEqual(r.connector.calls, ["COURT_RECORDS"])
+        self.assertEqual(r.engine.calls, ["COURT_RECORDS"])
         self.assertEqual(r.report["ledger"]["total"], 40)
 
     def test_no_consent_at_all_charges_nothing(self):
@@ -181,18 +236,106 @@ class AllPaths(unittest.TestCase):
         self.assertEqual(r.report["ledger"]["total"], 0)
         self.assertEqual(r.report["stopCode"], "NO_CONSENT")
         self.assertEqual(r.report["stoppedAt"], "documents")
-        self.assertEqual(r.connector.calls, [])
+        self.assertEqual(r.engine.calls, [])
         self.assertNotIn("documents", r.executed)
 
-    def test_every_paid_stage_checks_consent_itself_so_no_route_skips_the_gate(self):
-        shared = connectors.MockConnector()
+    def test_every_paid_stage_is_gated_on_consent_where_it_runs_so_no_route_skips_the_gate(self):
         plan = screening.plan(dict(applicant(), applicantPaysFees=""))
-        for fn in (screening.courts, screening.credit):
-            result = fn({"plan": plan["planJson"], "subject": applicant()["subject"], "consentedPurposes": []}, shared)
-            self.assertEqual((result["outcome"], result["charged"], result["credits"]), ("REFUSED", False, 0))
-        self.assertEqual(shared.calls, [])
         refused = screening.documents({"plan": plan["planJson"], "authenticityReport": CLEAN, "consentedPurposes": None})
         self.assertEqual((refused["outcome"], refused["charged"]), ("REFUSED", False))
+        # the engine's checks receive the consents and refuse on their own: the pack's consent step is not the only gate
+        for stage in ("courts", "credit"):
+            self.assertEqual(BLUEPRINT_STEPS[stage]["inputs"]["consentedPurposes"], "{{inputs.consentedPurposes}}")
+        engine = FakeEngine()
+        out, used = engine("orazaka.core.checks.courtrecords", {"subject": applicant()["subject"], "consentedPurposes": []})
+        self.assertEqual((out["outcome"], out["refusal"], used), ("REFUSED", "NO_CONSENT", {"calls": 0}))
+        self.assertEqual(engine.calls, [])
+
+    def test_an_engine_refusal_for_consent_stays_no_consent_even_when_the_pack_saw_one(self):
+        plan = screening.plan(applicant())["planJson"]
+        engine = {"outcome": "REFUSED", "refusal": "NO_CONSENT", "category": "NONE", "providerRef": None, "calls": 0}
+        gate = screening.cutoff({"plan": plan, "stage": "courts", "consent": "GRANTED", "result": json.dumps(engine), "spentCredits": 10})
+        self.assertEqual((gate["decision"], gate["code"], gate["spentCredits"]), ("STOP", "NO_CONSENT", 10))
+        body = screening.report({"plan": plan, "courtsResult": json.dumps(engine), "courtsGate": gate["decisionJson"], "courtsConsent": "GRANTED"})["report"]
+        courts = body["stages"][1]
+        self.assertEqual((courts["state"], courts["charged"], courts["credits"], body["stopCode"]), ("REFUSED", False, 0, "NO_CONSENT"))
+
+
+class TheEnginesAnswer(unittest.TestCase):
+    """The gates and the report read the engine's ``CheckStepResult``: credits only when ``calls == 1``, a closed category."""
+
+    def plan(self, **extra):
+        return screening.plan(applicant(**extra))["planJson"]
+
+    def gate(self, engine, stage="courts", plan=None):
+        return screening.cutoff({"plan": plan or self.plan(), "stage": stage, "consent": "GRANTED", "result": json.dumps(engine), "spentCredits": 10})
+
+    def answer(self, outcome="NO_MATCH", category="NONE", calls=1, refusal=None, ref=None):
+        return {"outcome": outcome, "refusal": refusal, "category": category, "providerRef": ref, "calls": calls}
+
+    def test_a_key_or_a_budget_the_engine_refuses_is_charged_nothing_and_says_why(self):
+        for refusal, code in (("NO_KEY", "NO_KEY"), ("BUDGET_EXHAUSTED", "BUDGET")):
+            r = run(applicant(), engine=FakeEngine(refusal=refusal))
+            courts = r.report["stages"][1]
+            self.assertEqual((courts["state"], courts["charged"], courts["credits"]), ("UNAVAILABLE", False, 0), refusal)
+            self.assertEqual((r.report["status"], r.report["stopCode"], r.report["stoppedAt"]), ("INCOMPLETE", code, "courts"))
+            self.assertEqual((r.engine.calls, r.consumption["courts"]), ([], {"calls": 0}))
+            self.assertEqual(r.report["ledger"]["total"], 10)
+
+    def test_credits_are_charged_only_for_the_call_the_engine_made(self):
+        gate = self.gate(self.answer())
+        self.assertEqual((gate["decision"], gate["spentCredits"]), ("CONTINUE", 40))
+        for outcome in ("PROVIDER_ERROR", "TIMEOUT"):
+            gate = self.gate(self.answer(outcome, calls=0))
+            self.assertEqual((gate["code"], gate["spentCredits"]), (outcome, 10))
+
+    def test_an_answer_that_does_not_hold_together_is_refused_never_charged_or_guessed(self):
+        bad = [
+            self.answer(calls=0),                                         # an answer that made no call
+            self.answer("PROVIDER_ERROR", calls=1),                       # a failure that charged a call
+            self.answer("NO_MATCH", category="TAL_OTHER"),                # a category without a match
+            self.answer("MATCH", category="A NAME"),                      # a category outside the closed set
+            self.answer("REFUSED", calls=0),                              # a refusal without its reason
+            self.answer("NO_MATCH", refusal="NO_KEY"),                    # a reason without a refusal
+            self.answer("FOUND"),                                         # an outcome outside the closed set
+            self.answer(calls=2),                                         # a check is one call or none
+            self.answer(calls=True),
+        ]
+        for engine in bad:
+            with self.assertRaises(screening.InvalidInput, msg=json.dumps(engine)):
+                self.gate(engine)
+        with self.assertRaises(screening.InvalidInput):
+            screening.report({"plan": self.plan(), "courtsResult": json.dumps(bad[0]), "courtsGate": json.dumps({"decision": "STOP", "code": "CUTOFF", "ruleId": None})})
+
+    def test_the_default_still_stops_on_any_court_file_whatever_its_category(self):
+        for last, category in (("Tremblay", "TAL_NON_PAYMENT"), ("Côté", "TAL_OTHER"), ("Morin", "CRIMINAL"), ("Lavoie", "CIVIL")):
+            r = run(applicant(last))
+            self.assertEqual((r.report["stoppedAt"], r.report["ruleId"]), ("courts", "CUT-COURT-FILE-FOUND"), last)
+            self.assertEqual(r.report["stages"][1]["facts"], {"outcome": "MATCH", "category": category})
+
+    def test_a_manager_can_stop_on_a_tal_non_payment_file_only(self):
+        rules = {"courts": [{"id": "CUT-TAL-NON-PAYMENT", "fact": "category", "op": "equals", "value": "TAL_NON_PAYMENT"}]}
+        stopped = run(applicant("Tremblay", cutoffs=rules))
+        self.assertEqual((stopped.report["status"], stopped.report["ruleId"]), ("STOPPED", "CUT-TAL-NON-PAYMENT"))
+        self.assertEqual(stopped.engine.calls, ["COURT_RECORDS"])
+        went_on = run(applicant("Côté", cutoffs=rules))
+        self.assertEqual((went_on.report["status"], went_on.report["ledger"]["total"]), ("COMPLETED", 60))
+        self.assertEqual(went_on.engine.calls, ["COURT_RECORDS", "CREDIT"])
+        either = {"courts": [{"id": "CUT-TAL-ANY", "fact": "category", "op": "in", "value": ["TAL_NON_PAYMENT", "TAL_OTHER"]}]}
+        self.assertEqual(run(applicant("Côté", cutoffs=either)).report["ruleId"], "CUT-TAL-ANY")
+        self.assertEqual(run(applicant("Morin", cutoffs=either)).report["status"], "COMPLETED")
+
+    def test_a_category_rule_must_name_a_category_the_engine_answers(self):
+        for rule in (
+            {"id": "CUT-X-1", "fact": "category", "op": "equals", "value": "TAL_NONPAYMENT"},
+            {"id": "CUT-X-1", "fact": "category", "op": "in", "value": ["TAL_OTHER", "EVICTION"]},
+            {"id": "CUT-X-1", "fact": "category", "op": "atLeast", "value": 1},
+            {"id": "CUT-X-1", "fact": "outcome", "op": "equals", "value": "TIMEOUT"},
+        ):
+            with self.assertRaises(RunFailed, msg=json.dumps(rule)):
+                run(applicant(cutoffs={"courts": [rule]}))
+        with self.assertRaises(RunFailed):  # credit answers no category
+            run(applicant(cutoffs={"credit": [{"id": "CUT-X-1", "fact": "category", "op": "equals", "value": "NONE"}]}))
 
 
 class CutoffsAreData(unittest.TestCase):
@@ -201,13 +344,13 @@ class CutoffsAreData(unittest.TestCase):
         r = run(applicant("Tremblay", cutoffs=rules))
         self.assertEqual((r.report["status"], r.report["stoppedAt"], r.report["ruleId"]), ("STOPPED", "credit", "CUT-CREDIT-FILE"))
         self.assertEqual(r.report["ledger"]["total"], 60)
-        self.assertEqual(r.connector.calls, ["COURT_RECORDS", "CREDIT"])
+        self.assertEqual(r.engine.calls, ["COURT_RECORDS", "CREDIT"])
 
     def test_a_manager_rule_can_stop_on_a_lease_finding(self):
         rules = {"documents": [{"id": "CUT-LEASE-FAILS", "fact": "leaseFailures", "op": "atLeast", "value": 1}]}
         r = run(applicant(cutoffs=rules))
         self.assertEqual((r.report["stoppedAt"], r.report["ruleId"]), ("documents", "CUT-LEASE-FAILS"))
-        self.assertEqual(r.connector.calls, [])
+        self.assertEqual(r.engine.calls, [])
 
     def test_an_empty_list_removes_the_default_cutoff(self):
         r = run(applicant(report=DOCTORED, cutoffs={"documents": []}))
@@ -235,16 +378,16 @@ class CutoffsAreData(unittest.TestCase):
                 run(applicant(cutoffs=cutoffs))
 
     def test_a_failed_plan_ran_nothing_else(self):
-        with mock.patch.object(connectors, "connector_for") as factory:
-            with self.assertRaises(RunFailed):
-                run(applicant(cutoffs={"courts": "x"}))
-            factory.assert_not_called()
+        engine = FakeEngine()
+        with self.assertRaises(RunFailed):
+            run(applicant(cutoffs={"courts": "x"}), engine=engine)
+        self.assertEqual(engine.calls, [])
 
     def test_budget_stops_before_a_stage_the_cap_cannot_pay(self):
         r = run(applicant(creditCap=50))
         self.assertEqual((r.report["status"], r.report["stopCode"], r.report["stoppedAt"]), ("INCOMPLETE", "BUDGET", "courts"))
         self.assertEqual(r.report["ledger"]["total"], 40)
-        self.assertEqual(r.connector.calls, ["COURT_RECORDS"])
+        self.assertEqual(r.engine.calls, ["COURT_RECORDS"])
         self.assertNotIn("credit", r.executed)
 
     def test_a_cap_that_cannot_pay_the_first_stage_is_refused_at_the_plan(self):
@@ -281,10 +424,10 @@ class ApplicantPays(unittest.TestCase):
 
 
 class NoRawPersonalData(unittest.TestCase):
-    NAMES = ("Gagnon", "Tremblay", "Roy", "Bouchard", "Alex", "1990-01-01")
+    NAMES = ("Gagnon", "Tremblay", "Roy", "Bouchard", "Côté", "Morin", "Lavoie", "Alex", "1990-01-01")
 
     def test_no_step_output_carries_a_name_or_a_birth_date(self):
-        for last in ("Gagnon", "Tremblay", "Roy", "Bouchard"):
+        for last in ("Gagnon", "Tremblay", "Roy", "Bouchard", "Côté", "Morin", "Lavoie"):
             out, err = io.StringIO(), io.StringIO()
             with redirect_stdout(out), redirect_stderr(err):
                 r = run(applicant(last))
@@ -293,16 +436,22 @@ class NoRawPersonalData(unittest.TestCase):
                 self.assertNotIn(name, text, f"{name} leaked for {last}")
             self.assertIn("subj-0001", r.outputs["report"]["report"]["subjectRef"])
 
-    def test_the_provider_reference_is_derived_from_the_opaque_id_not_from_a_name(self):
-        answer = connectors.MockConnector().verify_court_records(connectors.Subject("subj-0001", "Tremblay", "Alex"))
-        self.assertTrue(answer.provider_ref.startswith("mock-"))
-        self.assertNotIn("Tremblay", answer.provider_ref)
+    def test_the_report_keeps_codes_only_not_the_providers_reference(self):
+        r = run(applicant("Tremblay"))
+        self.assertNotIn("mock-fixture", json.dumps(r.outputs))  # the engine's audit keeps the reference, the report does not
+        for stage in r.report["stages"]:
+            self.assertLessEqual(set(stage), {"stage", "purpose", "state", "outcome", "facts", "consent", "charged", "credits"})
 
-    def test_a_subject_never_prints_its_names(self):
-        subject = connectors.Subject("subj-0001", "Tremblay", "Alex", "1990-01-01")
-        for text in (repr(subject), str(subject), f"{subject}"):
-            for name in self.NAMES:
-                self.assertNotIn(name, text)
+    def test_nothing_the_engine_adds_to_its_answer_reaches_a_result_or_the_report(self):
+        plan = screening.plan(applicant())["planJson"]
+        smuggled = {"outcome": "MATCH", "refusal": None, "category": "CIVIL", "providerRef": "mock-fixture-04", "calls": 1,
+                    "lastName": "Tremblay", "record": "Tremblay c. Alex, 1990-01-01"}
+        gate = screening.cutoff({"plan": plan, "stage": "courts", "consent": "GRANTED", "result": json.dumps(smuggled), "spentCredits": 10})
+        body = screening.report({"plan": plan, "courtsResult": json.dumps(smuggled), "courtsGate": gate["decisionJson"], "courtsConsent": "GRANTED"})
+        text = json.dumps(gate) + json.dumps(body)
+        for name in self.NAMES + ("mock-fixture",):
+            self.assertNotIn(name, text)
+        self.assertEqual(body["report"]["stages"][1]["facts"], {"outcome": "MATCH", "category": "CIVIL"})
 
     def test_an_error_message_never_repeats_a_value(self):
         try:
@@ -314,21 +463,25 @@ class NoRawPersonalData(unittest.TestCase):
 
 
 class Providers(unittest.TestCase):
-    def test_only_the_mock_exists(self):
-        self.assertIsInstance(connectors.connector_for("mock"), connectors.MockConnector)
+    def test_only_the_mock_is_enabled_a_ruleset_naming_another_fails_the_plan(self):
+        ruleset = screening.load_ruleset()
         for provider in ("soquij", "trustii", "certn", ""):
-            with self.assertRaises(connectors.ProviderNotEnabled):
-                connectors.connector_for(provider)
+            with mock.patch.object(screening, "load_ruleset", lambda as_of=None, p=provider: dict(ruleset, provider=p)):
+                with self.assertRaises(screening.ProviderNotEnabled):
+                    screening.plan(applicant())
+        self.assertTrue(issubclass(screening.ProviderNotEnabled, screening.InvalidInput))
 
     def test_the_ruleset_names_the_mock_and_says_so_in_its_limits(self):
         ruleset = screening.load_ruleset()
         self.assertEqual(ruleset["provider"], "mock")
         self.assertIn("MOCK_PROVIDER_ONLY", ruleset["limits"])
 
-    def test_the_fixtures_cover_a_match_no_match_an_error_and_a_timeout(self):
-        subject = lambda last: connectors.Subject("s", last, "A")  # noqa: E731
-        outcomes = {name: connectors.MockConnector().verify_credit(subject(name)).outcome for name in ("Tremblay", "Gagnon", "Roy", "Bouchard", "Unknown")}
-        self.assertEqual(outcomes, {"Tremblay": "MATCH", "Gagnon": "NO_MATCH", "Roy": "PROVIDER_ERROR", "Bouchard": "TIMEOUT", "Unknown": "NO_MATCH"})
+    def test_the_closed_sets_of_the_worker_are_the_engines_contract(self):
+        self.assertEqual(list(screening.ENGINE_OUTCOMES), CONTRACT["outcome"])
+        self.assertEqual(list(screening.ENGINE_ANSWERED), CONTRACT["answered"])
+        self.assertEqual(list(screening.ENGINE_REFUSALS), CONTRACT["refusal"])
+        self.assertEqual(list(screening.ENGINE_CATEGORIES), CONTRACT["category"])
+        self.assertEqual(set(screening.ENGINE_PURPOSES), set(CONTRACT["featureKeys"].values()))
 
     def test_a_stage_that_is_not_a_handler_is_refused(self):
         with self.assertRaises(ValueError):
@@ -347,10 +500,21 @@ class Blueprint(unittest.TestCase):
         for step in BLUEPRINT["definition"]["steps"]:
             self.assertEqual(step["onError"], "FAIL", step["id"])
 
-    def test_every_capability_of_the_blueprint_is_contributed_and_routed(self):
+    def test_every_capability_of_the_blueprint_is_the_engines_or_contributed_and_routed(self):
         for step in BLUEPRINT["definition"]["steps"]:
+            if step["featureKey"] in CONTRACT["featureKeys"]:
+                self.assertNotIn(step["featureKey"], ROUTING, "one door: the pack never declares an engine key")
+                continue
             self.assertIn(step["featureKey"], ROUTING)
             self.assertIn(ROUTING[step["featureKey"]], handlers.HANDLERS)
+
+    def test_court_records_and_credit_are_the_engines_checks(self):
+        self.assertEqual(BLUEPRINT_STEPS["courts"]["featureKey"], "orazaka.core.checks.courtrecords")
+        self.assertEqual(BLUEPRINT_STEPS["credit"]["featureKey"], "orazaka.core.checks.credit")
+        for stage in ("courts", "credit"):
+            self.assertEqual(set(BLUEPRINT_STEPS[stage]["inputs"]), set(CONTRACT["inputs"]))
+        self.assertNotIn("job.screening.courts", handlers.HANDLERS)
+        self.assertNotIn("job.screening.credit", handlers.HANDLERS)
 
 
 class FakeChannel:
@@ -381,9 +545,8 @@ class Shell(unittest.TestCase):
 
     def test_a_job_is_answered_with_its_result_and_what_it_cost(self):
         plan = screening.plan(applicant())
-        payload = {"plan": plan["planJson"], "subject": applicant()["subject"], "consentedPurposes": ALL}
-        with mock.patch.object(connectors, "connector_for", lambda provider: connectors.MockConnector()):
-            self.deliver("job.screening.courts", {"jobId": "j-1", "payload": payload})
+        payload = {"plan": plan["planJson"], "authenticityReport": CLEAN, "consentedPurposes": ALL}
+        self.deliver("job.screening.documents", {"jobId": "j-1", "payload": payload})
         exchange, key, body = self.channel.published[0]
         self.assertEqual((exchange, key, body["jobId"], body["consumption"]), ("orazaka.events", "job.j-1.done", "j-1", {"tokens": 0, "calls": 1}))
         self.assertEqual(self.channel.acked, [1])
