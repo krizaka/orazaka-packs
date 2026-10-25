@@ -373,8 +373,9 @@ def test_the_held_articles_are_a_snapshot_whose_hash_must_be_the_corpus_row():
 
 
 def test_the_shipped_snapshot_matches_the_corpus_when_it_is_reachable():
-    # Behind the corpus switch, off by default (ADR-089 cut 3): AI_LAW_CORPUS_ENABLED=true and AI_LAW_LOOKUP_URL, an
-    # endpoint answering lookupStatute as JSON ({contentHash, …}, 404 for LAW_VERSION_UNKNOWN).
+    # Behind the corpus switch, off by default (ADR-089 cut 3): AI_LAW_CORPUS_ENABLED=true and AI_LAW_LOOKUP_URL, the
+    # engine's read API (orazaka-ai-engine#89: GET /api/v1/law/articles?jurisdiction&instrument&ref&language&asOf,
+    # JSON {contentHash, …}, 404 for LAW_VERSION_UNKNOWN), with the oz_ key of AI_LAW_LOOKUP_KEY as its bearer.
     if os.environ.get("AI_LAW_CORPUS_ENABLED") != "true" or not os.environ.get("AI_LAW_LOOKUP_URL"):
         print("    (skipped: the law corpus switch is off)")
         return
@@ -383,10 +384,13 @@ def test_the_shipped_snapshot_matches_the_corpus_when_it_is_reachable():
     import urllib.request
 
     def lookup(article):
-        query = urllib.parse.urlencode({"jurisdiction": "QC", "instrument": article["instrument"], "reference": article["ref"],
+        query = urllib.parse.urlencode({"jurisdiction": "QC", "instrument": article["instrument"], "ref": article["ref"],
                                         "language": article["language"], "asOf": article["inForceFrom"]})
         try:
-            with urllib.request.urlopen(f"{os.environ['AI_LAW_LOOKUP_URL']}?{query}", timeout=10) as answer:
+            request = urllib.request.Request(f"{os.environ['AI_LAW_LOOKUP_URL']}?{query}")
+            if os.environ.get("AI_LAW_LOOKUP_KEY"):
+                request.add_header("Authorization", f"Bearer {os.environ['AI_LAW_LOOKUP_KEY']}")
+            with urllib.request.urlopen(request, timeout=10) as answer:
                 return json.load(answer)
         except urllib.error.HTTPError as missing:
             if missing.code == 404:
@@ -394,6 +398,62 @@ def test_the_shipped_snapshot_matches_the_corpus_when_it_is_reachable():
             raise
 
     assert citations.corpus_mismatches(citations.load_articles(), lookup) == []
+
+
+def test_the_corpus_lookup_asks_the_read_api_by_ref_with_its_key():
+    # A local stand-in for GET /api/v1/law/articles (orazaka-ai-engine#89): it answers the held hash for the asked
+    # article, and records what it was asked, so the query names `ref` (never `reference`) and carries the key.
+    import http.server
+    import threading
+    import urllib.parse
+
+    # The pack holds no article yet on every branch: one known article stands in for the snapshot.
+    held = {"a" * 64: {"instrument": "CCQ-1991", "ref": "1931", "language": "fr", "inForceFrom": "1994-01-01"},
+            "b" * 64: {"instrument": "CCQ-1991", "ref": "9999", "language": "fr", "inForceFrom": "1994-01-01"}}
+    by_key = {(a["instrument"], a["ref"], a["language"], a["inForceFrom"]): h for h, a in held.items()}
+    asked = []
+
+    class Api(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):  # noqa: N802 — the http.server name
+            query = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            asked.append((sorted(query), self.headers.get("Authorization")))
+            key = tuple(query.get(name, [""])[0] for name in ("instrument", "ref", "language", "asOf"))
+            found = by_key.get(key)
+            self.send_response(200 if found else 404)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({"contentHash": found} if found else {"code": "law-version-unknown"}).encode())
+
+        def log_message(self, *args):
+            pass
+
+    server = http.server.HTTPServer(("127.0.0.1", 0), Api)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    del by_key[("CCQ-1991", "9999", "fr", "1994-01-01")]  # the corpus does not know this one: 404
+    load_articles = citations.load_articles
+    citations.load_articles = lambda directory=None: held
+    saved = {k: os.environ.get(k) for k in ("AI_LAW_CORPUS_ENABLED", "AI_LAW_LOOKUP_URL", "AI_LAW_LOOKUP_KEY")}
+    try:
+        os.environ.update({"AI_LAW_CORPUS_ENABLED": "true", "AI_LAW_LOOKUP_KEY": "oz_test",
+                           "AI_LAW_LOOKUP_URL": f"http://127.0.0.1:{server.server_port}/api/v1/law/articles"})
+        try:
+            test_the_shipped_snapshot_matches_the_corpus_when_it_is_reachable()
+            raise AssertionError("the unknown article must be reported")
+        except AssertionError as mismatch:
+            if "must be reported" in str(mismatch):
+                raise
+    finally:
+        citations.load_articles = load_articles
+        server.shutdown()
+        for name, value in saved.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
+    assert len(asked) == len(held)
+    assert citations.corpus_mismatches(held, lambda a: None)  # a 404 is LAW_VERSION_UNKNOWN, never a match
+    assert all(params == ["asOf", "instrument", "jurisdiction", "language", "ref"] for params, _ in asked)
+    assert all(auth == "Bearer oz_test" for _, auth in asked)
 
 
 def test_the_judge_is_asked_only_when_a_rule_needs_it():
