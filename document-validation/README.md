@@ -182,7 +182,8 @@ The report (`job.validation.report`), held by the platform to the `outputContrac
 article version, refused at load if its text does not hash to it), `NOT_PINNED` (a rule written before ADR-089 that cites its article in
 words only: the verdict is kept for now, and the finding says so — `citation.pinned: false` and the notice « citation non épinglée »;
 pinning the shipped rules is packs#125/#126), `ARTICLE_NOT_HELD` or `QUOTE_NOT_IN_ARTICLE`. `law/` is a **snapshot for offline
-verification, not a second corpus**: with `AI_LAW_CORPUS_ENABLED=true` and `AI_LAW_LOOKUP_URL` (off by default), `test_check.py` also
+verification, not a second corpus**: with `AI_LAW_CORPUS_ENABLED=true` and `AI_LAW_LOOKUP_URL` (off by default; the engine's
+`GET /api/v1/law/articles?jurisdiction&instrument&ref&language&asOf`, orazaka-ai-engine#89, with the `oz_` key in `AI_LAW_LOOKUP_KEY`), `test_check.py` also
 requires each held hash to be the corpus row `lookupStatute` returns (ADR-089 cut 3). A PASS or FAIL whose passage or citation fails is `INSUFFICIENT_EVIDENCE`,
 and no passage is never a PASS. A 1.x installation stays pinned on its 1.x blueprint, and the worker answers `screen` and `assemble` as
 before: yomizaka#305's recordings replay byte for byte (`worker/fixtures/compliance-check/`). The Studio is listed in
