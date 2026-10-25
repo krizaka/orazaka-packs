@@ -160,6 +160,32 @@ engine never names an article: this file does. A kind without the block retrieve
 `tests/document-kinds.test.mjs` (the schema). Every switch is off as seeded (`law.corpus.enabled`, `research.enabled`, the
 `law-corpus` source).
 
+## Derivation — proposed rules from the law (ADR-089 §3)
+
+The engine proposes the checks of a kind from its law; nothing it proposes judges a document until it is promoted into
+`rulesets/` (stage 5, through a pull request here). The derivation runs in [orazaka-ai-engine](https://github.com/krizaka/orazaka-ai-engine)
+(`RuleDerivationService`, krizaka/orazaka-ai-engine#82): the retrieval above, its **verified** claims only, one model call per
+article under `law.derive.max-credits`, then `vet` (`RuleProposalVet`, no model) and `rule_proposal` (`PROPOSED` or
+`REJECTED_AUTO` with its reasons). `derivation/` holds what this pack owns of it:
+
+| File | |
+|:---|:---|
+| `proposed-ruleset.schema.json` | The answer of the propose step: rules in the shape of a ruleset rule, each with its `law` blocks (instrument, ref, language, `contentHash`, quote) and a fixture pair. A derived rule uses `REQUIRED_PATTERN`, `FORBIDDEN_PATTERN` or `JUDGMENT` (always `ADVISORY`); the numeric checks stay written by hand. |
+| `qc-visit-notice.fr.answers.json` | The golden case: recorded answers for art. 1931, 1932 and 1933 (no model was called). Four rules, all pass `vet`, none cites a rent article. |
+| `qc-visit-notice.fr.outside-corpus.answer.json` | A recorded answer citing an article the corpus does not hold: `REJECTED_AUTO`, `LAW_VERSION_UNKNOWN`. |
+| `planted/*.json` | One planted proposal per reason of `vet`: `SCHEMA_INVALID`, `REGEX_INVALID` (twice: an unclosed group, and a `(?<name>)` group Java compiles and this worker does not), `REGEX_MATCHES_EMPTY`, `QUOTE_NOT_IN_ARTICLE`, `UNSUPPORTED_NUMBER`, `FIXTURES_INDISTINCT`, `SUBJECT_MISSING`, `LAW_VERSION_UNKNOWN`, `OVER_RULE_LIMIT`. |
+| `law/` | Art. 1931 to 1933 (French), the public text read from the Données Québec XML, each file hashed as the corpus hashes it (`citations.content_hash`). |
+
+The engine's tests mirror these files and reject each plant for exactly its reason. `worker/test_derivation.py` shows the
+same verdicts with this worker's own code: the golden rules discriminate their fixtures under `rules.evaluate` and their
+quotes are `VERIFIED` by `citations.check`, and each plant fails here for the engine's reason. A derived rule is therefore
+promotable through this pack's own tests. `tests/rule-derivation.test.mjs` checks the files against the schema.
+
+```bash
+cd worker && python3 test_derivation.py
+node --test ../tests/rule-derivation.test.mjs
+```
+
 ## `compliance-check` 2.0 — identify, then the ruleset of that kind (ADR-089 §4)
 
 `identify` → `classify` (only on a tie) → `resolve` → `screen` → `judge` (only when a rule asks the model) → `report`. Inputs:

@@ -110,6 +110,7 @@ jobs:
         python test_identify.py
         python test_check.py
         python test_regex_safety.py
+        python test_derivation.py
 
   py-authenticity:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.

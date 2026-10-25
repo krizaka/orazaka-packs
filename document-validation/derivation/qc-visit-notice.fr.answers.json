@@ -1,0 +1,136 @@
+{
+  "kindId": "qc-visit-notice",
+  "jurisdiction": "QC",
+  "language": "fr",
+  "asOf": "2026-10-20",
+  "note": "Recorded answers of the derivation model for the visit notice, one per article: written for the tests, no model was called.",
+  "answers": {
+    "1931": {
+      "rules": [
+        {
+          "ruleId": "QC-VISIT-001",
+          "title": "Préavis de 24 heures",
+          "severity": "BLOCKING",
+          "method": "DETERMINISTIC",
+          "citation": "C.c.Q., art. 1931",
+          "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1931",
+          "check": {
+            "type": "REQUIRED_PATTERN",
+            "pattern": "(?i)\\b24\\s*(?:h\\b|heures?)|vingt-quatre\\s+heures"
+          },
+          "onPass": "L'avis annonce un préavis de 24 heures.",
+          "onFail": "L'avis n'annonce pas de préavis de 24 heures. Le locateur doit le donner, à moins d'une urgence (art. 1931).",
+          "fixtures": {
+            "pass": [
+              "Le locateur vous donne un préavis de 24 heures avant la visite.",
+              "Préavis : vingt-quatre heures."
+            ],
+            "fail": [
+              "Le locateur visitera le logement demain matin."
+            ]
+          },
+          "law": [
+            {
+              "instrument": "CCQ-1991",
+              "ref": "1931",
+              "language": "fr",
+              "contentHash": "01276b0b87cae0dfe45b87e6b025bcbf9993c5e997d5bcb06960ed8dd7b28400",
+              "quote": "donner au locataire un préavis de 24 heures"
+            }
+          ]
+        },
+        {
+          "ruleId": "QC-VISIT-002",
+          "title": "Motif de l'accès au logement",
+          "severity": "BLOCKING",
+          "method": "DETERMINISTIC",
+          "citation": "C.c.Q., art. 1931",
+          "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1931",
+          "check": {
+            "type": "REQUIRED_PATTERN",
+            "pattern": "(?i)v[ée]rifier\\s+l['’][ée]tat|effectuer\\s+des\\s+travaux|faire\\s+visiter|visite\\s+(?:par|d['’]un)\\s+(?:un\\s+)?(?:acqu[ée]reur|locataire)"
+          },
+          "onPass": "L'avis dit pourquoi le locateur entrera dans le logement.",
+          "onFail": "L'avis ne dit pas pourquoi le locateur entrera : vérifier l'état du logement, y effectuer des travaux ou le faire visiter (art. 1931).",
+          "fixtures": {
+            "pass": [
+              "Le locateur souhaite faire visiter le logement par un acquéreur éventuel.",
+              "Objet : vérifier l'état du logement."
+            ],
+            "fail": [
+              "Le locateur passera au logement."
+            ]
+          },
+          "law": [
+            {
+              "instrument": "CCQ-1991",
+              "ref": "1931",
+              "language": "fr",
+              "contentHash": "01276b0b87cae0dfe45b87e6b025bcbf9993c5e997d5bcb06960ed8dd7b28400",
+              "quote": "de son intention de vérifier l’état du logement, d’y effectuer des travaux ou de le faire visiter par un acquéreur éventuel"
+            }
+          ]
+        }
+      ]
+    },
+    "1932": {
+      "rules": [
+        {
+          "ruleId": "QC-VISIT-003",
+          "title": "Visite entre 9 h et 21 h",
+          "severity": "MAJOR",
+          "method": "DETERMINISTIC",
+          "subject": "(?i)\\b\\d{1,2}\\s*h(?:eures?)?\\b",
+          "citation": "C.c.Q., art. 1932",
+          "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1932",
+          "check": {
+            "type": "FORBIDDEN_PATTERN",
+            "pattern": "(?i)\\b(?:[0-8]|2[23])\\s*h(?:eures?)?\\b"
+          },
+          "onPass": "La visite est prévue entre 9 heures et 21 heures.",
+          "onFail": "L'avis fixe une visite avant 9 heures ou après 21 heures ; le locataire peut la refuser, à moins d'une urgence (art. 1932).",
+          "fixtures": {
+            "pass": [
+              "La visite aura lieu le 22 octobre à 10 h."
+            ],
+            "fail": [
+              "La visite aura lieu le 22 octobre à 7 h."
+            ]
+          },
+          "law": [
+            {
+              "instrument": "CCQ-1991",
+              "ref": "1932",
+              "language": "fr",
+              "contentHash": "3c3c7ba8063d9f40da965d3cbc380b368d67d860b537b2502ccf33f9cadef360",
+              "quote": "si la visite doit avoir lieu avant 9 heures et après 21 heures"
+            }
+          ]
+        }
+      ]
+    },
+    "1933": {
+      "rules": [
+        {
+          "ruleId": "QC-VISIT-004",
+          "title": "Travaux entre 7 h et 19 h",
+          "severity": "ADVISORY",
+          "method": "JUDGMENT",
+          "subject": "(?i)travaux",
+          "question": "L'avis annonce-t-il des travaux non urgents avant 7 heures ou après 19 heures ? Citez le passage de l'avis.",
+          "citation": "C.c.Q., art. 1933",
+          "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1933",
+          "law": [
+            {
+              "instrument": "CCQ-1991",
+              "ref": "1933",
+              "language": "fr",
+              "contentHash": "aa2582f67fcbe33e70b5d66eb6d41427349fd721372d6a6099762e3b4566ec48",
+              "quote": "en refuser l’accès avant 7 heures et après 19 heures"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

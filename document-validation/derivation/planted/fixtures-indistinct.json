@@ -1,0 +1,38 @@
+{
+  "reason": "FIXTURES_INDISTINCT",
+  "why": "« logement » is in both fragments: the rule cannot fail its fail fixture.",
+  "plantedRuleId": "QC-PLANT-FIXTURES",
+  "rules": [
+    {
+      "ruleId": "QC-PLANT-FIXTURES",
+      "title": "Préavis de 24 heures",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1931",
+      "sourceUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1931",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)logement"
+      },
+      "onPass": "L'avis annonce un préavis de 24 heures.",
+      "onFail": "L'avis n'annonce pas de préavis de 24 heures. Le locateur doit le donner, à moins d'une urgence (art. 1931).",
+      "fixtures": {
+        "pass": [
+          "Le locateur vous donne un préavis de 24 heures pour visiter le logement."
+        ],
+        "fail": [
+          "Le locateur visitera le logement demain."
+        ]
+      },
+      "law": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1931",
+          "language": "fr",
+          "contentHash": "01276b0b87cae0dfe45b87e6b025bcbf9993c5e997d5bcb06960ed8dd7b28400",
+          "quote": "donner au locataire un préavis de 24 heures"
+        }
+      ]
+    }
+  ]
+}
