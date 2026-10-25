@@ -42,10 +42,10 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0 # Compare golden exceptions with the immutable PR base, not a second editable baseline.
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
       - run: npm ci
@@ -63,10 +63,10 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
       - run: npm ci
@@ -81,7 +81,7 @@ jobs:
     # YuNet + SFace on a public-domain photograph.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
     with:
       working-directory: profile-photo-check/worker
       requirements: profile-photo-check/requirements.txt
@@ -97,7 +97,7 @@ jobs:
     # contract, the screening — no model needed. These tests existed but no job ran them (2026-10-22).
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
     with:
       working-directory: document-validation/worker
       extra-packages: pypdf pika pyyaml
@@ -115,7 +115,7 @@ jobs:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
     with:
       working-directory: message-authenticity/worker
       extra-packages: pika pyyaml
@@ -126,7 +126,7 @@ jobs:
     # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
     with:
       working-directory: media-safety/worker
       extra-packages: pika pyyaml
@@ -138,7 +138,7 @@ jobs:
     # after the court records with credit never called, a provider error, a missing consent — no model, no network.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
     with:
       working-directory: tenant-screening-qc/worker
       extra-packages: pika pyyaml
@@ -148,7 +148,7 @@ jobs:
     # The broker connection every worker shares (worker-common/worker_broker.py): tested once.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@babcdf0d85b0ef2ce30802ec8377d664d31fd118 # v1.3.3
+    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
     with:
       working-directory: worker-common
       extra-packages: pika
