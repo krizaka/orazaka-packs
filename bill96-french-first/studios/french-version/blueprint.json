@@ -1,0 +1,153 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 110,
+  "changelog": "1.0.0 — première version : usage québécois (OQLF), glossaire des termes choisis, passages douteux signalés ; pas une traduction certifiée.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "french-version",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "translate",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "Produce a French version, in Québec usage and the register of a {{inputs.documentKind}}, of the document below. Keep the structure, numbers, dates, amounts and defined terms exactly. Use the firm glossary when given: {{inputs.glossary}}. Document: {{inputs.document}}. The first line of your answer is exactly this sentence: fr « Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique. » en « Automated, uncertified translation — to be reviewed by a professional before any use, above all for a legal document. » (use the one that matches the output language). Mark anything you are unsure of as « À réviser » (fr) or « To review » (en). Name the terminology source of every term you choose (the usage recommended by the Office québécois de la langue française, OQLF, and its Grand dictionnaire terminologique, when one applies; otherwise say « usage courant »). Never invent a legal term: when no established Québec term exists, keep the source term in brackets and flag the passage. Never quote a statute; refer to it by name only."
+        },
+        "out": "translation",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT5M"
+      },
+      {
+        "id": "glossary",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "translate"
+        ],
+        "inputs": {
+          "prompt": "From the source document {{inputs.document}} and this French version {{steps.translation.content}}, list the terms you chose as a table: Source term | French term | Source of the term | Doubt (yes/no). Then list the doubtful passages, each with a one-line reason. The first line of your answer is exactly this sentence: fr « Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique. » en « Automated, uncertified translation — to be reviewed by a professional before any use, above all for a legal document. » (use the one that matches the output language). Mark anything you are unsure of as « À réviser » (fr) or « To review » (en). Name the terminology source of every term you choose (the usage recommended by the Office québécois de la langue française, OQLF, and its Grand dictionnaire terminologique, when one applies; otherwise say « usage courant »). Never invent a legal term: when no established Québec term exists, keep the source term in brackets and flag the passage. Never quote a statute; refer to it by name only."
+        },
+        "out": "glossary",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT4M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "french",
+        "label": "Version française",
+        "from": "{{steps.translation.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "French version"
+          },
+          "fr": {
+            "label": "Version française"
+          }
+        }
+      },
+      {
+        "key": "glossary",
+        "label": "Termes choisis et passages douteux",
+        "from": "{{steps.glossary.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Chosen terms and doubtful passages"
+          },
+          "fr": {
+            "label": "Termes choisis et passages douteux"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "document"
+    ],
+    "properties": {
+      "document": {
+        "type": "string",
+        "maxLength": 20000,
+        "title": "Le document",
+        "description": "Le texte du contrat, de la politique, des conditions ou de la fiche.",
+        "x-i18n": {
+          "en": {
+            "title": "The document",
+            "description": "The text of the contract, policy, terms or sheet.",
+            "placeholder": "This agreement is made between the Supplier and the Customer…"
+          },
+          "fr": {
+            "title": "Le document",
+            "description": "Le texte du contrat, de la politique, des conditions ou de la fiche.",
+            "placeholder": "This agreement is made between the Supplier and the Customer…"
+          }
+        }
+      },
+      "documentKind": {
+        "type": "string",
+        "enum": [
+          "contract",
+          "policy",
+          "terms",
+          "product-sheet"
+        ],
+        "default": "contract",
+        "title": "Type de document",
+        "description": "La nature du document, pour le registre à employer.",
+        "x-i18n": {
+          "en": {
+            "title": "Document type",
+            "description": "The kind of document, to pick the register.",
+            "options": {
+              "contract": "Contract",
+              "policy": "Policy",
+              "terms": "Terms",
+              "product-sheet": "Product sheet"
+            }
+          },
+          "fr": {
+            "title": "Type de document",
+            "description": "La nature du document, pour le registre à employer.",
+            "options": {
+              "contract": "Contrat",
+              "policy": "Politique",
+              "terms": "Conditions",
+              "product-sheet": "Fiche produit"
+            }
+          }
+        }
+      },
+      "glossary": {
+        "type": "string",
+        "maxLength": 6000,
+        "title": "Glossaire de l'entreprise",
+        "description": "Facultatif. Le glossaire produit par l'étude Glossaire, à réutiliser tel quel.",
+        "x-i18n": {
+          "en": {
+            "title": "Firm glossary",
+            "description": "Optional. The glossary produced by the Glossary Studio, to reuse as is.",
+            "placeholder": "contract | contrat | OQLF"
+          },
+          "fr": {
+            "title": "Glossaire de l'entreprise",
+            "description": "Facultatif. Le glossaire produit par l'étude Glossaire, à réutiliser tel quel.",
+            "placeholder": "contract | contrat | OQLF"
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

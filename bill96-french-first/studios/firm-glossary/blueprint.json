@@ -1,0 +1,90 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 90,
+  "changelog": "1.0.0 — première version : usage québécois (OQLF), glossaire des termes choisis, passages douteux signalés ; pas une traduction certifiée.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "firm-glossary",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "glossary",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "Build the firm's FR/EN terminology from these documents: {{inputs.documents}}. Existing glossary to extend, if any: {{inputs.glossary}}. Output a table: English term | French term (Québec usage) | Source of the term | Note. One row per recurring term; keep existing rows as they are unless they contradict the documents, in which case flag it. Output the table in the plain form « English | French | Source | Note », one row per line, so it can be pasted into the other Studios. The first line of your answer is exactly this sentence: fr « Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique. » en « Automated, uncertified translation — to be reviewed by a professional before any use, above all for a legal document. » (use the one that matches the output language). Mark anything you are unsure of as « À réviser » (fr) or « To review » (en). Name the terminology source of every term you choose (the usage recommended by the Office québécois de la langue française, OQLF, and its Grand dictionnaire terminologique, when one applies; otherwise say « usage courant »). Never invent a legal term: when no established Québec term exists, keep the source term in brackets and flag the passage. Never quote a statute; refer to it by name only."
+        },
+        "out": "glossary",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT5M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "glossary",
+        "label": "Glossaire de l'entreprise (FR/EN)",
+        "from": "{{steps.glossary.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Firm glossary (FR/EN)"
+          },
+          "fr": {
+            "label": "Glossaire de l'entreprise (FR/EN)"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "documents"
+    ],
+    "properties": {
+      "documents": {
+        "type": "string",
+        "maxLength": 20000,
+        "title": "Vos documents",
+        "description": "Des extraits de vos documents, en français et en anglais.",
+        "x-i18n": {
+          "en": {
+            "title": "Your documents",
+            "description": "Excerpts of your documents, in French and English.",
+            "placeholder": "Contrat de service… Service agreement…"
+          },
+          "fr": {
+            "title": "Vos documents",
+            "description": "Des extraits de vos documents, en français et en anglais.",
+            "placeholder": "Contrat de service… Service agreement…"
+          }
+        }
+      },
+      "glossary": {
+        "type": "string",
+        "maxLength": 6000,
+        "title": "Glossaire de l'entreprise",
+        "description": "Facultatif. Le glossaire produit par l'étude Glossaire, à réutiliser tel quel.",
+        "x-i18n": {
+          "en": {
+            "title": "Firm glossary",
+            "description": "Optional. The glossary produced by the Glossary Studio, to reuse as is.",
+            "placeholder": "contract | contrat | OQLF"
+          },
+          "fr": {
+            "title": "Glossaire de l'entreprise",
+            "description": "Facultatif. Le glossaire produit par l'étude Glossaire, à réutiliser tel quel.",
+            "placeholder": "contract | contrat | OQLF"
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

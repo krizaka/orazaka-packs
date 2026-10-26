@@ -1,0 +1,32 @@
+pack:
+  label: French-first documents (Bill 96)
+  tagline: French versions, bilingual checks and French-first copy, on your own machine.
+  description: >-
+    Matrices for extracting information from your documents and parameterizable technology templates that produce a French
+    version in Québec usage, compare an English and a French version, turn site copy into French-first copy and keep your
+    own glossary, technical tools validated by the client's legal counsel. Not a certified translation: a professional
+    reviews every output. Your documents stay on your machine.
+category:
+  label: Business & documents
+  description: "Packs that do the work: check documents, prospect."
+studios:
+  french-version:
+    label: French version of a document
+    tagline: Québec usage, the terms chosen, the doubtful passages flagged.
+    description: >-
+      A French version of a contract, policy, terms or product sheet, with a glossary of the terms chosen and the passages to review.
+  bilingual-consistency-check:
+    label: Bilingual consistency check
+    tagline: What differs between your English and French versions.
+    description: >-
+      Lists the differences in meaning, numbers, dates and obligations between two versions, and which section to review first.
+  french-first-copy:
+    label: French-first copy
+    tagline: Site and product copy in French first, with the English kept equivalent.
+    description: >-
+      Adapts English copy into natural Québec French that keeps your brand voice, French first and the English right after.
+  firm-glossary:
+    label: Firm glossary
+    tagline: Your own FR/EN terminology, reused by the other Studios.
+    description: >-
+      Builds and extends the firm's glossary from its documents, with the source of each term, ready to paste into the other Studios.

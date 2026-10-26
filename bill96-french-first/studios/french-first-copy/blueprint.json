@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 100,
+  "changelog": "1.0.0 — première version : usage québécois (OQLF), glossaire des termes choisis, passages douteux signalés ; pas une traduction certifiée.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "french-first-copy",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "copy",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "Turn this English site or product copy into French-first copy that keeps the brand voice: {{inputs.englishCopy}}. Brand voice: {{inputs.brandVoice}}. Firm glossary: {{inputs.glossary}}. French must be at least as prominent as the English: write the French first, then keep the English equivalent right after each block. Not a word-for-word translation: Québec usage, natural phrasing. The first line of your answer is exactly this sentence: fr « Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique. » en « Automated, uncertified translation — to be reviewed by a professional before any use, above all for a legal document. » (use the one that matches the output language). Mark anything you are unsure of as « À réviser » (fr) or « To review » (en). Name the terminology source of every term you choose (the usage recommended by the Office québécois de la langue française, OQLF, and its Grand dictionnaire terminologique, when one applies; otherwise say « usage courant »). Never invent a legal term: when no established Québec term exists, keep the source term in brackets and flag the passage. Never quote a statute; refer to it by name only."
+        },
+        "out": "copy",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT5M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "copy",
+        "label": "Texte d'abord en français, avec l'équivalent anglais",
+        "from": "{{steps.copy.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "French-first copy, with the English equivalent"
+          },
+          "fr": {
+            "label": "Texte d'abord en français, avec l'équivalent anglais"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "englishCopy"
+    ],
+    "properties": {
+      "englishCopy": {
+        "type": "string",
+        "maxLength": 8000,
+        "title": "Texte anglais",
+        "description": "Le texte du site ou du produit à adapter.",
+        "x-i18n": {
+          "en": {
+            "title": "English copy",
+            "description": "The site or product copy to adapt.",
+            "placeholder": "Book a free demo today."
+          },
+          "fr": {
+            "title": "Texte anglais",
+            "description": "Le texte du site ou du produit à adapter.",
+            "placeholder": "Book a free demo today."
+          }
+        }
+      },
+      "brandVoice": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Ton de la marque",
+        "description": "Facultatif. Comment la marque parle.",
+        "x-i18n": {
+          "en": {
+            "title": "Brand voice",
+            "description": "Optional. How the brand speaks.",
+            "placeholder": "Warm, direct, no jargon."
+          },
+          "fr": {
+            "title": "Ton de la marque",
+            "description": "Facultatif. Comment la marque parle.",
+            "placeholder": "Chaleureux, direct, sans jargon."
+          }
+        }
+      },
+      "glossary": {
+        "type": "string",
+        "maxLength": 6000,
+        "title": "Glossaire de l'entreprise",
+        "description": "Facultatif. Le glossaire produit par l'étude Glossaire, à réutiliser tel quel.",
+        "x-i18n": {
+          "en": {
+            "title": "Firm glossary",
+            "description": "Optional. The glossary produced by the Glossary Studio, to reuse as is.",
+            "placeholder": "contract | contrat | OQLF"
+          },
+          "fr": {
+            "title": "Glossaire de l'entreprise",
+            "description": "Facultatif. Le glossaire produit par l'étude Glossaire, à réutiliser tel quel.",
+            "placeholder": "contract | contrat | OQLF"
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

@@ -1,0 +1,87 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# bill96-french-first — French-first documents for a Québec business (Bill 96), prepared on the client's own Orazaka.
+#
+# Québec's Charter of the French language, as amended by Bill 96, asks French for contracts of adhesion, commercial communications,
+# product and website content and employee documents, at least as prominent as any other language. Four Studios help: a French
+# version in Québec usage with the terms chosen and the doubtful passages flagged, a bilingual consistency check, French-first
+# site and product copy, and the firm's own FR/EN glossary that the other Studios reuse.
+#
+# These are technical templates and extraction matrices, parameterizable and validated by the client's legal counsel. They are NOT a
+# certified translation: every output opens with the sentence that says so and asks for a professional review. Terminology
+# sources are named (the OQLF's recommended usage); a legal term is never invented. Statutes are referred to by name, never
+# quoted (sources.json). Documents stay home: the pack runs on the client's Orazaka.
+#
+# Why SENSITIVE: a firm's contracts are as confidential as its inputs get; the pack receives the controls of ADR-051.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: bill96-french-first
+version: 1.0.0
+tier: DATA
+distribution: CLOUD
+regulatoryClass: SENSITIVE
+
+scopeGuard:
+  refusedTerms:
+    - traduction certifiée
+    - certified translation
+    - traduction assermentée
+    - sworn translation
+    - avis juridique
+    - legal advice
+    - garantir la conformité
+    - guarantee compliance
+  refusal: >-
+    Je prépare des versions françaises, des comparaisons bilingues, des textes d'abord en français et un glossaire, pour qu'un
+    professionnel les révise. Je ne fais pas de traduction certifiée ou assermentée, je ne donne pas d'avis juridique et je ne
+    garantis aucune conformité.
+
+catalog:
+  categoryKey: business-compliance
+  iconKey: shield-check
+  status: PUBLISHED
+  sortWeight: 40
+  category:
+    iconKey: briefcase
+    sortWeight: 100
+
+pricing:
+  priceCents: 7900   # 79 $ CA — in billing.currency (CAD)
+  includedCredits: 500
+
+studios:
+  - key: french-version
+    profession: legal
+    iconKey: file-text
+    pricing: PAID
+    entitlementKey: studio.french-version
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 10
+    blueprint: studios/french-version/blueprint.json
+  - key: bilingual-consistency-check
+    profession: legal
+    iconKey: search
+    pricing: PAID
+    entitlementKey: studio.bilingual-consistency-check
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 20
+    blueprint: studios/bilingual-consistency-check/blueprint.json
+  - key: french-first-copy
+    profession: general
+    iconKey: sparkles
+    pricing: PAID
+    entitlementKey: studio.french-first-copy
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 30
+    blueprint: studios/french-first-copy/blueprint.json
+  - key: firm-glossary
+    profession: legal
+    iconKey: notebook
+    pricing: PAID
+    entitlementKey: studio.firm-glossary
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 40
+    blueprint: studios/firm-glossary/blueprint.json

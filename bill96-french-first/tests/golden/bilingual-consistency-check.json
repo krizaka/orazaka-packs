@@ -1,0 +1,80 @@
+{
+  "studio": "bilingual-consistency-check",
+  "cases": [
+    {
+      "id": "payment-term-differs",
+      "input": {
+        "english": "The Customer shall pay within 30 days.",
+        "french": "Le client paie dans les 45 jours."
+      },
+      "expected": {
+        "differences": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\n| Où | L'anglais dit | Le français dit | Nature | Gravité |\n| --- | --- | --- | --- | --- |\n| Paiement | 30 days | 45 jours | nombre | élevée |",
+        "summary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\n1 écart, dont 1 de gravité élevée. Réviser en premier : la clause de paiement."
+      },
+      "assertions": [
+        {
+          "path": [
+            "differences"
+          ],
+          "includes": "45 jours"
+        },
+        {
+          "path": [
+            "summary"
+          ],
+          "includes": "1 écart"
+        }
+      ]
+    },
+    {
+      "id": "versions-agree",
+      "input": {
+        "english": "The agreement ends on December 31, 2027.",
+        "french": "La convention prend fin le 31 décembre 2027."
+      },
+      "expected": {
+        "differences": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nAucun écart relevé entre les deux versions.",
+        "summary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\n0 écart. Rien à réviser en priorité."
+      },
+      "assertions": [
+        {
+          "path": [
+            "differences"
+          ],
+          "includes": "Aucun écart"
+        },
+        {
+          "path": [
+            "summary"
+          ],
+          "includes": "0 écart"
+        }
+      ]
+    },
+    {
+      "id": "clause-missing-in-french",
+      "input": {
+        "english": "The Supplier is not liable for indirect damages. The Customer may terminate with 60 days' notice.",
+        "french": "Le client peut résilier moyennant un préavis de 60 jours."
+      },
+      "expected": {
+        "differences": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\n| Où | L'anglais dit | Le français dit | Nature | Gravité |\n| --- | --- | --- | --- | --- |\n| Responsabilité | Exclusion des dommages indirects | (absent) | omission | élevée |",
+        "summary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\n1 écart, dont 1 de gravité élevée. Réviser en premier : la clause de responsabilité, absente de la version française. Ce résumé ne dit pas quelle version prévaut."
+      },
+      "assertions": [
+        {
+          "path": [
+            "differences"
+          ],
+          "includes": "omission"
+        },
+        {
+          "path": [
+            "summary"
+          ],
+          "includes": "ne dit pas quelle version prévaut"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "studio": "french-version",
+  "cases": [
+    {
+      "id": "service-agreement-clause",
+      "input": {
+        "document": "The Customer shall pay each invoice within 30 days of receipt. Late payments bear interest at 1.5% per month.",
+        "documentKind": "contract"
+      },
+      "expected": {
+        "french": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nLe client paie chaque facture dans les 30 jours suivant sa réception. Les paiements en retard portent intérêt au taux de 1,5 % par mois.",
+        "glossary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\n| Terme source | Terme français | Source du terme | Doute |\n| --- | --- | --- | --- |\n| invoice | facture | usage courant | non |\n| late payment | paiement en retard | usage courant | non |\n\nPassages douteux : aucun."
+      },
+      "assertions": [
+        {
+          "path": [
+            "french"
+          ],
+          "includes": "non certifiée"
+        },
+        {
+          "path": [
+            "french"
+          ],
+          "includes": "1,5 %"
+        },
+        {
+          "path": [
+            "glossary"
+          ],
+          "includes": "usage courant"
+        }
+      ]
+    },
+    {
+      "id": "web-terms-with-firm-glossary",
+      "input": {
+        "document": "By using the Service you accept these Terms. We may suspend your account for misuse.",
+        "documentKind": "terms",
+        "glossary": "Service | Service | OQLF\nTerms | Conditions d'utilisation | OQLF"
+      },
+      "expected": {
+        "french": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nEn utilisant le Service, vous acceptez les présentes conditions d'utilisation. Nous pouvons suspendre votre compte en cas d'usage abusif.",
+        "glossary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\n| Terme source | Terme français | Source du terme | Doute |\n| --- | --- | --- | --- |\n| Terms | conditions d'utilisation | glossaire de l'entreprise (OQLF) | non |\n| misuse | usage abusif | usage courant | non |"
+      },
+      "assertions": [
+        {
+          "path": [
+            "french"
+          ],
+          "includes": "conditions d'utilisation"
+        },
+        {
+          "path": [
+            "glossary"
+          ],
+          "includes": "glossaire de l'entreprise"
+        }
+      ]
+    },
+    {
+      "id": "legal-term-without-established-quebec-equivalent",
+      "input": {
+        "document": "The Supplier waives all rights of subrogation against the Customer.",
+        "documentKind": "contract"
+      },
+      "expected": {
+        "french": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nLe fournisseur renonce à tout recours subrogatoire contre le client. [subrogation — à réviser]",
+        "glossary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\n| Terme source | Terme français | Source du terme | Doute |\n| --- | --- | --- | --- |\n| subrogation | subrogation | usage courant | oui |\n\nPassages douteux :\n1. « recours subrogatoire » : le terme de droit civil québécois doit être confirmé par un professionnel ; le terme source est gardé entre crochets."
+      },
+      "assertions": [
+        {
+          "path": [
+            "glossary"
+          ],
+          "includes": "Passages douteux"
+        },
+        {
+          "path": [
+            "french"
+          ],
+          "includes": "à réviser"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+pack:
+  label: Documents d'abord en français (Loi 96)
+  tagline: Versions françaises, vérifications bilingues et textes d'abord en français, sur votre machine.
+  description: >-
+    Matrices d'extraction documentaire et gabarits technologiques paramétrables qui produisent une version française en usage
+    québécois, comparent une version anglaise et une version française, adaptent des textes de site d'abord en français et tiennent
+    votre glossaire, outils techniques validés par le conseiller juridique du client. Pas une traduction certifiée : un
+    professionnel révise chaque sortie. Vos documents restent sur votre machine.
+category:
+  label: Affaires et documents
+  description: "Des packs qui font le travail : vérifier des documents, prospecter."
+studios:
+  french-version:
+    label: Version française d'un document
+    tagline: Usage québécois, termes choisis, passages douteux signalés.
+    description: >-
+      Une version française d'un contrat, d'une politique, de conditions ou d'une fiche produit, avec un glossaire des termes choisis et les passages à réviser.
+  bilingual-consistency-check:
+    label: Vérification de cohérence bilingue
+    tagline: Ce qui diffère entre vos versions anglaise et française.
+    description: >-
+      Liste les écarts de sens, de chiffres, de dates et d'obligations entre deux versions, et la section à réviser en premier.
+  french-first-copy:
+    label: Texte d'abord en français
+    tagline: Textes de site et de produit en français d'abord, avec l'équivalent anglais.
+    description: >-
+      Adapte un texte anglais en français québécois naturel qui garde le ton de votre marque, le français d'abord et l'anglais ensuite.
+  firm-glossary:
+    label: Glossaire de l'entreprise
+    tagline: Votre terminologie FR/EN, réutilisée par les autres études.
+    description: >-
+      Construit et enrichit le glossaire de l'entreprise à partir de ses documents, avec la source de chaque terme, prêt à coller dans les autres études.
