@@ -5,6 +5,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "worker-common"))
+import testkit  # noqa: E402
 import identity_worker as worker  # noqa: E402
 from worker_loop import InvalidJobPayload  # noqa: E402
 
@@ -67,14 +69,4 @@ def test_the_barcode_text_is_optional_and_bounded():
 
 
 if __name__ == "__main__":
-    failures = 0
-    for name, fn in sorted(globals().items()):
-        if name.startswith("test_") and callable(fn):
-            try:
-                fn()
-                print(f"  ok   {name}")
-            except AssertionError as exc:
-                failures += 1
-                print(f"  FAIL {name}: {exc}")
-    print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
-    sys.exit(1 if failures else 0)
+    testkit.main(globals())

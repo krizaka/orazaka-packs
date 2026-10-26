@@ -2,6 +2,7 @@
 // and the promises of the README are checked, not remembered.
 import test from "node:test";
 import assert from "node:assert/strict";
+import { assertLinksResolve } from "./blueprint-links.mjs";
 import { readFileSync, readdirSync } from "node:fs";
 
 const root = new URL("../profile-photo-check/", import.meta.url).pathname;
@@ -24,20 +25,7 @@ test("each routing key of the pack is drained by the worker's bindings, which li
   assert.match(pack, /name: orazaka-worker-photo\n\s+bindings:\n\s+- "job\.photo\.\*"/);
 });
 
-test("a step input only reads inputs the Studio declares and steps that come before it", () => {
-  const declared = new Set(Object.keys(blueprint.inputSchema.properties));
-  const outs = new Map(steps.map((s) => [s.out, s.id]));
-  for (const s of steps) {
-    for (const value of Object.values(s.inputs)) {
-      for (const m of String(value).matchAll(/\{\{inputs\.([A-Za-z0-9]+)/g)) assert.ok(declared.has(m[1]), `${s.id}: unknown input ${m[1]}`);
-      for (const m of String(value).matchAll(/\{\{steps\.([A-Za-z0-9]+)/g)) {
-        const producer = outs.get(m[1]);
-        assert.ok(producer, `${s.id}: nothing produces ${m[1]}`);
-        assert.ok(s.dependsOn.includes(producer), `${s.id} must depend on ${producer}`);
-      }
-    }
-  }
-});
+test("a step input only reads inputs the Studio declares and steps that come before it", () => assertLinksResolve(blueprint));
 
 test("the vision step runs once per photo and cannot fail the whole check", () => {
   const look = steps.find((s) => s.id === "look");

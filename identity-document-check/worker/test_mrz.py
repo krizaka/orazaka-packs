@@ -8,6 +8,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "worker-common"))
+import testkit  # noqa: E402
 import mrz  # noqa: E402
 
 TD3 = ["P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<", "L898902C36UTO7408122F1204159ZE184226B<<<<<10"]
@@ -109,14 +111,4 @@ def test_dates_are_real_calendar_days_and_the_century_follows_the_reference_day(
 
 
 if __name__ == "__main__":
-    failures = 0
-    for name, fn in sorted(globals().items()):
-        if name.startswith("test_") and callable(fn):
-            try:
-                fn()
-                print(f"  ok   {name}")
-            except AssertionError as exc:
-                failures += 1
-                print(f"  FAIL {name}: {exc}")
-    print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
-    sys.exit(1 if failures else 0)
+    testkit.main(globals())

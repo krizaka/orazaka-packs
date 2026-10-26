@@ -6,6 +6,7 @@ import sys
 from types import SimpleNamespace
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import testkit  # noqa: E402
 import worker_loop as loop  # noqa: E402
 
 
@@ -81,14 +82,4 @@ def test_a_message_that_is_not_json_is_dead_lettered_not_requeued():
 
 
 if __name__ == "__main__":
-    failures = 0
-    for name, fn in sorted(globals().items()):
-        if name.startswith("test_") and callable(fn):
-            try:
-                fn()
-                print(f"  ok   {name}")
-            except AssertionError as exc:
-                failures += 1
-                print(f"  FAIL {name}: {exc}")
-    print(f"\n{'FAILED' if failures else 'all green'} — {failures} failure(s)")
-    sys.exit(1 if failures else 0)
+    testkit.main(globals())

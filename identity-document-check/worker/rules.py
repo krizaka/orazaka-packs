@@ -32,6 +32,8 @@ RULESETS = os.path.join(HERE, "..", "rules", "identity-document")
 FAIL, WARN, INFO = "FAIL", "WARN", "INFO"
 DETERMINISTIC, MODEL = "DETERMINISTIC", "MODEL"
 _DEFAULT_CONFIDENCE = 0.5
+NOT_AN_OBJECT = "the reading must be a JSON object"
+INVALID = "INVALID:"
 
 
 class InvalidReading(ValueError):
@@ -57,17 +59,18 @@ def parse_reading(raw) -> dict:
     if isinstance(raw, dict):
         return raw
     if not isinstance(raw, str):
-        raise InvalidReading("the reading must be a JSON object")
+        raise InvalidReading(NOT_AN_OBJECT)
     text = raw.strip()
-    fenced = re.match(r"^```(?:json)?\s*(.*?)\s*```$", text, re.DOTALL)
-    if fenced:
-        text = fenced.group(1)
+    if text.startswith("```") and text.endswith("```") and len(text) >= 6:  # a markdown fence, as models answer
+        text = text[3:-3].strip()
+        if text[:4].lower() == "json":
+            text = text[4:].strip()
     try:
         value = json.loads(text)
     except json.JSONDecodeError as bad:
         raise InvalidReading("the reading is not JSON") from bad
     if not isinstance(value, dict):
-        raise InvalidReading("the reading must be a JSON object")
+        raise InvalidReading(NOT_AN_OBJECT)
     return value
 
 
@@ -125,36 +128,53 @@ def parse_barcode(text: str) -> dict:
 
 # --- the assessment ------------------------------------------------------------------------------------------------
 
+def _object_of(reading: dict, key: str, kind: type, message: str):
+    value = reading.get(key)
+    if value is None:
+        return kind()
+    if not isinstance(value, kind):
+        raise InvalidReading(message)
+    return value
+
+
+def _zone(lines: list, mrz_conf: float, findings: list):
+    """The parsed zone (or ``None``), after adding what its absence or its shape says."""
+    if not [line for line in lines if str(line).strip()]:
+        findings.append(_finding("MRZ_ABSENT", INFO, "mrz", DETERMINISTIC, {"source": "mrz", "field": "mrz", "value": None, "region": "mrz"}, mrz_conf))
+        return None
+    try:
+        return mrz.parse(lines)
+    except mrz.MrzError as bad:
+        findings.append(_finding("MRZ_UNREADABLE", WARN, "mrz", DETERMINISTIC, {"source": "mrz", "field": "mrz", "value": str(bad), "region": "mrz"}, mrz_conf))
+        return None
+
+
+def _age(fields: dict, as_of: str, minimum_age, source: str, conf: float, findings: list):
+    born = fields.get("dateOfBirth")
+    if not born or dt.date.fromisoformat(born) > dt.date.fromisoformat(as_of):
+        return None
+    years = _years_between(born, as_of)
+    age = {"years": years, "minimum": minimum_age, "meets": minimum_age is None or years >= minimum_age}
+    if not age["meets"]:
+        findings.append(_finding("AGE_BELOW_MINIMUM", WARN, "dateOfBirth", DETERMINISTIC, {"source": source, "field": "dateOfBirth", "value": born, "region": "dateOfBirth"}, conf))
+    return age
+
+
 def assess(ruleset: dict, reading, as_of: str, minimum_age: Optional[int] = None, barcode_text: Optional[str] = None) -> dict:
     if not isinstance(reading, dict):
-        raise InvalidReading("the reading must be a JSON object")
-    lines = reading.get("mrzLines")
-    if lines is None:
-        lines = []
-    if not isinstance(lines, list):
-        raise InvalidReading("'mrzLines' must be a list of strings")
-    printed = reading.get("printed")
-    if printed is None:
-        printed = {}
-    if not isinstance(printed, dict):
-        raise InvalidReading("'printed' must be an object")
+        raise InvalidReading(NOT_AN_OBJECT)
+    lines = _object_of(reading, "mrzLines", list, "'mrzLines' must be a list of strings")
+    printed = _object_of(reading, "printed", dict, "'printed' must be an object")
     confidence = reading.get("confidence") if isinstance(reading.get("confidence"), dict) else {}
     mrz_conf, printed_conf = _clamp(confidence.get("mrz")), _clamp(confidence.get("printed"))
     thresholds = ruleset["thresholds"]
     findings: list = []
     fields: dict = {}
-    mrz_info: dict = {"present": False}
 
     # 1. the machine-readable zone
-    parsed = None
-    if [line for line in lines if str(line).strip()]:
-        try:
-            parsed = mrz.parse(lines)
-        except mrz.MrzError as bad:
-            findings.append(_finding("MRZ_UNREADABLE", WARN, "mrz", DETERMINISTIC, {"source": "mrz", "field": "mrz", "value": str(bad), "region": "mrz"}, mrz_conf))
-    else:
-        findings.append(_finding("MRZ_ABSENT", INFO, "mrz", DETERMINISTIC, {"source": "mrz", "field": "mrz", "value": None, "region": "mrz"}, mrz_conf))
+    parsed = _zone(lines, mrz_conf, findings)
     doubtful = mrz_conf < thresholds["lowReadConfidence"]
+    mrz_info: dict = {"present": False}
     if parsed:
         mrz_info = {"present": True, "format": parsed["format"], "checksumsValid": all(c["valid"] for c in parsed["checks"]), "uncovered": parsed["uncovered"]}
         findings.extend(_checksum_findings(parsed, mrz_conf, doubtful))
@@ -165,33 +185,32 @@ def assess(ruleset: dict, reading, as_of: str, minimum_age: Optional[int] = None
     for name, value in printed_fields.items():
         fields.setdefault(name, value)
     if parsed:
-        findings.extend(_compare("printed", printed, printed_fields, fields, printed_conf, "PRINTED_MRZ_MISMATCH", doubtful))
+        findings.extend(_compare("printed", printed_fields, fields, printed_conf, "PRINTED_MRZ_MISMATCH", doubtful))
+
     # 3. the barcode
     barcode = {"present": False}
     if barcode_text and barcode_text.strip():
         extracted = parse_barcode(barcode_text)
         barcode = {"present": True, "fields": sorted(extracted)}
-        findings.extend(_compare("barcode", extracted, extracted, printed_fields or fields, printed_conf, "BARCODE_MISMATCH", False))
-    # 4. the calendar
-    findings.extend(_date_findings(fields, as_of, printed_conf if not parsed else mrz_conf))
-    age = None
-    if fields.get("dateOfBirth") and dt.date.fromisoformat(fields["dateOfBirth"]) <= dt.date.fromisoformat(as_of):
-        years = _years_between(fields["dateOfBirth"], as_of)
-        age = {"years": years, "minimum": minimum_age, "meets": minimum_age is None or years >= minimum_age}
-        if not age["meets"]:
-            findings.append(_finding("AGE_BELOW_MINIMUM", WARN, "dateOfBirth", DETERMINISTIC, {"source": "mrz" if parsed else "printed", "field": "dateOfBirth", "value": fields["dateOfBirth"], "region": "dateOfBirth"}, mrz_conf if parsed else printed_conf))
+        findings.extend(_compare("barcode", extracted, printed_fields or fields, printed_conf, "BARCODE_MISMATCH", False))
+
+    # 4. the calendar, and the age
+    document_conf = mrz_conf if parsed else printed_conf
+    findings.extend(_date_findings(fields, as_of, document_conf))
+    age = _age(fields, as_of, minimum_age, "mrz" if parsed else "printed", document_conf, findings)
+
     # 5. what the model saw
-    ignored = 0
-    findings_signals, ignored = _signal_findings(reading.get("signals"), thresholds, ruleset)
-    findings.extend(findings_signals)
+    signal_findings, ignored = _signal_findings(reading.get("signals"), thresholds, ruleset)
+    findings.extend(signal_findings)
     findings.extend(_quality_findings(reading.get("quality"), ruleset))
 
+    document_type = reading.get("documentType")
     return {
         "rulesetId": ruleset["rulesetId"],
         "rulesetVersion": ruleset["version"],
         "rulesetRevision": ruleset["revision"],
         "asOf": as_of,
-        "documentType": reading.get("documentType") if reading.get("documentType") in ruleset["documentTypes"] else "OTHER",
+        "documentType": document_type if document_type in ruleset["documentTypes"] else "OTHER",
         "issuer": str(reading.get("issuer") or fields.get("issuer") or "")[:3] or None,
         "status": _status(findings, fields, parsed),
         "fields": fields,
@@ -223,12 +242,18 @@ def _checksum_findings(parsed: dict, mrz_conf: float, doubtful: bool) -> list:
     return out
 
 
+def _sex(char: str) -> Optional[str]:
+    if char in ("M", "F"):
+        return char
+    return "X" if char in ("X", "<") else None
+
+
 def _mrz_fields(parsed: dict, as_of: str) -> dict:
     out = {
         "surname": parsed["surname"],
         "givenNames": parsed["givenNames"],
         "documentNumber": parsed["documentNumber"],
-        "sex": parsed["sex"] if parsed["sex"] in ("M", "F") else ("X" if parsed["sex"] in ("X", "<") else None),
+        "sex": _sex(parsed["sex"]),
         "issuer": parsed["issuer"],
         "nationality": parsed["nationality"],
     }
@@ -247,7 +272,7 @@ def _printed_fields(printed: dict) -> dict:
     for name in ("dateOfBirth", "dateOfExpiry"):
         if printed.get(name):
             iso = _iso(printed[name])
-            out[name] = iso if iso else "INVALID:" + str(printed[name])[:20]
+            out[name] = iso if iso else INVALID + str(printed[name])[:20]
     return out
 
 
@@ -260,10 +285,10 @@ def _same(name: str, a, b) -> bool:
     return str(a).upper() == str(b).upper()
 
 
-def _compare(source: str, raw: dict, values: dict, reference: dict, conf: float, code: str, doubtful) -> list:
+def _compare(source: str, values: dict, reference: dict, conf: float, code: str, doubtful) -> list:
     out = []
     for name, value in values.items():
-        if name not in reference or name.startswith("_") or str(value).startswith("INVALID:"):
+        if name not in reference or name.startswith("_") or str(value).startswith(INVALID):
             continue
         if source == "barcode" and name not in ("surname", "documentNumber", "dateOfBirth", "dateOfExpiry"):
             continue
@@ -282,7 +307,7 @@ def _date_findings(fields: dict, as_of: str, conf: float) -> list:
     invalid = set(fields.get("_invalidDates", []))
     for name in ("dateOfBirth", "dateOfExpiry"):
         value = fields.get(name)
-        if isinstance(value, str) and value.startswith("INVALID:"):
+        if isinstance(value, str) and value.startswith(INVALID):
             invalid.add(name)
     for name in sorted(invalid):
         out.append(_finding("DATE_INVALID", FAIL, name, DETERMINISTIC, {"source": "document", "field": name, "value": None, "region": name}, conf))

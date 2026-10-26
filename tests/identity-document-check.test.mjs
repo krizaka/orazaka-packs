@@ -2,6 +2,7 @@
 // and the promises of the README are checked, not remembered.
 import test from "node:test";
 import assert from "node:assert/strict";
+import { assertLinksResolve } from "./blueprint-links.mjs";
 import { readFileSync } from "node:fs";
 
 const root = new URL("../identity-document-check/", import.meta.url).pathname;
@@ -22,20 +23,7 @@ test("the one capability the blueprint uses is the pack's, drained by the worker
   assert.match(pack, /name: orazaka-worker-identity\n\s+bindings:\n\s+- "job\.identity\.\*"/);
 });
 
-test("a step input only reads inputs the Studio declares and steps that come before it", () => {
-  const declared = new Set(Object.keys(blueprint.inputSchema.properties));
-  const outs = new Map(steps.map((s) => [s.out, s.id]));
-  for (const s of steps) {
-    for (const value of Object.values(s.inputs)) {
-      for (const m of String(value).matchAll(/\{\{inputs\.([A-Za-z0-9]+)/g)) assert.ok(declared.has(m[1]), `${s.id}: unknown input ${m[1]}`);
-      for (const m of String(value).matchAll(/\{\{steps\.([A-Za-z0-9]+)/g)) {
-        const producer = outs.get(m[1]);
-        assert.ok(producer, `${s.id}: nothing produces ${m[1]}`);
-        assert.ok(s.dependsOn.includes(producer), `${s.id} must depend on ${producer}`);
-      }
-    }
-  }
-});
+test("a step input only reads inputs the Studio declares and steps that come before it", () => assertLinksResolve(blueprint));
 
 test("the worker reads the pack's own output fields and the verification passes every input the capability declares", () => {
   const verify = steps.find((s) => s.featureKey === "orazaka.identity.document.verify");
