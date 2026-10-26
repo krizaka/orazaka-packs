@@ -1,4 +1,5 @@
 BAIL DE LOGEMENT (modèle de démonstration, personnes et adresse fictives)
+Formulaire obligatoire du Tribunal administratif du logement.
 Section A — Parties
 Locateur : Madame Hélène Roy, 120, avenue du Parc, Montréal (Québec).
 Locataire : Monsieur Karim Haddad, 45, rue Beaubien, Laval (Québec).
