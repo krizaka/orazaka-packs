@@ -1,0 +1,70 @@
+{
+  "studio": "firm-glossary",
+  "cases": [
+    {
+      "id": "builds-from-bilingual-excerpts",
+      "input": {
+        "documents": "Contrat de service : le fournisseur livre les services. Service agreement: the supplier delivers the services."
+      },
+      "expected": {
+        "glossary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nEnglish | French | Source | Note\nservice agreement | contrat de service | usage courant |\nsupplier | fournisseur | usage courant |"
+      },
+      "assertions": [
+        {
+          "path": [
+            "glossary"
+          ],
+          "includes": "contrat de service"
+        },
+        {
+          "path": [
+            "glossary"
+          ],
+          "includes": "English | French | Source | Note"
+        }
+      ]
+    },
+    {
+      "id": "extends-an-existing-glossary",
+      "input": {
+        "documents": "Le prestataire remet le livrable. The contractor hands over the deliverable.",
+        "glossary": "supplier | fournisseur | usage courant |"
+      },
+      "expected": {
+        "glossary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nEnglish | French | Source | Note\nsupplier | fournisseur | usage courant |\ncontractor | prestataire | usage courant |\ndeliverable | livrable | OQLF |"
+      },
+      "assertions": [
+        {
+          "path": [
+            "glossary"
+          ],
+          "includes": "supplier | fournisseur"
+        },
+        {
+          "path": [
+            "glossary"
+          ],
+          "includes": "livrable"
+        }
+      ]
+    },
+    {
+      "id": "contradiction-is-flagged",
+      "input": {
+        "documents": "Le vendeur fournit le produit. The supplier provides the product.",
+        "glossary": "supplier | fournisseur | usage courant |"
+      },
+      "expected": {
+        "glossary": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nEnglish | French | Source | Note\nsupplier | fournisseur | usage courant | Les documents emploient aussi « vendeur » : à réviser\nproduct | produit | usage courant |"
+      },
+      "assertions": [
+        {
+          "path": [
+            "glossary"
+          ],
+          "includes": "à réviser"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 100,
+  "changelog": "1.0.0 — première version : usage québécois (OQLF), glossaire des termes choisis, passages douteux signalés ; pas une traduction certifiée.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "bilingual-consistency-check",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "compare",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "Compare an English and a French version of the same document. English: {{inputs.english}}. French: {{inputs.french}}. List every difference in meaning, number, date, amount, duration or obligation as a table: Where (section or sentence) | English says | French says | Kind (meaning, number, date, obligation, omission) | Severity (low, medium, high). If the two versions agree on a point, do not list it. If a passage exists in only one version, list it as an omission. The first line of your answer is exactly this sentence: fr « Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique. » en « Automated, uncertified translation — to be reviewed by a professional before any use, above all for a legal document. » (use the one that matches the output language). Mark anything you are unsure of as « À réviser » (fr) or « To review » (en). Name the terminology source of every term you choose (the usage recommended by the Office québécois de la langue française, OQLF, and its Grand dictionnaire terminologique, when one applies; otherwise say « usage courant »). Never invent a legal term: when no established Québec term exists, keep the source term in brackets and flag the passage. Never quote a statute; refer to it by name only."
+        },
+        "out": "differences",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT5M"
+      },
+      {
+        "id": "summary",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "compare"
+        ],
+        "inputs": {
+          "prompt": "From this table of differences: {{steps.differences.content}}, write a three-line summary: how many differences, how many of high severity, and which section to review first. Do not decide which version prevails. The first line of your answer is exactly this sentence: fr « Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique. » en « Automated, uncertified translation — to be reviewed by a professional before any use, above all for a legal document. » (use the one that matches the output language). Mark anything you are unsure of as « À réviser » (fr) or « To review » (en). Name the terminology source of every term you choose (the usage recommended by the Office québécois de la langue française, OQLF, and its Grand dictionnaire terminologique, when one applies; otherwise say « usage courant »). Never invent a legal term: when no established Québec term exists, keep the source term in brackets and flag the passage. Never quote a statute; refer to it by name only."
+        },
+        "out": "summary",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT2M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "differences",
+        "label": "Écarts entre les deux versions",
+        "from": "{{steps.differences.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Differences between the two versions"
+          },
+          "fr": {
+            "label": "Écarts entre les deux versions"
+          }
+        }
+      },
+      {
+        "key": "summary",
+        "label": "Résumé",
+        "from": "{{steps.summary.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Summary"
+          },
+          "fr": {
+            "label": "Résumé"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "english",
+      "french"
+    ],
+    "properties": {
+      "english": {
+        "type": "string",
+        "maxLength": 20000,
+        "title": "Version anglaise",
+        "description": "Le texte anglais.",
+        "x-i18n": {
+          "en": {
+            "title": "English version",
+            "description": "The English text.",
+            "placeholder": "The Customer shall pay within 30 days."
+          },
+          "fr": {
+            "title": "Version anglaise",
+            "description": "Le texte anglais.",
+            "placeholder": "The Customer shall pay within 30 days."
+          }
+        }
+      },
+      "french": {
+        "type": "string",
+        "maxLength": 20000,
+        "title": "Version française",
+        "description": "Le texte français.",
+        "x-i18n": {
+          "en": {
+            "title": "French version",
+            "description": "The French text.",
+            "placeholder": "Paiement sous 30 jours."
+          },
+          "fr": {
+            "title": "Version française",
+            "description": "Le texte français.",
+            "placeholder": "Paiement sous 30 jours."
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

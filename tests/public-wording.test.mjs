@@ -11,7 +11,7 @@ const packs = readdirSync(root, { withFileTypes: true })
   .map((d) => d.name);
 const FORBIDDEN = /règles juridiques|legal rules|séquestre|escrow/i;
 const COUNSEL = { fr: "outils techniques validés par le conseiller juridique du client", en: "technical tools validated by the client's legal counsel" };
-const LEGAL_PACKS = ["document-validation", "privacy-law25"];
+const LEGAL_PACKS = ["document-validation", "privacy-law25", "bill96-french-first"];
 
 const words = (v) => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v).flatMap(words) : []);
 

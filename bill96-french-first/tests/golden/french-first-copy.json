@@ -1,0 +1,65 @@
+{
+  "studio": "french-first-copy",
+  "cases": [
+    {
+      "id": "call-to-action",
+      "input": {
+        "englishCopy": "Book a free demo today.",
+        "brandVoice": "Chaleureux, direct, sans jargon."
+      },
+      "expected": {
+        "copy": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nRéservez votre démo gratuite dès aujourd'hui.\nBook a free demo today."
+      },
+      "assertions": [
+        {
+          "path": [
+            "copy"
+          ],
+          "includes": "démo gratuite"
+        },
+        {
+          "path": [
+            "copy"
+          ],
+          "includes": "Book a free demo today."
+        }
+      ]
+    },
+    {
+      "id": "product-sheet-with-glossary",
+      "input": {
+        "englishCopy": "Dashboard: track your orders in real time.",
+        "glossary": "Dashboard | Tableau de bord | OQLF"
+      },
+      "expected": {
+        "copy": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nTableau de bord : suivez vos commandes en temps réel.\nDashboard: track your orders in real time."
+      },
+      "assertions": [
+        {
+          "path": [
+            "copy"
+          ],
+          "includes": "Tableau de bord"
+        }
+      ]
+    },
+    {
+      "id": "tagline-keeps-voice",
+      "input": {
+        "englishCopy": "No fuss. Just flowers.",
+        "brandVoice": "Playful, short sentences."
+      },
+      "expected": {
+        "copy": "Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique.\n\nPas de chichi. Juste des fleurs.\nNo fuss. Just flowers."
+      },
+      "assertions": [
+        {
+          "path": [
+            "copy"
+          ],
+          "includes": "Pas de chichi"
+        }
+      ]
+    }
+  ]
+}
