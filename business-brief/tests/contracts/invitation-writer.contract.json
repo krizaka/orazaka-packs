@@ -1,0 +1,27 @@
+{
+  "port": "InvitationWriter",
+  "studio": "invitation-writer",
+  "timeoutMs": 30000,
+  "fallback": "the product's bilingual template, used on timeout, error or an empty or oversized answer",
+  "request": {
+    "input": {
+      "shopName": "Salon Brume",
+      "service": "Coupe et coiffage",
+      "freeSlots": [
+        "Mardi 14 h",
+        "Jeudi 10 h"
+      ],
+      "channel": "sms",
+      "tone": "warm",
+      "language": "fr"
+    }
+  },
+  "response": {
+    "runId": "run_01J0EXAMPLE0000000000000",
+    "outputs": {
+      "invitation": "Salon Brume : il reste de la place pour une coupe et coiffage mardi 14 h ou jeudi 10 h. Réservez en répondant à ce texto."
+    }
+  },
+  "kept": "the runId is stored with the sent message",
+  "recordedFrom": "golden case sms-fr-two-slots (a fixture, not a live run)"
+}

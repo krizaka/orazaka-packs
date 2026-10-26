@@ -1,0 +1,11 @@
+pack:
+  label: Business brief
+  tagline: The writer behind a small shop's Monday brief.
+  description: >-
+    Writes the invitation of a brief action from aggregates only: the shop, the service and the free slots. No client name, no history.
+studios:
+  invitation-writer:
+    label: Invitation writer
+    tagline: One short invitation, in Québec French or English, in the shop's tone.
+    description: >-
+      From the shop's name, a service and its free slots only, writes an invitation sized for a text message, a notification or an email.

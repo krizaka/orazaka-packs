@@ -1,0 +1,11 @@
+pack:
+  label: Point d'affaires
+  tagline: La plume derrière le point du lundi d'une petite boutique.
+  description: >-
+    Rédige l'invitation d'une action du point à partir d'agrégats seulement : la boutique, le service et les créneaux libres. Aucun nom de client, aucun historique.
+studios:
+  invitation-writer:
+    label: Rédaction d'invitation
+    tagline: Une invitation courte, en français québécois ou en anglais, dans le ton de la boutique.
+    description: >-
+      À partir du seul nom de la boutique, d'un service et de ses créneaux libres, rédige une invitation à la taille d'un texto, d'une notification ou d'un courriel.

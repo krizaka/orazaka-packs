@@ -1,0 +1,205 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 15,
+  "changelog": "1.0.0 — première version : une invitation à partir d'agrégats seulement (boutique, service, créneaux libres), sans nom de client ni historique ; vocabulaire OQLF ; appelée par le produit avec un délai court, qui retombe sur son gabarit bilingue.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "invitation-writer",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "write",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "You write ONE invitation for a small shop, to fill free time slots. Shop: {{inputs.shopName}}. Service: {{inputs.service}}. Free slots: {{inputs.freeSlots}}. Channel: {{inputs.channel}} (sms: at most 160 characters, no subject; push: at most 90 characters, no subject; email: a subject line then at most 60 words). Tone: {{inputs.tone}}. Language: {{inputs.language}} (fr = Québec French with OQLF vocabulary: « rendez-vous », « courriel », « texto » only if informal, « fin de semaine »; en = plain English). You are given aggregates only. Never include a client name, a greeting by name, a reference to a client's history or visits, a price, a discount or an invented deadline. Address the reader as « vous » (fr) or « you » (en). Use the shop name, the service and the free slots exactly as given, without inventing another. One call to action: answer or book. Output only the message, nothing else."
+        },
+        "out": "invitation",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT30S"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "invitation",
+        "label": "Invitation",
+        "from": "{{steps.invitation.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Invitation"
+          },
+          "fr": {
+            "label": "Invitation"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "shopName",
+      "service",
+      "freeSlots"
+    ],
+    "properties": {
+      "shopName": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Nom de la boutique",
+        "description": "Le nom de la boutique, tel qu'il doit apparaître.",
+        "x-i18n": {
+          "en": {
+            "title": "Shop name",
+            "description": "The shop name, as it should appear.",
+            "placeholder": "Brume Salon"
+          },
+          "fr": {
+            "title": "Nom de la boutique",
+            "description": "Le nom de la boutique, tel qu'il doit apparaître.",
+            "placeholder": "Salon Brume"
+          }
+        }
+      },
+      "service": {
+        "type": "string",
+        "maxLength": 120,
+        "title": "Service",
+        "description": "Le service à remplir, sans nom de client.",
+        "x-i18n": {
+          "en": {
+            "title": "Service",
+            "description": "The service to fill, with no client name.",
+            "placeholder": "Cut and style"
+          },
+          "fr": {
+            "title": "Service",
+            "description": "Le service à remplir, sans nom de client.",
+            "placeholder": "Coupe et coiffage"
+          }
+        }
+      },
+      "freeSlots": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 10,
+        "items": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "title": "Créneaux libres",
+        "description": "Les créneaux libres, un par entrée.",
+        "x-i18n": {
+          "en": {
+            "title": "Free slots",
+            "description": "The free slots, one per entry.",
+            "placeholder": "Tuesday 2:00 pm"
+          },
+          "fr": {
+            "title": "Créneaux libres",
+            "description": "Les créneaux libres, un par entrée.",
+            "placeholder": "Mardi 14 h"
+          }
+        }
+      },
+      "channel": {
+        "type": "string",
+        "enum": [
+          "sms",
+          "email",
+          "push"
+        ],
+        "default": "sms",
+        "title": "Canal",
+        "description": "Où le message sera lu : sa longueur en dépend.",
+        "x-i18n": {
+          "en": {
+            "title": "Channel",
+            "description": "Where the message will be read: its length depends on it.",
+            "options": {
+              "sms": "Text message",
+              "email": "Email",
+              "push": "Notification"
+            }
+          },
+          "fr": {
+            "title": "Canal",
+            "description": "Où le message sera lu : sa longueur en dépend.",
+            "options": {
+              "sms": "Message texte",
+              "email": "Courriel",
+              "push": "Notification"
+            }
+          }
+        }
+      },
+      "tone": {
+        "type": "string",
+        "enum": [
+          "warm",
+          "direct",
+          "premium"
+        ],
+        "default": "warm",
+        "title": "Ton de la boutique",
+        "description": "La façon dont la boutique parle à ses clients.",
+        "x-i18n": {
+          "en": {
+            "title": "Shop tone",
+            "description": "How the shop speaks to its clients.",
+            "options": {
+              "warm": "Warm",
+              "direct": "Direct",
+              "premium": "Premium"
+            }
+          },
+          "fr": {
+            "title": "Ton de la boutique",
+            "description": "La façon dont la boutique parle à ses clients.",
+            "options": {
+              "warm": "Chaleureux",
+              "direct": "Direct",
+              "premium": "Soigné"
+            }
+          }
+        }
+      },
+      "language": {
+        "type": "string",
+        "enum": [
+          "fr",
+          "en"
+        ],
+        "default": "fr",
+        "title": "Langue",
+        "description": "La langue du message.",
+        "x-i18n": {
+          "en": {
+            "title": "Language",
+            "description": "The language of the message.",
+            "options": {
+              "fr": "French (Québec)",
+              "en": "English"
+            }
+          },
+          "fr": {
+            "title": "Langue",
+            "description": "La langue du message.",
+            "options": {
+              "fr": "Français (Québec)",
+              "en": "Anglais"
+            }
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

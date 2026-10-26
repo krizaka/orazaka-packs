@@ -1,0 +1,96 @@
+{
+  "studio": "invitation-writer",
+  "cases": [
+    {
+      "id": "sms-fr-two-slots",
+      "input": {
+        "shopName": "Salon Brume",
+        "service": "Coupe et coiffage",
+        "freeSlots": [
+          "Mardi 14 h",
+          "Jeudi 10 h"
+        ],
+        "channel": "sms",
+        "tone": "warm",
+        "language": "fr"
+      },
+      "expected": {
+        "invitation": "Salon Brume : il reste de la place pour une coupe et coiffage mardi 14 h ou jeudi 10 h. Réservez en répondant à ce texto."
+      },
+      "assertions": [
+        {
+          "path": [
+            "invitation"
+          ],
+          "includes": "Salon Brume"
+        },
+        {
+          "path": [
+            "invitation"
+          ],
+          "includes": "mardi 14 h"
+        },
+        {
+          "path": [
+            "invitation"
+          ],
+          "includes": "Réservez"
+        }
+      ]
+    },
+    {
+      "id": "email-en-one-slot",
+      "input": {
+        "shopName": "Brume Salon",
+        "service": "Cut and style",
+        "freeSlots": [
+          "Friday 4:30 pm"
+        ],
+        "channel": "email",
+        "tone": "premium",
+        "language": "en"
+      },
+      "expected": {
+        "invitation": "Subject: A place at Brume Salon on Friday\n\nA cut and style slot has opened at Brume Salon on Friday at 4:30 pm. You are welcome to reserve it by replying to this email."
+      },
+      "assertions": [
+        {
+          "path": [
+            "invitation"
+          ],
+          "includes": "Subject:"
+        },
+        {
+          "path": [
+            "invitation"
+          ],
+          "includes": "Friday at 4:30 pm"
+        }
+      ]
+    },
+    {
+      "id": "push-fr-direct",
+      "input": {
+        "shopName": "Salon Brume",
+        "service": "Coloration",
+        "freeSlots": [
+          "Samedi 9 h"
+        ],
+        "channel": "push",
+        "tone": "direct",
+        "language": "fr"
+      },
+      "expected": {
+        "invitation": "Salon Brume : coloration samedi 9 h. Réservez."
+      },
+      "assertions": [
+        {
+          "path": [
+            "invitation"
+          ],
+          "includes": "samedi 9 h"
+        }
+      ]
+    }
+  ]
+}
