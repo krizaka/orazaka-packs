@@ -1,0 +1,160 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 30,
+  "changelog": "1.0.0 — lecture de la pièce par un modèle de vision (une consigne stricte, réponse JSON), puis vérification par le code : chiffres de contrôle de la zone lisible par machine (TD1, TD2, TD3), calendrier, concordance entre champs imprimés, zone et code-barres. Chaque constat porte sa preuve et sa confiance ; un signe de retouche demande un regard humain et ne fait jamais échouer une pièce seul.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "identity-document-check",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "read",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.media.vision",
+        "dependsOn": [],
+        "inputs": {
+          "assetId": "{{inputs.document}}",
+          "prompt": "You read ONE identity document image for a verification service. Answer with ONE JSON object and nothing else, with exactly these keys. \"documentType\": one of PASSPORT, ID_CARD, DRIVER_LICENCE, RESIDENCE_PERMIT, OTHER. \"issuer\": the issuing country code printed on the document, three letters, or null. \"mrzLines\": the lines of the machine-readable zone transcribed character by character, exactly as printed, one string per line, or [] if there is none; never correct a character, never complete a line. \"printed\": an object with surname, givenNames, documentNumber, dateOfBirth, dateOfExpiry (dates as YYYY-MM-DD) and sex (M, F or X), copied from the printed fields of the document, omitting a field you cannot read. \"signals\": a list of signs of tampering you can SEE, each {\"kind\", \"region\", \"confidence\"} with kind one of PHOTO_REPLACED, TEXT_OVERLAY, FONT_MISMATCH, EDGE_ARTIFACTS, SCREEN_COPY, PHOTOCOPY, region a short place on the document (for example \"surname\", \"photo\", \"date of birth\") and confidence between 0 and 1; an empty list if you see none. \"quality\": {\"blur\", \"glare\", \"cropped\", \"lowResolution\"} as booleans. \"confidence\": {\"mrz\", \"printed\"} between 0 and 1, how sure you are of your transcription. Do not describe the person. Do not say who the person is. Do not judge whether the document is genuine. If unsure of a character, keep your best reading and lower the confidence."
+        },
+        "out": "reading",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT5M"
+      },
+      {
+        "id": "verify",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.identity.document.verify",
+        "dependsOn": [
+          "read"
+        ],
+        "inputs": {
+          "reading": "{{steps.reading.analysis}}",
+          "asOf": "{{inputs.asOf:}}",
+          "minimumAge": "{{inputs.minimumAge:}}",
+          "barcodeText": "{{inputs.barcodeText:}}"
+        },
+        "out": "verdict",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT1M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "report",
+        "label": "Constats, avec preuve et confiance",
+        "from": "{{steps.verdict.reportJson}}",
+        "type": "JSON",
+        "x-i18n": {
+          "en": {
+            "label": "Findings, with evidence and confidence"
+          },
+          "fr": {
+            "label": "Constats, avec preuve et confiance"
+          }
+        }
+      },
+      {
+        "key": "status",
+        "label": "Statut de la pièce",
+        "from": "{{steps.verdict.status}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Document status"
+          },
+          "fr": {
+            "label": "Statut de la pièce"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "document"
+    ],
+    "properties": {
+      "document": {
+        "type": "string",
+        "format": "asset:image",
+        "contentMediaType": "image/*",
+        "minLength": 8,
+        "maxLength": 120,
+        "title": "La pièce d'identité (fichier envoyé)",
+        "description": "Une photo nette de la pièce, recto, en JPEG, PNG ou HEIC.",
+        "x-i18n": {
+          "en": {
+            "title": "The identity document (uploaded file)",
+            "description": "A sharp photo of the front of the document, as JPEG, PNG or HEIC."
+          },
+          "fr": {
+            "title": "La pièce d'identité (fichier envoyé)",
+            "description": "Une photo nette de la pièce, recto, en JPEG, PNG ou HEIC."
+          }
+        }
+      },
+      "asOf": {
+        "type": "string",
+        "maxLength": 10,
+        "title": "Jour de référence",
+        "description": "AAAA-MM-JJ. Vide : aujourd'hui.",
+        "x-i18n": {
+          "en": {
+            "title": "Reference day",
+            "description": "YYYY-MM-DD. Empty: today.",
+            "placeholder": "2026-10-26"
+          },
+          "fr": {
+            "title": "Jour de référence",
+            "description": "AAAA-MM-JJ. Vide : aujourd'hui.",
+            "placeholder": "2026-10-26"
+          }
+        }
+      },
+      "minimumAge": {
+        "type": "string",
+        "maxLength": 3,
+        "title": "Âge minimal (années)",
+        "description": "Facultatif. Sous cet âge, la pièce est signalée pour revue.",
+        "x-i18n": {
+          "en": {
+            "title": "Minimum age (years)",
+            "description": "Optional. Under this age the document is flagged for review.",
+            "placeholder": "18"
+          },
+          "fr": {
+            "title": "Âge minimal (années)",
+            "description": "Facultatif. Sous cet âge, la pièce est signalée pour revue.",
+            "placeholder": "18"
+          }
+        }
+      },
+      "barcodeText": {
+        "type": "string",
+        "maxLength": 20000,
+        "title": "Texte du code-barres",
+        "description": "Facultatif. Le texte décodé du code PDF417 au verso, si votre produit l'a lu.",
+        "x-i18n": {
+          "en": {
+            "title": "Barcode text",
+            "description": "Optional. The decoded text of the PDF417 on the back, if your product read it.",
+            "placeholder": "DAQ…"
+          },
+          "fr": {
+            "title": "Texte du code-barres",
+            "description": "Facultatif. Le texte décodé du code PDF417 au verso, si votre produit l'a lu.",
+            "placeholder": "DAQ…"
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

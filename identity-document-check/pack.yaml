@@ -1,0 +1,78 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# identity-document-check — is this identity document consistent with itself? Findings with evidence, never an identity.
+#
+# Written for Yomizaka (verifying the documents of an applicant), usable by any product that checks an identity document.
+# A vision model TRANSCRIBES the document (the machine-readable zone's lines, the printed fields) and reports what it SEES
+# (signs of tampering, a poor capture). Everything that can be decided by arithmetic is decided by code, never by the
+# model: the ICAO Doc 9303 check digits (TD1, TD2, TD3), the calendar (real days, expiry, age) and the agreement between the
+# printed fields, the zone and a decoded barcode. Each finding carries its evidence (source, field, value, region) and a
+# confidence. A vision signal asks a person to look; it never fails a document alone.
+#
+# Why SENSITIVE: an identity document is as personal as an input gets. The pack receives the controls of ADR-051 (data
+# class, shortened retention, append-only audit, scope guard). The worker never receives the image — only the transcription
+# — keeps nothing and logs a job id and a routing key.
+#
+# What it does not do, said where it can be read (README): it identifies no one, looks nothing up in any database, does
+# not decide a legal identity, and the name line of a zone has no check digit.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: identity-document-check
+version: 1.0.0
+tier: WORKER
+distribution: CLOUD
+regulatoryClass: SENSITIVE
+
+scopeGuard:
+  refusedTerms:
+    - fabriquer une pièce d'identité
+    - falsifier un document
+    - contourner la vérification
+    - forge an id
+    - fake id
+    - bypass the check
+    - who is this person
+    - qui est cette personne
+  refusal: >-
+    Je vérifie qu'une pièce d'identité est cohérente avec elle-même : zone lisible par machine, dates, champs imprimés,
+    signes de retouche. Je n'identifie personne, je ne consulte aucune base et je n'aide pas à fabriquer ni à contourner
+    une pièce d'identité.
+
+requires:
+  capabilities:
+    - key: orazaka.identity.document.verify
+      routingKey: job.identity.verify
+      handlerKey: identity.verify
+      billableCapability: CHAT
+      billableUnit: CALL
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          reading: { type: string, maxLength: 60000, description: "La lecture du document par le modèle de vision : un objet JSON (type, lignes de la zone, champs imprimés, signes, qualité, confiance). Rien n'en est conservé par le worker." }
+          asOf: { type: string, description: "Le jour de référence, AAAA-MM-JJ (aujourd'hui si vide)." }
+          minimumAge: { type: string, description: "L'âge minimal en années (facultatif)." }
+          barcodeText: { type: string, maxLength: 20000, description: "Le texte décodé du code-barres PDF417, si le produit l'a décodé (facultatif)." }
+        required: [reading]
+      outputSchema:
+        type: object
+        properties:
+          report: { type: object, description: "Le statut (CONSISTENT, REVIEW, INCONSISTENT, UNREADABLE), les champs lus, les constats avec preuve et confiance, et les limites." }
+          reportJson: { type: string }
+          status: { type: string, enum: [CONSISTENT, REVIEW, INCONSISTENT, UNREADABLE] }
+        required: [report, reportJson, status]
+  workers:
+    - name: orazaka-worker-identity
+      bindings:
+        - "job.identity.*"
+      concurrency: 1
+
+studios:
+  - key: identity-document-check
+    profession: general
+    iconKey: shield-check
+    pricing: FREE
+    entitlementKey: studio.identity-document-check
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 60
+    blueprint: studios/identity-document-check/blueprint.json

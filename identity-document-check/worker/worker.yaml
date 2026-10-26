@@ -1,0 +1,13 @@
+# What this pack's worker declares. Bindings, never capabilities: a worker has no idea which pack
+# asked for the work — it drains a routing key (ADR-037 §5).
+name: orazaka-worker-identity
+family: identity
+bindings:
+  - "job.identity.*"
+version: "1.0.0"
+concurrency: 1
+
+# Its venv is the pack's, one directory up (requirements.txt): the pack owns its dependencies.
+run:
+  python: "../.venv/bin/python3"
+  args: ["identity_worker.py"]

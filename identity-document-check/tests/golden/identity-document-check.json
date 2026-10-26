@@ -1,0 +1,539 @@
+{
+  "studio": "identity-document-check",
+  "cases": [
+    {
+      "id": "icao-specimen-consistent",
+      "input": {
+        "document": "asset:scene",
+        "asOf": "2011-06-01"
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "identity-document",
+          "rulesetVersion": "2026-10-26",
+          "rulesetRevision": 1,
+          "asOf": "2011-06-01",
+          "documentType": "PASSPORT",
+          "issuer": "UTO",
+          "status": "CONSISTENT",
+          "fields": {
+            "surname": "ERIKSSON",
+            "givenNames": "ANNA MARIA",
+            "documentNumber": "L898902C3",
+            "sex": "F",
+            "issuer": "UTO",
+            "nationality": "UTO",
+            "dateOfBirth": "1974-08-12",
+            "dateOfExpiry": "2012-04-15"
+          },
+          "mrz": {
+            "present": true,
+            "format": "TD3",
+            "checksumsValid": true,
+            "uncovered": [
+              "nameLine",
+              "sex",
+              "issuer",
+              "nationality",
+              "documentCode"
+            ]
+          },
+          "barcode": {
+            "present": false
+          },
+          "age": {
+            "years": 36,
+            "minimum": null,
+            "meets": true
+          },
+          "findings": [],
+          "ignoredSignals": 0,
+          "limits": [
+            "VISION_READING_CAN_BE_WRONG",
+            "NAME_LINE_HAS_NO_CHECK_DIGIT",
+            "NO_DATABASE_LOOKUP",
+            "NOT_A_LEGAL_IDENTITY_DECISION"
+          ]
+        },
+        "status": "CONSISTENT"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "CONSISTENT"
+        },
+        {
+          "path": [
+            "report",
+            "mrz",
+            "checksumsValid"
+          ],
+          "equals": true
+        },
+        {
+          "path": [
+            "report",
+            "limits"
+          ],
+          "includes": "NAME_LINE_HAS_NO_CHECK_DIGIT"
+        }
+      ]
+    },
+    {
+      "id": "changed-document-number-digit",
+      "input": {
+        "document": "asset:scene-two",
+        "asOf": "2011-06-01"
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "identity-document",
+          "rulesetVersion": "2026-10-26",
+          "rulesetRevision": 1,
+          "asOf": "2011-06-01",
+          "documentType": "PASSPORT",
+          "issuer": "UTO",
+          "status": "INCONSISTENT",
+          "fields": {
+            "surname": "ERIKSSON",
+            "givenNames": "ANNA MARIA",
+            "documentNumber": "L899902C3",
+            "sex": "F",
+            "issuer": "UTO",
+            "nationality": "UTO",
+            "dateOfBirth": "1974-08-12",
+            "dateOfExpiry": "2012-04-15"
+          },
+          "mrz": {
+            "present": true,
+            "format": "TD3",
+            "checksumsValid": false,
+            "uncovered": [
+              "nameLine",
+              "sex",
+              "issuer",
+              "nationality",
+              "documentCode"
+            ]
+          },
+          "barcode": {
+            "present": false
+          },
+          "age": {
+            "years": 36,
+            "minimum": null,
+            "meets": true
+          },
+          "findings": [
+            {
+              "code": "MRZ_CHECKSUM_FAILED",
+              "severity": "FAIL",
+              "field": "documentNumber",
+              "basis": "DETERMINISTIC",
+              "evidence": {
+                "source": "mrz",
+                "field": "documentNumber",
+                "value": "L899902C3",
+                "region": "mrz.line2[0:9]",
+                "expectedCheckDigit": 3,
+                "foundCheckDigit": 6
+              },
+              "confidence": 0.95,
+              "maybeTranscription": false
+            },
+            {
+              "code": "MRZ_CHECKSUM_FAILED",
+              "severity": "FAIL",
+              "field": "composite",
+              "basis": "DETERMINISTIC",
+              "evidence": {
+                "source": "mrz",
+                "field": "composite",
+                "value": "L899902C3674081221204159ZE184226B<<<<<1",
+                "region": "mrz.line2[0:10]+[13:20]+[21:43]",
+                "expectedCheckDigit": 7,
+                "foundCheckDigit": 0
+              },
+              "confidence": 0.95,
+              "maybeTranscription": false
+            },
+            {
+              "code": "PRINTED_MRZ_MISMATCH",
+              "severity": "FAIL",
+              "field": "documentNumber",
+              "basis": "DETERMINISTIC",
+              "evidence": {
+                "source": "printed",
+                "field": "documentNumber",
+                "value": "L898902C3",
+                "against": "L899902C3",
+                "region": "documentNumber"
+              },
+              "confidence": 0.9
+            }
+          ],
+          "ignoredSignals": 0,
+          "limits": [
+            "VISION_READING_CAN_BE_WRONG",
+            "NAME_LINE_HAS_NO_CHECK_DIGIT",
+            "NO_DATABASE_LOOKUP",
+            "NOT_A_LEGAL_IDENTITY_DECISION"
+          ]
+        },
+        "status": "INCONSISTENT"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "INCONSISTENT"
+        },
+        {
+          "path": [
+            "report",
+            "findings",
+            0,
+            "code"
+          ],
+          "equals": "MRZ_CHECKSUM_FAILED"
+        },
+        {
+          "path": [
+            "report",
+            "findings",
+            0,
+            "evidence",
+            "region"
+          ],
+          "equals": "mrz.line2[0:9]"
+        },
+        {
+          "path": [
+            "report",
+            "findings",
+            0,
+            "basis"
+          ],
+          "equals": "DETERMINISTIC"
+        }
+      ]
+    },
+    {
+      "id": "printed-birth-date-differs-from-zone",
+      "input": {
+        "document": "asset:scene-three",
+        "asOf": "2011-06-01",
+        "minimumAge": "40"
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "identity-document",
+          "rulesetVersion": "2026-10-26",
+          "rulesetRevision": 1,
+          "asOf": "2011-06-01",
+          "documentType": "PASSPORT",
+          "issuer": "UTO",
+          "status": "INCONSISTENT",
+          "fields": {
+            "surname": "ERIKSSON",
+            "givenNames": "ANNA MARIA",
+            "documentNumber": "L898902C3",
+            "sex": "F",
+            "issuer": "UTO",
+            "nationality": "UTO",
+            "dateOfBirth": "1974-08-12",
+            "dateOfExpiry": "2012-04-15"
+          },
+          "mrz": {
+            "present": true,
+            "format": "TD3",
+            "checksumsValid": true,
+            "uncovered": [
+              "nameLine",
+              "sex",
+              "issuer",
+              "nationality",
+              "documentCode"
+            ]
+          },
+          "barcode": {
+            "present": false
+          },
+          "age": {
+            "years": 36,
+            "minimum": 40,
+            "meets": false
+          },
+          "findings": [
+            {
+              "code": "PRINTED_MRZ_MISMATCH",
+              "severity": "FAIL",
+              "field": "dateOfBirth",
+              "basis": "DETERMINISTIC",
+              "evidence": {
+                "source": "printed",
+                "field": "dateOfBirth",
+                "value": "1976-08-12",
+                "against": "1974-08-12",
+                "region": "dateOfBirth"
+              },
+              "confidence": 0.9
+            },
+            {
+              "code": "AGE_BELOW_MINIMUM",
+              "severity": "WARN",
+              "field": "dateOfBirth",
+              "basis": "DETERMINISTIC",
+              "evidence": {
+                "source": "mrz",
+                "field": "dateOfBirth",
+                "value": "1974-08-12",
+                "region": "dateOfBirth"
+              },
+              "confidence": 0.95
+            }
+          ],
+          "ignoredSignals": 0,
+          "limits": [
+            "VISION_READING_CAN_BE_WRONG",
+            "NAME_LINE_HAS_NO_CHECK_DIGIT",
+            "NO_DATABASE_LOOKUP",
+            "NOT_A_LEGAL_IDENTITY_DECISION"
+          ]
+        },
+        "status": "INCONSISTENT"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "INCONSISTENT"
+        },
+        {
+          "path": [
+            "report",
+            "findings",
+            0,
+            "code"
+          ],
+          "equals": "PRINTED_MRZ_MISMATCH"
+        },
+        {
+          "path": [
+            "report",
+            "age",
+            "years"
+          ],
+          "equals": 36
+        }
+      ]
+    },
+    {
+      "id": "photo-replaced-signal-asks-for-a-look",
+      "input": {
+        "document": "asset:scene-four",
+        "asOf": "2011-06-02"
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "identity-document",
+          "rulesetVersion": "2026-10-26",
+          "rulesetRevision": 1,
+          "asOf": "2011-06-02",
+          "documentType": "PASSPORT",
+          "issuer": "UTO",
+          "status": "REVIEW",
+          "fields": {
+            "surname": "ERIKSSON",
+            "givenNames": "ANNA MARIA",
+            "documentNumber": "L898902C3",
+            "sex": "F",
+            "issuer": "UTO",
+            "nationality": "UTO",
+            "dateOfBirth": "1974-08-12",
+            "dateOfExpiry": "2012-04-15"
+          },
+          "mrz": {
+            "present": true,
+            "format": "TD3",
+            "checksumsValid": true,
+            "uncovered": [
+              "nameLine",
+              "sex",
+              "issuer",
+              "nationality",
+              "documentCode"
+            ]
+          },
+          "barcode": {
+            "present": false
+          },
+          "age": {
+            "years": 36,
+            "minimum": null,
+            "meets": true
+          },
+          "findings": [
+            {
+              "code": "TAMPERING_SIGNAL",
+              "severity": "WARN",
+              "field": "PHOTO_REPLACED",
+              "basis": "MODEL",
+              "evidence": {
+                "source": "vision",
+                "field": "PHOTO_REPLACED",
+                "value": "PHOTO_REPLACED",
+                "region": "photo"
+              },
+              "confidence": 0.9
+            }
+          ],
+          "ignoredSignals": 0,
+          "limits": [
+            "VISION_READING_CAN_BE_WRONG",
+            "NAME_LINE_HAS_NO_CHECK_DIGIT",
+            "NO_DATABASE_LOOKUP",
+            "NOT_A_LEGAL_IDENTITY_DECISION"
+          ]
+        },
+        "status": "REVIEW"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "REVIEW"
+        },
+        {
+          "path": [
+            "report",
+            "findings",
+            0,
+            "code"
+          ],
+          "equals": "TAMPERING_SIGNAL"
+        },
+        {
+          "path": [
+            "report",
+            "findings",
+            0,
+            "basis"
+          ],
+          "equals": "MODEL"
+        }
+      ]
+    },
+    {
+      "id": "licence-barcode-disagrees-with-print",
+      "input": {
+        "document": "asset:scene-five",
+        "asOf": "2011-06-01",
+        "barcodeText": "@\n\u001e\rANSI 636026\nDAQ L8989-02C3\nDCSERIKSSON\nDACANNA\nDBB19760812\nDBA20120415\n"
+      },
+      "expected": {
+        "report": {
+          "rulesetId": "identity-document",
+          "rulesetVersion": "2026-10-26",
+          "rulesetRevision": 1,
+          "asOf": "2011-06-01",
+          "documentType": "DRIVER_LICENCE",
+          "issuer": "UTO",
+          "status": "INCONSISTENT",
+          "fields": {
+            "surname": "ERIKSSON",
+            "givenNames": "ANNA MARIA",
+            "documentNumber": "L898902C3",
+            "sex": "F",
+            "dateOfBirth": "1974-08-12",
+            "dateOfExpiry": "2012-04-15"
+          },
+          "mrz": {
+            "present": false
+          },
+          "barcode": {
+            "present": true,
+            "fields": [
+              "dateOfBirth",
+              "dateOfExpiry",
+              "documentNumber",
+              "givenNames",
+              "surname"
+            ]
+          },
+          "age": {
+            "years": 36,
+            "minimum": null,
+            "meets": true
+          },
+          "findings": [
+            {
+              "code": "MRZ_ABSENT",
+              "severity": "INFO",
+              "field": "mrz",
+              "basis": "DETERMINISTIC",
+              "evidence": {
+                "source": "mrz",
+                "field": "mrz",
+                "value": null,
+                "region": "mrz"
+              },
+              "confidence": 0.0
+            },
+            {
+              "code": "BARCODE_MISMATCH",
+              "severity": "FAIL",
+              "field": "dateOfBirth",
+              "basis": "DETERMINISTIC",
+              "evidence": {
+                "source": "barcode",
+                "field": "dateOfBirth",
+                "value": "1976-08-12",
+                "against": "1974-08-12",
+                "region": "dateOfBirth"
+              },
+              "confidence": 0.9
+            }
+          ],
+          "ignoredSignals": 0,
+          "limits": [
+            "VISION_READING_CAN_BE_WRONG",
+            "NAME_LINE_HAS_NO_CHECK_DIGIT",
+            "NO_DATABASE_LOOKUP",
+            "NOT_A_LEGAL_IDENTITY_DECISION"
+          ]
+        },
+        "status": "INCONSISTENT"
+      },
+      "assertions": [
+        {
+          "path": [
+            "status"
+          ],
+          "equals": "INCONSISTENT"
+        },
+        {
+          "path": [
+            "report",
+            "barcode",
+            "present"
+          ],
+          "equals": true
+        },
+        {
+          "path": [
+            "report",
+            "mrz",
+            "present"
+          ],
+          "equals": false
+        }
+      ]
+    }
+  ]
+}

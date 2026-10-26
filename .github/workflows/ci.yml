@@ -145,6 +145,20 @@ jobs:
       extra-packages: pika pyyaml
       test-command: python test_screening.py
 
+  py-identity:
+    # identity-document-check's worker: the ICAO check digits on the public specimens and their tampered variants, the calendar,
+    # the cross-checks, the payload checks — no model, no network.
+    permissions:
+      contents: read
+    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
+    with:
+      working-directory: identity-document-check/worker
+      extra-packages: pika pyyaml
+      test-command: |
+        python test_mrz.py
+        python test_rules.py
+        python test_worker.py
+
   py-common:
     # The broker connection every worker shares (worker-common/worker_broker.py): tested once.
     permissions:
@@ -153,7 +167,9 @@ jobs:
     with:
       working-directory: worker-common
       extra-packages: pika
-      test-command: python test_worker_broker.py
+      test-command: |
+        python test_worker_broker.py
+        python test_worker_loop.py
 
   # The required checks keep their names; each reads its gate's verdict. They go when protection requires the gates.
   photo-worker:

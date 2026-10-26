@@ -1,0 +1,14 @@
+pack:
+  label: Identity document check
+  tagline: Is this identity document consistent with itself?
+  description: >-
+    Reads an identity document with a vision model, then checks by arithmetic what can be checked: the check digits of the
+    machine-readable zone, the dates, and the agreement between the printed fields, the zone and the barcode. Each finding
+    comes with its evidence and a confidence. It identifies no one and looks nothing up.
+studios:
+  identity-document-check:
+    label: Identity document check
+    tagline: Zone, dates and printed fields checked by code, signs of tampering flagged for a person.
+    description: >-
+      A vision model transcribes the document; the check digits, the calendar and the cross-checks are plain code. A sign of
+      tampering asks a person to look and never fails a document alone.
