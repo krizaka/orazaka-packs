@@ -1,0 +1,19 @@
+{
+  "rulesetId": "identity-document",
+  "version": "2026-10-26",
+  "revision": 1,
+  "revisionNote": "First ruleset. The arithmetic (ICAO Doc 9303 check digits, calendar days) is exact; the thresholds only decide when a model's reading is trusted enough to accuse a document. A vision signal asks a person to look, it never convicts.",
+  "thresholds": {
+    "lowReadConfidence": 0.5,
+    "tamperReview": 0.6
+  },
+  "signalKinds": ["PHOTO_REPLACED", "TEXT_OVERLAY", "FONT_MISMATCH", "EDGE_ARTIFACTS", "SCREEN_COPY", "PHOTOCOPY"],
+  "qualityKinds": ["blur", "glare", "cropped", "lowResolution"],
+  "documentTypes": ["PASSPORT", "ID_CARD", "DRIVER_LICENCE", "RESIDENCE_PERMIT", "OTHER"],
+  "limits": [
+    "VISION_READING_CAN_BE_WRONG",
+    "NAME_LINE_HAS_NO_CHECK_DIGIT",
+    "NO_DATABASE_LOOKUP",
+    "NOT_A_LEGAL_IDENTITY_DECISION"
+  ]
+}

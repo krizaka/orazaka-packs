@@ -1,0 +1,14 @@
+pack:
+  label: Vérification de pièce d'identité
+  tagline: Cette pièce d'identité est-elle cohérente avec elle-même ?
+  description: >-
+    Lit une pièce d'identité avec un modèle de vision, puis vérifie par le calcul ce qui peut l'être : les chiffres de contrôle
+    de la zone lisible par machine, les dates, et la concordance entre les champs imprimés, la zone et le code-barres. Chaque
+    constat vient avec sa preuve et une confiance. Elle n'identifie personne et ne consulte aucune base.
+studios:
+  identity-document-check:
+    label: Vérification de pièce d'identité
+    tagline: Zone, dates et champs imprimés vérifiés par le code, signes de retouche signalés à une personne.
+    description: >-
+      Un modèle de vision transcrit la pièce ; les chiffres de contrôle, le calendrier et les recoupements sont du code.
+      Un signe de retouche demande à une personne de regarder et ne fait jamais échouer une pièce à lui seul.
