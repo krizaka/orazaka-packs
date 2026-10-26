@@ -497,6 +497,22 @@ def test_qc_new_rules_are_all_cited_and_the_ruleset_stays_awaiting_a_lawyer():
         assert "C.c.Q." in _qc_rule(rule_id)["citation"]
 
 
+def test_every_pattern_reads_the_same_where_a_word_character_is_ascii_only():
+    """The engine that installs the pack (Java) reads `\\w` as ASCII: `résili\\w+` never matches « résilié ». Each fixture's
+    verdict must be the same under Python's Unicode `\\w` and under ASCII `\\w` (the CI of the workspace found it, #7)."""
+    differing = []
+    for path in sorted(RULESET_DIR.glob("*/*.json")):
+        for rule in json.loads(path.read_text(encoding="utf-8"))["rules"]:
+            check = rule.get("check") or {}
+            if check.get("type") not in ("FORBIDDEN_PATTERN", "REQUIRED_PATTERN"):
+                continue
+            for kind in ("pass", "fail"):
+                for text in _as_list(rule.get("fixtures", {}).get(kind, [])):
+                    if bool(re.search(check["pattern"], text)) != bool(re.search(check["pattern"], text, re.ASCII)):
+                        differing.append(f"{path.parent.name} {rule['ruleId']} {kind}: {text[:50]}")
+    assert not differing, "patterns that read differently in ASCII word mode:\n  " + "\n  ".join(differing)
+
+
 # --- qc-invoice: the mentions a supplier's invoice carries, from the federal regulation DORS/91-45 art. 3 -------------
 
 QC_INVOICE_CLEAN = """FACTURE n° 2041

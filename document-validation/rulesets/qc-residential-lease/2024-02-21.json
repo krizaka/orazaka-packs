@@ -257,7 +257,7 @@
       "citation": "C.c.Q., art. 1901 (clause abusive) ; art. 1931 et suiv. (accès au logement)",
       "check": {
         "type": "FORBIDDEN_PATTERN",
-        "pattern": "(?i)(?:(?:interdi\\w*|ne\\s+(?:peut|doit|pourra)\\s+pas|défense|prohib\\w+|aucune?\\s+(?:visite|personne))[^.\\n]{0,60}?(?:visites?|visiteurs?|invit\\w+|héberg\\w+|recevoir)|(?:visites?|visiteurs?|invités?)[^.\\n]{0,60}?(?:interdit\\w*|préalablement\\s+(?:approuv|autoris)\\w+|autorisation\\s+(?:écrite|préalable))|héberger[^.\\n]{0,60}?sans\\s+(?:l['’])?(?:autorisation|accord|consentement))"
+        "pattern": "(?i)(?:(?:interdi\\w*|ne\\s+(?:peut|doit|pourra)\\s+pas|défense|prohib\\w+|aucune?\\s+(?:visite|personne))[^.\\n]{0,60}?(?:visites?|visiteurs?|invit\\w+|héberg\\w+|recevoir)|(?:visites?|visiteurs?|invités?)[^.\\n]{0,60}?(?:interdit\\w*|préalablement\\s+(?:approuv|autoris)[A-Za-zÀ-ÿ]+|autorisation\\s+(?:écrite|préalable))|héberger[^.\\n]{0,60}?sans\\s+(?:l['’])?(?:autorisation|accord|consentement))"
       },
       "onPass": "Aucune clause n'interdit les visites ni l'hébergement d'un tiers.",
       "onFail": "Une clause interdit les visites ou l'hébergement d'un tiers, ou les soumet à l'autorisation du locateur. Elle peut être abusive au sens de l'article 1901 : le locataire jouit paisiblement du logement et le locateur n'y accède que dans les conditions des articles 1931 et suivants.",
@@ -280,11 +280,11 @@
       "title": "Résiliation de plein droit pour un seul retard — sans effet",
       "severity": "BLOCKING",
       "method": "DETERMINISTIC",
-      "subject": "(?i)résili\\w+|résolu\\w*|retard",
+      "subject": "(?i)résili[A-Za-zÀ-ÿ]*|résolu[A-Za-zÀ-ÿ]*|retard",
       "citation": "C.c.Q., art. 1971 ; art. 1893",
       "check": {
         "type": "FORBIDDEN_PATTERN",
-        "pattern": "(?i)(?:(?:résili\\w+|résolu\\w*)[^.\\n]{0,60}?(?:de\\s+plein\\s+droit|immédiat\\w*|automatique\\w*|sans\\s+(?:mise\\s+en\\s+demeure|préavis|avis|délai)|dès\\s+le\\s+premier\\s+jour)[^.\\n]{0,60}?(?:retard|loyer|paiement|défaut)|(?:seul|premier|moindre|tout)\\s+retard[^.\\n]{0,80}?(?:résili\\w+|résolu\\w*))"
+        "pattern": "(?i)(?:(?:résili[A-Za-zÀ-ÿ]*|résolu[A-Za-zÀ-ÿ]*)[^.\\n]{0,60}?(?:de\\s+plein\\s+droit|immédiat\\w*|automatique\\w*|sans\\s+(?:mise\\s+en\\s+demeure|préavis|avis|délai)|dès\\s+le\\s+premier\\s+jour)[^.\\n]{0,60}?(?:retard|loyer|paiement|défaut)|(?:seul|premier|moindre|tout)\\s+retard[^.\\n]{0,80}?(?:résili[A-Za-zÀ-ÿ]*|résolu[A-Za-zÀ-ÿ]*))"
       },
       "onPass": "Aucune clause ne résilie le bail de plein droit pour un seul retard.",
       "onFail": "Une clause résilie le bail de plein droit ou immédiatement pour un retard de loyer. L'article 1971 exige un retard de plus de trois semaines et une décision du Tribunal administratif du logement ; l'article 1893 rend sans effet la clause qui y déroge.",
