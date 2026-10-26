@@ -48,7 +48,7 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm test
         env:
           GOLDEN_BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -69,7 +69,7 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm run golden:run -- --config "$GOLDEN_STACK_CONFIG"
         env:
           GOLDEN_STACK_CONFIG: ${{ vars.GOLDEN_STACK_CONFIG }}

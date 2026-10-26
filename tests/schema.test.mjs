@@ -115,7 +115,8 @@ test("CI installs locked dependencies and runs the manifest gate on every pull r
   assert.equal(workflow.on.pull_request, null);
   const job = workflow.jobs["schema-tests"];
   assert.equal(job.if, undefined);
-  const install = job.steps.findIndex((step) => step.run === "npm ci");
+  // `npm ci --ignore-scripts`: locked, and no dependency's install script runs in CI.
+  const install = job.steps.findIndex((step) => /^npm ci(\s|$)/.test(step.run ?? ""));
   const run = job.steps.findIndex((step) => step.run === "npm test");
   assert.ok(install >= 0 && run > install, "npm ci must precede npm test");
 });
