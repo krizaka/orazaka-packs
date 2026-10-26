@@ -4,7 +4,7 @@ pack:
   description: >-
     Contrôlez un document contre un corpus de règles versionné — chaque constat cite sa règle,
     sa source et l'extrait qui le justifie — et examinez un fichier PDF pour les signes d'une
-    modification. Des rapports, jamais un conseil juridique.
+    modification. Des rapports, jamais un conseil juridique : des outils techniques validés par le conseiller juridique du client.
 category:
   label: Affaires et documents
   description: "Les packs qui font le travail : vérifier des documents, prospecter."
