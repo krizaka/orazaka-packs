@@ -1,0 +1,32 @@
+pack:
+  label: Conformité vie privée (Loi 25)
+  tagline: Préparez vos documents de la Loi 25 sur votre propre machine.
+  description: >-
+    Matrices d'extraction documentaire et gabarits technologiques paramétrables qui préparent un inventaire des renseignements
+    personnels, un brouillon d'évaluation des facteurs relatifs à la vie privée, une inscription au registre des incidents avec
+    les brouillons d'avis, et une politique de gouvernance, outils techniques validés par le conseiller juridique du client : ils
+    préparent, la personne responsable valide, et rien n'est un avis juridique. Vos données restent sur votre machine.
+category:
+  label: Affaires et documents
+  description: "Des packs qui font le travail : vérifier des documents, prospecter."
+studios:
+  personal-information-inventory:
+    label: Inventaire des renseignements personnels
+    tagline: Ce que vous détenez, où, pourquoi, qui y accède, combien de temps.
+    description: >-
+      À partir de la description de vos outils et processus, un tableau des renseignements personnels que vous détenez, avec les questions à trancher.
+  privacy-impact-assessment:
+    label: Brouillon d'évaluation des facteurs relatifs à la vie privée
+    tagline: Un brouillon structuré avant un projet qui touche des renseignements personnels.
+    description: >-
+      Objectif, renseignements, flux, risques et mesures, la décision et la signature étant laissées à la personne responsable.
+  confidentiality-incident:
+    label: Incident de confidentialité
+    tagline: Une inscription au registre et des brouillons d'avis ; la personne responsable décide.
+    description: >-
+      Lit les critères du préjudice sérieux, rédige l'inscription au registre et, si les critères le laissent croire, les avis.
+  privacy-governance-policy:
+    label: Politique de gouvernance
+    tagline: Votre politique publique de confidentialité, en français et en anglais, en langage clair.
+    description: >-
+      Rédige la politique publique à partir de vos activités et pratiques, et marque chaque point à confirmer.

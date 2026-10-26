@@ -1,0 +1,105 @@
+{
+  "studio": "privacy-impact-assessment",
+  "cases": [
+    {
+      "id": "client-portal-hosted-outside-quebec",
+      "input": {
+        "firmName": "Cabinet Lumen (fictif)",
+        "projectName": "Nouveau portail client",
+        "purpose": "Permettre aux clients de déposer leurs documents.",
+        "personalData": "Nom, courriel, pièces d'identité.",
+        "peopleConcerned": "Clients et leurs conjoints.",
+        "outsideQuebec": "yes",
+        "safeguards": "Chiffrement, accès par rôle.",
+        "language": "fr"
+      },
+      "expected": {
+        "efvp": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\n1. Objectif et nécessité\nPermettre aux clients de déposer leurs documents ; la nécessité de chaque renseignement est à confirmer.\n\n2. Renseignements et personnes concernées\nNom, courriel, pièces d'identité des clients et de leurs conjoints.\n\n3. Flux et hébergement\nHébergement hors Québec : une communication hors Québec appelle sa propre évaluation (art. 17).\n\n4. Risques\n| Risque | Probabilité | Impact | Mesure |\n| --- | --- | --- | --- |\n| Accès non autorisé aux pièces d'identité | À confirmer | Élevé | Chiffrement, accès par rôle |\n\n5. Mesures à planifier\nÀ confirmer.\n\n6. Décision\nDécision, date et signature : à compléter par la personne responsable, seule à décider.\n\nSources : Loi sur la protection des renseignements personnels dans le secteur privé (RLRQ, c. P-39.1), art. 3.1 à 3.3 ; guides de la CAI."
+      },
+      "assertions": [
+        {
+          "path": [
+            "efvp"
+          ],
+          "includes": "hors Québec"
+        },
+        {
+          "path": [
+            "efvp"
+          ],
+          "includes": "seule à décider"
+        },
+        {
+          "path": [
+            "efvp"
+          ],
+          "includes": "n'est pas un avis juridique"
+        }
+      ]
+    },
+    {
+      "id": "appointment-app-no-outside-hosting",
+      "input": {
+        "firmName": "Harbour Clinic (fictional)",
+        "projectName": "Online booking",
+        "purpose": "Let patients book appointments.",
+        "personalData": "Name, phone number, reason for visit.",
+        "peopleConcerned": "Patients.",
+        "outsideQuebec": "no",
+        "language": "en"
+      },
+      "expected": {
+        "efvp": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\n1. Purpose and necessity\nLet patients book appointments; the necessity of the reason for visit is to confirm.\n\n2. Information and people concerned\nName, phone number and reason for visit of patients.\n\n3. Flows and hosting\nHosted in Québec, as stated by the firm.\n\n4. Privacy risks\n| Risk | Likelihood | Impact | Safeguard |\n| --- | --- | --- | --- |\n| Reason for visit seen by reception staff who do not need it | To confirm | Medium | To confirm |\n\n5. Mitigations still to plan\nTo confirm.\n\n6. Decision\nDecision, date and signature: left to the person in charge, who alone decides."
+      },
+      "assertions": [
+        {
+          "path": [
+            "efvp"
+          ],
+          "includes": "not legal advice"
+        },
+        {
+          "path": [
+            "efvp"
+          ],
+          "includes": "alone decides"
+        },
+        {
+          "path": [
+            "efvp"
+          ],
+          "includes": "Hosted in Québec"
+        }
+      ]
+    },
+    {
+      "id": "hosting-unknown-is-flagged-not-assumed",
+      "input": {
+        "firmName": "Agence Brume (fictive)",
+        "projectName": "Base de prospects",
+        "purpose": "Suivre les demandes de soumission.",
+        "personalData": "Courriel et entreprise.",
+        "peopleConcerned": "Prospects.",
+        "outsideQuebec": "unknown",
+        "language": "fr"
+      },
+      "expected": {
+        "efvp": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\n3. Flux et hébergement\nLieu d'hébergement : à confirmer avant de poursuivre ; si les renseignements sortent du Québec, une évaluation propre à cette communication est nécessaire.\n\n6. Décision\nÀ compléter par la personne responsable, seule à décider."
+      },
+      "assertions": [
+        {
+          "path": [
+            "efvp"
+          ],
+          "includes": "à confirmer"
+        },
+        {
+          "path": [
+            "efvp"
+          ],
+          "includes": "seule à décider"
+        }
+      ]
+    }
+  ]
+}

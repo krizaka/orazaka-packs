@@ -1,0 +1,94 @@
+{
+  "studio": "privacy-governance-policy",
+  "cases": [
+    {
+      "id": "accounting-practice-policy",
+      "input": {
+        "firmName": "Cabinet Lumen (fictif)",
+        "activities": "Cabinet de comptabilité pour petites entreprises.",
+        "dataKinds": "Identité, coordonnées, états financiers.",
+        "retention": "Sept ans après la fin du mandat.",
+        "contactRole": "Responsable de la protection des renseignements personnels"
+      },
+      "expected": {
+        "policyFr": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\nPolitique de confidentialité — Cabinet Lumen (fictif)\n\nQui nous sommes : cabinet de comptabilité pour petites entreprises.\nCe que nous recueillons et pourquoi : identité, coordonnées, états financiers, pour exécuter votre mandat.\nCombien de temps : sept ans après la fin du mandat.\nVos droits : accès, rectification, retrait du consentement.\nPour nous joindre : Responsable de la protection des renseignements personnels.\n\nSources : Loi sur la protection des renseignements personnels dans le secteur privé (RLRQ, c. P-39.1), art. 3.1 à 3.3 ; guides de la CAI.",
+        "policyEn": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\nPrivacy policy — Cabinet Lumen (fictional)\n\nWho we are: accounting practice for small businesses.\nWhat we collect and why: identity, contact details, financial statements, to carry out your engagement.\nHow long: seven years after the engagement ends.\nYour rights: access, correction, withdrawal of consent.\nContact: Person in charge of the protection of personal information."
+      },
+      "assertions": [
+        {
+          "path": [
+            "policyFr"
+          ],
+          "includes": "n'est pas un avis juridique"
+        },
+        {
+          "path": [
+            "policyEn"
+          ],
+          "includes": "not legal advice"
+        },
+        {
+          "path": [
+            "policyFr"
+          ],
+          "includes": "sept ans"
+        }
+      ]
+    },
+    {
+      "id": "retention-missing-marked-to-confirm",
+      "input": {
+        "firmName": "Harbour Clinic (fictional)",
+        "activities": "A small dental clinic.",
+        "dataKinds": "Patient identity and health information.",
+        "contactRole": "Privacy officer"
+      },
+      "expected": {
+        "policyFr": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\nCombien de temps : À confirmer.\nPour nous joindre : Responsable de la protection des renseignements personnels (titre à confirmer).",
+        "policyEn": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\nHow long: To confirm.\nContact: Privacy officer."
+      },
+      "assertions": [
+        {
+          "path": [
+            "policyFr"
+          ],
+          "includes": "À confirmer"
+        },
+        {
+          "path": [
+            "policyEn"
+          ],
+          "includes": "To confirm"
+        }
+      ]
+    },
+    {
+      "id": "newsletter-agency-policy",
+      "input": {
+        "firmName": "Agence Brume (fictive)",
+        "activities": "Agence de communication.",
+        "dataKinds": "Adresses courriel de l'infolettre, coordonnées de clients.",
+        "retention": "Jusqu'au désabonnement.",
+        "contactRole": "Direction"
+      },
+      "expected": {
+        "policyFr": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\nCe que nous recueillons et pourquoi : adresses courriel de l'infolettre pour vous l'envoyer, coordonnées de clients pour les mandats.\nCombien de temps : jusqu'au désabonnement.\nVos droits : vous pouvez vous désabonner en tout temps.",
+        "policyEn": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\nWhat we collect and why: newsletter email addresses to send it to you, client contact details for engagements.\nHow long: until you unsubscribe.\nYour rights: you can unsubscribe at any time."
+      },
+      "assertions": [
+        {
+          "path": [
+            "policyFr"
+          ],
+          "includes": "désabonnement"
+        },
+        {
+          "path": [
+            "policyEn"
+          ],
+          "includes": "unsubscribe"
+        }
+      ]
+    }
+  ]
+}
