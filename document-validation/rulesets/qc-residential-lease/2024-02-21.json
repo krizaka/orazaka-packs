@@ -6,9 +6,9 @@
   "effectiveFrom": "2024-02-21",
   "effectiveTo": null,
   "source": "Code civil du Québec, art. 1851 et suiv. (bail de logement : art. 1892 à 1978), Règlement sur les formulaires de bail obligatoires et sur les mentions de l'avis au nouveau locataire (RLRQ c. T-15.01, r. 3), Tribunal administratif du logement",
-  "revision": 3,
+  "revision": 4,
   "reviewStatus": "TO_REVIEW_BY_LAWYER",
-  "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration.",
+  "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration. La révision 4 est en attente de la réponse à yomizaka#96 (relecture par l'avocat ou l'avocate du client) ; les citations renvoient aux articles par leur numéro, sans en reproduire le texte.",
   "rules": [
     {
       "ruleId": "QC-LEASE-001",
@@ -52,12 +52,20 @@
       "citation": "C.c.Q., art. 1855 et 1903 ; Règlement sur les formulaires de bail obligatoires, section D",
       "check": {
         "type": "REQUIRED_PATTERN",
-        "pattern": "(?i)loyer[^.\\n]{0,80}?\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?)"
+        "pattern": "(?i)loyer[^.\\n]{0,80}?(?:\\d[\\d\\s.,]*\\s*(?:\\$|CAD|dollars?)|(?:\\$|CAD)\\s*\\d)"
       },
       "onPass": "Le loyer est chiffré au bail.",
       "onFail": "Le loyer n'est pas chiffré en dollars. La section D du formulaire obligatoire exige le loyer et ses modalités de paiement.",
       "fixtures": {
-        "pass": "Le loyer mensuel est de 1 450 $, payable le premier jour du mois.",
+        "pass": [
+          "Le loyer mensuel est de 1 450 $, payable le premier jour du mois.",
+          "Loyer mensuel : 1 250,00 $",
+          "Loyer mensuel : 1 250,00 $ CA",
+          "Loyer mensuel : $1,250.00",
+          "Loyer mensuel : 1250 CAD",
+          "Le loyer est de 1 250 dollars par mois.",
+          "Loyer mensuel : CAD 1 250,00"
+        ],
         "fail": "Le loyer sera convenu plus tard entre les parties."
       }
     },
@@ -241,6 +249,82 @@
       }
     },
     {
+      "ruleId": "QC-LEASE-012",
+      "title": "Visites et hébergement d'un tiers — clause abusive",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)visit\\w*|invit\\w*|héberg\\w*|recevoir",
+      "citation": "C.c.Q., art. 1901 (clause abusive) ; art. 1931 et suiv. (accès au logement)",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?:(?:interdi\\w*|ne\\s+(?:peut|doit|pourra)\\s+pas|défense|prohib\\w+|aucune?\\s+(?:visite|personne))[^.\\n]{0,60}?(?:visites?|visiteurs?|invit\\w+|héberg\\w+|recevoir)|(?:visites?|visiteurs?|invités?)[^.\\n]{0,60}?(?:interdit\\w*|préalablement\\s+(?:approuv|autoris)\\w+|autorisation\\s+(?:écrite|préalable))|héberger[^.\\n]{0,60}?sans\\s+(?:l['’])?(?:autorisation|accord|consentement))"
+      },
+      "onPass": "Aucune clause n'interdit les visites ni l'hébergement d'un tiers.",
+      "onFail": "Une clause interdit les visites ou l'hébergement d'un tiers, ou les soumet à l'autorisation du locateur. Elle peut être abusive au sens de l'article 1901 : le locataire jouit paisiblement du logement et le locateur n'y accède que dans les conditions des articles 1931 et suivants.",
+      "fixtures": {
+        "pass": [
+          "Le locataire peut recevoir des visiteurs en tout temps, dans le respect de la tranquillité des voisins.",
+          "Le locateur peut visiter le logement après un préavis écrit de 24 heures.",
+          "Le logement est loué pour y habiter avec sa famille."
+        ],
+        "fail": [
+          "Il est interdit au locataire de recevoir des visites après 22 heures.",
+          "Le locataire ne peut héberger aucune personne sans l'autorisation écrite du locateur.",
+          "Toute visite doit être préalablement approuvée par le locateur.",
+          "Les invités sont interdits dans le logement."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-013",
+      "title": "Résiliation de plein droit pour un seul retard — sans effet",
+      "severity": "BLOCKING",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)résili\\w+|résolu\\w*|retard",
+      "citation": "C.c.Q., art. 1971 ; art. 1893",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?:(?:résili\\w+|résolu\\w*)[^.\\n]{0,60}?(?:de\\s+plein\\s+droit|immédiat\\w*|automatique\\w*|sans\\s+(?:mise\\s+en\\s+demeure|préavis|avis|délai)|dès\\s+le\\s+premier\\s+jour)[^.\\n]{0,60}?(?:retard|loyer|paiement|défaut)|(?:seul|premier|moindre|tout)\\s+retard[^.\\n]{0,80}?(?:résili\\w+|résolu\\w*))"
+      },
+      "onPass": "Aucune clause ne résilie le bail de plein droit pour un seul retard.",
+      "onFail": "Une clause résilie le bail de plein droit ou immédiatement pour un retard de loyer. L'article 1971 exige un retard de plus de trois semaines et une décision du Tribunal administratif du logement ; l'article 1893 rend sans effet la clause qui y déroge.",
+      "fixtures": {
+        "pass": [
+          "Le locateur peut demander la résiliation du bail au Tribunal administratif du logement si le loyer est en retard de plus de trois semaines.",
+          "Le loyer est payable le premier jour du mois.",
+          "Le locataire peut résilier le bail dans les cas prévus par la loi."
+        ],
+        "fail": [
+          "Le bail est résilié de plein droit en cas de retard dans le paiement du loyer.",
+          "Un seul retard dans le paiement du loyer entraîne la résiliation immédiate du bail.",
+          "Le locateur peut résilier le bail dès le premier jour de retard.",
+          "Le bail est résilié sans mise en demeure si le loyer n'est pas payé à l'échéance."
+        ]
+      }
+    },
+    {
+      "ruleId": "QC-LEASE-014",
+      "title": "Formulaire obligatoire du bail de logement",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "citation": "C.c.Q., art. 1895 ; Règlement sur les formulaires de bail obligatoires",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)formulaire\\s+(?:obligatoire|prescrit|du\\s+Tribunal\\s+administratif\\s+du\\s+logement)"
+      },
+      "onPass": "Le bail mentionne le formulaire obligatoire.",
+      "onFail": "Le bail ne mentionne pas le formulaire obligatoire du Tribunal administratif du logement. Le locateur doit utiliser ce formulaire (art. 1895).",
+      "fixtures": {
+        "pass": [
+          "Formulaire obligatoire du Tribunal administratif du logement.",
+          "Le présent bail est établi sur le formulaire obligatoire de bail de logement."
+        ],
+        "fail": [
+          "Bail verbal, sans autre formalité, pour un logement de quatre pièces."
+        ]
+      }
+    },
+    {
       "ruleId": "QC-LEASE-020",
       "title": "Clause abusive",
       "severity": "ADVISORY",
@@ -252,5 +336,5 @@
       "onFail": "Une clause paraît abusive ; l'article 1901 permet au Tribunal administratif du logement de l'annuler ou d'en réduire l'obligation."
     }
   ],
-  "revisionNote": "Révision 3 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-010 ajoute une question d'appréciation des pénalités et frais de retard au regard du préjudice réellement subi (art. 1901) ; QC-LEASE-011 vérifie informativement la mention de remise préalable du règlement applicable et de son intégration au bail (art. 1894), sans prétendre vérifier sa remise matérielle. QC-LEASE-004 précise que l'article 1904 couvre toute somme autre que le loyer, sous forme de dépôt ou autrement, tout en permettant d'exiger d'avance le premier terme de loyer. Révision 2 avait ajouté QC-LEASE-009 sur la renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat. Chaque nouvel élément reste à faire relire par un avocat ou une avocate membre du Barreau du Québec."
+  "revisionNote": "Révision 4 : QC-LEASE-012 signale la clause qui interdit ou subordonne à une autorisation les visites ou l'hébergement d'un tiers (art. 1901) ; QC-LEASE-013 signale la clause qui résilie le bail de plein droit pour un seul retard de loyer (art. 1971, qui exige un retard de trois semaines et passe par le Tribunal administratif du logement) ; QC-LEASE-014 vérifie la mention du formulaire obligatoire ; QC-LEASE-003 lit les montants en $, $ CA, CAD et dollars, avec le symbole avant ou après le chiffre. Révision 3 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-010 ajoute une question d'appréciation des pénalités et frais de retard au regard du préjudice réellement subi (art. 1901) ; QC-LEASE-011 vérifie informativement la mention de remise préalable du règlement applicable et de son intégration au bail (art. 1894), sans prétendre vérifier sa remise matérielle. QC-LEASE-004 précise que l'article 1904 couvre toute somme autre que le loyer, sous forme de dépôt ou autrement, tout en permettant d'exiger d'avance le premier terme de loyer. Révision 2 avait ajouté QC-LEASE-009 sur la renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat. Chaque nouvel élément reste à faire relire par un avocat ou une avocate membre du Barreau du Québec."
 }

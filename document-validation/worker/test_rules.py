@@ -388,7 +388,7 @@ def test_qc_waiver_of_the_rent_increase_regime_is_flagged_and_the_lawful_clauses
 
 def test_qc_revision_records_the_correction_and_the_law_is_unchanged():
     ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
-    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 3
+    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 4
     assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
     assert "dépôt" in ruleset["revisionNote"].lower() and "augmentation" in ruleset["revisionNote"].lower()
     assert "pénalité" in ruleset["revisionNote"].lower() and "règlement" in ruleset["revisionNote"].lower()
@@ -408,6 +408,93 @@ def test_qc_penalty_and_building_rules_are_sourced_judgments_with_fixtures():
 
     _, judgments = rules.screen(ruleset, "Le bail prévoit une clause; voir le règlement annexé.")
     assert set(rule_ids) <= {judgment["ruleId"] for judgment in judgments}
+
+
+# --- qc-residential-lease revision 4 (krizaka/orazaka-packs#7): visits, termination for one late payment, the TAL form, amounts in CAD ---
+
+QC_VISITS_FAIL = [
+    "Il est interdit au locataire de recevoir des visites après 22 heures.",
+    "Le locataire ne peut héberger aucune personne sans l'autorisation écrite du locateur.",
+    "Toute visite doit être préalablement approuvée par le locateur.",
+    "Les invités sont interdits dans le logement.",
+]
+QC_VISITS_PASS = [
+    "Le locataire peut recevoir des visiteurs en tout temps, dans le respect de la tranquillité des voisins.",
+    "Le locateur peut visiter le logement après un préavis écrit de 24 heures.",
+    "Le logement est loué pour y habiter avec sa famille.",
+]
+QC_TERMINATION_FAIL = [
+    "Le bail est résilié de plein droit en cas de retard dans le paiement du loyer.",
+    "Un seul retard dans le paiement du loyer entraîne la résiliation immédiate du bail.",
+    "Le locateur peut résilier le bail dès le premier jour de retard.",
+    "Le bail est résilié sans mise en demeure si le loyer n'est pas payé à l'échéance.",
+]
+QC_TERMINATION_PASS = [
+    "Le locateur peut demander la résiliation du bail au Tribunal administratif du logement si le loyer est en retard de plus de trois semaines.",
+    "Le loyer est payable le premier jour du mois.",
+    "Le locataire peut résilier le bail dans les cas prévus par la loi.",
+]
+QC_FORM_FAIL = ["Bail verbal, sans autre formalité, pour un logement de quatre pièces."]
+QC_FORM_PASS = [
+    "Formulaire obligatoire du Tribunal administratif du logement.",
+    "Le présent bail est établi sur le formulaire obligatoire de bail de logement.",
+]
+QC_RENT_AMOUNTS = [
+    "Loyer mensuel : 1 250,00 $",
+    "Loyer mensuel : 1 250,00 $ CA",
+    "Loyer mensuel : $1,250.00",
+    "Loyer mensuel : 1250 CAD",
+    "Le loyer est de 1 250 dollars par mois.",
+    "Loyer mensuel : CAD 1 250,00",
+]
+
+
+def _check_all(rule_id, texts):
+    rule = _qc_rule(rule_id)
+    check = rules.CHECKS[rule["check"]["type"]]
+    return rule, [check(rule, t)["verdict"] for t in texts]
+
+
+def test_qc_visits_and_guest_clauses_are_flagged_and_lawful_wordings_pass():
+    rule, verdicts = _check_all("QC-LEASE-012", QC_VISITS_FAIL)
+    assert rule["method"] == "DETERMINISTIC" and "1901" in rule["citation"]
+    assert verdicts == [rules.FAIL] * len(QC_VISITS_FAIL)
+    check = rules.CHECKS[rule["check"]["type"]]
+    assert [t for t in QC_VISITS_PASS if check(rule, t)["verdict"] != _lawful_verdict(rule, t)] == []
+    assert set(QC_VISITS_FAIL) <= set(_as_list(rule["fixtures"]["fail"]))
+    assert set(QC_VISITS_PASS) <= set(_as_list(rule["fixtures"]["pass"]))
+
+
+def test_qc_termination_for_a_single_late_payment_is_flagged_and_the_three_week_rule_passes():
+    rule, verdicts = _check_all("QC-LEASE-013", QC_TERMINATION_FAIL)
+    assert rule["method"] == "DETERMINISTIC" and "1971" in rule["citation"]
+    assert verdicts == [rules.FAIL] * len(QC_TERMINATION_FAIL)
+    check = rules.CHECKS[rule["check"]["type"]]
+    assert [t for t in QC_TERMINATION_PASS if check(rule, t)["verdict"] != _lawful_verdict(rule, t)] == []
+    assert set(QC_TERMINATION_FAIL) <= set(_as_list(rule["fixtures"]["fail"]))
+    assert set(QC_TERMINATION_PASS) <= set(_as_list(rule["fixtures"]["pass"]))
+
+
+def test_qc_lease_names_the_mandatory_tal_form():
+    rule = _qc_rule("QC-LEASE-014")
+    assert rule["severity"] == "MAJOR" and rule["check"]["type"] == "REQUIRED_PATTERN"
+    check = rules.CHECKS[rule["check"]["type"]]
+    assert [t for t in QC_FORM_PASS if check(rule, t)["verdict"] != rules.PASS] == []
+    assert [t for t in QC_FORM_FAIL if check(rule, t)["verdict"] != rules.FAIL] == []
+
+
+def test_qc_rent_is_read_in_every_way_a_canadian_lease_writes_dollars():
+    rule, verdicts = _check_all("QC-LEASE-003", QC_RENT_AMOUNTS)
+    assert verdicts == [rules.PASS] * len(QC_RENT_AMOUNTS), dict(zip(QC_RENT_AMOUNTS, verdicts))
+    assert set(QC_RENT_AMOUNTS) <= set(_as_list(rule["fixtures"]["pass"]))
+
+
+def test_qc_new_rules_are_all_cited_and_the_ruleset_stays_awaiting_a_lawyer():
+    ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
+    assert ruleset["revision"] == 4 and ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
+    assert "yomizaka#96" in ruleset["reviewNote"]
+    for rule_id in ("QC-LEASE-012", "QC-LEASE-013", "QC-LEASE-014"):
+        assert "C.c.Q." in _qc_rule(rule_id)["citation"]
 
 
 # --- qc-invoice: the mentions a supplier's invoice carries, from the federal regulation DORS/91-45 art. 3 -------------
@@ -724,7 +811,7 @@ def test_a_complete_quebec_lease_in_french_passes_every_deterministic_rule():
 def test_a_quebec_lease_breaking_the_civil_code_fails_exactly_what_it_breaks():
     verdicts = _verdicts("qc-residential-lease", "fr-defective.txt")
     failed = {k for k, v in verdicts.items() if v == rules.FAIL}
-    assert failed == {"QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-007", "QC-LEASE-008"}
+    assert failed == {"QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-007", "QC-LEASE-008", "QC-LEASE-012", "QC-LEASE-013", "QC-LEASE-014"}
 
 
 def test_a_lease_in_english_is_not_read_and_never_comes_back_clean():

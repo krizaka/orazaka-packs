@@ -9,7 +9,10 @@
     "QC-LEASE-006": "FAIL",
     "QC-LEASE-007": "FAIL",
     "QC-LEASE-008": "FAIL",
-    "QC-LEASE-009": "NOT_APPLICABLE"
+    "QC-LEASE-009": "NOT_APPLICABLE",
+    "QC-LEASE-012": "FAIL",
+    "QC-LEASE-013": "FAIL",
+    "QC-LEASE-014": "FAIL"
   },
   "judgments": [
     "QC-LEASE-010",
