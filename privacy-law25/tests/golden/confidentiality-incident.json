@@ -1,0 +1,108 @@
+{
+  "studio": "confidentiality-incident",
+  "cases": [
+    {
+      "id": "misdirected-email-with-client-files",
+      "input": {
+        "firmName": "Cabinet Lumen (fictif)",
+        "incidentDescription": "Un courriel contenant trois dossiers clients a été envoyé à la mauvaise personne.",
+        "discoveredOn": "2026-10-12",
+        "dataInvolved": "Noms, adresses, revenus.",
+        "peopleAffected": 3,
+        "containment": "Le destinataire a supprimé le courriel et l'a confirmé par écrit.",
+        "language": "fr"
+      },
+      "expected": {
+        "assessment": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\n| Critère | Faits |\n| --- | --- |\n| Sensibilité | Revenus et adresses : sensible |\n| Conséquences prévisibles | Fraude ou usurpation possible |\n| Probabilité d'usage préjudiciable | Faible : suppression confirmée par écrit |\n\nLecture : les critères laissent croire à un risque de préjudice sérieux : INCERTAIN. La personne responsable décide.",
+        "register": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\nRenseignements en cause : noms, adresses, revenus\nCirconstances : courriel envoyé à la mauvaise personne\nDate : 2026-10-12\nPersonnes touchées : 3\nÉvaluation du risque : INCERTAIN (à trancher)\nMesures : suppression confirmée par écrit\nDate des avis : (vide)",
+        "notices": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\nAvis à la Commission d'accès à l'information : brouillon, décision, date et signature à compléter.\nAvis aux personnes concernées : brouillon en langage clair, décision, date et signature à compléter."
+      },
+      "assertions": [
+        {
+          "path": [
+            "assessment"
+          ],
+          "includes": "INCERTAIN"
+        },
+        {
+          "path": [
+            "assessment"
+          ],
+          "includes": "La personne responsable décide"
+        },
+        {
+          "path": [
+            "notices"
+          ],
+          "includes": "Commission d'accès à l'information"
+        }
+      ]
+    },
+    {
+      "id": "stolen-laptop-high-risk",
+      "input": {
+        "firmName": "Harbour Clinic (fictional)",
+        "incidentDescription": "An unencrypted laptop with patient files was stolen from a car.",
+        "discoveredOn": "2026-10-14",
+        "dataInvolved": "Names, health information, insurance numbers.",
+        "peopleAffected": 240,
+        "language": "en"
+      },
+      "expected": {
+        "assessment": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\n| Criterion | Facts |\n| --- | --- |\n| Sensitivity | Health information: high |\n| Anticipated consequences | Identity fraud, disclosure of health status |\n| Likelihood of harmful use | High: theft, no encryption |\n\nCriteria suggest a risk of serious injury: YES. The person in charge decides.",
+        "register": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\nInformation involved: names, health information, insurance numbers\nPeople affected: 240\nRisk assessment: YES (to be decided)\nDate of notices: (empty)",
+        "notices": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\nNotice to the Commission d'accès à l'information: draft, decision, date and signature left empty.\nNotice to the persons concerned: plain-language draft, decision, date and signature left empty."
+      },
+      "assertions": [
+        {
+          "path": [
+            "assessment"
+          ],
+          "includes": "YES"
+        },
+        {
+          "path": [
+            "assessment"
+          ],
+          "includes": "The person in charge decides"
+        },
+        {
+          "path": [
+            "notices"
+          ],
+          "includes": "left empty"
+        }
+      ]
+    },
+    {
+      "id": "internal-mistake-no-notice-drafted",
+      "input": {
+        "firmName": "Agence Brume (fictive)",
+        "incidentDescription": "Un employé a ouvert par erreur le dossier d'un collègue pendant une minute, sans le copier.",
+        "discoveredOn": "2026-10-15",
+        "dataInvolved": "Nom et titre du poste.",
+        "peopleAffected": 1,
+        "language": "fr"
+      },
+      "expected": {
+        "assessment": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\nLecture : les critères laissent croire à un risque de préjudice sérieux : NON. La personne responsable décide.",
+        "register": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\nPersonnes touchées : 1\nÉvaluation du risque : NON (à trancher)\nDate des avis : (vide)",
+        "notices": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\nAucun avis rédigé : les critères ne laissent pas croire à un risque de préjudice sérieux ; la personne responsable peut en décider autrement."
+      },
+      "assertions": [
+        {
+          "path": [
+            "notices"
+          ],
+          "includes": "Aucun avis rédigé"
+        },
+        {
+          "path": [
+            "assessment"
+          ],
+          "includes": "NON"
+        }
+      ]
+    }
+  ]
+}

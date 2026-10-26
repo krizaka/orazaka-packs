@@ -1,0 +1,251 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 130,
+  "changelog": "1.0.0 — première version : brouillon préparé, validé par la personne responsable ou un avocat ; sources citées par référence, jamais par citation.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "confidentiality-incident",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "assess",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "A Québec firm ({{inputs.firmName}}) reports a confidentiality incident. What happened: {{inputs.incidentDescription}}. Discovered on: {{inputs.discoveredOn}}. Information involved: {{inputs.dataInvolved}}. People affected (number): {{inputs.peopleAffected}}. Measures already taken: {{inputs.containment}}. Write a table of the three criteria used to judge the risk of serious injury — sensitivity of the information, anticipated consequences of its use, likelihood that it is used for harmful purposes — with the facts that point each way, then ONE reading line: « Criteria suggest a risk of serious injury: YES / NO / UNCERTAIN ». State that the person in charge decides, not you. Write in {{inputs.language}} (fr = Québec French, en = English). The very first line of your answer is exactly this sentence in that language: fr: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » en: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. ». Use only the facts given; never invent a fact about the firm, mark anything missing as « À confirmer » (fr) or « To confirm » (en). You prepare, you never decide: the person in charge decides. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section."
+        },
+        "out": "assess",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT4M"
+      },
+      {
+        "id": "register",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "assess"
+        ],
+        "inputs": {
+          "prompt": "From this assessment: {{steps.assess.content}}, write the entry for the firm's register of confidentiality incidents with these fields: description of the information involved | circumstances | date or period | date the firm became aware | number of people affected | assessment of the risk (as a reading, to be decided) | measures taken | date of notices (leave empty). Write in {{inputs.language}} (fr = Québec French, en = English). The very first line of your answer is exactly this sentence in that language: fr: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » en: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. ». Use only the facts given; never invent a fact about the firm, mark anything missing as « À confirmer » (fr) or « To confirm » (en). You prepare, you never decide: the person in charge decides. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section."
+        },
+        "out": "register",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT3M"
+      },
+      {
+        "id": "notices",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "assess"
+        ],
+        "inputs": {
+          "prompt": "From this assessment: {{steps.assess.content}}. If the reading is YES or UNCERTAIN, draft two notices: (1) the notice to the Commission d'accès à l'information, (2) the notice to the persons concerned in plain language. Leave every decision, date and signature EMPTY. If the reading is NO, write only one line saying that no notice is drafted because the criteria do not point to a risk of serious injury and that the person in charge may decide otherwise. Write in {{inputs.language}} (fr = Québec French, en = English). The very first line of your answer is exactly this sentence in that language: fr: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » en: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. ». Use only the facts given; never invent a fact about the firm, mark anything missing as « À confirmer » (fr) or « To confirm » (en). You prepare, you never decide: the person in charge decides. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section."
+        },
+        "out": "notices",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT4M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "assessment",
+        "label": "Lecture des critères du risque de préjudice sérieux",
+        "from": "{{steps.assess.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Reading of the serious-injury criteria"
+          },
+          "fr": {
+            "label": "Lecture des critères du risque de préjudice sérieux"
+          }
+        }
+      },
+      {
+        "key": "register",
+        "label": "Inscription au registre des incidents",
+        "from": "{{steps.register.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Incident register entry"
+          },
+          "fr": {
+            "label": "Inscription au registre des incidents"
+          }
+        }
+      },
+      {
+        "key": "notices",
+        "label": "Brouillons d'avis",
+        "from": "{{steps.notices.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Notice drafts"
+          },
+          "fr": {
+            "label": "Brouillons d'avis"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "firmName",
+      "incidentDescription",
+      "dataInvolved"
+    ],
+    "properties": {
+      "firmName": {
+        "type": "string",
+        "maxLength": 200,
+        "title": "Nom de l'entreprise",
+        "description": "Le nom du cabinet, de la clinique ou de l'entreprise.",
+        "x-i18n": {
+          "en": {
+            "title": "Firm name",
+            "description": "The name of the practice, clinic or business.",
+            "placeholder": "Lumen Practice (fictional)"
+          },
+          "fr": {
+            "title": "Nom de l'entreprise",
+            "description": "Le nom du cabinet, de la clinique ou de l'entreprise.",
+            "placeholder": "Cabinet Lumen (fictif)"
+          }
+        }
+      },
+      "incidentDescription": {
+        "type": "string",
+        "maxLength": 3000,
+        "title": "Ce qui s'est passé",
+        "description": "Décrivez l'incident, factuellement.",
+        "x-i18n": {
+          "en": {
+            "title": "What happened",
+            "description": "Describe the incident, factually.",
+            "placeholder": "An email with client files was sent to the wrong person."
+          },
+          "fr": {
+            "title": "Ce qui s'est passé",
+            "description": "Décrivez l'incident, factuellement.",
+            "placeholder": "Un courriel contenant des dossiers a été envoyé à la mauvaise personne."
+          }
+        }
+      },
+      "discoveredOn": {
+        "type": "string",
+        "maxLength": 40,
+        "title": "Date de découverte",
+        "description": "Le jour où l'entreprise en a eu connaissance.",
+        "x-i18n": {
+          "en": {
+            "title": "Date discovered",
+            "description": "The day the firm became aware of it.",
+            "placeholder": "2026-10-12"
+          },
+          "fr": {
+            "title": "Date de découverte",
+            "description": "Le jour où l'entreprise en a eu connaissance.",
+            "placeholder": "2026-10-12"
+          }
+        }
+      },
+      "dataInvolved": {
+        "type": "string",
+        "maxLength": 1500,
+        "title": "Renseignements en cause",
+        "description": "Quels renseignements sont touchés.",
+        "x-i18n": {
+          "en": {
+            "title": "Information involved",
+            "description": "What information is affected.",
+            "placeholder": "Names, addresses, income."
+          },
+          "fr": {
+            "title": "Renseignements en cause",
+            "description": "Quels renseignements sont touchés.",
+            "placeholder": "Noms, adresses, revenus."
+          }
+        }
+      },
+      "peopleAffected": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000000,
+        "title": "Personnes touchées",
+        "description": "Le nombre de personnes touchées, ou une estimation.",
+        "x-i18n": {
+          "en": {
+            "title": "People affected",
+            "description": "The number of people affected, or an estimate.",
+            "placeholder": "12"
+          },
+          "fr": {
+            "title": "Personnes touchées",
+            "description": "Le nombre de personnes touchées, ou une estimation.",
+            "placeholder": "12"
+          }
+        }
+      },
+      "containment": {
+        "type": "string",
+        "maxLength": 1500,
+        "title": "Mesures prises",
+        "description": "Facultatif. Ce qui a déjà été fait pour limiter les dégâts.",
+        "x-i18n": {
+          "en": {
+            "title": "Measures taken",
+            "description": "Optional. What has already been done to limit the harm.",
+            "placeholder": "The recipient deleted the email."
+          },
+          "fr": {
+            "title": "Mesures prises",
+            "description": "Facultatif. Ce qui a déjà été fait pour limiter les dégâts.",
+            "placeholder": "Le destinataire a supprimé le courriel."
+          }
+        }
+      },
+      "language": {
+        "type": "string",
+        "enum": [
+          "fr",
+          "en"
+        ],
+        "default": "fr",
+        "title": "Langue",
+        "description": "La langue du document produit.",
+        "x-i18n": {
+          "en": {
+            "title": "Language",
+            "description": "The language of the document produced.",
+            "options": {
+              "fr": "French",
+              "en": "English"
+            }
+          },
+          "fr": {
+            "title": "Langue",
+            "description": "La langue du document produit.",
+            "options": {
+              "fr": "Français",
+              "en": "Anglais"
+            }
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

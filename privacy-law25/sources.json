@@ -1,0 +1,10 @@
+{
+  "note": "References only. No text of any section is reproduced in this repository: the wording of Québec statutes is not pinned here (licence question, krizaka/orazaka#393). Each reference is checked by the client's legal counsel before the pack is sold (krizaka/.github#22).",
+  "verifiedBy": null,
+  "references": [
+    { "id": "p-39-1", "title": "Act respecting the protection of personal information in the private sector", "citation": "RLRQ, c. P-39.1", "sections": ["3.1", "3.2", "3.3", "3.5 to 3.8", "17"], "usedFor": ["person in charge", "governance policies", "privacy impact assessment", "confidentiality incidents", "communication outside Québec"] },
+    { "id": "law-25", "title": "Act to modernize legislative provisions as regards the protection of personal information", "citation": "S.Q. 2021, c. 25", "sections": [], "usedFor": ["the amending act"] },
+    { "id": "incident-regulation", "title": "Regulation respecting confidentiality incidents", "citation": "under RLRQ, c. P-39.1", "sections": [], "usedFor": ["content of the register of incidents"] },
+    { "id": "cai-guides", "title": "Guides of the Commission d'accès à l'information du Québec", "citation": "https://www.cai.gouv.qc.ca", "sections": [], "usedFor": ["privacy impact assessment", "incident notices"] }
+  ]
+}

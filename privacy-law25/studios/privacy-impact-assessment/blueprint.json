@@ -1,0 +1,239 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 140,
+  "changelog": "1.0.0 — première version : brouillon préparé, validé par la personne responsable ou un avocat ; sources citées par référence, jamais par citation.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "privacy-impact-assessment",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "draft",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "You are preparing the privacy impact assessment (EFVP) draft of a Québec firm, before a project that touches personal information. Firm: {{inputs.firmName}}. Project: {{inputs.projectName}}. Purpose: {{inputs.purpose}}. Personal information involved: {{inputs.personalData}}. People concerned: {{inputs.peopleConcerned}}. Hosting or communication outside Québec: {{inputs.outsideQuebec}}. Safeguards already planned: {{inputs.safeguards}}. Write the sections: 1 Purpose and necessity, 2 Personal information and people concerned, 3 Flows and hosting (say whether a communication outside Québec calls for its own assessment). Write in {{inputs.language}} (fr = Québec French, en = English). The very first line of your answer is exactly this sentence in that language: fr: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » en: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. ». Use only the facts given; never invent a fact about the firm, mark anything missing as « À confirmer » (fr) or « To confirm » (en). You prepare, you never decide: the person in charge decides. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section."
+        },
+        "out": "draft",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT4M"
+      },
+      {
+        "id": "risks",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "draft"
+        ],
+        "inputs": {
+          "prompt": "Continue the EFVP draft: {{steps.draft.content}}. Write the sections: 4 Privacy risks (a table: risk | likelihood | impact | safeguard), 5 Mitigations still to plan, 6 Decision — leave the decision, the date and the signature of the person in charge EMPTY and say that only that person decides. Write in {{inputs.language}} (fr = Québec French, en = English). The very first line of your answer is exactly this sentence in that language: fr: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » en: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. ». Use only the facts given; never invent a fact about the firm, mark anything missing as « À confirmer » (fr) or « To confirm » (en). You prepare, you never decide: the person in charge decides. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section."
+        },
+        "out": "risks",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT4M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "efvp",
+        "label": "Brouillon d'évaluation des facteurs relatifs à la vie privée",
+        "from": "{{steps.draft.content}}\n\n{{steps.risks.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Privacy impact assessment draft"
+          },
+          "fr": {
+            "label": "Brouillon d'évaluation des facteurs relatifs à la vie privée"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "firmName",
+      "projectName",
+      "purpose",
+      "personalData"
+    ],
+    "properties": {
+      "firmName": {
+        "type": "string",
+        "maxLength": 200,
+        "title": "Nom de l'entreprise",
+        "description": "Le nom du cabinet, de la clinique ou de l'entreprise.",
+        "x-i18n": {
+          "en": {
+            "title": "Firm name",
+            "description": "The name of the practice, clinic or business.",
+            "placeholder": "Lumen Practice (fictional)"
+          },
+          "fr": {
+            "title": "Nom de l'entreprise",
+            "description": "Le nom du cabinet, de la clinique ou de l'entreprise.",
+            "placeholder": "Cabinet Lumen (fictif)"
+          }
+        }
+      },
+      "projectName": {
+        "type": "string",
+        "maxLength": 200,
+        "title": "Nom du projet",
+        "description": "Le projet qui touche des renseignements personnels.",
+        "x-i18n": {
+          "en": {
+            "title": "Project name",
+            "description": "The project that touches personal information.",
+            "placeholder": "New client portal"
+          },
+          "fr": {
+            "title": "Nom du projet",
+            "description": "Le projet qui touche des renseignements personnels.",
+            "placeholder": "Nouveau portail client"
+          }
+        }
+      },
+      "purpose": {
+        "type": "string",
+        "maxLength": 1500,
+        "title": "Objectif du projet",
+        "description": "Pourquoi le projet a besoin de ces renseignements.",
+        "x-i18n": {
+          "en": {
+            "title": "Project purpose",
+            "description": "Why the project needs this information.",
+            "placeholder": "Let clients upload their documents."
+          },
+          "fr": {
+            "title": "Objectif du projet",
+            "description": "Pourquoi le projet a besoin de ces renseignements.",
+            "placeholder": "Permettre aux clients de déposer leurs documents."
+          }
+        }
+      },
+      "personalData": {
+        "type": "string",
+        "maxLength": 1500,
+        "title": "Renseignements en cause",
+        "description": "Les renseignements recueillis, utilisés ou communiqués.",
+        "x-i18n": {
+          "en": {
+            "title": "Information involved",
+            "description": "The information collected, used or shared.",
+            "placeholder": "Name, email, identity documents."
+          },
+          "fr": {
+            "title": "Renseignements en cause",
+            "description": "Les renseignements recueillis, utilisés ou communiqués.",
+            "placeholder": "Nom, courriel, pièces d'identité."
+          }
+        }
+      },
+      "peopleConcerned": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Personnes concernées",
+        "description": "Qui sont les personnes dont on traite les renseignements.",
+        "x-i18n": {
+          "en": {
+            "title": "People concerned",
+            "description": "Whose information is processed.",
+            "placeholder": "Clients and their spouses."
+          },
+          "fr": {
+            "title": "Personnes concernées",
+            "description": "Qui sont les personnes dont on traite les renseignements.",
+            "placeholder": "Clients et leurs conjoints."
+          }
+        }
+      },
+      "outsideQuebec": {
+        "type": "string",
+        "enum": [
+          "yes",
+          "no",
+          "unknown"
+        ],
+        "default": "unknown",
+        "title": "Hors Québec ?",
+        "description": "Les renseignements sont-ils hébergés ou communiqués hors du Québec ?",
+        "x-i18n": {
+          "en": {
+            "title": "Outside Québec?",
+            "description": "Is the information hosted or shared outside Québec?",
+            "options": {
+              "yes": "Yes",
+              "no": "No",
+              "unknown": "I do not know"
+            }
+          },
+          "fr": {
+            "title": "Hors Québec ?",
+            "description": "Les renseignements sont-ils hébergés ou communiqués hors du Québec ?",
+            "options": {
+              "yes": "Oui",
+              "no": "Non",
+              "unknown": "Je ne sais pas"
+            }
+          }
+        }
+      },
+      "safeguards": {
+        "type": "string",
+        "maxLength": 1500,
+        "title": "Mesures déjà prévues",
+        "description": "Facultatif. Chiffrement, accès, durée de conservation.",
+        "x-i18n": {
+          "en": {
+            "title": "Safeguards planned",
+            "description": "Optional. Encryption, access, retention.",
+            "placeholder": "Encryption, role-based access."
+          },
+          "fr": {
+            "title": "Mesures déjà prévues",
+            "description": "Facultatif. Chiffrement, accès, durée de conservation.",
+            "placeholder": "Chiffrement, accès par rôle."
+          }
+        }
+      },
+      "language": {
+        "type": "string",
+        "enum": [
+          "fr",
+          "en"
+        ],
+        "default": "fr",
+        "title": "Langue",
+        "description": "La langue du document produit.",
+        "x-i18n": {
+          "en": {
+            "title": "Language",
+            "description": "The language of the document produced.",
+            "options": {
+              "fr": "French",
+              "en": "English"
+            }
+          },
+          "fr": {
+            "title": "Langue",
+            "description": "La langue du document produit.",
+            "options": {
+              "fr": "Français",
+              "en": "Anglais"
+            }
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

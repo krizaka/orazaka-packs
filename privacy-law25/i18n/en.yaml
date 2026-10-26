@@ -1,0 +1,32 @@
+pack:
+  label: Privacy compliance (Law 25)
+  tagline: Prepare your Law 25 privacy documents on your own machine.
+  description: >-
+    Matrices for extracting information from your documents and parameterizable technology templates that prepare an inventory
+    of personal information, a privacy impact assessment draft, a confidentiality-incident entry with notice drafts, and a
+    governance policy, technical tools validated by the client's legal counsel: they prepare, the person in charge validates, and
+    nothing is legal advice. Your data stays on your machine.
+category:
+  label: Business & documents
+  description: "Packs that do the work: check documents, prospect."
+studios:
+  personal-information-inventory:
+    label: Personal-information inventory
+    tagline: What you hold, where, why, who sees it, how long.
+    description: >-
+      From a description of your tools and processes, a table of the personal information you hold, with the questions to settle.
+  privacy-impact-assessment:
+    label: Privacy impact assessment draft
+    tagline: A structured draft before a project that touches personal information.
+    description: >-
+      Purpose, information, flows, risks and safeguards, with the decision and signature left to the person in charge.
+  confidentiality-incident:
+    label: Confidentiality incident
+    tagline: A register entry and notice drafts; the person in charge decides.
+    description: >-
+      Reads the serious-injury criteria, drafts the register entry and, when the criteria point that way, the notices.
+  privacy-governance-policy:
+    label: Governance policy
+    tagline: Your public privacy policy, in French and English, in plain language.
+    description: >-
+      Drafts the public policy from your activities and practices, and marks every point to confirm.

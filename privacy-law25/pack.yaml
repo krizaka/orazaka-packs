@@ -1,0 +1,91 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# privacy-law25 — privacy governance for a Québec firm (Law 25), prepared on the client's own Orazaka.
+#
+# Four Studios prepare what the Act respecting the protection of personal information in the private sector asks a firm to
+# have: an inventory of the personal information it holds, a privacy impact assessment (EFVP) draft, an entry in the register of
+# confidentiality incidents with the drafts of the notices, and a public governance policy (French and English).
+#
+# The pack PREPARES; the person in charge of the protection of personal information, or a lawyer, VALIDATES — said on every output.
+# These are technical templates and extraction matrices, parameterizable and validated by the client's legal counsel; they are
+# never legal advice, and they decide nothing (whether a notice is sent is the person in charge's decision).
+#
+# Sources are cited by reference (the Act, the section numbers, the guides of the Commission d'accès à l'information), never
+# by quoting a text: see sources.json. Data never leaves the machine — the pack runs on the client's Orazaka.
+#
+# Why SENSITIVE: the inputs describe incidents and the information a firm holds about people. The pack receives the controls of
+# ADR-051 (data class, shortened retention, append-only audit, scope guard).
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: privacy-law25
+version: 1.0.0
+tier: DATA
+distribution: CLOUD
+regulatoryClass: SENSITIVE
+
+scopeGuard:
+  refusedTerms:
+    - avis juridique
+    - legal advice
+    - garantir la conformité
+    - guarantee compliance
+    - déclaration de revenus
+    - tax return
+    - diagnostic médical
+    - medical diagnosis
+    - poursuivre
+    - lawsuit
+  refusal: >-
+    Je prépare des documents de gouvernance des renseignements personnels (inventaire, évaluation des facteurs relatifs à la
+    vie privée, registre des incidents, politique) pour que la personne responsable ou un avocat les valide. Je ne donne pas
+    d'avis juridique, je ne garantis aucune conformité et je ne réponds pas hors de ce sujet.
+
+catalog:
+  categoryKey: business-compliance
+  iconKey: shield-check
+  status: PUBLISHED
+  sortWeight: 30
+  category:
+    iconKey: briefcase
+    sortWeight: 100
+
+pricing:
+  priceCents: 9900   # 99 $ CA — in billing.currency (CAD)
+  includedCredits: 600
+
+studios:
+  - key: personal-information-inventory
+    profession: legal
+    iconKey: list-checks
+    pricing: PAID
+    entitlementKey: studio.personal-information-inventory
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 10
+    blueprint: studios/personal-information-inventory/blueprint.json
+  - key: privacy-impact-assessment
+    profession: legal
+    iconKey: shield-check
+    pricing: PAID
+    entitlementKey: studio.privacy-impact-assessment
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 20
+    blueprint: studios/privacy-impact-assessment/blueprint.json
+  - key: confidentiality-incident
+    profession: legal
+    iconKey: alert-triangle
+    pricing: PAID
+    entitlementKey: studio.confidentiality-incident
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 30
+    blueprint: studios/confidentiality-incident/blueprint.json
+  - key: privacy-governance-policy
+    profession: legal
+    iconKey: file-text
+    pricing: PAID
+    entitlementKey: studio.privacy-governance-policy
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 40
+    blueprint: studios/privacy-governance-policy/blueprint.json

@@ -1,0 +1,175 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 120,
+  "changelog": "1.0.0 — première version : brouillon préparé, validé par la personne responsable ou un avocat ; sources citées par référence, jamais par citation.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "privacy-governance-policy",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "policyFr",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [],
+        "inputs": {
+          "prompt": "Write the public privacy and governance policy of a Québec firm, in Québec French and in plain language. Firm: {{inputs.firmName}}. Activities: {{inputs.activities}}. Information collected: {{inputs.dataKinds}}. Retention: {{inputs.retention}}. Contact role of the person in charge: {{inputs.contactRole}}. Sections: who we are, what we collect and why, who sees it, how long we keep it, your rights and how to use them, how to complain, the person in charge. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section. Open with this exact sentence: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » Mark anything missing « À confirmer »; never invent a practice."
+        },
+        "out": "policyFr",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT4M"
+      },
+      {
+        "id": "policyEn",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.chat.completion",
+        "dependsOn": [
+          "policyFr"
+        ],
+        "inputs": {
+          "prompt": "Translate this policy into plain English, section by section, keeping « To confirm » for every « À confirmer » and the validation sentence translated as: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. » Policy: {{steps.policyFr.content}}"
+        },
+        "out": "policyEn",
+        "onError": "FAIL",
+        "maxAttempts": 2,
+        "timeout": "PT4M"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "policyFr",
+        "label": "Politique de gouvernance (français)",
+        "from": "{{steps.policyFr.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Governance policy (French)"
+          },
+          "fr": {
+            "label": "Politique de gouvernance (français)"
+          }
+        }
+      },
+      {
+        "key": "policyEn",
+        "label": "Politique de gouvernance (anglais)",
+        "from": "{{steps.policyEn.content}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Governance policy (English)"
+          },
+          "fr": {
+            "label": "Politique de gouvernance (anglais)"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "firmName",
+      "activities",
+      "dataKinds"
+    ],
+    "properties": {
+      "firmName": {
+        "type": "string",
+        "maxLength": 200,
+        "title": "Nom de l'entreprise",
+        "description": "Le nom du cabinet, de la clinique ou de l'entreprise.",
+        "x-i18n": {
+          "en": {
+            "title": "Firm name",
+            "description": "The name of the practice, clinic or business.",
+            "placeholder": "Lumen Practice (fictional)"
+          },
+          "fr": {
+            "title": "Nom de l'entreprise",
+            "description": "Le nom du cabinet, de la clinique ou de l'entreprise.",
+            "placeholder": "Cabinet Lumen (fictif)"
+          }
+        }
+      },
+      "activities": {
+        "type": "string",
+        "maxLength": 1000,
+        "title": "Vos activités",
+        "description": "Ce que fait l'entreprise, en une ou deux phrases.",
+        "x-i18n": {
+          "en": {
+            "title": "Your activities",
+            "description": "What the business does, in a sentence or two.",
+            "placeholder": "Accounting practice for small businesses."
+          },
+          "fr": {
+            "title": "Vos activités",
+            "description": "Ce que fait l'entreprise, en une ou deux phrases.",
+            "placeholder": "Cabinet de comptabilité pour petites entreprises."
+          }
+        }
+      },
+      "dataKinds": {
+        "type": "string",
+        "maxLength": 1500,
+        "title": "Renseignements recueillis",
+        "description": "Les renseignements que vous recueillez sur les personnes.",
+        "x-i18n": {
+          "en": {
+            "title": "Information collected",
+            "description": "The information you collect about people.",
+            "placeholder": "Identity, contact details, financial statements."
+          },
+          "fr": {
+            "title": "Renseignements recueillis",
+            "description": "Les renseignements que vous recueillez sur les personnes.",
+            "placeholder": "Identité, coordonnées, états financiers."
+          }
+        }
+      },
+      "retention": {
+        "type": "string",
+        "maxLength": 500,
+        "title": "Durée de conservation",
+        "description": "Facultatif. Combien de temps vous les gardez.",
+        "x-i18n": {
+          "en": {
+            "title": "Retention",
+            "description": "Optional. How long you keep it.",
+            "placeholder": "Seven years after the engagement ends."
+          },
+          "fr": {
+            "title": "Durée de conservation",
+            "description": "Facultatif. Combien de temps vous les gardez.",
+            "placeholder": "Sept ans après la fin du mandat."
+          }
+        }
+      },
+      "contactRole": {
+        "type": "string",
+        "maxLength": 200,
+        "title": "Rôle de la personne responsable",
+        "description": "Le titre, pas le nom, de la personne à joindre.",
+        "x-i18n": {
+          "en": {
+            "title": "Role of the person in charge",
+            "description": "The title, not the name, of the person to contact.",
+            "placeholder": "Person in charge of the protection of personal information"
+          },
+          "fr": {
+            "title": "Rôle de la personne responsable",
+            "description": "Le titre, pas le nom, de la personne à joindre.",
+            "placeholder": "Responsable de la protection des renseignements personnels"
+          }
+        }
+      }
+    }
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

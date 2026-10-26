@@ -1,0 +1,95 @@
+{
+  "studio": "personal-information-inventory",
+  "cases": [
+    {
+      "id": "accounting-practice-cloud-and-payroll",
+      "input": {
+        "firmName": "Cabinet Lumen (fictif)",
+        "description": "Dossiers clients dans un logiciel infonuagique, courriels, paie par un fournisseur externe.",
+        "language": "fr"
+      },
+      "expected": {
+        "inventory": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\n| Renseignement | Où | Pourquoi | Qui y accède | Conservation | À confirmer |\n| --- | --- | --- | --- | --- | --- |\n| Identité et coordonnées des clients | Logiciel infonuagique | Exécuter le mandat | Équipe du cabinet | À confirmer | Lieu d'hébergement |\n| Renseignements de paie | Fournisseur externe | Payer les employés | Responsable de la paie | À confirmer | Entente avec le fournisseur |\n\nSources : Loi sur la protection des renseignements personnels dans le secteur privé (RLRQ, c. P-39.1), art. 3.1 à 3.3 ; guides de la CAI.",
+        "gaps": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\n1. Où le logiciel infonuagique héberge-t-il les dossiers ?\n2. Combien de temps les dossiers sont-ils conservés ?\n3. Le fournisseur de paie conserve-t-il les renseignements après la fin de l'entente ?"
+      },
+      "assertions": [
+        {
+          "path": [
+            "inventory"
+          ],
+          "includes": "n'est pas un avis juridique"
+        },
+        {
+          "path": [
+            "inventory"
+          ],
+          "includes": "À confirmer"
+        },
+        {
+          "path": [
+            "gaps"
+          ],
+          "includes": "Où le logiciel"
+        }
+      ]
+    },
+    {
+      "id": "dental-clinic-english",
+      "input": {
+        "firmName": "Harbour Clinic (fictional)",
+        "description": "Patient files in a clinic tool, appointment reminders by text message, a paper archive in a locked room.",
+        "language": "en"
+      },
+      "expected": {
+        "inventory": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\n| Kind | Where | Why | Who accesses | Retention | To confirm |\n| --- | --- | --- | --- | --- | --- |\n| Patient identity and health information (sensitive) | Clinic tool | Provide care | Clinical staff | To confirm | Hosting location |\n| Phone numbers | Text-message service | Appointment reminders | Reception | To confirm | Provider agreement |\n| Paper records | Locked room | Archive | Reception manager | To confirm | Destruction schedule |\n\nSources: Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1), s. 3.1 to 3.3; CAI guides.",
+        "gaps": "Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use.\n\n1. Where does the clinic tool host the files?\n2. How long are paper records kept before destruction?\n3. Is the text-message provider hosted outside Québec?"
+      },
+      "assertions": [
+        {
+          "path": [
+            "inventory"
+          ],
+          "includes": "not legal advice"
+        },
+        {
+          "path": [
+            "inventory"
+          ],
+          "includes": "sensitive"
+        },
+        {
+          "path": [
+            "gaps"
+          ],
+          "includes": "outside Québec"
+        }
+      ]
+    },
+    {
+      "id": "agency-thin-description-marks-everything-to-confirm",
+      "input": {
+        "firmName": "Agence Brume (fictive)",
+        "description": "Nous avons des clients et une liste d'infolettre.",
+        "language": "fr"
+      },
+      "expected": {
+        "inventory": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\n| Renseignement | Où | Pourquoi | Qui y accède | Conservation | À confirmer |\n| --- | --- | --- | --- | --- | --- |\n| Coordonnées des clients | À confirmer | À confirmer | À confirmer | À confirmer | Tout |\n| Adresses courriel de l'infolettre | À confirmer | Infolettre | À confirmer | À confirmer | Consentement |",
+        "gaps": "Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage.\n\n1. Dans quel outil sont tenues la liste de clients et l'infolettre ?\n2. Sur quelle base obtenez-vous le consentement à l'infolettre ?"
+      },
+      "assertions": [
+        {
+          "path": [
+            "inventory"
+          ],
+          "includes": "À confirmer"
+        },
+        {
+          "path": [
+            "gaps"
+          ],
+          "includes": "consentement"
+        }
+      ]
+    }
+  ]
+}
