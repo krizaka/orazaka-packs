@@ -1,0 +1,30 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# business-brief — what a small shop's weekly brief needs from a writer. « Le point du lundi » (the duck of the Flock).
+#
+# One Studio for now: the INVITATION WRITER. A product sends AGGREGATES ONLY (the shop's name, the service, the free slots — no client
+# name, no history) and gets one message back in Québec French (OQLF vocabulary) or English, in the shop's tone. The product calls it
+# through a port, with a short timeout, and falls back to its own bilingual template when the answer is late, missing or unusable.
+# The platform's run id is kept with the sent message.
+#
+# Next (P2, krizaka/orazaka-packs#152): a forecast Studio (vacancy, price elasticity) once there is history to learn from — the same shape
+# as orochia#226: the product sends pseudonymous aggregates, Orazaka analyses, the product falls back.
+#
+# A lone Studio, not a catalogue pack: no shelf, no price. It is the product's tool.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: business-brief
+version: 1.0.0
+tier: DATA
+distribution: CLOUD
+regulatoryClass: STANDARD
+
+studios:
+  - key: invitation-writer
+    profession: general
+    iconKey: send
+    pricing: FREE
+    entitlementKey: studio.invitation-writer
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 70
+    blueprint: studios/invitation-writer/blueprint.json
