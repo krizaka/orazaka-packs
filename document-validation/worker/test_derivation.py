@@ -46,6 +46,32 @@ def _planted():
     return [dict(_load("planted", name), name=name) for name in sorted(os.listdir(folder)) if name.endswith(".json")]
 
 
+def _excerpts():
+    """The passages of each held article that the recorded answers quote, by article hash.
+
+    ``derivation/law/`` holds the reference of an article (its hash, its official address), never its text: a Québec
+    article is not reproduced in a public repository (the engine reads it from the official source). The quote check is
+    exercised against the short passages the recorded answers themselves quote, so a quote that is not one of them
+    is ``QUOTE_NOT_IN_ARTICLE`` here as it is in the engine.
+    """
+    found = {}
+    for answer in _answers().values():
+        for rule in answer["rules"]:
+            for block in rule["law"]:
+                found.setdefault(block["contentHash"], []).append(block["quote"])
+    return {h: " ".join(quotes) for h, quotes in found.items()}
+
+
+EXCERPTS = None
+
+
+def _text_of(article):
+    global EXCERPTS
+    if EXCERPTS is None:
+        EXCERPTS = _excerpts()
+    return EXCERPTS.get(article["contentHash"])
+
+
 def _as_list(value):
     return value if isinstance(value, list) else [value]
 
@@ -95,8 +121,15 @@ def _compiles(pattern):
 # ── the golden case ───────────────────────────────────────────────────────────────────────────────────────────────
 
 
-def test_the_held_articles_are_the_visit_notice_articles_and_hash_to_their_names():
+def test_the_held_articles_are_the_visit_notice_articles_by_reference_only():
     assert sorted(a["ref"] for a in HELD.values()) == ["1931", "1932", "1933"]
+    assert all("text" not in a and a["officialUrl"].startswith("https://www.legisquebec.gouv.qc.ca/") for a in HELD.values())
+    assert all(re.fullmatch(r"[0-9a-f]{64}", h) for h in HELD)
+
+
+def test_an_article_held_by_reference_with_no_text_is_not_verified():
+    block = _answers()["1931"]["rules"][0]["law"][0]
+    assert citations.check(block, HELD) == citations.TEXT_NOT_HELD
 
 
 def test_the_visit_notice_rules_discriminate_their_fixtures_in_this_worker():
@@ -116,7 +149,7 @@ def test_the_visit_notice_rules_quote_their_articles_and_cite_no_rent_article():
         for rule in answer["rules"]:
             for block in rule["law"]:
                 assert block["ref"] == ref and block["ref"] not in RENT_ARTICLES, rule["ruleId"]
-                assert citations.check(block, HELD) == citations.VERIFIED, rule["ruleId"]
+                assert citations.check(block, HELD, _text_of) == citations.VERIFIED, rule["ruleId"]
             assert all(_compiles(p) for p in _patterns(rule)), rule["ruleId"]
             assert not _unsupported(rule), (rule["ruleId"], _unsupported(rule))
 
@@ -129,7 +162,7 @@ def test_a_forbidden_rule_passes_only_a_fragment_that_addresses_its_subject():
 
 def test_an_answer_citing_an_article_the_corpus_does_not_hold_is_not_verified():
     outside = _load("qc-visit-notice.fr.outside-corpus.answer.json")["rules"][1]
-    assert citations.check(outside["law"][0], HELD) == citations.ARTICLE_NOT_HELD
+    assert citations.check(outside["law"][0], HELD, _text_of) == citations.ARTICLE_NOT_HELD
 
 
 # ── the planted cases: each fails here for the engine's reason ────────────────────────────────────────────────────
@@ -142,7 +175,7 @@ def _fails_for(reason, rule, planted):
     if reason == "REGEX_MATCHES_EMPTY":
         return any(_compiles(p) and re.search(p, "") is not None for p in _patterns(rule))
     if reason == "QUOTE_NOT_IN_ARTICLE":
-        return any(citations.check(b, HELD) == citations.QUOTE_NOT_IN_ARTICLE for b in rule["law"])
+        return any(citations.check(b, HELD, _text_of) == citations.QUOTE_NOT_IN_ARTICLE for b in rule["law"])
     if reason == "UNSUPPORTED_NUMBER":
         return bool(_unsupported(rule))
     if reason == "FIXTURES_INDISTINCT":
@@ -153,7 +186,7 @@ def _fails_for(reason, rule, planted):
             rules.evaluate(_ruleset(rule), rule, t)["verdict"] == rules.INSUFFICIENT_EVIDENCE
             for t in _as_list(rule["fixtures"]["pass"]))
     if reason == "LAW_VERSION_UNKNOWN":
-        return any(citations.check(b, HELD) == citations.ARTICLE_NOT_HELD for b in rule["law"])
+        return any(citations.check(b, HELD, _text_of) == citations.ARTICLE_NOT_HELD for b in rule["law"])
     if reason == "OVER_RULE_LIMIT":
         return [r["ruleId"] for r in planted["rules"]].index(rule["ruleId"]) >= planted["maxRulesPerKind"]
     raise AssertionError(f"unknown reason {reason}")
@@ -193,7 +226,7 @@ def test_the_sound_rules_beside_a_plant_pass_every_check():
             if rule["ruleId"] == planted["plantedRuleId"]:
                 continue
             assert not _discriminates(rule) and not _unsupported(rule), (planted["name"], rule["ruleId"])
-            assert all(citations.check(b, HELD) == citations.VERIFIED for b in rule["law"]), rule["ruleId"]
+            assert all(citations.check(b, HELD, _text_of) == citations.VERIFIED for b in rule["law"]), rule["ruleId"]
 
 
 def _run_all() -> int:

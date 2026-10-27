@@ -1,5 +1,5 @@
 {
-  "source": "krizaka/yomizaka apps/web/content/demo-lease-runs/clean.json at c085f9c (yomizaka#305), recorded 2026-10-24T03:19:39.697Z on dev, blueprint 1.4.0; fictional document",
+  "source": "krizaka/yomizaka apps/web/content/demo-lease-runs/clean.json at c085f9c (yomizaka#305), recorded 2026-10-24T03:19:39.697Z on dev, blueprint 1.4.0; fictional document; report re-recorded 2026-10-26 against ruleset revision 5 with the recorded judge answers (no model, no paid call)",
   "generator": {
     "id": "bail-rosemont-1-conforme",
     "seed": 20261023
@@ -12,19 +12,34 @@
   "report": {
     "rulesetId": "qc-residential-lease",
     "rulesetVersion": "2024-02-21",
-    "rulesetRevision": 3,
+    "rulesetRevision": 5,
     "jurisdiction": "QC",
     "asOf": "2026-10-23",
     "source": "Code civil du Québec, art. 1851 et suiv. (bail de logement : art. 1892 à 1978), Règlement sur les formulaires de bail obligatoires et sur les mentions de l'avis au nouveau locataire (RLRQ c. T-15.01, r. 3), Tribunal administratif du logement",
     "summary": {
       "byVerdict": {
-        "PASS": 6,
-        "NOT_APPLICABLE": 6
+        "PASS": 7,
+        "NOT_APPLICABLE": 8,
+        "FAIL": 1
       },
       "blockingFailures": 0,
-      "rulesEvaluated": 12
+      "rulesEvaluated": 16
     },
     "findings": [
+      {
+        "ruleId": "QC-LANG-001",
+        "title": "Langue française — le document est en français, ou dit qu'une version française a été remise",
+        "severity": "ADVISORY",
+        "verdict": "PASS",
+        "evidenceSpan": {
+          "start": 196,
+          "end": 204,
+          "quote": "Locateur"
+        },
+        "explanation": "Le document est rédigé en français, ou dit qu'une version française a été remise.",
+        "method": "DETERMINISTIC",
+        "citation": "Charte de la langue française, art. 55 ; C.c.Q., art. 1897 (pour le bail)"
+      },
       {
         "ruleId": "QC-LEASE-001",
         "title": "Identification du locateur",
@@ -160,6 +175,36 @@
         "citation": "C.c.Q., art. 1894"
       },
       {
+        "ruleId": "QC-LEASE-012",
+        "title": "Visites et hébergement d'un tiers — clause abusive",
+        "severity": "MAJOR",
+        "verdict": "NOT_APPLICABLE",
+        "evidenceSpan": null,
+        "explanation": "Le document n'aborde pas ce sujet ; la règle ne s'applique pas.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1901 (clause abusive) ; art. 1931 et suiv. (accès au logement)"
+      },
+      {
+        "ruleId": "QC-LEASE-013",
+        "title": "Résiliation de plein droit pour un seul retard — sans effet",
+        "severity": "BLOCKING",
+        "verdict": "NOT_APPLICABLE",
+        "evidenceSpan": null,
+        "explanation": "Le document n'aborde pas ce sujet ; la règle ne s'applique pas.",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1971 ; art. 1893"
+      },
+      {
+        "ruleId": "QC-LEASE-014",
+        "title": "Formulaire obligatoire du bail de logement",
+        "severity": "MAJOR",
+        "verdict": "FAIL",
+        "evidenceSpan": null,
+        "explanation": "Le bail ne mentionne pas le formulaire obligatoire du Tribunal administratif du logement. Le locateur doit utiliser ce formulaire (art. 1895).",
+        "method": "DETERMINISTIC",
+        "citation": "C.c.Q., art. 1895 ; Règlement sur les formulaires de bail obligatoires"
+      },
+      {
         "ruleId": "QC-LEASE-020",
         "title": "Clause abusive",
         "severity": "ADVISORY",
@@ -171,6 +216,6 @@
       }
     ],
     "reviewStatus": "TO_REVIEW_BY_LAWYER",
-    "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration."
+    "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration. La révision 4 est en attente de la réponse à yomizaka#96 (relecture par l'avocat ou l'avocate du client) ; les citations renvoient aux articles par leur numéro, sans en reproduire le texte."
   }
 }

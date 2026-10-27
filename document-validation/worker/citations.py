@@ -3,8 +3,10 @@
 
 A promoted rule carries ``law`` blocks — instrument, ref, language, ``inForceFrom``, ``contentHash``, the official URL
 and the article's quote. The hash names one version of one article; the pack holds that version's text in ``law/``
-(one JSON per article version: ``{instrument, ref, language, inForceFrom, contentHash, officialUrl, text}``), read from
-the dated, hashed corpus (ADR-089 §2). A citation is ``VERIFIED`` only when the pack holds the article the hash names
+(one JSON per article version: ``{instrument, ref, language, inForceFrom, contentHash, officialUrl}`` — the reference
+only, never a Québec article's text in a public repository), read from the dated, hashed corpus (ADR-089 §2). The text
+a quote is checked against comes from ``text_of`` (the engine, from the official source or a private store); an article
+file may carry a ``text`` only when it is fictional (the tests' own), and then it must hash to its name. A citation is ``VERIFIED`` only when the pack holds the article the hash names
 and its quote is a passage of that text; anything else is said by name, and the finding it backs is not a verdict.
 
 Pure data and pure functions: no model, no network, no clock.
@@ -26,6 +28,8 @@ NOT_PINNED = "NOT_PINNED"
 #: The hash names no article version the pack holds, or one of another article.
 ARTICLE_NOT_HELD = "ARTICLE_NOT_HELD"
 QUOTE_NOT_IN_ARTICLE = "QUOTE_NOT_IN_ARTICLE"
+#: The pack holds the reference of the article, but no text to check the quote against (none given, none fictional).
+TEXT_NOT_HELD = "TEXT_NOT_HELD"
 
 #: What a finding whose rule pins no article shows beside its citation, in both languages.
 UNPINNED_NOTICE = {
@@ -62,21 +66,28 @@ def load_articles(directory: str = LAW_DIR) -> dict:
                 continue
             with open(os.path.join(root, name), encoding="utf-8") as handle:
                 article = json.load(handle)
-            if content_hash(article["text"]) != article["contentHash"]:
+            if "text" in article and content_hash(article["text"]) != article["contentHash"]:
                 raise ValueError(f"{name}: its text does not hash to {article['contentHash']}")
             held[article["contentHash"]] = article
     return held
 
 
-def check(block: dict, articles: dict) -> str:
-    """The status of one ``law`` block against the articles held."""
+def check(block: dict, articles: dict, text_of=None) -> str:
+    """The status of one ``law`` block against the articles held.
+
+    ``text_of(article)`` returns the article's text (or ``None``); without it, only a fictional article's own ``text``
+    counts. An article held by reference with no text is ``TEXT_NOT_HELD``: the quote is not verified, never trusted.
+    """
     article = articles.get(block.get("contentHash"))
     if article is None or any(article.get(k) != block.get(k) for k in ("instrument", "ref", "language")):
         return ARTICLE_NOT_HELD
-    return VERIFIED if quotes.contains(article["text"], block.get("quote") or "") else QUOTE_NOT_IN_ARTICLE
+    text = (text_of(article) if text_of else None) or article.get("text")
+    if text is None:
+        return TEXT_NOT_HELD
+    return VERIFIED if quotes.contains(text, block.get("quote") or "") else QUOTE_NOT_IN_ARTICLE
 
 
-def cite(rule: dict, articles: dict) -> tuple:
+def cite(rule: dict, articles: dict, text_of=None) -> tuple:
     """``(citation, status)`` of a rule: what a finding shows of its article, and whether every pinned quote held.
 
     The citation keeps the rule's words (``reference``) and, when the rule pins articles, the first ``law`` block's
@@ -91,7 +102,7 @@ def cite(rule: dict, articles: dict) -> tuple:
     citation.update({k: blocks[0].get(k) for k in FIELDS})
     if len(blocks) > 1:
         citation["also"] = [{k: b.get(k) for k in FIELDS} for b in blocks[1:]]
-    statuses = [check(b, articles) for b in blocks]
+    statuses = [check(b, articles, text_of) for b in blocks]
     return citation, next((s for s in statuses if s != VERIFIED), VERIFIED)
 
 
