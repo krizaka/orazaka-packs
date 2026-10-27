@@ -103,6 +103,29 @@ def _stage(plan: dict, stage_id: str) -> dict:
 
 
 # ── the manager's rules ─────────────────────────────────────────────────────────────────────────────────────────────
+def _value_error(op: str, value: object) -> Optional[str]:
+    """What is wrong with a rule's value for its operator (None when it is fine)."""
+    if op == "atLeast" and not (isinstance(value, int) and not isinstance(value, bool) and value >= 0):
+        return "atLeast takes a whole number from 0"
+    if op == "equals" and (isinstance(value, (dict, list)) or value is None):
+        return "equals takes a string, a number or a boolean"
+    if op == "in" and not (isinstance(value, list) and value and all(isinstance(v, str) for v in value)):
+        return "in takes a non-empty list of strings"
+    return None
+
+
+def _validate_rule_value(where: str, stage: dict, rule: dict) -> None:
+    value = rule["value"]
+    error = _value_error(rule["op"], value)
+    if error:
+        raise InvalidInput(f"{where}.{rule['id']}: {error}")
+    closed = stage.get("values", {}).get(rule["fact"])
+    if closed is not None:
+        # a closed fact (an outcome, a category): a rule names values it can take, or it would silently never hold
+        if rule["op"] == "atLeast" or not set(value if isinstance(value, list) else [value]) <= set(closed):
+            raise InvalidInput(f"{where}.{rule['id']}: {rule['fact']} is one of {', '.join(closed)}")
+
+
 def _validate_rule(ruleset: dict, stage: dict, rule: object) -> dict:
     where = f"cutoffs.{stage['id']}"
     if not isinstance(rule, dict) or set(rule) - {"id", "fact", "op", "value"} or not {"id", "fact", "op", "value"} <= set(rule):
@@ -113,18 +136,7 @@ def _validate_rule(ruleset: dict, stage: dict, rule: object) -> dict:
         raise InvalidInput(f"{where}.{rule['id']}: this stage knows the facts {', '.join(stage['facts'])}")
     if rule["op"] not in ruleset["operators"]:
         raise InvalidInput(f"{where}.{rule['id']}: operators are {', '.join(ruleset['operators'])}")
-    value = rule["value"]
-    if rule["op"] == "atLeast" and not (isinstance(value, int) and not isinstance(value, bool) and value >= 0):
-        raise InvalidInput(f"{where}.{rule['id']}: atLeast takes a whole number from 0")
-    if rule["op"] == "equals" and (isinstance(value, (dict, list)) or value is None):
-        raise InvalidInput(f"{where}.{rule['id']}: equals takes a string, a number or a boolean")
-    if rule["op"] == "in" and not (isinstance(value, list) and value and all(isinstance(v, str) for v in value)):
-        raise InvalidInput(f"{where}.{rule['id']}: in takes a non-empty list of strings")
-    closed = stage.get("values", {}).get(rule["fact"])
-    if closed is not None:
-        # a closed fact (an outcome, a category): a rule names values it can take, or it would silently never hold
-        if rule["op"] == "atLeast" or not set(value if isinstance(value, list) else [value]) <= set(closed):
-            raise InvalidInput(f"{where}.{rule['id']}: {rule['fact']} is one of {', '.join(closed)}")
+    _validate_rule_value(where, stage, rule)
     return {key: rule[key] for key in ("id", "fact", "op", "value")}
 
 
