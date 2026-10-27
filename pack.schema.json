@@ -515,7 +515,9 @@
           ]
         },
         "billableCapability": {
+          "description": "WHAT the capability bills as, declared and never inferred. NONE: a step that only orchestrates or presents (plan, consent, gate, report) and is not billable on its own.",
           "enum": [
+            "NONE",
             "CHAT",
             "IMAGE",
             "AUDIO",
