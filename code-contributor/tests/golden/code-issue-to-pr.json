@@ -1,0 +1,98 @@
+{
+  "studio": "code-issue-to-pr",
+  "cases": [
+    {
+      "id": "mira-readme-typo",
+      "input": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Fix the typo in README.md"
+          }
+        ],
+        "tools": [
+          {
+            "name": "read_file"
+          },
+          {
+            "name": "propose_diff"
+          }
+        ]
+      },
+      "expected": {
+        "text": "",
+        "calls": []
+      },
+      "assertions": [
+        {
+          "path": [
+            "calls"
+          ],
+          "equals": []
+        }
+      ]
+    },
+    {
+      "id": "zoe-add-test",
+      "input": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Add a test for the parser"
+          }
+        ],
+        "tools": [
+          {
+            "name": "read_file"
+          },
+          {
+            "name": "propose_diff"
+          }
+        ]
+      },
+      "expected": {
+        "text": "",
+        "calls": []
+      },
+      "assertions": [
+        {
+          "path": [
+            "calls"
+          ],
+          "equals": []
+        }
+      ]
+    },
+    {
+      "id": "aster-rename",
+      "input": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Rename the helper in utils"
+          }
+        ],
+        "tools": [
+          {
+            "name": "read_file"
+          },
+          {
+            "name": "propose_diff"
+          }
+        ]
+      },
+      "expected": {
+        "text": "",
+        "calls": []
+      },
+      "assertions": [
+        {
+          "path": [
+            "calls"
+          ],
+          "equals": []
+        }
+      ]
+    }
+  ]
+}

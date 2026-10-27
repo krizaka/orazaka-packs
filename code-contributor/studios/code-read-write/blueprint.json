@@ -1,0 +1,102 @@
+{
+  "version": "1.0.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 40,
+  "changelog": "1.0.0 — the model turn of the Orazaka app's code agent: messages and a closed tool list in, text or tool calls out. The tools, approvals, git and audit stay on the Mac.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "code-read-write",
+    "version": "1.0.0",
+    "steps": [
+      {
+        "id": "turn",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.code.agent.turn",
+        "dependsOn": [],
+        "inputs": {
+          "messages": "{{inputs.messages}}",
+          "tools": "{{inputs.tools}}"
+        },
+        "out": "turn",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT120S"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "text",
+        "label": "Réponse",
+        "from": "{{steps.turn.text}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Answer"
+          },
+          "fr": {
+            "label": "Réponse"
+          }
+        }
+      },
+      {
+        "key": "calls",
+        "label": "Appels d'outils",
+        "from": "{{steps.turn.calls}}",
+        "type": "JSON",
+        "x-i18n": {
+          "en": {
+            "label": "Tool calls"
+          },
+          "fr": {
+            "label": "Appels d'outils"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "messages",
+      "tools"
+    ],
+    "properties": {
+      "messages": {
+        "type": "array",
+        "maxItems": 400,
+        "title": "Messages",
+        "description": "La conversation jusqu'ici.",
+        "x-i18n": {
+          "en": {
+            "title": "Messages",
+            "description": "The conversation so far.",
+            "placeholder": "[ ]"
+          },
+          "fr": {
+            "title": "Messages",
+            "description": "La conversation jusqu'ici.",
+            "placeholder": "[ ]"
+          }
+        }
+      },
+      "tools": {
+        "type": "array",
+        "maxItems": 12,
+        "title": "Outils",
+        "description": "La liste fermée d'outils.",
+        "x-i18n": {
+          "en": {
+            "title": "Tools",
+            "description": "The closed tool list.",
+            "placeholder": "[ ]"
+          },
+          "fr": {
+            "title": "Outils",
+            "description": "La liste fermée d'outils.",
+            "placeholder": "[ ]"
+          }
+        }
+      }
+    }
+  }
+}

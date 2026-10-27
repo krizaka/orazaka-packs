@@ -1,0 +1,20 @@
+pack:
+  label: Contributor
+  tagline: The model turn behind Orazaka's code agent on your Mac.
+  description: >-
+    Carries the model turns of the Orazaka app's code agent, so that access, consent and credits are checked on every turn.
+    The tools, the approvals, git and the audit stay on your Mac.
+studios:
+  code-issue-to-pr:
+    label: From an issue to a pull request
+    tagline: Reads a GitHub issue and your repository, proposes changes you approve, and opens a draft pull request.
+    description: >-
+      The model turn for the issue-to-pull-request flow. Every write and every push is approved on your Mac.
+  code-read-write:
+    label: Read and change code
+    tagline: Reads a repository you grant and proposes changes, hunk by hunk.
+    description: >-
+      The model turn for reading and changing files in a repository you grant. Nothing is written without your approval.
+category:
+  label: Developer tools
+  description: "Packs that work on code with you: read it, change it, carry an issue to a pull request."
