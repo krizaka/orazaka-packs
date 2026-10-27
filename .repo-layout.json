@@ -1,0 +1,5 @@
+{
+  "allow": [
+    { "path": "worker-common", "why": "shared Python code of the packs' workers (not a pack: it has no pack.yaml)" }
+  ]
+}
