@@ -17,7 +17,7 @@ The user forwards this output to their counterparty. That single fact decides ev
 | Studios | `compliance-check` · `document-authenticity` |
 | Jurisdictions | `QC` (Québec — to be reviewed by a lawyer), `FR`, `BE-WAL` |
 | Document kinds | `kinds/*.json`, recognised by `identify` before any ruleset (below) |
-| Document types | the residential lease (every jurisdiction, the default) and, for `QC`, the supplier's **invoice** (`ruleset: qc-invoice`, opt-in) |
+| Document types | the residential lease (every jurisdiction, the default) and, for `QC`, the supplier's **invoice**, the **service contract**, the **visit notice** and the **état des lieux** (named rulesets, opt-in) |
 
 ## Deterministic first, model second
 
@@ -93,6 +93,22 @@ assigning copyright in silence on moral rights (s. 14.1(3), advice); no mention 
 only in writing signed by the owner, advice). **Not encoded** — the Civil Code of Québec could not be read at its source
 (legisquebec.gouv.qc.ca and CanLII refuse automated reads): non-competition limits (art. 2089 is about employment contracts; for a
 service contract the limit is case law), termination (art. 2125, 2129), penal clauses, payment deadlines (no statute requires one).
+
+## Québec visit notice and état des lieux, and the language rule (orazaka-packs#125, #126)
+
+Two rulesets, promoted kinds (`kinds/qc-visit-notice.json`, `kinds/qc-condition-report.json`): a document that `identify` recognises as one of them is judged by **its own** rules, never the lease's (no rent rule fires on a form with no rent). Both are opt-in, dated `2023-06-01` (the Charter's art. 55 in force), revision 1, `TO_REVIEW_BY_LAWYER`.
+
+| Ruleset | Rules | Cited (names only) |
+|:---|:---|:---|
+| `qc-visit-notice` | `QC-VISIT-001` a notice of at least 24 hours, read in hours · `002` the intention stated (verify, work, show) · `003` no visit fixed outside 9 h to 21 h · `004` no works fixed outside 7 h to 19 h unless urgent · `005` no waiver of the right to refuse a visit | C.c.Q. art. 1931, 1932, 1933, 1893 |
+| `qc-condition-report` | `QC-COND-001` no acknowledgement that the dwelling is habitable · `002` no cleaning after the landlord's works charged to the tenant · `003` no acceptance of a dwelling delivered unclean · `004` no exoneration of the landlord on habitability | C.c.Q. art. 1900, 1910, 1911, 1893 |
+| the lease, both rulesets above | `QC-LANG-001` (the lease gets it in revision 5): the document is in French, or says a French version was handed over | Charter of the French language art. 55; C.c.Q. art. 1897 |
+
+**The language rule is informative.** Another language is allowed when the French version was handed over and the parties expressly will it, so an English-only document is `INSUFFICIENT_EVIDENCE` (`check.onAbsent`), « à confirmer » by a person, never a `FAIL` on language alone. A bilingual document, or one that says the French version was handed over, passes. The express will itself is not read: it is a human check.
+
+No article is prescribed for the *form* of an état des lieux, so the rules judge only what a clause cannot do. A blank form never passes a rule of its kind (each rule's `subject` is a sentence, not a label). **Law is cited, never reproduced**: each rule's `lawRef` carries the instrument, article, official Légis Québec address, the in-force date of the version read, the SHA-256 of the article and the date it was read (Données Québec, snapshot 2026-10-21); the text stays in the corpus. The pin (`law` block with a verified quote) comes with the promotion through the corpus (ADR-089 §5), so these citations read « unpinned » until then. Not encoded, and listed in each `reviewNote` for the lawyer checklist (krizaka/.github#250): urgency, the delivery mode of a notice, hours counted from a signature date, the content of an état des lieux, arts. 1912 and 1913, the express will of the parties.
+
+Goldens: `worker/fixtures/qc-visit-notice/` and `qc-condition-report/` (compliant, defective, blank, English-only), and `qc-residential-lease/bilingual-compliant`. Tests: `worker/test_rules.py`, `test_golden.py`, `test_screening.py`, `test_identify.py`, `test_check.py`.
 
 ## Kinds and `identify` — what a document is, before any ruleset (ADR-089 §1)
 

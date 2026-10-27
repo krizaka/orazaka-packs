@@ -6,7 +6,7 @@
   "effectiveFrom": "2024-02-21",
   "effectiveTo": null,
   "source": "Code civil du Québec, art. 1851 et suiv. (bail de logement : art. 1892 à 1978), Règlement sur les formulaires de bail obligatoires et sur les mentions de l'avis au nouveau locataire (RLRQ c. T-15.01, r. 3), Tribunal administratif du logement",
-  "revision": 4,
+  "revision": 5,
   "reviewStatus": "TO_REVIEW_BY_LAWYER",
   "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration. La révision 4 est en attente de la réponse à yomizaka#96 (relecture par l'avocat ou l'avocate du client) ; les citations renvoient aux articles par leur numéro, sans en reproduire le texte.",
   "rules": [
@@ -334,7 +334,56 @@
       "question": "Ce bail contient-il une clause abusive, c'est-à-dire excessivement et déraisonnablement préjudiciable au locataire (par exemple une pénalité disproportionnée) ?",
       "onPass": "Aucune clause manifestement abusive relevée.",
       "onFail": "Une clause paraît abusive ; l'article 1901 permet au Tribunal administratif du logement de l'annuler ou d'en réduire l'obligation."
+    },
+    {
+      "ruleId": "QC-LANG-001",
+      "title": "Langue française — le document est en français, ou dit qu'une version française a été remise",
+      "severity": "ADVISORY",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)langue|fran[çc]ais|anglais|english|french|traduction|version",
+      "citation": "Charte de la langue française, art. 55 ; C.c.Q., art. 1897 (pour le bail)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)\\blocat(?:eur|rice|aire)s?\\b|version\\s+fran[çc]aise[^.\\n]{0,160}?(?:remise|remis|transmise?)|(?:remise|remis|transmise?)[^.\\n]{0,160}?version\\s+fran[çc]aise|french\\s+version[^.\\n]{0,160}?(?:handed|delivered|provided|given|given\\s+to)|(?:handed|delivered|provided|given)[^.\\n]{0,160}?french\\s+version",
+        "onAbsent": "INSUFFICIENT_EVIDENCE"
+      },
+      "onPass": "Le document est rédigé en français, ou dit qu'une version française a été remise.",
+      "onFail": "Rien ne montre que le document existe en français. Un document uniquement dans une autre langue n'est pas un échec en soi : la Charte de la langue française (art. 55) et le Code civil du Québec (art. 1897, pour le bail) permettent une autre langue lorsque la version française a été remise et que telle est la volonté expresse des parties. À confirmer par une personne : ce constat est informatif, jamais un verdict.",
+      "fixtures": {
+        "pass": [
+          "Le locateur Monsieur Marc Tremblay et le locataire Madame Sophie Gagnon conviennent du présent document.",
+          "Version française remise au locataire le 1er septembre 2026 ; une version anglaise est jointe.",
+          "The French version was handed over to the tenant on September 1, 2026; this English version is attached.",
+          "La locataire Sophie Gagnon reçoit une copie en français de l'avis."
+        ],
+        "fail": [
+          "The landlord, Mr. Marc Tremblay, and the tenant, Ms. Sophie Gagnon, agree to the following notice.",
+          "The monthly rent is 1,450 $, payable on the first day of each month."
+        ]
+      },
+      "lawRef": [
+        {
+          "instrument": "C-11",
+          "ref": "55",
+          "language": "fr",
+          "inForceFrom": "2023-06-01",
+          "consolidatedTo": "2026-04-02",
+          "contentHash": "02e976a4ed3e78f308ba03a55fdee04f0b03af10853afca7ed68e8ec1cddaa1e",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/C-11?code=se:55",
+          "readAt": "2026-10-23"
+        },
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1897",
+          "language": "fr",
+          "inForceFrom": "1999-04-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "dee591aef5291a138b6fda543f3552b6f58215cac7f6e629a57177a979fd42dd",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1897",
+          "readAt": "2026-10-23"
+        }
+      ]
     }
   ],
-  "revisionNote": "Révision 4 : QC-LEASE-012 signale la clause qui interdit ou subordonne à une autorisation les visites ou l'hébergement d'un tiers (art. 1901) ; QC-LEASE-013 signale la clause qui résilie le bail de plein droit pour un seul retard de loyer (art. 1971, qui exige un retard de trois semaines et passe par le Tribunal administratif du logement) ; QC-LEASE-014 vérifie la mention du formulaire obligatoire ; QC-LEASE-003 lit les montants en $, $ CA, CAD et dollars, avec le symbole avant ou après le chiffre. Révision 3 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-010 ajoute une question d'appréciation des pénalités et frais de retard au regard du préjudice réellement subi (art. 1901) ; QC-LEASE-011 vérifie informativement la mention de remise préalable du règlement applicable et de son intégration au bail (art. 1894), sans prétendre vérifier sa remise matérielle. QC-LEASE-004 précise que l'article 1904 couvre toute somme autre que le loyer, sous forme de dépôt ou autrement, tout en permettant d'exiger d'avance le premier terme de loyer. Révision 2 avait ajouté QC-LEASE-009 sur la renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat. Chaque nouvel élément reste à faire relire par un avocat ou une avocate membre du Barreau du Québec."
+  "revisionNote": "Révision 5 : QC-LANG-001 (langue française ; Charte de la langue française, art. 55 ; C.c.Q., art. 1897), informative : un bail uniquement dans une autre langue n'est jamais un échec pour cette seule raison, le constat est « à confirmer » tant que le document ne montre ni le français ni la remise de la version française (orazaka-packs#126). Révision 4 : QC-LEASE-012 signale la clause qui interdit ou subordonne à une autorisation les visites ou l'hébergement d'un tiers (art. 1901) ; QC-LEASE-013 signale la clause qui résilie le bail de plein droit pour un seul retard de loyer (art. 1971, qui exige un retard de trois semaines et passe par le Tribunal administratif du logement) ; QC-LEASE-014 vérifie la mention du formulaire obligatoire ; QC-LEASE-003 lit les montants en $, $ CA, CAD et dollars, avec le symbole avant ou après le chiffre. Révision 3 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-010 ajoute une question d'appréciation des pénalités et frais de retard au regard du préjudice réellement subi (art. 1901) ; QC-LEASE-011 vérifie informativement la mention de remise préalable du règlement applicable et de son intégration au bail (art. 1894), sans prétendre vérifier sa remise matérielle. QC-LEASE-004 précise que l'article 1904 couvre toute somme autre que le loyer, sous forme de dépôt ou autrement, tout en permettant d'exiger d'avance le premier terme de loyer. Révision 2 avait ajouté QC-LEASE-009 sur la renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat. Chaque nouvel élément reste à faire relire par un avocat ou une avocate membre du Barreau du Québec."
 }

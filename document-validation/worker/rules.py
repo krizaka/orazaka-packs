@@ -229,7 +229,10 @@ def _required_pattern(rule: dict, source) -> dict:
         return _finding(rule, PASS, doc.span(match), rule["onPass"])
     # An absence has no span, and saying so is information rather than a gap: the reader learns
     # that nothing was found, not that the tool forgot to look.
-    return _finding(rule, FAIL, None, rule["onFail"])
+    # A rule the law does not make absolute (the language rule: another language is allowed by the parties' express
+    # will) declares ``onAbsent: INSUFFICIENT_EVIDENCE``: the absence is then a point to confirm, never a FAIL.
+    absent = rule["check"].get("onAbsent", FAIL)
+    return _finding(rule, absent, None, rule["onFail"])
 
 
 def _subject_match(rule: dict, doc: "_Document"):
@@ -347,7 +350,7 @@ def _numeric_min(rule: dict, source) -> dict:
         rule,
         FAIL,
         doc.span(match),
-        f"{rule['onFail']} Constaté : {value:g} an(s).",
+        f"{rule['onFail']} Constaté : {value:g} {check.get('unit', 'an(s)')}.",
     )
 
 

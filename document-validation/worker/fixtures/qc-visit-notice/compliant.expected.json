@@ -1,0 +1,12 @@
+{
+  "asOf": "2026-10-22",
+  "findings": {
+    "QC-VISIT-001": "PASS",
+    "QC-VISIT-002": "PASS",
+    "QC-VISIT-003": "PASS",
+    "QC-VISIT-004": "PASS",
+    "QC-VISIT-005": "PASS",
+    "QC-LANG-001": "PASS"
+  },
+  "judgments": []
+}

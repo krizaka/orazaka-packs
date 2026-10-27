@@ -82,8 +82,8 @@
       "en": "Which articles govern a notice of visit to a dwelling in Québec?"
     }
   },
-  "ruleset": null,
-  "status": "KNOWN",
+  "ruleset": "qc-visit-notice",
+  "status": "PROMOTED",
   "fixtures": [
     {
       "file": "fixtures/qc-visit-notice/fr-filled.txt",
