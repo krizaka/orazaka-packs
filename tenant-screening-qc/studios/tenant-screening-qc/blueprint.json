@@ -27,7 +27,7 @@
         "timeout": "PT1M"
       },
       {
-        "id": "consent_documents",
+        "id": "consent-documents",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.consent.check",
         "dependsOn": [
@@ -48,7 +48,7 @@
         "featureKey": "orazaka.screening.documents.assess",
         "dependsOn": [
           "plan",
-          "consent_documents"
+          "consent-documents"
         ],
         "condition": "{{steps.consent_documents.status}} == 'GRANTED'",
         "inputs": {
@@ -63,12 +63,12 @@
         "timeout": "PT1M"
       },
       {
-        "id": "gate_documents",
+        "id": "gate-documents",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.cutoff.decide",
         "dependsOn": [
           "plan",
-          "consent_documents",
+          "consent-documents",
           "documents"
         ],
         "inputs": {
@@ -84,11 +84,11 @@
         "timeout": "PT1M"
       },
       {
-        "id": "consent_courts",
+        "id": "consent-courts",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.consent.check",
         "dependsOn": [
-          "gate_documents"
+          "gate-documents"
         ],
         "condition": "{{steps.gate_documents.decision}} == 'CONTINUE'",
         "inputs": {
@@ -105,7 +105,7 @@
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.checks.courtrecords",
         "dependsOn": [
-          "consent_courts"
+          "consent-courts"
         ],
         "condition": "{{steps.consent_courts.status}} == 'GRANTED'",
         "inputs": {
@@ -118,13 +118,13 @@
         "timeout": "PT2M"
       },
       {
-        "id": "gate_courts",
+        "id": "gate-courts",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.cutoff.decide",
         "dependsOn": [
           "plan",
-          "gate_documents",
-          "consent_courts",
+          "gate-documents",
+          "consent-courts",
           "courts"
         ],
         "condition": "{{steps.consent_courts.status}} is not null",
@@ -141,11 +141,11 @@
         "timeout": "PT1M"
       },
       {
-        "id": "consent_credit",
+        "id": "consent-credit",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.consent.check",
         "dependsOn": [
-          "gate_courts"
+          "gate-courts"
         ],
         "condition": "{{steps.gate_courts.decision}} == 'CONTINUE'",
         "inputs": {
@@ -162,7 +162,7 @@
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.checks.credit",
         "dependsOn": [
-          "consent_credit"
+          "consent-credit"
         ],
         "condition": "{{steps.consent_credit.status}} == 'GRANTED'",
         "inputs": {
@@ -175,13 +175,13 @@
         "timeout": "PT2M"
       },
       {
-        "id": "gate_credit",
+        "id": "gate-credit",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.cutoff.decide",
         "dependsOn": [
           "plan",
-          "gate_courts",
-          "consent_credit",
+          "gate-courts",
+          "consent-credit",
           "credit"
         ],
         "condition": "{{steps.consent_credit.status}} is not null",
@@ -203,15 +203,15 @@
         "featureKey": "orazaka.screening.report.assemble",
         "dependsOn": [
           "plan",
-          "consent_documents",
+          "consent-documents",
           "documents",
-          "gate_documents",
-          "consent_courts",
+          "gate-documents",
+          "consent-courts",
           "courts",
-          "gate_courts",
-          "consent_credit",
+          "gate-courts",
+          "consent-credit",
           "credit",
-          "gate_credit"
+          "gate-credit"
         ],
         "inputs": {
           "plan": "{{steps.plan.planJson}}",
