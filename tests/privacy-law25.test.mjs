@@ -42,7 +42,7 @@ test("the person in charge decides: decisions, dates and signatures are left emp
 });
 
 test("sources are cited by reference only: the prompts forbid quoting a section and sources.json holds no text", () => {
-  for (const bp of Object.values(blueprints)) for (const step of bp.definition.steps.filter((x) => x.id !== "policyEn")) assert.match(step.inputs.prompt, /Never reproduce the wording of a section|never by quoting a text/i, `${step.id}: cite by reference only`);
+  for (const bp of Object.values(blueprints)) for (const step of bp.definition.steps.filter((x) => x.id !== "english")) assert.match(step.inputs.prompt, /Never reproduce the wording of a section|never by quoting a text/i, `${step.id}: cite by reference only`);
   for (const ref of sources.references) {
     assert.deepEqual(Object.keys(ref).sort(), ["citation", "id", "sections", "title", "usedFor"]);
   }
