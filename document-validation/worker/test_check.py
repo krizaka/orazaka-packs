@@ -174,8 +174,8 @@ def test_2x_has_no_default_kind_the_lease_by_jurisdiction_is_legacy_1x_only():
     assert worker._screen({"document": text, "jurisdiction": "QC", "asOf": "2026-10-22"})["rulesetId"] == "qc-residential-lease"
     # A recognised notice is never the lease's: the mismatch with a declared lease shows.
     notice, _ = run(kind_text("qc-visit-notice", "fr-filled.txt"), jurisdiction="QC", declaredKind="LEASE")
-    assert notice["outcome"] == "UNSUPPORTED_KIND" and notice["identification"]["kindMismatch"] is True
-    assert notice["findings"] == [] and "ruleset" not in notice
+    assert notice["outcome"] == compliance.CHECKED and notice["identification"]["kindMismatch"] is True
+    assert notice["ruleset"]["id"] == "qc-visit-notice", "judged as a notice, never as the declared lease"
 
 
 def test_a_citation_that_pins_no_article_says_so_on_every_finding():
@@ -204,12 +204,20 @@ def test_checked_carries_identification_outcome_and_ruleset():
 
 
 def test_unsupported_kind_runs_no_rule_and_never_the_lease():
-    for name in ("fr-filled.txt", "en-filled.txt", "fr-blank.txt", "en-blank.txt"):
-        for kind in ("qc-visit-notice", "qc-condition-report"):
+    for name in ("fr-filled.txt", "en-filled.txt"):
+        for kind in ("qc-lease-modification-notice",):
             report, calls = run(kind_text(kind, name), judge="[]", jurisdiction="QC")
             assert report["outcome"] == "UNSUPPORTED_KIND", (kind, name)
             assert report["identification"]["kindUsed"] == kind and report["findings"] == [], (kind, name)
             assert calls == [], "no model is asked about a kind with no ruleset"
+
+
+def test_a_visit_notice_and_a_condition_report_are_checked_by_their_own_ruleset_with_a_language_finding():
+    for kind in ("qc-visit-notice", "qc-condition-report"):
+        for name in ("fr-filled.txt", "en-filled.txt"):
+            report, calls = run(kind_text(kind, name), judge="[]", jurisdiction="QC")
+            assert report["outcome"] == compliance.CHECKED and report["ruleset"]["id"] == kind, (kind, name)
+            assert calls == [] and "QC-LANG-001" in {f["ruleId"] for f in report["findings"]}, (kind, name)
 
 
 def test_kind_unknown_runs_no_rule():

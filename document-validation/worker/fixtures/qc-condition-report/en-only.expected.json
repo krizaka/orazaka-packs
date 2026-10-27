@@ -1,0 +1,11 @@
+{
+  "asOf": "2026-10-22",
+  "findings": {
+    "QC-COND-001": "NOT_APPLICABLE",
+    "QC-COND-002": "NOT_APPLICABLE",
+    "QC-COND-003": "NOT_APPLICABLE",
+    "QC-COND-004": "NOT_APPLICABLE",
+    "QC-LANG-001": "INSUFFICIENT_EVIDENCE"
+  },
+  "judgments": []
+}

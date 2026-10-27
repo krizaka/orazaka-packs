@@ -10,6 +10,7 @@ import json
 import re
 import sys
 import os
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -275,6 +276,8 @@ def test_every_deterministic_rule_distinguishes_its_own_fixtures():
                     # NOT_APPLICABLE: the absence of the wording is not a passage (orazaka-packs#124).
                     if expected == "PASS" and rule["check"]["type"] == "FORBIDDEN_PATTERN" and not re.search(rule["subject"], fragment):
                         want = rules.NOT_APPLICABLE
+                    if expected == "FAIL":
+                        want = rule["check"].get("onAbsent", rules.FAIL)  # a rule the law does not make absolute never FAILs on an absence
                     got = rules.evaluate(ruleset, rule, fragment)["verdict"]
                     if got != want:
                         failures.append(
@@ -388,7 +391,7 @@ def test_qc_waiver_of_the_rent_increase_regime_is_flagged_and_the_lawful_clauses
 
 def test_qc_revision_records_the_correction_and_the_law_is_unchanged():
     ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
-    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 4
+    assert ruleset["version"] == "2024-02-21" and ruleset["revision"] == 5
     assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
     assert "dépôt" in ruleset["revisionNote"].lower() and "augmentation" in ruleset["revisionNote"].lower()
     assert "pénalité" in ruleset["revisionNote"].lower() and "règlement" in ruleset["revisionNote"].lower()
@@ -491,7 +494,7 @@ def test_qc_rent_is_read_in_every_way_a_canadian_lease_writes_dollars():
 
 def test_qc_new_rules_are_all_cited_and_the_ruleset_stays_awaiting_a_lawyer():
     ruleset = rules.resolve("qc-residential-lease", "2026-10-15")
-    assert ruleset["revision"] == 4 and ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
+    assert ruleset["revision"] == 5 and ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
     assert "yomizaka#96" in ruleset["reviewNote"]
     for rule_id in ("QC-LEASE-012", "QC-LEASE-013", "QC-LEASE-014"):
         assert "C.c.Q." in _qc_rule(rule_id)["citation"]
@@ -567,7 +570,9 @@ def test_every_invoice_rule_cites_its_source_and_says_it_awaits_review():
 
 def test_the_invoice_is_opt_in_the_lease_stays_the_default_of_quebec():
     assert rules.jurisdictions()["QC"] == "qc-residential-lease"
-    assert set(rules.rulesets_by_jurisdiction()["QC"]) == {"qc-residential-lease", "qc-invoice", "qc-service-contract"}
+    assert set(rules.rulesets_by_jurisdiction()["QC"]) == {
+        "qc-residential-lease", "qc-invoice", "qc-service-contract", "qc-visit-notice", "qc-condition-report",
+    }
 
 
 # --- qc-service-contract: only what federal law, read at its source, says (Interest Act s. 4, Copyright Act s. 13(4), 14.1) ---
@@ -862,6 +867,107 @@ def test_a_ruleset_id_is_a_name_never_a_path():
             continue
         raise AssertionError(f"{bad!r} was not refused")
 
+
+
+# --- qc-visit-notice, qc-condition-report and the language rule they share with the lease (orazaka-packs#125, #126) ---
+
+NEW_KINDS = (("qc-visit-notice", "QC-VISIT-"), ("qc-condition-report", "QC-COND-"))
+
+
+def _new_rules():
+    """(ruleset id, rule) of every rule these two issues add, the language rule of the lease included."""
+    for ruleset_id, _ in NEW_KINDS:
+        for rule in rules.resolve(ruleset_id, "2026-10-26")["rules"]:
+            yield ruleset_id, rule
+    for rule in rules.resolve("qc-residential-lease", "2026-10-26")["rules"]:
+        if rule["ruleId"] == "QC-LANG-001":
+            yield "qc-residential-lease", rule
+
+
+def test_the_visit_notice_and_the_condition_report_are_opt_in_quebec_rulesets_in_force_from_their_date():
+    assert {i for i, _ in NEW_KINDS} <= set(rules.rulesets_by_jurisdiction()["QC"])
+    assert rules.jurisdictions()["QC"] == "qc-residential-lease"  # the new kinds are named, never the default
+    for ruleset_id, _ in NEW_KINDS:
+        ruleset = rules.resolve(ruleset_id, "2026-10-22")
+        assert ruleset["optIn"] is True and ruleset["effectiveFrom"] == "2023-06-01", ruleset_id
+        assert ruleset["reviewStatus"] == "TO_REVIEW_BY_LAWYER", ruleset_id
+        assert "à confirmer" in ruleset["reviewNote"].lower(), ruleset_id  # the points for the lawyer checklist are named
+        try:
+            rules.resolve(ruleset_id, "2023-05-31")
+        except rules.RulesetNotFound:
+            continue
+        raise AssertionError(f"{ruleset_id} must not be applied before its date")
+
+
+def test_the_language_rule_is_one_informative_rule_shared_by_the_lease_and_both_kinds():
+    shared = [r for _, r in _new_rules() if r["ruleId"] == "QC-LANG-001"]
+    assert len(shared) == 3 and shared[0] == shared[1] == shared[2]
+    rule = shared[0]
+    assert rule["severity"] == "ADVISORY" and rule["check"]["onAbsent"] == rules.INSUFFICIENT_EVIDENCE
+    assert [(b["instrument"], b["ref"]) for b in rule["lawRef"]] == [("C-11", "55"), ("CCQ-1991", "1897")]
+
+
+def test_an_english_only_document_is_never_a_fail_on_language_and_a_french_or_bilingual_one_passes():
+    # Art. 1897 C.c.Q. and art. 55 of the Charter allow another language by the parties' express will: an English-only
+    # lease is a point to confirm, never a FAIL (ADR-089 §3).
+    english = _verdicts("qc-residential-lease", "en-not-read.txt")
+    assert english["QC-LANG-001"] == rules.INSUFFICIENT_EVIDENCE
+    bilingual = _verdicts("qc-residential-lease", "bilingual-compliant.txt")
+    assert bilingual["QC-LANG-001"] == rules.PASS and rules.FAIL not in bilingual.values()
+    for ruleset_id, name in (("qc-visit-notice", "en-only.txt"), ("qc-condition-report", "en-only.txt")):
+        assert _verdicts(ruleset_id, name)["QC-LANG-001"] == rules.INSUFFICIENT_EVIDENCE, ruleset_id
+    handed = "The French version was handed over to the tenant; the parties expressly choose this English text."
+    assert _by_id(rules.screen(rules.resolve("qc-visit-notice", "2026-10-26"), handed)[0])["QC-LANG-001"]["verdict"] == rules.PASS
+
+
+def test_a_visit_notice_is_judged_article_by_article():
+    compliant = _verdicts("qc-visit-notice", "compliant.txt")
+    assert rules.FAIL not in compliant.values(), compliant
+    assert compliant["QC-VISIT-001"] == rules.PASS and compliant["QC-VISIT-002"] == rules.PASS
+    defective = _verdicts("qc-visit-notice", "defective.txt")
+    assert {k for k, v in defective.items() if v == rules.FAIL} == {"QC-VISIT-001", "QC-VISIT-003", "QC-VISIT-004", "QC-VISIT-005"}
+    assert defective["QC-VISIT-002"] == rules.PASS  # the intention is stated, so it is not the defect
+
+
+def test_a_notice_period_is_read_in_hours_and_the_singular_is_read_too():
+    ruleset = rules.resolve("qc-visit-notice", "2026-10-22")
+    finding = _by_id(rules.screen(ruleset, "Préavis de 2 heures.")[0])["QC-VISIT-001"]
+    assert finding["verdict"] == rules.FAIL and "heure(s)" in finding["explanation"] and "an(s)" not in finding["explanation"]
+    assert _by_id(rules.screen(ruleset, "Préavis de 1 heure.")[0])["QC-VISIT-001"]["verdict"] == rules.FAIL
+
+
+def test_a_condition_report_is_judged_on_what_no_clause_may_do():
+    assert rules.FAIL not in _verdicts("qc-condition-report", "compliant.txt").values()
+    defective = _verdicts("qc-condition-report", "defective.txt")
+    assert {k for k, v in defective.items() if v == rules.FAIL} == {"QC-COND-001", "QC-COND-002", "QC-COND-003", "QC-COND-004"}
+
+
+def test_a_blank_form_never_passes_a_rule_of_its_kind():
+    # A blank form states the labels of the rules, never their content: no rule of the kind may PASS on it.
+    for ruleset_id, prefix in NEW_KINDS:
+        content = {k: v for k, v in _verdicts(ruleset_id, "blank.txt").items() if k.startswith(prefix)}
+        assert rules.PASS not in content.values(), (ruleset_id, content)
+    assert _verdicts("qc-visit-notice", "blank.txt")["QC-VISIT-002"] == rules.FAIL  # the intention is missing
+    assert _verdicts("qc-visit-notice", "blank.txt")["QC-VISIT-001"] == rules.INSUFFICIENT_EVIDENCE  # no period is written
+
+
+def test_every_rule_of_the_new_kinds_and_the_language_rule_declares_a_subject_that_compiles():
+    for ruleset_id, rule in _new_rules():
+        assert rule.get("subject"), f"{ruleset_id} {rule['ruleId']} declares no subject"
+        re.compile(rule["subject"])
+
+
+def test_every_rule_names_its_article_and_links_it_without_reproducing_its_text():
+    # The law is cited by name, article and official address; its text is read from the corpus, never pasted here.
+    for ruleset_id, rule in _new_rules():
+        assert rule["lawRef"] and "law" not in rule, rule["ruleId"]
+        for block in rule["lawRef"]:
+            assert block["ref"] in rule["citation"], (rule["ruleId"], block["ref"])
+            assert re.fullmatch(r"[0-9a-f]{64}", block["contentHash"]), rule["ruleId"]
+            assert block["officialUrl"].startswith("https://www.legisquebec.gouv.qc.ca/fr/version/lc/"), rule["ruleId"]
+            assert block["readAt"] == "2026-10-23" and "quote" not in block and "text" not in block, rule["ruleId"]
+            ruleset = rules.resolve(ruleset_id, "2026-10-26")
+            assert date.fromisoformat(block["inForceFrom"]) <= date.fromisoformat(ruleset["effectiveFrom"]), rule["ruleId"]
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: document-validation
-version: 1.10.0
+version: 1.11.0
 tier: WORKER
 distribution: CLOUD
 regulatoryClass: SENSITIVE

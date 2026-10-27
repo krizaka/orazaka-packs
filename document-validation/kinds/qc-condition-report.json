@@ -80,8 +80,8 @@
       "en": "Which articles govern the condition report and the delivery of a dwelling in Québec?"
     }
   },
-  "ruleset": null,
-  "status": "KNOWN",
+  "ruleset": "qc-condition-report",
+  "status": "PROMOTED",
   "fixtures": [
     {
       "file": "fixtures/qc-condition-report/fr-filled.txt",

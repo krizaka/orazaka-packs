@@ -140,11 +140,20 @@ def test_the_blank_forms_are_their_kind_not_a_lease_and_have_no_date():
         assert got["documentDate"] is None and got["asOfSource"] == "TODAY" and got["asOf"] == TODAY, f"{kind_id}/{name}: an unfilled date is not a date"
 
 
-def test_a_notice_or_a_condition_report_is_never_judged_by_the_lease():
+def test_a_notice_or_a_condition_report_is_judged_by_its_own_ruleset_never_the_lease():
+    # orazaka-packs#125: both kinds are promoted, each with the ruleset that carries its kind id.
     for kind_id in ("qc-visit-notice", "qc-condition-report"):
         for name in ("fr-filled.txt", "en-filled.txt", "fr-blank.txt", "en-blank.txt"):
             got = ident(read(kind_id, name), declared_kind="LEASE", jurisdiction="QC")
-            assert got["kindUsed"] == kind_id and got["ruleset"] is None and got["outcome"] == "UNSUPPORTED_KIND", f"{kind_id}/{name}"
+            assert got["kindUsed"] == kind_id and got["ruleset"] == kind_id and got["outcome"] == "CHECK", f"{kind_id}/{name}"
+            assert got["ruleset"] != "qc-residential-lease"
+
+
+def test_a_kind_with_no_ruleset_still_says_it_is_unsupported():
+    # The notice of modification (art. 1942) is known and has no promoted ruleset: the run says so (ADR-089 §6).
+    for name in ("fr-filled.txt", "en-filled.txt"):
+        got = ident(read("qc-lease-modification-notice", name), jurisdiction="QC")
+        assert got["kindUsed"] == "qc-lease-modification-notice" and got["ruleset"] is None and got["outcome"] == "UNSUPPORTED_KIND", name
 
 
 def test_a_condition_report_is_a_condition_report_in_both_languages():
@@ -185,7 +194,7 @@ def test_a_declared_lease_on_a_visit_notice_is_a_surfaced_mismatch_and_judges_as
     assert got["declaredKind"] == "LEASE" and got["detectedKind"] == "qc-visit-notice"
     assert got["kindMismatch"] is True
     assert got["kindUsed"] == "qc-visit-notice" and got["kindSource"] == "DETECTED"
-    assert got["outcome"] == "UNSUPPORTED_KIND" and got["ruleset"] is None, "a notice is never judged by the lease"
+    assert got["outcome"] == "CHECK" and got["ruleset"] == "qc-visit-notice", "a notice is never judged by the lease"
     assert got["kindEvidence"] and all(e["verified"] for e in got["kindEvidence"])
 
 

@@ -12,7 +12,8 @@
     "QC-LEASE-009": "NOT_APPLICABLE",
     "QC-LEASE-012": "NOT_APPLICABLE",
     "QC-LEASE-013": "NOT_APPLICABLE",
-    "QC-LEASE-014": "PASS"
+    "QC-LEASE-014": "PASS",
+    "QC-LANG-001": "PASS"
   },
   "judgments": [
     "QC-LEASE-010",

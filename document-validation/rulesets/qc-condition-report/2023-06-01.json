@@ -1,0 +1,228 @@
+{
+  "rulesetId": "qc-condition-report",
+  "label": "État des lieux du logement — Québec",
+  "jurisdiction": "QC",
+  "version": "2023-06-01",
+  "effectiveFrom": "2023-06-01",
+  "effectiveTo": null,
+  "optIn": true,
+  "source": "Code civil du Québec, art. 1900, 1910 à 1911 et 1893 (en vigueur depuis le 1er janvier 1994) ; Charte de la langue française, art. 55 (texte à jour au 1er juin 2023)",
+  "revision": 1,
+  "reviewStatus": "TO_REVIEW_BY_LAWYER",
+  "reviewNote": "Corpus rédigé à partir de l'article lu dans le jeu de données ouvertes Données Québec (instantané du 2026-10-21, lu le 2026-10-23) ; chaque règle cite son article par son numéro et renvoie à Légis Québec (`lawRef`), sans en reproduire le texte. Aucune disposition ne prescrit la forme de l'état des lieux : le corpus ne vérifie donc pas que le document existe ni qu'il est complet. Il vérifie seulement ce qu'une clause ne peut pas faire (art. 1910, 1911, 1900, 1893) et la langue. Non encodé : l'état détaillé de chaque pièce, les réparations à faire et leur délai, la preuve photographique, les vices cachés et les articles 1912 et 1913 (salubrité et logement impropre), dont le contenu relève d'une appréciation des faits. À confirmer par un avocat ou une avocate membre du Barreau du Québec : qu'aucun article ne prescrive la forme ni le contenu de l'état des lieux ; la portée du 2e alinéa de l'article 1911 pour les travaux du locateur ; la règle de langue (QC-LANG-001), informative. Avant tout usage autre que la démonstration.",
+  "rules": [
+    {
+      "ruleId": "QC-COND-001",
+      "title": "Renonciation à l'habitabilité — sans effet",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)logement\\s+(?:est|sera|doit\\s+[êe]tre|demeure|a\\s+[ée]t[ée])\\b[^.\\n]{0,100}?(?:habitab|salubr|s[ée]curitaire|bon\\s+[ée]tat|tel\\s+quel)",
+      "citation": "C.c.Q., art. 1910, al. 2 ; art. 1893",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)\\blocataire\\s+(?!ne\\s)[^.\\n]{0,60}?(?:reconna[iî]t(?:re)?|atteste\\w*|d[ée]clare\\w*|accept\\w+|confirm\\w+)[^.\\n]{0,80}?(?:bon\\s+[ée]tat\\s+d['’]habitabilit[ée]|habitabilit[ée])"
+      },
+      "onPass": "Le document ne fait pas reconnaître au locataire l'habitabilité du logement.",
+      "onFail": "Le document fait reconnaître au locataire que le logement est habitable. Cette stipulation est sans effet (art. 1910, al. 2) : elle ne décharge pas le locateur de son obligation de délivrer un logement en bon état d'habitabilité.",
+      "fixtures": {
+        "pass": [
+          "Le logement est délivré en bon état d'habitabilité à la remise des clés.",
+          "Le locataire ne reconnaît pas que le logement est en bon état d'habitabilité."
+        ],
+        "fail": [
+          "Le locataire reconnaît que le logement est en bon état d'habitabilité.",
+          "Le locataire déclare que le logement est en bon état d'habitabilité."
+        ]
+      },
+      "lawRef": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1910",
+          "language": "fr",
+          "inForceFrom": "1999-04-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "41028499460c6f706e8ef10ae3c2d0c28b29d1540f39ff2df8cab573d64fe12f",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1910",
+          "readAt": "2026-10-23"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-COND-002",
+      "title": "Nettoyage après travaux du locateur — à sa charge",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)locateur\\s+(?:effectue|effectuera|r[ée]alise|ex[ée]cute)\\w*\\s+(?:des\\s+|de\\s+|les\\s+)?(?:travaux|r[ée]parations)",
+      "citation": "C.c.Q., art. 1911, al. 2 ; art. 1893",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)(?:apr[èe]s\\s+(?:les|des|ces)\\s+travaux)[^.\\n]{0,100}?\\blocataire\\b[^.\\n]{0,60}?(?:nettoy\\w+|nettoi\\w*|propret[ée])|\\blocataire\\b[^.\\n]{0,60}?(?:nettoy\\w+|nettoi\\w*|remett\\w*\\s+[^.\\n]{0,30}?propret[ée])[^.\\n]{0,100}?\\btravaux\\b"
+      },
+      "onPass": "Le document ne met pas le nettoyage après les travaux du locateur à la charge du locataire.",
+      "onFail": "Le document met le nettoyage après les travaux du locateur à la charge du locataire. L'article 1911, al. 2, oblige le locateur à remettre le logement en bon état de propreté après ses travaux ; la clause contraire est sans effet (art. 1893).",
+      "fixtures": {
+        "pass": [
+          "Lorsque le locateur effectue des travaux au logement, il remet celui-ci en bon état de propreté.",
+          "Le locateur effectue des réparations au logement avant l'entrée du locataire."
+        ],
+        "fail": [
+          "Après les travaux, le locataire nettoie le logement.",
+          "Le locataire remettra le logement en bon état de propreté après les travaux du locateur."
+        ]
+      },
+      "lawRef": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1911",
+          "language": "fr",
+          "inForceFrom": "1999-04-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "8d6e48d63ee371d9bcc003a8df60778ed5895bfb32a6e543ac869b358deba3f7",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1911",
+          "readAt": "2026-10-23"
+        },
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1893",
+          "language": "fr",
+          "inForceFrom": "1999-04-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "264ecd4eb4e34ab8a4c4a73aa285f1c15f51b97743e4c47b3cfd53d68f4040dc",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1893",
+          "readAt": "2026-10-23"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-COND-003",
+      "title": "Acceptation de la propreté à la délivrance — sans effet",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)(?:d[ée]livr\\w+|remis\\w*|livr\\w+)\\s+(?:le\\s+)?logement[^.\\n]{0,60}?propret[ée]|logement\\s+(?:est|sera)\\s+(?:d[ée]livr\\w+|remis\\w*)[^.\\n]{0,60}?propret[ée]",
+      "citation": "C.c.Q., art. 1911, al. 1 ; art. 1893",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)\\blocataire\\s+(?!ne\\s)[^.\\n]{0,60}?(?:renon\\w+|accept\\w+)[^.\\n]{0,100}?propret[ée]"
+      },
+      "onPass": "Le document ne fait pas accepter au locataire une propreté moindre à la délivrance.",
+      "onFail": "Le document fait accepter au locataire un logement délivré sans la propreté que l'article 1911 exige du locateur. Cette stipulation est sans effet (art. 1893).",
+      "fixtures": {
+        "pass": [
+          "Le logement est délivré en bon état de propreté, la remise des clés étant constatée ci-dessous.",
+          "Le logement est délivré propre, sans trace de peinture."
+        ],
+        "fail": [
+          "Le locataire accepte le logement tel quel, y compris sa propreté.",
+          "Le locataire renonce à toute exigence de propreté à la délivrance."
+        ]
+      },
+      "lawRef": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1911",
+          "language": "fr",
+          "inForceFrom": "1999-04-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "8d6e48d63ee371d9bcc003a8df60778ed5895bfb32a6e543ac869b358deba3f7",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1911",
+          "readAt": "2026-10-23"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-COND-004",
+      "title": "Exonération du locateur sur l'habitabilité — sans effet",
+      "severity": "MAJOR",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)logement\\s+(?:est|sera|doit\\s+[êe]tre|demeure|a\\s+[ée]t[ée])\\b[^.\\n]{0,100}?(?:habitab|salubr|s[ée]curitaire|bon\\s+[ée]tat|tel\\s+quel)",
+      "citation": "C.c.Q., art. 1900 ; art. 1910, al. 1 ; art. 1893",
+      "check": {
+        "type": "FORBIDDEN_PATTERN",
+        "pattern": "(?i)\\blocateur\\b[^.\\n]{0,60}?(?<!pas )(?:exon[ée]r\\w*|d[ée]gag\\w*|limit\\w*\\s+(?:sa|la)\\s+responsabilit[ée])[^.\\n]{0,120}?(?:habitabilit[ée]|salubrit[ée]|s[ée]curit[ée]|bon\\s+[ée]tat|propret[ée])"
+      },
+      "onPass": "Le document n'exonère pas le locateur de l'habitabilité ou de la salubrité du logement.",
+      "onFail": "Le document exonère le locateur de l'habitabilité, de la salubrité ou de l'état du logement. Cette clause est sans effet (art. 1900) ; le locateur demeure tenu de délivrer un logement en bon état d'habitabilité (art. 1910, al. 1).",
+      "fixtures": {
+        "pass": [
+          "Le logement est délivré en bon état et sans vice caché connu.",
+          "Le logement est délivré en bon état d'habitabilité."
+        ],
+        "fail": [
+          "Le locateur est exonéré de toute responsabilité quant à la salubrité du logement.",
+          "Le locateur se dégage de toute obligation d'habitabilité du logement."
+        ]
+      },
+      "lawRef": [
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1900",
+          "language": "fr",
+          "inForceFrom": "1999-04-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "6e80ba231be45eb7118eb136afde7cd2adc9bdca2792936107fec4e15b582c71",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1900",
+          "readAt": "2026-10-23"
+        },
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1910",
+          "language": "fr",
+          "inForceFrom": "1999-04-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "41028499460c6f706e8ef10ae3c2d0c28b29d1540f39ff2df8cab573d64fe12f",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1910",
+          "readAt": "2026-10-23"
+        }
+      ]
+    },
+    {
+      "ruleId": "QC-LANG-001",
+      "title": "Langue française — le document est en français, ou dit qu'une version française a été remise",
+      "severity": "ADVISORY",
+      "method": "DETERMINISTIC",
+      "subject": "(?i)langue|fran[çc]ais|anglais|english|french|traduction|version",
+      "citation": "Charte de la langue française, art. 55 ; C.c.Q., art. 1897 (pour le bail)",
+      "check": {
+        "type": "REQUIRED_PATTERN",
+        "pattern": "(?i)\\blocat(?:eur|rice|aire)s?\\b|version\\s+fran[çc]aise[^.\\n]{0,160}?(?:remise|remis|transmise?)|(?:remise|remis|transmise?)[^.\\n]{0,160}?version\\s+fran[çc]aise|french\\s+version[^.\\n]{0,160}?(?:handed|delivered|provided|given|given\\s+to)|(?:handed|delivered|provided|given)[^.\\n]{0,160}?french\\s+version",
+        "onAbsent": "INSUFFICIENT_EVIDENCE"
+      },
+      "onPass": "Le document est rédigé en français, ou dit qu'une version française a été remise.",
+      "onFail": "Rien ne montre que le document existe en français. Un document uniquement dans une autre langue n'est pas un échec en soi : la Charte de la langue française (art. 55) et le Code civil du Québec (art. 1897, pour le bail) permettent une autre langue lorsque la version française a été remise et que telle est la volonté expresse des parties. À confirmer par une personne : ce constat est informatif, jamais un verdict.",
+      "fixtures": {
+        "pass": [
+          "Le locateur Monsieur Marc Tremblay et le locataire Madame Sophie Gagnon conviennent du présent document.",
+          "Version française remise au locataire le 1er septembre 2026 ; une version anglaise est jointe.",
+          "The French version was handed over to the tenant on September 1, 2026; this English version is attached.",
+          "La locataire Sophie Gagnon reçoit une copie en français de l'avis."
+        ],
+        "fail": [
+          "The landlord, Mr. Marc Tremblay, and the tenant, Ms. Sophie Gagnon, agree to the following notice.",
+          "The monthly rent is 1,450 $, payable on the first day of each month."
+        ]
+      },
+      "lawRef": [
+        {
+          "instrument": "C-11",
+          "ref": "55",
+          "language": "fr",
+          "inForceFrom": "2023-06-01",
+          "consolidatedTo": "2026-04-02",
+          "contentHash": "02e976a4ed3e78f308ba03a55fdee04f0b03af10853afca7ed68e8ec1cddaa1e",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/C-11?code=se:55",
+          "readAt": "2026-10-23"
+        },
+        {
+          "instrument": "CCQ-1991",
+          "ref": "1897",
+          "language": "fr",
+          "inForceFrom": "1999-04-01",
+          "consolidatedTo": "2026-06-11",
+          "contentHash": "dee591aef5291a138b6fda543f3552b6f58215cac7f6e629a57177a979fd42dd",
+          "officialUrl": "https://www.legisquebec.gouv.qc.ca/fr/version/lc/CCQ-1991?code=se:1897",
+          "readAt": "2026-10-23"
+        }
+      ]
+    }
+  ]
+}

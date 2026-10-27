@@ -36,6 +36,21 @@ def test_a_named_ruleset_is_applied_only_within_its_jurisdiction():
         raise AssertionError("an invoice ruleset of Québec must never be applied to another jurisdiction")
 
 
+def test_the_visit_notice_and_the_condition_report_are_named_and_assembled_as_their_own_kind():
+    # orazaka-packs#125, #126: named by the run, judged by their own ruleset, reported with the article each rule cites.
+    import validation_worker
+    fixtures = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures")
+    for kind in ("qc-visit-notice", "qc-condition-report"):
+        with open(os.path.join(fixtures, kind, "defective.txt"), encoding="utf-8") as handle:
+            document = handle.read()
+        screened = validation_worker._screen({"document": document, "jurisdiction": "QC", "ruleset": kind, "asOf": "2026-10-22"})
+        assert screened["rulesetId"] == kind and screened["rulesetVersion"] == "2023-06-01"
+        assert screened["judgmentCount"] == 0
+        report = validation_worker._assemble({"screened": screened["screenedJson"], "judgment": "[]"})["report"]
+        assert report["rulesetId"] == kind and report["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
+        assert all(f.get("citation") for f in report["findings"])
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):
