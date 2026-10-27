@@ -36,3 +36,19 @@ test("every blueprint step id matches the Studio's rule", () => {
     }
   }
 });
+
+test("every {{steps.<name>…}} reference points at a step's `out`, and every dependsOn at a step id", () => {
+  for (const file of blueprints(root)) {
+    const doc = JSON.parse(readFileSync(file, "utf8"));
+    const steps = (doc.definition ?? doc).steps ?? [];
+    const ids = new Set(steps.map((s) => s.id));
+    const outs = new Set(steps.map((s) => s.out ?? s.id));
+    const text = readFileSync(file, "utf8");
+    for (const [, name] of text.matchAll(/\{\{steps\.([A-Za-z0-9_-]+)\./g)) {
+      assert.ok(outs.has(name), `${file.replace(root, "")}: {{steps.${name}…}} matches no step out`);
+    }
+    for (const step of steps) for (const dep of step.dependsOn ?? []) {
+      assert.ok(ids.has(dep), `${file.replace(root, "")}: ${step.id} dependsOn « ${dep} », which is no step id`);
+    }
+  }
+});

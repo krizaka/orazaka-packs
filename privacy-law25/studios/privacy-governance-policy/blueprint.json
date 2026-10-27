@@ -29,7 +29,7 @@
           "french"
         ],
         "inputs": {
-          "prompt": "Translate this policy into plain English, section by section, keeping « To confirm » for every « À confirmer » and the validation sentence translated as: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. » Policy: {{steps.french.content}}"
+          "prompt": "Translate this policy into plain English, section by section, keeping « To confirm » for every « À confirmer » and the validation sentence translated as: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. » Policy: {{steps.policyFr.content}}"
         },
         "out": "policyEn",
         "onError": "FAIL",
@@ -41,7 +41,7 @@
       {
         "key": "policyFr",
         "label": "Politique de gouvernance (français)",
-        "from": "{{steps.french.content}}",
+        "from": "{{steps.policyFr.content}}",
         "type": "TEXT",
         "x-i18n": {
           "en": {
@@ -55,7 +55,7 @@
       {
         "key": "policyEn",
         "label": "Politique de gouvernance (anglais)",
-        "from": "{{steps.english.content}}",
+        "from": "{{steps.policyEn.content}}",
         "type": "TEXT",
         "x-i18n": {
           "en": {
