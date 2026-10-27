@@ -237,6 +237,23 @@ document**. The report step returns `resultCacheable: false` when the day came f
 cd worker && python3 test_check.py   # plays the blueprint step by step: the recordings, each outcome, a 1.x call, both quotes
 ```
 
+## The lecture — a document with no promoted ruleset (ADR-089 §6, orazaka-packs#130)
+
+`compliance-check` 2.1.0. A document of a `KNOWN` kind with no ruleset (`UNSUPPORTED_KIND`) or of no kind (`KIND_UNKNOWN`) is never judged and the report says so. Two things are added, and nothing else:
+
+| | |
+|:---|:---|
+| `kindDemand` | `{ jurisdiction, kindId }` (`UNKNOWN` when there is no kind). It is the only thing counted: **never a word of the document**, nor a quote, date or language (ADR-064). The review queue of orazaka-ai-engine reads it to decide what to derive next; demand alone starts nothing. |
+| `lecture` | **Off by default, and asked for twice**: the caller passes `lecture: true` **and** the switch `AI_LAW_LECTURE_ENABLED=true` is on (the environment form of `law.lecture.enabled`). A `CHECKED` document never gets one. |
+
+The lecture is one `orazaka.core.research.grounded` call over `law-corpus` (`sources`, `jurisdiction`, `asOf`, `language`, a question that asks for **no verdict**, the kind's own `targets` when it has some, and the document as data). Its claims pair a citation of the law (article url, quote, content hash) with a citation of the document (`document://input` and the passage). `lecture.py` re-checks them and rebuilds the object from a closed list of fields:
+
+- a claim is **`VERIFIED` only when both quotes are found** (the article, verified by the grounded step and again here when the pack holds its text; the passage, in the document as given). Otherwise `TO_VALIDATE` with the reason by name: `ARTICLE_NOT_VERIFIED`, `QUOTE_NOT_IN_ARTICLE`, `PASSAGE_ABSENT`, `PASSAGE_NOT_IN_DOCUMENT`. A claim whose document passage is absent is never `VERIFIED`;
+- **no verdict field**: nothing a model adds (`verdict`, `score`…) is copied, and the blueprint's output contract has `additionalProperties: false` on the lecture, its claims and their parts;
+- **`audit` is always `"UNAUDITED"`**, with claims or none; the product must show it, with the bilingual `notice`.
+
+The grounded step is `onError: SKIP`: without it the report is the same unsupported-kind report, with its demand. Tested in `worker/test_lecture.py` (off by default; both legs; the planted verdict field; the contract; demand without content). Without `lecture`, a 2.0 run gives the same report as before (plus `kindDemand`).
+
 ## Known limits (demo documents under `worker/fixtures/`)
 
 - The **lease** rules read French wording (the language of the mandatory form). An English lease is not read: it comes
