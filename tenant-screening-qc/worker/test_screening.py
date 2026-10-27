@@ -189,7 +189,7 @@ class AllPaths(unittest.TestCase):
         self.assertEqual([s["state"] for s in r.report["stages"]], ["RAN", "NOT_RUN", "NOT_RUN"])
         self.assertEqual(r.engine.calls, [])
         self.assertEqual(r.report["ledger"]["total"], 10)
-        for later in ("consent_courts", "courts", "consent_credit", "credit"):
+        for later in ("consent-courts", "courts", "consent-credit", "credit"):
             self.assertNotIn(later, r.executed)
 
     def test_a_stop_after_court_records_never_calls_credit_and_never_charges_it(self):
@@ -200,7 +200,7 @@ class AllPaths(unittest.TestCase):
         self.assertEqual((credit["state"], credit["charged"], credit["credits"]), ("NOT_RUN", False, 0))
         self.assertEqual(r.report["ledger"]["byStage"], {"documents": 10, "courts": 30, "credit": 0})
         self.assertNotIn("credit", r.executed)
-        self.assertNotIn("consent_credit", r.executed)
+        self.assertNotIn("consent-credit", r.executed)
 
     def test_a_provider_error_is_not_charged_and_stops_the_saga(self):
         r = run(applicant("Roy"))
@@ -491,8 +491,8 @@ class Providers(unittest.TestCase):
 class Blueprint(unittest.TestCase):
     def test_the_conditions_gate_each_paid_step_on_the_previous_cutoff(self):
         steps = {s["id"]: s for s in BLUEPRINT["definition"]["steps"]}
-        self.assertEqual(steps["consent_courts"]["condition"], "{{steps.gate_documents.decision}} == 'CONTINUE'")
-        self.assertEqual(steps["consent_credit"]["condition"], "{{steps.gate_courts.decision}} == 'CONTINUE'")
+        self.assertEqual(steps["consent-courts"]["condition"], "{{steps.gate_documents.decision}} == 'CONTINUE'")
+        self.assertEqual(steps["consent-credit"]["condition"], "{{steps.gate_courts.decision}} == 'CONTINUE'")
         for stage in ("documents", "courts", "credit"):
             self.assertEqual(steps[stage]["condition"], f"{{{{steps.consent_{stage}.status}}}} == 'GRANTED'")
 

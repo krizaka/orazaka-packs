@@ -6,16 +6,9 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const STEP_ID = /^[a-z][a-z0-9-]{0,59}$/;
-// Known violations, fixed by a tracked issue (tenant-screening-qc's consent/gate steps). This list may only shrink:
+// Known violations, fixed by a tracked issue (empty since #159). This list may only shrink:
 // a new bad id fails, and a fixed one must be removed from here.
-const KNOWN = new Set([
-  "tenant-screening-qc/studios/tenant-screening-qc/blueprint.json consent_documents",
-  "tenant-screening-qc/studios/tenant-screening-qc/blueprint.json gate_documents",
-  "tenant-screening-qc/studios/tenant-screening-qc/blueprint.json consent_courts",
-  "tenant-screening-qc/studios/tenant-screening-qc/blueprint.json gate_courts",
-  "tenant-screening-qc/studios/tenant-screening-qc/blueprint.json consent_credit",
-  "tenant-screening-qc/studios/tenant-screening-qc/blueprint.json gate_credit",
-]);
+const KNOWN = new Set([]);
 const root = new URL("..", import.meta.url).pathname;
 
 function blueprints(dir) {
