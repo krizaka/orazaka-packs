@@ -145,7 +145,7 @@ not a filter, and the engine never adds terms of its own.
 > on the first run, not at install.
 
 **Step kinds**: `CAPABILITY` (runs a model), `TRANSFORM` (reshapes values), `APPROVAL` (parks for a
-human), `CONNECTOR` (calls out), `KNOWLEDGE`. **`onError`**: `FAIL` | `SKIP` | `RETRY` — and a
+human), `CONNECTOR` (calls out), `KNOWLEDGE`, `SESSION` (stays open while a client posts its turns; closes on « finish » or an idle TTL). **`onError`**: `FAIL` | `SKIP` | `RETRY` — and a
 `SKIP` needs a written `skipRationale`, which a fitness function checks.
 
 **Templates.** `{{inputs.x}}`, `{{config.x}}`, `{{steps.<out>}}`, `{{item}}` inside a `forEach`. A

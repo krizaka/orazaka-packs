@@ -1,0 +1,20 @@
+pack:
+  label: Contributeur
+  tagline: Le tour de modèle derrière l'agent de code d'Orazaka sur votre Mac.
+  description: >-
+    Porte les tours de modèle de l'agent de code de l'app Orazaka, pour que l'accès, le consentement et les crédits soient
+    vérifiés à chaque tour. Les outils, les approbations, git et le journal restent sur votre Mac.
+studios:
+  code-issue-to-pr:
+    label: D'une issue à une pull request
+    tagline: Lit une issue GitHub et votre dépôt, propose des changements que vous approuvez et ouvre une pull request en brouillon.
+    description: >-
+      Le tour de modèle du parcours issue vers pull request. Chaque écriture et chaque envoi est approuvé sur votre Mac.
+  code-read-write:
+    label: Lire et modifier du code
+    tagline: Lit un dépôt que vous accordez et propose des changements, bloc par bloc.
+    description: >-
+      Le tour de modèle pour lire et modifier des fichiers d'un dépôt que vous accordez. Rien n'est écrit sans votre approbation.
+category:
+  label: Outils de développement
+  description: "Des packs qui travaillent sur le code avec vous : le lire, le modifier, mener une issue jusqu'à une pull request."

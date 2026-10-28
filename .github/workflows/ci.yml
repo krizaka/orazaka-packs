@@ -74,6 +74,9 @@ jobs:
         env:
           GOLDEN_STACK_CONFIG: ${{ vars.GOLDEN_STACK_CONFIG }}
 
+  # The shared python-ci runs a test-command with `bash -c` (no -e): in a list, only the LAST command's status counted and a
+  # failing suite before it passed CI (2026-10-26: three test_check.py failures sat on main). Every multi-line command
+  # therefore opens with `set -euo pipefail` (tests/ci-fail-fast.test.mjs).
   # The three Python workers: the org's reusable python-ci (krizaka/.github#149). Each caller job is named like its former
   # check's origin; the required checks keep their names through the shims below (branch protection untouched).
   py-photo:
@@ -88,6 +91,7 @@ jobs:
       extra-packages: ""
       setup-command: python fetch_models.py
       test-command: |
+        set -euo pipefail
         python test_rules.py
         python test_faces.py
         python test_worker.py
@@ -102,6 +106,7 @@ jobs:
       working-directory: document-validation/worker
       extra-packages: pypdf pika pyyaml
       test-command: |
+        set -euo pipefail
         python test_rules.py
         python test_golden.py
         python test_authenticity.py
@@ -122,6 +127,7 @@ jobs:
       working-directory: message-authenticity/worker
       extra-packages: pika pyyaml
       test-command: |
+        set -euo pipefail
         python test_authenticity.py
 
   py-safety:
@@ -133,6 +139,7 @@ jobs:
       working-directory: media-safety/worker
       extra-packages: pika pyyaml
       test-command: |
+        set -euo pipefail
         python test_safety.py
 
   py-screening:
@@ -156,6 +163,7 @@ jobs:
       working-directory: identity-document-check/worker
       extra-packages: pika pyyaml
       test-command: |
+        set -euo pipefail
         python test_mrz.py
         python test_rules.py
         python test_worker.py
@@ -169,6 +177,7 @@ jobs:
       working-directory: worker-common
       extra-packages: pika
       test-command: |
+        set -euo pipefail
         python test_worker_broker.py
         python test_worker_loop.py
 

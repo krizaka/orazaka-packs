@@ -46,6 +46,7 @@ requires:
     - key: orazaka.screening.plan
       routingKey: job.screening.plan
       handlerKey: screening.plan
+      billableCapability: NONE
       enabled: true
       inputSchema:
         type: object
@@ -58,6 +59,7 @@ requires:
     - key: orazaka.screening.consent.check
       routingKey: job.screening.consent
       handlerKey: screening.consent
+      billableCapability: NONE
       enabled: true
       inputSchema:
         type: object
@@ -84,6 +86,7 @@ requires:
     - key: orazaka.screening.cutoff.decide
       routingKey: job.screening.cutoff
       handlerKey: screening.cutoff
+      billableCapability: NONE
       enabled: true
       inputSchema:
         type: object
@@ -96,6 +99,7 @@ requires:
     - key: orazaka.screening.report.assemble
       routingKey: job.screening.report
       handlerKey: screening.report
+      billableCapability: NONE
       enabled: true
       inputSchema:
         type: object

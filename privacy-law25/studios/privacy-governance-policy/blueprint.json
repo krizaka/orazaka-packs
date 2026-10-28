@@ -9,7 +9,7 @@
     "version": "1.0.0",
     "steps": [
       {
-        "id": "policyFr",
+        "id": "french",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
         "dependsOn": [],
@@ -22,11 +22,11 @@
         "timeout": "PT4M"
       },
       {
-        "id": "policyEn",
+        "id": "english",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
         "dependsOn": [
-          "policyFr"
+          "french"
         ],
         "inputs": {
           "prompt": "Translate this policy into plain English, section by section, keeping « To confirm » for every « À confirmer » and the validation sentence translated as: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. » Policy: {{steps.policyFr.content}}"

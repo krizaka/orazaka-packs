@@ -136,14 +136,19 @@ def verdicts(report: dict) -> dict:
 
 # --- yomizaka#305: the recordings stay green ------------------------------------------------------------------------
 
-def test_the_clean_lease_raises_no_fail_and_the_errors_lease_exactly_004_005_006_020():
-    for name, expected in (("clean", set()), ("errors", {"QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-020"})):
+def test_the_clean_lease_raises_only_014_and_the_errors_lease_exactly_004_005_006_014_020():
+    # The reports were re-recorded against revision 5 (fixtures/compliance-check/rerecord.py, 2026-10-26; no model). The
+    # rule added since, QC-LEASE-014 (the Tribunal administratif du logement's mandatory form, art. 1895), correctly
+    # fails yomizaka's demo "clean" text, which never mentions that form: the text stays as generated (yomizaka follow-up).
+    for name, expected in (("clean", {"QC-LEASE-014"}),
+                           ("errors", {"QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-014", "QC-LEASE-020"})):
         rec = recording(name)
         report, _ = run(rec["document"], judge=recorded_judge(rec["report"]), **rec["inputs"])
         assert report["outcome"] == compliance.CHECKED, name
         assert report["identification"]["kindUsed"] == "qc-residential-lease", name
         assert {f["ruleId"] for f in report["findings"] if f["verdict"] == rules.FAIL} == expected, name
         assert verdicts(report) == verdicts(rec["report"]), f"{name}: 2.0 gives the verdicts 1.x recorded"
+        assert rec["report"]["rulesetRevision"] == 5, f"{name}: the recording is against the shipped revision"
         for finding in report["findings"]:
             if finding["evidenceSpan"]:
                 assert finding["evidenceSpan"]["quote"] in rec["document"], finding["ruleId"]
@@ -209,7 +214,7 @@ def test_checked_carries_identification_outcome_and_ruleset():
     rec = recording("clean")
     report, _ = run(rec["document"], judge=recorded_judge(rec["report"]), **rec["inputs"])
     assert report["contract"] == "2.0"
-    assert report["ruleset"] == {"id": "qc-residential-lease", "version": "2024-02-21", "revision": 3, "reviewStatus": "TO_REVIEW_BY_LAWYER"}
+    assert report["ruleset"] == {"id": "qc-residential-lease", "version": "2024-02-21", "revision": 5, "reviewStatus": "TO_REVIEW_BY_LAWYER"}
     assert report["identification"]["kindSource"] == "DETECTED" and report["identification"]["asOfSource"] == "INPUT"
 
 

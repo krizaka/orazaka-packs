@@ -1,0 +1,56 @@
+{
+  "studio": "code-read-write",
+  "cases": [
+    {
+      "id": "mira-readme-typo",
+      "input": {
+        "task": "Fix the typo in README.md"
+      },
+      "expected": {
+        "closedBy": "client"
+      },
+      "assertions": [
+        {
+          "path": [
+            "closedBy"
+          ],
+          "equals": "client"
+        }
+      ]
+    },
+    {
+      "id": "zoe-add-test",
+      "input": {
+        "task": "Add a test for the parser"
+      },
+      "expected": {
+        "closedBy": "client"
+      },
+      "assertions": [
+        {
+          "path": [
+            "closedBy"
+          ],
+          "equals": "client"
+        }
+      ]
+    },
+    {
+      "id": "aster-rename",
+      "input": {
+        "task": "Rename the helper in utils"
+      },
+      "expected": {
+        "closedBy": "client"
+      },
+      "assertions": [
+        {
+          "path": [
+            "closedBy"
+          ],
+          "equals": "client"
+        }
+      ]
+    }
+  ]
+}

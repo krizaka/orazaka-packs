@@ -1,0 +1,94 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# code-contributor — « Code on the Mac » (ADR-093, krizaka/orazaka#109, #450; orazaka-packs#24). The Contributor.
+#
+# Two Studios of one agent: a person grants a repository to the Orazaka app on their Mac, and the app asks this Studio for
+# each model turn of its loop. The tools, the approvals, git and the audit stay on the Mac; this pack only carries the model
+# turn, so that the platform can gate it (entitlement, consent), meter it (AGENT, hold then settle) and route it (the feature
+# key below, ADR-029 rows: local models first on a sovereign install).
+#
+#   code-issue-to-pr  — from a GitHub issue to a draft pull request (ADR-093 §5).
+#   code-read-write   — read and change files in a granted repository, no GitHub.
+#
+# Each Studio is ONE session step (SESSION, orazaka-studio#97): the run stays open while the app posts its turns to
+# /studio-runs/{id}/turns, each re-checked (pack, consent) and billed as AGENT by the capability below on the same run id; it
+# closes on the app's « finish » or after an idle TTL (a Studio setting, 30 min). A finished, cancelled or expired run takes
+# no more turns.
+#
+# Sold by billing: entitlement keys studio.code-issue-to-pr and studio.code-read-write (the schema's key shape has no second
+# dot, so ADR-093's « studio.code.issue-to-pr » is written with a hyphen). In dev, access comes from an operator grant
+# (studio_entitlement_grant). The price is Oussama's call and is not set here: pricing PAID, no plan row.
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: orazaka.dev/v1
+key: code-contributor
+version: 1.1.0
+tier: DATA
+distribution: CLOUD
+regulatoryClass: STANDARD
+
+requires:
+  capabilities:
+    # The model turn of the agent. The Mac sends the messages and the closed tool list; the answer is text or tool calls.
+    # The routing rows of the feature key agent.code.issue-to-pr pick the models (ADR-029); the Mac never names a provider.
+    - key: orazaka.code.agent.turn
+      routingKey: job.code.turn
+      handlerKey: code.turn
+      billableCapability: AGENT
+      billableUnit: KILOTOKEN
+      enabled: true
+      inputSchema:
+        type: object
+        properties:
+          messages: { type: array, description: "The conversation so far; untrusted text is in fenced, labelled data parts." }
+          tools: { type: array, description: "The closed tool list declared by the runner." }
+        required: [messages, tools]
+      outputSchema:
+        type: object
+        properties:
+          text: { type: string }
+          calls: { type: array }
+        required: [text, calls]
+
+catalog:
+  categoryKey: developer-tools
+  iconKey: code
+  status: PUBLISHED
+  sortWeight: 50
+  category:
+    iconKey: code
+    sortWeight: 120
+
+# The price is Oussama's call (orazaka#450): none is set. Until then, access comes from an operator grant.
+pricing:
+  priceCents: 0
+  includedCredits: 0
+
+# A versioned consent (ADR-055 mechanism). The pack is not REGULATED: no age gate. A new version asks again.
+consent:
+  version: "1.0"
+  statement: >-
+    Orazaka lit les dépôts que vous lui accordez et envoie les extraits dont il a besoin au modèle vers lequel votre espace de
+    travail est routé. Il n'écrit rien et ne publie rien sans votre approbation.
+  statements:
+    en: >-
+      Orazaka reads the repositories you grant and sends the excerpts it needs to the model your workspace routes to. It
+      writes nothing and pushes nothing without your approval.
+
+studios:
+  - key: code-issue-to-pr
+    profession: developer
+    iconKey: code
+    pricing: PAID
+    entitlementKey: studio.code-issue-to-pr
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 40
+    blueprint: studios/code-issue-to-pr/blueprint.json
+  - key: code-read-write
+    profession: developer
+    iconKey: code
+    pricing: PAID
+    entitlementKey: studio.code-read-write
+    status: PUBLISHED
+    publisherId: orazaka
+    sortWeight: 41
+    blueprint: studios/code-read-write/blueprint.json

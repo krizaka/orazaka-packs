@@ -1,0 +1,62 @@
+{
+  "version": "1.1.0",
+  "status": "PUBLISHED",
+  "estimatedCredits": 40,
+  "changelog": "1.1.0 — the code agent's run is a session: it stays open while the Mac app sends its model turns (POST /studio-runs/{id}/turns), and closes on « finish » or after the idle TTL. The tools, approvals, git and audit stay on the Mac. Replaces the single-turn step of 1.0.0.",
+  "createdBy": "orazaka",
+  "definition": {
+    "studioKey": "code-read-write",
+    "version": "1.1.0",
+    "steps": [
+      {
+        "id": "session",
+        "kind": "SESSION",
+        "dependsOn": [],
+        "inputs": {},
+        "out": "session",
+        "onError": "FAIL",
+        "maxAttempts": 1,
+        "timeout": "PT120S"
+      }
+    ],
+    "outputs": [
+      {
+        "key": "closedBy",
+        "label": "Fermée par",
+        "from": "{{steps.session.closedBy}}",
+        "type": "TEXT",
+        "x-i18n": {
+          "en": {
+            "label": "Closed by"
+          },
+          "fr": {
+            "label": "Fermée par"
+          }
+        }
+      }
+    ]
+  },
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "task": {
+        "type": "string",
+        "maxLength": 200,
+        "title": "Tâche",
+        "description": "Ce que la session fait, en une ligne.",
+        "x-i18n": {
+          "en": {
+            "title": "Task",
+            "description": "What the session does, in one line.",
+            "placeholder": "Fix the typo in README.md"
+          },
+          "fr": {
+            "title": "Tâche",
+            "description": "Ce que la session fait, en une ligne.",
+            "placeholder": "Corriger la faute dans README.md"
+          }
+        }
+      }
+    }
+  }
+}

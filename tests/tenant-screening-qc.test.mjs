@@ -68,15 +68,15 @@ test("a step passes only inputs its capability declares, and reads only output f
 
 test("a stage runs only if the cut-off before it said CONTINUE, and only with consent: the order is documents, courts, credit", () => {
   assert.deepEqual(ruleset.stages.map((s) => s.id), ["documents", "courts", "credit"]);
-  assert.equal(stepOf("consent_courts").condition, "{{steps.gate_documents.decision}} == 'CONTINUE'");
-  assert.equal(stepOf("consent_credit").condition, "{{steps.gate_courts.decision}} == 'CONTINUE'");
+  assert.equal(stepOf("consent-courts").condition, "{{steps.gate_documents.decision}} == 'CONTINUE'");
+  assert.equal(stepOf("consent-credit").condition, "{{steps.gate_courts.decision}} == 'CONTINUE'");
   for (const stage of ["documents", "courts", "credit"]) {
     assert.equal(stepOf(stage).condition, `{{steps.consent_${stage}.status}} == 'GRANTED'`);
-    assert.ok(stepOf(stage).dependsOn.includes(`consent_${stage}`));
-    assert.equal(stepOf(`gate_${stage}`).inputs.stage, stage);
+    assert.ok(stepOf(stage).dependsOn.includes(`consent-${stage}`));
+    assert.equal(stepOf(`gate-${stage}`).inputs.stage, stage);
   }
   const order = steps.map((s) => s.id);
-  for (const [a, b] of [["gate_documents", "consent_courts"], ["gate_courts", "consent_credit"], ["gate_credit", "report"]]) assert.ok(order.indexOf(a) < order.indexOf(b), `${a} before ${b}`);
+  for (const [a, b] of [["gate-documents", "consent-courts"], ["gate-courts", "consent-credit"], ["gate-credit", "report"]]) assert.ok(order.indexOf(a) < order.indexOf(b), `${a} before ${b}`);
 });
 
 test("no step is skipped on error: a failed step fails the run and the hold is refunded, never a silent pass", () => {
@@ -96,12 +96,13 @@ test("one door: the court records and the credit are the engine's checks, called
   assert.equal(walk(`${root}worker/`).some((f) => f.endsWith("/connectors.py")), false, "the pack keeps no connector of its own");
 });
 
-test("the paid stages are metered by the call, the control steps are not", () => {
+test("the paid stages are metered by the call, the control steps are declared not billable", () => {
   const block = pack.split("- key: orazaka.screening.documents.assess")[1].split("      inputSchema:")[0];
   assert.match(block, /billableUnit: CALL/);
   for (const key of ["plan", "consent.check", "cutoff.decide", "report.assemble"]) {
     const block = pack.split(new RegExp(`- key: orazaka\\.screening\\.${key.replace(".", "\\.")}\\n`))[1].split("      inputSchema:")[0];
-    assert.doesNotMatch(block, /billable/);
+    assert.match(block, /billableCapability: NONE\n/);
+    assert.doesNotMatch(block, /billableUnit/);
   }
 });
 
