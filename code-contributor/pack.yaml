@@ -9,13 +9,18 @@
 #   code-issue-to-pr  — from a GitHub issue to a draft pull request (ADR-093 §5).
 #   code-read-write   — read and change files in a granted repository, no GitHub.
 #
+# Each Studio is ONE session step (SESSION, orazaka-studio#97): the run stays open while the app posts its turns to
+# /studio-runs/{id}/turns, each re-checked (pack, consent) and billed as AGENT by the capability below on the same run id; it
+# closes on the app's « finish » or after an idle TTL (a Studio setting, 30 min). A finished, cancelled or expired run takes
+# no more turns.
+#
 # Sold by billing: entitlement keys studio.code-issue-to-pr and studio.code-read-write (the schema's key shape has no second
 # dot, so ADR-093's « studio.code.issue-to-pr » is written with a hyphen). In dev, access comes from an operator grant
 # (studio_entitlement_grant). The price is Oussama's call and is not set here: pricing PAID, no plan row.
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: code-contributor
-version: 1.0.0
+version: 1.1.0
 tier: DATA
 distribution: CLOUD
 regulatoryClass: STANDARD

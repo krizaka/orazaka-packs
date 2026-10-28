@@ -17,14 +17,16 @@ test("two Studios with the entitlement keys billing sells", () => {
   for (const s of pack.studios) assert.equal(s.pricing, "PAID");
 });
 
-test("every model turn bills as AGENT and names no provider", () => {
+test("every model turn bills as AGENT and names no provider; each Studio is one SESSION step", () => {
   const [cap] = pack.requires.capabilities;
   assert.equal(cap.billableCapability, "AGENT");
   assert.doesNotMatch(JSON.stringify(pack), /openai|anthropic|ollama|gpt|claude/i);
   for (const s of pack.studios) {
+    // The turns themselves are posted to the session, which the capability routes and bills.
     const steps = blueprint(s.key).definition.steps;
     assert.equal(steps.length, 1);
-    assert.equal(steps[0].featureKey, cap.key);
+    assert.equal(steps[0].kind, "SESSION");
+    assert.equal(steps[0].featureKey, undefined);
   }
 });
 

@@ -4,93 +4,51 @@
     {
       "id": "mira-readme-typo",
       "input": {
-        "messages": [
-          {
-            "role": "user",
-            "content": "Fix the typo in README.md"
-          }
-        ],
-        "tools": [
-          {
-            "name": "read_file"
-          },
-          {
-            "name": "propose_diff"
-          }
-        ]
+        "task": "Fix the typo in README.md"
       },
       "expected": {
-        "text": "",
-        "calls": []
+        "closedBy": "client"
       },
       "assertions": [
         {
           "path": [
-            "calls"
+            "closedBy"
           ],
-          "equals": []
+          "equals": "client"
         }
       ]
     },
     {
       "id": "zoe-add-test",
       "input": {
-        "messages": [
-          {
-            "role": "user",
-            "content": "Add a test for the parser"
-          }
-        ],
-        "tools": [
-          {
-            "name": "read_file"
-          },
-          {
-            "name": "propose_diff"
-          }
-        ]
+        "task": "Add a test for the parser"
       },
       "expected": {
-        "text": "",
-        "calls": []
+        "closedBy": "client"
       },
       "assertions": [
         {
           "path": [
-            "calls"
+            "closedBy"
           ],
-          "equals": []
+          "equals": "client"
         }
       ]
     },
     {
       "id": "aster-rename",
       "input": {
-        "messages": [
-          {
-            "role": "user",
-            "content": "Rename the helper in utils"
-          }
-        ],
-        "tools": [
-          {
-            "name": "read_file"
-          },
-          {
-            "name": "propose_diff"
-          }
-        ]
+        "task": "Rename the helper in utils"
       },
       "expected": {
-        "text": "",
-        "calls": []
+        "closedBy": "client"
       },
       "assertions": [
         {
           "path": [
-            "calls"
+            "closedBy"
           ],
-          "equals": []
+          "equals": "client"
         }
       ]
     }

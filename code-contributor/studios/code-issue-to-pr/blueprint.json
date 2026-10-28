@@ -1,23 +1,19 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 40,
-  "changelog": "1.0.0 — the model turn of the Orazaka app's code agent: messages and a closed tool list in, text or tool calls out. The tools, approvals, git and audit stay on the Mac.",
+  "changelog": "1.1.0 — the code agent's run is a session: it stays open while the Mac app sends its model turns (POST /studio-runs/{id}/turns), and closes on « finish » or after the idle TTL. The tools, approvals, git and audit stay on the Mac. Replaces the single-turn step of 1.0.0.",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "code-issue-to-pr",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "steps": [
       {
-        "id": "turn",
-        "kind": "CAPABILITY",
-        "featureKey": "orazaka.code.agent.turn",
+        "id": "session",
+        "kind": "SESSION",
         "dependsOn": [],
-        "inputs": {
-          "messages": "{{inputs.messages}}",
-          "tools": "{{inputs.tools}}"
-        },
-        "out": "turn",
+        "inputs": {},
+        "out": "session",
         "onError": "FAIL",
         "maxAttempts": 1,
         "timeout": "PT120S"
@@ -25,30 +21,16 @@
     ],
     "outputs": [
       {
-        "key": "text",
-        "label": "Réponse",
-        "from": "{{steps.turn.text}}",
+        "key": "closedBy",
+        "label": "Fermée par",
+        "from": "{{steps.session.closedBy}}",
         "type": "TEXT",
         "x-i18n": {
           "en": {
-            "label": "Answer"
+            "label": "Closed by"
           },
           "fr": {
-            "label": "Réponse"
-          }
-        }
-      },
-      {
-        "key": "calls",
-        "label": "Appels d'outils",
-        "from": "{{steps.turn.calls}}",
-        "type": "JSON",
-        "x-i18n": {
-          "en": {
-            "label": "Tool calls"
-          },
-          "fr": {
-            "label": "Appels d'outils"
+            "label": "Fermée par"
           }
         }
       }
@@ -56,44 +38,22 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "messages",
-      "tools"
-    ],
     "properties": {
-      "messages": {
-        "type": "array",
-        "maxItems": 400,
-        "title": "Messages",
-        "description": "La conversation jusqu'ici.",
+      "task": {
+        "type": "string",
+        "maxLength": 200,
+        "title": "Tâche",
+        "description": "Ce que la session fait, en une ligne.",
         "x-i18n": {
           "en": {
-            "title": "Messages",
-            "description": "The conversation so far.",
-            "placeholder": "[ ]"
+            "title": "Task",
+            "description": "What the session does, in one line.",
+            "placeholder": "Fix the typo in README.md"
           },
           "fr": {
-            "title": "Messages",
-            "description": "La conversation jusqu'ici.",
-            "placeholder": "[ ]"
-          }
-        }
-      },
-      "tools": {
-        "type": "array",
-        "maxItems": 12,
-        "title": "Outils",
-        "description": "La liste fermée d'outils.",
-        "x-i18n": {
-          "en": {
-            "title": "Tools",
-            "description": "The closed tool list.",
-            "placeholder": "[ ]"
-          },
-          "fr": {
-            "title": "Outils",
-            "description": "La liste fermée d'outils.",
-            "placeholder": "[ ]"
+            "title": "Tâche",
+            "description": "Ce que la session fait, en une ligne.",
+            "placeholder": "Corriger la faute dans README.md"
           }
         }
       }
