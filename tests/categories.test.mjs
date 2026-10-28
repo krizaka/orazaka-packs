@@ -6,7 +6,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
-const CATEGORIES = ["business-compliance", "creativity-media", "wellbeing", "data-analytics"];
+const CATEGORIES = ["business-compliance", "creativity-media", "wellbeing", "data-analytics", "developer-tools"];
 
 const schema = JSON.parse(readFileSync(join(root, "pack.schema.json"), "utf8"));
 
