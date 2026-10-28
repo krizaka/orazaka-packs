@@ -142,16 +142,12 @@ def _claim(item: dict, document: str, articles: dict):
     if not text:
         return None
     cites = [c for c in item.get("citations") or [] if isinstance(c, dict)]
-    article = next((c for c in cites if not str(c.get("url") or "").startswith("document:")), None)
-    passage_cite = next((c for c in cites if str(c.get("url") or "").startswith("document:")), None)
+    article = next((c for c in cites if not _is_document_cite(c)), None)
+    passage_cite = next((c for c in cites if _is_document_cite(c)), None)
     passage = str((passage_cite or {}).get("quote") or "")
     article_leg = _article_leg(item, article, articles)
-    passage_leg = "ABSENT" if not passage.strip() else VERIFIED if quotes.contains(document, passage) else "NOT_IN_DOCUMENT"
-    reason = None
-    if article_leg != VERIFIED:
-        reason = QUOTE_NOT_IN_ARTICLE if article_leg == QUOTE_NOT_IN_ARTICLE else ARTICLE_NOT_VERIFIED
-    elif passage_leg != VERIFIED:
-        reason = PASSAGE_ABSENT if passage_leg == "ABSENT" else PASSAGE_NOT_IN_DOCUMENT
+    passage_leg = _passage_leg(passage, document)
+    reason = _reason(article_leg, passage_leg)
     out = {
         "text": text,
         "status": TO_VALIDATE if reason else VERIFIED,
@@ -162,6 +158,27 @@ def _claim(item: dict, document: str, articles: dict):
     if reason:
         out["reason"] = reason
     return out
+
+
+def _is_document_cite(cite: dict) -> bool:
+    return str(cite.get("url") or "").startswith("document:")
+
+
+def _passage_leg(passage: str, document: str) -> str:
+    if not passage.strip():
+        return "ABSENT"
+    return VERIFIED if quotes.contains(document, passage) else "NOT_IN_DOCUMENT"
+
+
+def _reason(article_leg: str, passage_leg: str):
+    """The first leg that fails, by name; None when both quotes were found."""
+    if article_leg == QUOTE_NOT_IN_ARTICLE:
+        return QUOTE_NOT_IN_ARTICLE
+    if article_leg != VERIFIED:
+        return ARTICLE_NOT_VERIFIED
+    if passage_leg == "ABSENT":
+        return PASSAGE_ABSENT
+    return None if passage_leg == VERIFIED else PASSAGE_NOT_IN_DOCUMENT
 
 
 def _article_leg(item: dict, article, articles: dict) -> str:
