@@ -187,6 +187,8 @@ def _assemble(payload: dict) -> dict:
         "summary": rules.summarise(findings),
         "findings": findings,
     }
+    if screened.get("facts"):
+        report["facts"] = screened["facts"]
     if screened.get("reviewStatus"):
         report["reviewStatus"] = screened["reviewStatus"]
         report["reviewNote"] = screened.get("reviewNote", "")

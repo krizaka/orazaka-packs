@@ -112,7 +112,7 @@ Goldens: `worker/fixtures/qc-visit-notice/` and `qc-condition-report/` (complian
 
 ## Facts — the figures a ruleset reads (yomizaka#554)
 
-A ruleset may declare `facts`: `{ id, kind: "money", pattern, label }`, the pattern's first group an amount. The 2.0 report carries `facts.<id>` = `{ status: "found", cents, evidenceSpan }`, `{ status: "blank", evidenceSpan }` when the `label` is there with no amount behind it, or `{ status: "absent" }`. Nothing is inferred and the evidence is the document's own passage. `qc-residential-lease` declares `rentCents` (Loyer mensuel) and `lowestRentCents` (the Section G notice of the lowest rent paid in the last twelve months), so a consumer can compare the new rent against the previous one. The 1.x report shape is unchanged.
+A ruleset may declare `facts`: `{ id, kind: "money", pattern, label }`, the pattern's first group an amount. The report (1.x and 2.0) carries `facts.<id>` = `{ status: "found", cents, evidenceSpan }`, `{ status: "blank", evidenceSpan }` when the `label` is there with no amount behind it, or `{ status: "absent" }`. Nothing is inferred and the evidence is the document's own passage. `qc-residential-lease` declares `rentCents` (Loyer mensuel) and `lowestRentCents` (the Section G notice of the lowest rent paid in the last twelve months), so a consumer can compare the new rent against the previous one. The key is optional and only a ruleset that declares facts has it; the recorded 1.x reports were re-recorded for it (`fixtures/compliance-check/rerecord.py`).
 
 ## Kinds and `identify` — what a document is, before any ruleset (ADR-089 §1)
 
