@@ -36,3 +36,5 @@ node_modules/
 *.log
 var/
 scratch/
+.coverage
+coverage.xml
