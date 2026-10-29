@@ -1,5 +1,5 @@
 {
-  "$comment": "The neighbour persona of the wellbeing pack (Yororis pivot, 2026-10-21): what each behaviour looks like in French and in English. Data only. `person` is what is said, `reply` is an example of an answer that obeys the prompt: tests/wellbeing-neighbour.test.mjs checks the prompt asks for each behaviour and that the examples themselves keep to it (short, no advice, no care vocabulary, no number). No model runs here.",
+  "$comment": "The neighbour persona of the wellbeing pack (neighbour pivot, 2026-10-21): what each behaviour looks like in French and in English. Data only. `person` is what is said, `reply` is an example of an answer that obeys the prompt: tests/wellbeing-neighbour.test.mjs checks the prompt asks for each behaviour and that the examples themselves keep to it (short, no advice, no care vocabulary, no number). No model runs here.",
   "loop": [
     {
       "locale": "fr-CA",
