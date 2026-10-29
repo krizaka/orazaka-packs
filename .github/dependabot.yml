@@ -20,6 +20,8 @@ updates:
       prefix: "ci(deps)"
     labels: ["area:deps"]
     open-pull-requests-limit: 1
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: pip
     directories:
@@ -41,3 +43,5 @@ updates:
       prefix: "chore(deps)"
     labels: ["area:deps"]
     open-pull-requests-limit: 1
+    cooldown:
+      default-days: 7
