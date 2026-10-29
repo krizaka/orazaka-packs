@@ -42,7 +42,7 @@ test("sensitive, a lone Studio, identifies no one, carries no product word, fail
   assert.doesNotMatch(pack, /^catalog:/m);
   assert.ok(ruleset.limits.includes("FAILS_CLOSED_WHEN_UNREADABLE"));
   const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? (e.name === ".venv" || e.name === "__pycache__" ? [] : walk(`${d}${e.name}/`)) : [`${d}${e.name}`]));
-  for (const f of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f))) assert.doesNotMatch(readFileSync(f, "utf8").replace(/^\s*#.*$/gm, ""), /yasakia/i, f);
+  for (const f of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f))) assert.doesNotMatch(readFileSync(f, "utf8").replace(/^\s*#.*$/gm, ""), /yomizaka|akinaza/i, f);
 });
 
 test("the Studio is worded in both languages", () => {

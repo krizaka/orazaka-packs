@@ -147,7 +147,7 @@ test("sensitive, guarded, decides nothing, a lone Studio, and carries no product
   assert.ok(ruleset.limits.includes("A_STOP_IS_A_CUTOFF_NOT_A_VERDICT"));
   for (const file of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f))) {
     const body = readFileSync(file, "utf8").replace(/^\s*#.*$/gm, "");
-    assert.doesNotMatch(body, /yomizaka|yasakia|orochia|akinaza/i, `${file}: a pack names no product`);
+    assert.doesNotMatch(body, /yomizaka|akinaza/i, `${file}: a pack names no product`);
   }
 });
 

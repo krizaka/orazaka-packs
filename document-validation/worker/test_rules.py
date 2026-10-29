@@ -970,6 +970,33 @@ def test_every_rule_names_its_article_and_links_it_without_reproducing_its_text(
             assert date.fromisoformat(block["inForceFrom"]) <= date.fromisoformat(ruleset["effectiveFrom"]), rule["ruleId"]
 
 
+# ── Facts: the figures a ruleset declares it reads (yomizaka#554: Section G needs the rents) ────────────────────────
+
+def _qc_lease() -> dict:
+    return rules.resolve("qc-residential-lease", "2026-10-15")
+
+
+def test_the_lease_ruleset_exposes_the_rent_and_the_lowest_rent_with_their_evidence():
+    text = "Loyer mensuel : 1 450,00 $\nG. Loyer le plus bas payé au cours des 12 derniers mois : 1 390 $.\n"
+    facts = rules.extract_facts(_qc_lease(), text)
+    assert facts["rentCents"]["status"] == "found" and facts["rentCents"]["cents"] == 145000
+    assert facts["lowestRentCents"]["status"] == "found" and facts["lowestRentCents"]["cents"] == 139000
+    assert text[facts["rentCents"]["evidenceSpan"]["start"] : facts["rentCents"]["evidenceSpan"]["end"]] == facts["rentCents"]["evidenceSpan"]["quote"]
+
+
+def test_a_labelled_but_empty_lowest_rent_is_blank_and_a_missing_one_is_absent():
+    blank = rules.extract_facts(_qc_lease(), "Loyer mensuel : 1 450 $\nLoyer le plus bas payé au cours des 12 derniers mois : ________\n")
+    assert blank["lowestRentCents"] == {"status": "blank", "evidenceSpan": blank["lowestRentCents"]["evidenceSpan"]}
+    assert blank["lowestRentCents"]["evidenceSpan"]["quote"].lower().startswith("loyer le plus bas")
+    absent = rules.extract_facts(_qc_lease(), "Le loyer sera convenu plus tard.")
+    assert absent["rentCents"] == {"status": "absent"} and absent["lowestRentCents"] == {"status": "absent"}
+
+
+def test_a_ruleset_without_facts_exposes_none_and_a_figure_with_no_meaning_is_absent():
+    assert rules.extract_facts({"rules": []}, "Loyer mensuel : 850 €") == {}
+    assert rules.extract_facts({"facts": [{"id": "x", "kind": "money", "pattern": r"(\d+)\s*\$"}]}, "montant : abc $")["x"] == {"status": "absent"}
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):

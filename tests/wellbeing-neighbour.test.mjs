@@ -1,4 +1,4 @@
-// The wellbeing pack's system prompt in its neighbour persona (Yororis pivot of 2026-10-21, krizaka/yororis#99): « le voisin »,
+// The wellbeing pack's system prompt in its neighbour persona (neighbour pivot of 2026-10-21): « le voisin »,
 // light alternative hypotheses, « Je ne sais pas, mais tu trouveras », encyclopedic anecdotes and light humour, no medical or
 // therapeutic vocabulary, no advice, a warm close after the turn limit. The crisis behaviour is untouched (tests/wellbeing-listening
 // and tests/wellbeing-consent keep it). No model runs here: the prompt must ask for each behaviour in both languages, and the
@@ -20,7 +20,7 @@ const block = (key) => {
 const prompt = block("systemPrompt");
 const [fr, en] = prompt.split('You are "the neighbour"');
 
-// The Yororis lexicon (company/prompts-yororis.md §2.1): none of these in a text, ours or a model's.
+// The wellbeing lexicon: none of these in a text, ours or a model's.
 const FORBIDDEN = [/th[ée]rap/i, /\bpsy/i, /soigne|\bsoins?\b|\bcare\b|\bcure\b|gu[ée]ri/i, /\btreat/i, /traitement/i, /diagnos/i, /clinic/i, /m[ée]dic/i, /\bpatient/i, /s[ée]ance|\bsession/i, /coach/i, /bien-?[êe]tre|wellbeing/i];
 const sentences = (t) => t.split(/(?<=[.!?…])\s+/).filter(Boolean);
 const ADVICE = /\b(tu devrais|tu dois|il faut que tu|essaie de|you should|you must|you need to|try to|make sure you)\b/i;

@@ -48,7 +48,7 @@ test("the pack is sensitive, guarded, a lone Studio, and carries no product word
   const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? (d.name === "models" || d.name === "__pycache__" || d.name === ".venv" ? [] : walk(`${dir}${d.name}/`)) : [`${dir}${d.name}`]));
   for (const file of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f))) {
     const body = readFileSync(file, "utf8").replace(/^\s*#.*$/gm, ""); // a header comment may say who it was written for
-    assert.doesNotMatch(body, /yasakia/i, `${file}: a pack names no product`);
+    assert.doesNotMatch(body, /yomizaka|akinaza/i, `${file}: a pack names no product`);
   }
 });
 

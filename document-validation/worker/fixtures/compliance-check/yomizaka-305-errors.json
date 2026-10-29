@@ -1,5 +1,5 @@
 {
-  "source": "krizaka/yomizaka apps/web/content/demo-lease-runs/errors.json at c085f9c (yomizaka#305), recorded 2026-10-24T03:19:44.487Z on dev, blueprint 1.4.0; fictional document; report re-recorded 2026-10-26 against ruleset revision 5 with the recorded judge answers (no model, no paid call)",
+  "source": "krizaka/yomizaka apps/web/content/demo-lease-runs/errors.json at c085f9c (yomizaka#305), recorded 2026-10-24T03:19:44.487Z on dev, blueprint 1.4.0; fictional document; report re-recorded 2026-10-26 against ruleset revision 5 with the recorded judge answers (no model, no paid call); report re-recorded 2026-10-29 against ruleset revision 5 with the recorded judge answers (no model, no paid call)",
   "generator": {
     "id": "bail-rosemont-5-clause-illegale",
     "seed": 20261023
@@ -231,6 +231,26 @@
         "citation": "C.c.Q., art. 1901"
       }
     ],
+    "facts": {
+      "rentCents": {
+        "status": "found",
+        "cents": 95000,
+        "evidenceSpan": {
+          "start": 428,
+          "end": 452,
+          "quote": "Loyer mensuel : 950,00 $"
+        }
+      },
+      "lowestRentCents": {
+        "status": "found",
+        "cents": 92500,
+        "evidenceSpan": {
+          "start": 490,
+          "end": 590,
+          "quote": "loyer le plus bas payé au cours des douze derniers mois précédant le début du bail était de 925,00 $"
+        }
+      }
+    },
     "reviewStatus": "TO_REVIEW_BY_LAWYER",
     "reviewNote": "Corpus rédigé à partir du texte public du Code civil du Québec ; chaque règle cite son article. La révision 3 ajoute QC-LEASE-010 (peines et frais de retard, art. 1901) et QC-LEASE-011 (règlement de l'immeuble et remise préalable, art. 1894), et précise QC-LEASE-004 sur toute somme autre que le loyer, sous forme de dépôt ou autrement, exigée du locataire (art. 1904). Ces règles sont informatives et requièrent une vérification humaine ; à faire relire par un avocat ou une avocate membre du Barreau du Québec avant tout usage autre que la démonstration. La révision 4 est en attente de la réponse à yomizaka#96 (relecture par l'avocat ou l'avocate du client) ; les citations renvoient aux articles par leur numéro, sans en reproduire le texte."
   }

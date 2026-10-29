@@ -508,6 +508,38 @@ def _first_json_array(raw: str) -> list:
     return []
 
 
+def extract_facts(ruleset: dict, text: str) -> dict:
+    """The figures a ruleset DECLARES it reads (`facts`), with the passage each one comes from.
+
+    A rule says whether the lease has a rent; a check downstream (Section G of the Québec form: the new rent against the
+    previous one) needs the rent itself. Nothing is inferred: a fact is a declared pattern whose first group is an amount,
+    read through the same ``_Document`` the rules read, so its evidence is the document's own passage.
+
+    Each fact is `{"status": "found", "cents": int, "evidenceSpan": {...}}`; `{"status": "blank", "evidenceSpan": ...}`
+    when its `label` is there with no amount behind it (a form left empty); `{"status": "absent"}` otherwise. A ruleset
+    without `facts` exposes none, and a figure that cannot be read as an amount is absent, never a guess.
+    """
+    declared = ruleset.get("facts") or []
+    if not declared:
+        return {}
+    doc = _Document(text, ruleset.get("textLayout"))
+    facts: dict = {}
+    for fact in declared:
+        found = re.search(fact["pattern"], doc.text)
+        cents = None
+        if found:
+            try:
+                cents = int(round(_number(found.group(1)) * 100))
+            except ValueError:
+                cents = None
+        if cents is not None and cents > 0:
+            facts[fact["id"]] = {"status": "found", "cents": cents, "evidenceSpan": doc.span(found)}
+            continue
+        label = re.search(fact["label"], doc.text) if fact.get("label") else None
+        facts[fact["id"]] = {"status": "blank", "evidenceSpan": doc.span(label)} if label else {"status": "absent"}
+    return facts
+
+
 def summarise(findings: list) -> dict:
     """Counts, so a caller can act without re-reading the list. Not a verdict on the document."""
     counts = {}
