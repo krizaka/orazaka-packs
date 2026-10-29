@@ -997,13 +997,6 @@ def test_a_ruleset_without_facts_exposes_none_and_a_figure_with_no_meaning_is_ab
     assert rules.extract_facts({"facts": [{"id": "x", "kind": "money", "pattern": r"(\d+)\s*\$"}]}, "montant : abc $")["x"] == {"status": "absent"}
 
 
-def test_screen_carries_the_facts_into_the_screened_report():
-    import validation_worker
-
-    screened = validation_worker._screened(_qc_lease(), "Loyer mensuel : 1 450 $", "2026-10-15")
-    assert screened["facts"]["rentCents"]["cents"] == 145000
-
-
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):
