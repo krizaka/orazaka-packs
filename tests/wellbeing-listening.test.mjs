@@ -1,4 +1,4 @@
-// The wellbeing pack's listening moment (Yororis, ADR-076): the data a client draws a presence from, and the
+// The wellbeing pack's listening moment (ADR-076): the data a client draws a presence from, and the
 // proof that the crisis guard's cues catch what a person says aloud. Pure data, no engine: the folding below is
 // SafetyInterceptor.fold's (NFD, combining marks dropped, lower case) and a term matches when the turn contains it.
 import test from "node:test";
