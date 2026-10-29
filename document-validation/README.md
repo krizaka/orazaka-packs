@@ -110,6 +110,10 @@ No article is prescribed for the *form* of an état des lieux, so the rules judg
 
 Goldens: `worker/fixtures/qc-visit-notice/` and `qc-condition-report/` (compliant, defective, blank, English-only), and `qc-residential-lease/bilingual-compliant`. Tests: `worker/test_rules.py`, `test_golden.py`, `test_screening.py`, `test_identify.py`, `test_check.py`.
 
+## Facts — the figures a ruleset reads (yomizaka#554)
+
+A ruleset may declare `facts`: `{ id, kind: "money", pattern, label }`, the pattern's first group an amount. The 2.0 report carries `facts.<id>` = `{ status: "found", cents, evidenceSpan }`, `{ status: "blank", evidenceSpan }` when the `label` is there with no amount behind it, or `{ status: "absent" }`. Nothing is inferred and the evidence is the document's own passage. `qc-residential-lease` declares `rentCents` (Loyer mensuel) and `lowestRentCents` (the Section G notice of the lowest rent paid in the last twelve months), so a consumer can compare the new rent against the previous one. The 1.x report shape is unchanged.
+
 ## Kinds and `identify` — what a document is, before any ruleset (ADR-089 §1)
 
 Until now the jurisdiction's default ruleset (the lease) judged every document. A visit notice or an état des lieux came

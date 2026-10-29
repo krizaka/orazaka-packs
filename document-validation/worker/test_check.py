@@ -170,6 +170,18 @@ def test_a_1x_request_answers_the_1x_shape_exactly_as_recorded():
         assert "contract" not in report and "identification" not in report and isinstance(report["findings"][0]["citation"], str)
 
 
+def test_a_2x_lease_report_exposes_the_rents_it_read_for_section_g():
+    # yomizaka#554: the report carries the figures the ruleset declares (`facts`), each with the passage it came from.
+    rec = recording("clean")
+    document = rec["document"]
+    report, _ = run(document, judge=recorded_judge(rec["report"]), **rec["inputs"])
+    assert report["outcome"] == compliance.CHECKED
+    facts = report["facts"]
+    assert facts["rentCents"]["status"] == "found" and facts["rentCents"]["cents"] == 122500
+    assert facts["lowestRentCents"]["cents"] == 120000
+    assert facts["lowestRentCents"]["evidenceSpan"]["quote"] in document
+
+
 def test_2x_has_no_default_kind_the_lease_by_jurisdiction_is_legacy_1x_only():
     # jurisdiction QC, no kind, a text no kind recognises: 2.0 says KIND_UNKNOWN; only a pinned 1.x blueprint judges it
     # by the jurisdiction's lease (CTO, orazaka-studio#80, point 4).
