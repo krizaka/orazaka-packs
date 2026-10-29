@@ -51,6 +51,13 @@ def test_the_visit_notice_and_the_condition_report_are_named_and_assembled_as_th
         assert all(f.get("citation") for f in report["findings"])
 
 
+def test_screen_carries_the_facts_into_the_screened_report():
+    import test_rules
+    import validation_worker
+    screened = validation_worker._screened(test_rules._qc_lease(), "Loyer mensuel : 1 450 $", "2026-10-15")
+    assert screened["facts"]["rentCents"]["cents"] == 145000
+
+
 if __name__ == "__main__":
     failures = 0
     for name, fn in sorted(globals().items()):

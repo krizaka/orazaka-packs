@@ -19,7 +19,7 @@ NESTED = re.compile(r"\((?:\?:)?(?:[^()\\]|\\.)*(?:[+*]|\{\d+,\})(?:[^()\\]|\\.)
 def _patterns(node, path):
     if isinstance(node, dict):
         for key, value in node.items():
-            if key in ("pattern", "subject") and isinstance(value, str):
+            if key in ("pattern", "subject", "label") and isinstance(value, str):
                 yield f"{path}.{key}", value
             elif key == "excludes" and isinstance(value, list):
                 for i, v in enumerate(value):
@@ -52,6 +52,13 @@ def test_the_linter_catches_the_classic_shapes():
 def test_no_shipped_pattern_nests_unbounded_quantifiers():
     found = [(where, p) for where, p in shipped_patterns() if NESTED.search(p)]
     assert not found, "patterns that can backtrack exponentially: " + "; ".join(f"{w}: {p}" for w, p in found)
+
+
+def test_the_declared_facts_are_scanned():
+    """`facts[].pattern` and `facts[].label` (rents read for Section G) run on the document like a rule's pattern."""
+    where = [w for w, _ in shipped_patterns()]
+    assert any(".facts[" in w and w.endswith(".label") for w in where), "facts labels are not scanned"
+    assert any(".facts[" in w and w.endswith(".pattern") for w in where), "facts patterns are not scanned"
 
 
 def test_every_shipped_pattern_compiles():

@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # profile-photo-check — does a set of profile photos look like one real adult's profile?
 #
-# Written for Yasakia (a dating product where one rule is « real people »), usable by any product that wants it.
+# Written for a dating product (where one rule is « real people »), usable by any product that wants it.
 # The pack states how many photos and how many faces it was asked for — a product's numbers are its own inputs, never
 # this pack's — and answers in CODES (the product words them in its language and register).
 #

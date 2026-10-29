@@ -7,7 +7,7 @@
 # The platform's run id is kept with the sent message.
 #
 # Next (P2, krizaka/orazaka-packs#152): a forecast Studio (vacancy, price elasticity) once there is history to learn from — the same shape
-# as orochia#226: the product sends pseudonymous aggregates, Orazaka analyses, the product falls back.
+# as ADR-078: the product sends pseudonymous aggregates, Orazaka analyses, the product falls back.
 #
 # A lone Studio, not a catalogue pack: no shelf, no price. It is the product's tool.
 # ─────────────────────────────────────────────────────────────────────────────

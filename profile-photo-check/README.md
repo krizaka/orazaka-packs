@@ -4,7 +4,7 @@ Looks at a set of profile photos and says whether they hold together as **one re
 enough of them with a face, the same person from one face photo to the next, nothing written over the picture, no
 screenshot. It answers in **codes** — the product that asked words them in its own language and register.
 
-Written for Yasakia, whose rule is « real people »; the pack knows nothing of Yasakia. The numbers (at least 4 photos,
+Written for a product whose rule is « real people »; the pack knows nothing of any product. The numbers (at least 4 photos,
 at most 6, at least 2 with a face) are **inputs of each run**, owned by the product — here they only default.
 
 ```
@@ -67,7 +67,7 @@ document-validation rulesets): a new file is a new version, never an edit.
   across skin tones, ages, make-up and lighting, and to be fooled by a lookalike. So the thresholds lean to not
   accusing: two photos are called different only below a cosine of 0.25 (the model's published « same person »
   operating point is 0.363, and the band between is never held against anyone). It has **not** been calibrated on
-  Yasakia's own population, and the product must treat `FACE_MISMATCH` as « the photos may not show the same person —
+  that product's own population, and the product must treat `FACE_MISMATCH` as « the photos may not show the same person —
   choose others, or ask for a review », never as an accusation.
 * **A vision model answers yes/no questions and is sometimes wrong** (a small model can see a minor in an adult who looks
   young, or miss a watermark). Its three answers block a photo only when the answer is a clear `true`; the product keeps a

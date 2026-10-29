@@ -18,4 +18,4 @@ tone, sized for a text message (160 characters), a notification (90) or an email
 ## Next
 
 A forecast Studio (vacancy, price elasticity) once there is history to learn from (krizaka/orazaka-packs#152, P2): the same shape as
-orochia#226 — the product sends pseudonymous aggregates, Orazaka analyses, the product falls back to what it has.
+ADR-078 — the product sends pseudonymous aggregates, Orazaka analyses, the product falls back to what it has.

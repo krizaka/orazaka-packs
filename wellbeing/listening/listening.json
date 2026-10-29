@@ -1,5 +1,5 @@
 {
-  "$comment": "The listening moment of the wellbeing pack (ADR-076, Yororis). Data only: what a presence is, which voice speaks for it, which ear hears the person. The words, the guards and the crisis lines are the pack's (pack.yaml); a client draws a face and plays a voice, it never calls a model.",
+  "$comment": "The listening moment of the wellbeing pack (ADR-076). Data only: what a presence is, which voice speaks for it, which ear hears the person. The words, the guards and the crisis lines are the pack's (pack.yaml); a client draws a face and plays a voice, it never calls a model.",
   "pack": "bien-etre",
   "door": {
     "endpoint": "/api/v1/voice/turns",
