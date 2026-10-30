@@ -30,11 +30,12 @@ jobs:
       # The shared component pipeline publishes npm packages with provenance (OIDC): a reusable
       # workflow cannot be granted more than its caller holds, so its absence fails at startup.
       id-token: write
-    uses: krizaka/orazaka/.github/workflows/component.yml@73c905465a0fad85976c84ccbf2f0e95f21a17b1 # main
+    uses: krizaka/orazaka/.github/workflows/component.yml@7811f56c86053a9dfd68cd871d8e7102c9b527bb # main
     with:
       component: orazaka-packs
       duplication: true
-    secrets: inherit
+      sonar: true            # CI analysis with coverage.xml of the worker suites (krizaka/.github#377); automatic analysis is switched off
+    secrets: inherit # zizmor: ignore[secrets-inherit] the org's own pinned pipeline; it reads SONAR_TOKEN and nothing else of the repository's secrets
 
   schema-tests:
     runs-on: ubuntu-latest
@@ -45,8 +46,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0 # Compare golden exceptions with the immutable PR base, not a second editable baseline.
+          persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
+          package-manager-cache: false
           node-version: 22
       - run: npm ci --ignore-scripts
       - run: npm test
@@ -68,6 +71,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
+          package-manager-cache: false
           node-version: 22
       - run: npm ci --ignore-scripts
       - run: npm run golden:run -- --config "$GOLDEN_STACK_CONFIG"
@@ -84,7 +88,7 @@ jobs:
     # YuNet + SFace on a public-domain photograph.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
+    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
     with:
       working-directory: profile-photo-check/worker
       requirements: profile-photo-check/requirements.txt
@@ -101,7 +105,7 @@ jobs:
     # contract, the screening — no model needed. These tests existed but no job ran them (2026-10-22).
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
+    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
     with:
       working-directory: document-validation/worker
       extra-packages: pypdf pika pyyaml
@@ -122,7 +126,7 @@ jobs:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
+    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
     with:
       working-directory: message-authenticity/worker
       extra-packages: pika pyyaml
@@ -134,7 +138,7 @@ jobs:
     # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
+    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
     with:
       working-directory: media-safety/worker
       extra-packages: pika pyyaml
@@ -147,7 +151,7 @@ jobs:
     # after the court records with credit never called, a provider error, a missing consent — no model, no network.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
+    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
     with:
       working-directory: tenant-screening-qc/worker
       extra-packages: pika pyyaml
@@ -158,7 +162,7 @@ jobs:
     # the cross-checks, the payload checks — no model, no network.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
+    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
     with:
       working-directory: identity-document-check/worker
       extra-packages: pika pyyaml
@@ -172,7 +176,7 @@ jobs:
     # The broker connection every worker shares (worker-common/worker_broker.py): tested once.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@f268fbefb48194cf680854f1f2aae69a10f5d1a7 # v1.3.4
+    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
     with:
       working-directory: worker-common
       extra-packages: pika

@@ -28,7 +28,7 @@ test("sensitive, guarded against writing for anyone, a lone Studio, no product w
   assert.match(pack, /écris à ma place/);
   assert.doesNotMatch(pack, /^catalog:/m);
   const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? (e.name === ".venv" || e.name === "__pycache__" ? [] : walk(`${d}${e.name}/`)) : [`${d}${e.name}`]));
-  for (const f of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f) && !f.includes("calibration/"))) assert.doesNotMatch(readFileSync(f, "utf8").replace(/^\s*#.*$/gm, ""), /yasakia/i, f);
+  for (const f of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f) && !f.includes("calibration/"))) assert.doesNotMatch(readFileSync(f, "utf8").replace(/^\s*#.*$/gm, ""), /yomizaka|akinaza/i, f);
 });
 
 test("the ruleset: a pinned open model, thresholds in order, the limits said", () => {

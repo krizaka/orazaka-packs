@@ -132,6 +132,10 @@ def _screened(ruleset: dict, text: str, as_of: str) -> dict:
         # the text really holds, and the assembly step reads the text from here.
         "documentText": text,
     }
+    # The figures the ruleset declares it reads (rents, for Section G): none for a ruleset that declares none.
+    facts = rules.extract_facts(ruleset, text)
+    if facts:
+        screened["facts"] = facts
     # A ruleset not yet reviewed by a lawyer says so in every report built on it.
     if ruleset.get("reviewStatus"):
         screened["reviewStatus"] = ruleset["reviewStatus"]
@@ -184,6 +188,8 @@ def _assemble(payload: dict) -> dict:
         "summary": rules.summarise(findings),
         "findings": findings,
     }
+    if screened.get("facts"):
+        report["facts"] = screened["facts"]
     if screened.get("reviewStatus"):
         report["reviewStatus"] = screened["reviewStatus"]
         report["reviewNote"] = screened.get("reviewNote", "")

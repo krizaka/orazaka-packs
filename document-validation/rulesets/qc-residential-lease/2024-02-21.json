@@ -385,5 +385,19 @@
       ]
     }
   ],
-  "revisionNote": "Révision 5 : QC-LANG-001 (langue française ; Charte de la langue française, art. 55 ; C.c.Q., art. 1897), informative : un bail uniquement dans une autre langue n'est jamais un échec pour cette seule raison, le constat est « à confirmer » tant que le document ne montre ni le français ni la remise de la version française (orazaka-packs#126). Révision 4 : QC-LEASE-012 signale la clause qui interdit ou subordonne à une autorisation les visites ou l'hébergement d'un tiers (art. 1901) ; QC-LEASE-013 signale la clause qui résilie le bail de plein droit pour un seul retard de loyer (art. 1971, qui exige un retard de trois semaines et passe par le Tribunal administratif du logement) ; QC-LEASE-014 vérifie la mention du formulaire obligatoire ; QC-LEASE-003 lit les montants en $, $ CA, CAD et dollars, avec le symbole avant ou après le chiffre. Révision 3 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-010 ajoute une question d'appréciation des pénalités et frais de retard au regard du préjudice réellement subi (art. 1901) ; QC-LEASE-011 vérifie informativement la mention de remise préalable du règlement applicable et de son intégration au bail (art. 1894), sans prétendre vérifier sa remise matérielle. QC-LEASE-004 précise que l'article 1904 couvre toute somme autre que le loyer, sous forme de dépôt ou autrement, tout en permettant d'exiger d'avance le premier terme de loyer. Révision 2 avait ajouté QC-LEASE-009 sur la renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat. Chaque nouvel élément reste à faire relire par un avocat ou une avocate membre du Barreau du Québec."
+  "revisionNote": "Révision 5 : QC-LANG-001 (langue française ; Charte de la langue française, art. 55 ; C.c.Q., art. 1897), informative : un bail uniquement dans une autre langue n'est jamais un échec pour cette seule raison, le constat est « à confirmer » tant que le document ne montre ni le français ni la remise de la version française (orazaka-packs#126). Révision 4 : QC-LEASE-012 signale la clause qui interdit ou subordonne à une autorisation les visites ou l'hébergement d'un tiers (art. 1901) ; QC-LEASE-013 signale la clause qui résilie le bail de plein droit pour un seul retard de loyer (art. 1971, qui exige un retard de trois semaines et passe par le Tribunal administratif du logement) ; QC-LEASE-014 vérifie la mention du formulaire obligatoire ; QC-LEASE-003 lit les montants en $, $ CA, CAD et dollars, avec le symbole avant ou après le chiffre. Révision 3 (notre lecture corrigée, la loi n'a pas changé) : QC-LEASE-010 ajoute une question d'appréciation des pénalités et frais de retard au regard du préjudice réellement subi (art. 1901) ; QC-LEASE-011 vérifie informativement la mention de remise préalable du règlement applicable et de son intégration au bail (art. 1894), sans prétendre vérifier sa remise matérielle. QC-LEASE-004 précise que l'article 1904 couvre toute somme autre que le loyer, sous forme de dépôt ou autrement, tout en permettant d'exiger d'avance le premier terme de loyer. Révision 2 avait ajouté QC-LEASE-009 sur la renonciation d'avance à l'avis ou au refus d'une augmentation de loyer. Les délais de l'avis de modification et la mention de la section F du bail obligatoire ne sont pas encodés : leur texte n'a pas pu être vérifié à la source (Légis Québec) — à faire relire par un avocat. Chaque nouvel élément reste à faire relire par un avocat ou une avocate membre du Barreau du Québec.",
+  "facts": [
+    {
+      "id": "rentCents",
+      "kind": "money",
+      "label": "(?i)loyer\\s+mensuel",
+      "pattern": "(?i)loyer\\s+mensuel[^.\\n]{0,80}?(\\d[\\d\\s.,]*\\d|\\d)\\s*(?:\\$|CAD|dollars?)"
+    },
+    {
+      "id": "lowestRentCents",
+      "kind": "money",
+      "label": "(?i)loyer\\s+le\\s+plus\\s+bas",
+      "pattern": "(?i)loyer\\s+le\\s+plus\\s+bas[^.\\n]{0,80}?(\\d[\\d\\s.,]*\\d|\\d)\\s*(?:\\$|CAD|dollars?)"
+    }
+  ]
 }

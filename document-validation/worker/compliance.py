@@ -111,6 +111,8 @@ def report(resolved: dict, ruleset, screened: dict, judgment: str, articles: dic
         "summary": rules.summarise(findings),
         "findings": findings,
     }
+    if screened.get("facts"):
+        out["facts"] = screened["facts"]
     if ruleset.get("reviewNote"):
         out["reviewNote"] = ruleset["reviewNote"]
     return out

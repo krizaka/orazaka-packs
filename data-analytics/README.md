@@ -59,11 +59,11 @@ tenants.
 4. Read `/for-you` server-side with a short timeout behind a circuit breaker, and fall back to your own trending list —
    a slow engine never empties a page.
 
-Orochia is the first consumer (krizaka/orochia#226): For you, More like this, and the creator's `/insights` page.
+The first consumer is a product (ADR-078): For you, More like this, and the creator's `/insights` page.
 
 ## Seen running (dev, 2026-10-17)
 
-In Orazaka's chat, the QA account picks **Data-driven UI**, pastes Orochia's real activity per day (aggregated from
+In Orazaka's chat, the QA account picks **Data-driven UI**, pastes a product's real activity per day (aggregated from
 Orazaka's analytics, ADR-081) and asks how the audience is doing; the answer arrives as figures, a chart and a callout,
 drawn by `@krizaka/ui/genui` (ADR-082). Run `186125cd-f9f3-47ed-8976-db52e9ac3d06` (blueprint 1.2.0, default chat model).
 
