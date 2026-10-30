@@ -198,6 +198,18 @@ class AllPaths(unittest.TestCase):
         self.assertEqual(r.report["ruleSource"], "MANAGER")
         self.assertEqual(r.engine.calls, [])
 
+    def test_a_manager_stop_on_a_signal_says_it_is_his_decision_and_offers_a_human_review(self):
+        """Law 25 s. 12.1: the applicant is told the decision is the manager's rule, and may ask a person to review it."""
+        rule = {"id": "CUT-MANAGER-MAJOR", "fact": "majorSignals", "op": "atLeast", "value": 1}
+        r = run(applicant(report=DOCTORED, cutoffs={"documents": [rule]}))
+        self.assertEqual(r.report["decisionBy"], "MANAGER")
+        self.assertEqual(r.report["humanReview"], {"available": True, "basis": "LAW_25_S12_1", "evidence": "documents"})
+        self.assertIn("MANAGER_RULE_ON_A_SIGNAL_APPLICANT_MAY_ASK_HUMAN_REVIEW_LAW_25_S12_1", r.report["limits"])
+
+    def test_no_review_offer_when_the_pack_or_no_signal_stopped_the_applicant(self):
+        self.assertNotIn("humanReview", run(applicant("Tremblay")).report)
+        self.assertNotIn("decisionBy", run(applicant(report=DOCTORED)).report)
+
     def test_a_court_stop_by_the_default_says_the_pack_is_the_source(self):
         r = run(applicant("Tremblay"))
         self.assertEqual((r.report["ruleId"], r.report["ruleSource"]), ("CUT-COURT-FILE-FOUND", "PACK"))

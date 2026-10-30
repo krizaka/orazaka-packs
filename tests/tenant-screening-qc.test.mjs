@@ -214,3 +214,10 @@ test("a document signal never decides: no ruleset since 2026-10-30 cuts off on d
   assert.deepEqual(old.stages[0].cutoffs.map((r) => r.id), ["CUT-DOC-MAJOR-SIGNALS"], "2026-10-25 is never rewritten");
   assert.match(text("worker/screening.py"), /ruleSource/);
 });
+
+test("a manager's stop on a signal says it is the manager's decision and offers a human review (Law 25 s. 12.1)", () => {
+  const code = text("worker/screening.py");
+  assert.match(code, /decisionBy/);
+  assert.match(code, /LAW_25_S12_1/);
+  assert.match(text("README.md"), /human review/i);
+});

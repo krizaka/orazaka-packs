@@ -20,6 +20,7 @@ RULESETS = os.path.join(HERE, "..", "rules", "screening-cutoffs")
 
 CONTINUE, STOP = "CONTINUE", "STOP"
 GRANTED, REFUSED_CONSENT = "GRANTED", "REFUSED"
+SIGNAL_STAGE = "documents"  # the stage whose facts are forensic signals (Law 25 s. 12.1)
 #: The engine's check answer, its closed sets (``CheckStepResult``; tests/contracts/orazaka-core-checks.json).
 ENGINE_OUTCOMES = ("MATCH", "NO_MATCH", "PROVIDER_ERROR", "TIMEOUT", "REFUSED")
 ENGINE_ANSWERED = ("MATCH", "NO_MATCH")
@@ -364,6 +365,11 @@ def report(payload: dict) -> dict:
     limits = list(plan_["limits"])
     if plan_["payer"] == "APPLICANT":
         limits.append("APPLICANT_PAYS_FEES_MAY_CONTRAVENE_CCQ_1904")
+    # Law 25 s. 12.1: a stop that rests on a document signal is the manager's own rule (never the pack's): the report says so
+    # and tells the applicant a person may review it. The evidence is named by stage, the record itself is not copied.
+    signal_stop = bool(stop and stop["code"] == "CUTOFF" and stop.get("ruleSource") == "MANAGER" and stop["stage"] == SIGNAL_STAGE)
+    if signal_stop:
+        limits.append("MANAGER_RULE_ON_A_SIGNAL_APPLICANT_MAY_ASK_HUMAN_REVIEW_LAW_25_S12_1")
     body = {
         "rulesetId": plan_["rulesetId"],
         "rulesetVersion": plan_["rulesetVersion"],
@@ -377,5 +383,6 @@ def report(payload: dict) -> dict:
         "stages": entries,
         "ledger": {"unit": "credits", "payer": plan_["payer"], "creditCap": plan_["creditCap"], "total": total, "byStage": {e["stage"]: e["credits"] for e in entries}},
         "limits": limits,
+        **({"decisionBy": "MANAGER", "humanReview": {"available": True, "basis": "LAW_25_S12_1", "evidence": SIGNAL_STAGE}} if signal_stop else {}),
     }
     return {"report": body, "reportJson": json.dumps(body), "status": status}

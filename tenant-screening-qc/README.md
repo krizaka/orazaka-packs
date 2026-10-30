@@ -44,7 +44,8 @@ and its steps never run: the blueprint skips them (`condition`), it does not cha
   court-records `MATCH`, whatever its category. **A document signal is never a default cut-off**: the signals (with their
   evidence) go to the report and a person reads them; no applicant is stopped by a forensic signal alone (Law 25 s. 12.1).
   A manager may still choose a rule on `majorSignals`; the report then says `ruleSource: "MANAGER"` (a default stop says
-  `"PACK"`). The worker's code names no rule.
+  `"PACK"`). Such a stop also says `decisionBy: "MANAGER"` and `humanReview: { available: true, basis: "LAW_25_S12_1" }`: the
+  decision is the manager's own rule, and the applicant may ask for a human review (Law 25 s. 12.1). The worker's code names no rule.
 * The **manager's** rules replace the default of a stage. They are the Studio input `cutoffs`, by stage; an empty list removes the
   cut-off of that stage:
 
