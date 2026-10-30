@@ -109,6 +109,13 @@ def _load(name):
 CATALOGUE = _load("authenticity-signals.json")
 PROFILES = _load("producer-profiles.json")
 THRESHOLDS = CATALOGUE["thresholds"]
+#: Signals a measurement put under the bar are switched off in the catalogue (``"enabled": false`` on every case of the
+#: signal), never loosened (forensics/measure.py, orazaka-packs#176). A switched-off signal is never emitted.
+DISABLED_SIGNALS = frozenset(
+    signal
+    for signal in {entry["signalId"] for entry in CATALOGUE["signals"].values()}
+    if not any(entry.get("enabled", True) for entry in CATALOGUE["signals"].values() if entry["signalId"] == signal)
+)
 DOCUMENT_PROFILES = {
     profile["documentType"]: profile
     for profile in (
@@ -630,6 +637,7 @@ def analyse(document: bytes, expected_issuer: str = "", locale: str = "fr", docu
         pages, signals = _analyse_office(archive, locale, profile)
     else:
         raise UnreadableDocument(f"type de fichier non examiné : ce module lit {SUPPORTED}")
+    signals = [signal for signal in signals if signal["signalId"] not in DISABLED_SIGNALS]
     report = {
         "header": HEADER,
         "documentType": kind,

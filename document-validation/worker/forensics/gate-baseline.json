@@ -1,0 +1,8 @@
+{
+  "$comment": "Signals shipped before the corpus (orazaka-packs#176) that fire on more than 5 % of ordinary documents. A ratchet: the rate only goes down. Not a waiver: each is an open decision (switch off with \"enabled\": false in authenticity-signals.json, or fix the detector and delete the entry). A new signal is never listed here.",
+  "signals": {
+    "PDF-ID-001": { "level": "inhabituel", "maxRate": 0.1667, "why": "the two /ID parts differ after any ordinary re-save or merge" },
+    "PDF-META-001": { "level": "inhabituel", "maxRate": 0.1667, "why": "no producer declared: images saved to PDF by Pillow-like tools, scanners" },
+    "IMG-META-001": { "level": "inhabituel", "maxRate": 0.0815, "why": "no EXIF: a photo sent through a messaging app has it stripped" }
+  }
+}
