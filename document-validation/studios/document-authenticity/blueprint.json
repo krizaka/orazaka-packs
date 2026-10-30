@@ -104,6 +104,10 @@
                   "where": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "overTheBar": {
+                    "type": "boolean",
+                    "description": "Present and true when this case fires on more than 5 % of ordinary documents (forensics/gate-baseline.json): a consumer hides it from the person who reads the report."
                   }
                 }
               }

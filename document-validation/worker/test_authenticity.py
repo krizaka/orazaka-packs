@@ -216,7 +216,7 @@ def test_the_worker_passes_the_optional_document_type_to_authenticity():
 def _conforms(schema, value, path="$"):
     """The subset of JSON Schema the engine enforces (orazaka-studio OutputContract, ADR-076), for what this schema uses."""
     problems = []
-    kinds = {"string": str, "integer": int, "array": list, "object": dict}
+    kinds = {"string": str, "integer": int, "boolean": bool, "array": list, "object": dict}
     t = schema.get("type")
     if t and not (isinstance(value, kinds[t]) and not (t == "integer" and isinstance(value, bool))):
         return [f"{path}: expected {t}"]

@@ -175,18 +175,25 @@ def _document_profile_signal(profile, locale, producer_names=(), pages=None, fon
 def _emit(case, locale="fr", **facts):
     """One signal from its catalogue case: what was seen, what it can be an indication of, and where.
 
+    ``overTheBar`` is set (from the catalogue) on a case that fires on more than 5 % of ordinary documents and is kept
+    under the baseline of forensics/gate-baseline.json: a consumer hides it from the person who reads the report
+    (Yomizaka hides it from landlords, yomizaka#651).
+
     ``mayIndicate`` is phrased as a possibility and written by hand per case, in the catalogue. It is never generated,
     and it never names a person.
     """
     entry = CATALOGUE["signals"][case]
     texts = entry[locale]
-    return {
+    signal = {
         "signalId": entry["signalId"],
         "level": entry["level"] if "level" not in facts else facts.pop("level"),
         "observation": texts["observation"].format(**facts),
         "mayIndicate": texts["mayIndicate"].format(**facts),
         "where": texts["where"].format(**facts),
     }
+    if entry.get("overTheBar"):
+        signal["overTheBar"] = True
+    return signal
 
 
 def _stamp(moment) -> str:

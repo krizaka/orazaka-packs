@@ -40,6 +40,7 @@
     "PDF-META-001.absent": {
       "signalId": "PDF-META-001",
       "level": "inhabituel",
+      "overTheBar": true,
       "fr": {
         "observation": "Le fichier ne déclare aucun logiciel producteur.",
         "mayIndicate": "Des métadonnées retirées, ce que font certains outils de nettoyage — et aussi certaines chaînes de production légitimes.",
@@ -134,6 +135,7 @@
     "PDF-ID-001": {
       "signalId": "PDF-ID-001",
       "level": "inhabituel",
+      "overTheBar": true,
       "fr": {
         "observation": "Les deux identifiants du fichier diffèrent : celui de sa première écriture et celui de sa dernière ne sont pas les mêmes.",
         "mayIndicate": "Un fichier réécrit après sa création. Un réenregistrement, une signature ou une compression changent aussi cet identifiant.",
@@ -232,6 +234,7 @@
     "IMG-META-001.absent": {
       "signalId": "IMG-META-001",
       "level": "inhabituel",
+      "overTheBar": true,
       "fr": {
         "observation": "L'image ne déclare ni appareil, ni logiciel, ni date de prise de vue.",
         "mayIndicate": "Des métadonnées retirées. Les messageries, les captures d'écran et les réseaux sociaux les retirent aussi d'office.",

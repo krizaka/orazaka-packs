@@ -377,6 +377,8 @@ document: median 0.5 ms, p95 1.6 ms.
 than 5 % of them, fails the build. A signal under the bar is switched off with `"enabled": false` on its cases in `authenticity-signals.json`
 (then never emitted), never loosened. Three signals shipped before the corpus and measure over the bar: `PDF-ID-001` (12 %), `PDF-META-001`
 (`absent`, 12.5 %) and `IMG-META-001` (`absent`, 6 %). They are pinned in `forensics/gate-baseline.json` as a ratchet (the rate may only go down; a new
-signal is never added there): each is an open decision, to switch off or to fix the detector.
+signal is never added there). Decision (CTO, 2026-10-30): they are kept, and the manifest says so: each of these cases carries `"overTheBar": true` in
+`authenticity-signals.json`, and the report's signal carries `overTheBar: true`, so a consumer hides it from the person who reads the report (Yomizaka hides it
+from landlords, yomizaka#651). A test keeps the flags and the baseline identical.
 
-Run: `docker build -t krizaka-forensics -f worker/forensics/Dockerfile worker/forensics && docker run --rm -v "$PWD:/pack" -w /pack/worker krizaka-forensics python forensics/measure.py --write`.
+Run: `docker build -t krizaka-forensics -f worker/forensics/Dockerfile worker/forensics && docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/pack" -w /pack/worker krizaka-forensics python forensics/measure.py --write`.

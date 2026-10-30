@@ -1,0 +1,5 @@
+pypdf==5.9.0
+pikepdf==9.11.0
+reportlab==4.4.4
+Pillow==11.3.0
+pyyaml

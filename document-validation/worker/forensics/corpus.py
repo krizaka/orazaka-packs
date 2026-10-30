@@ -16,6 +16,7 @@ Ghostscript workflows run only where ``gs`` is on the PATH (the measurement cont
 Python, so CI measures without it. ``tools()`` says which were available, and ``results.json`` records it.
 """
 
+import functools
 import io
 import os
 import random
@@ -176,8 +177,11 @@ def _rewritten_amount(pdf_bytes, old, new):
         stream = pdf.pages[0].obj["/Contents"]
         stream.write(stream.read_bytes().replace(f"({old})".encode("latin-1"), f"({new})".encode("latin-1")))
         out = io.BytesIO()
-        pdf.save(out)
+        pdf.save(out, deterministic_id=True)
     return out.getvalue()
+
+
+OVERLAY_TOOL = "pypdf overlay"
 
 
 def tampered_set(per_type=10, seed=SEED):
@@ -214,13 +218,13 @@ def tampered_set(per_type=10, seed=SEED):
         items.append(_item(f"rewritten-amount-{tag}", "tampered", "rewritten-amount", "pdf", _rewritten_amount(pdf_bytes, amount, forged), kind,
                            {**truth, "tool": "pikepdf"}, issuer))
         items.append(_item(f"white-rectangle-text-{tag}", "tampered", "white-rectangle-text", "pdf",
-                           _stamp_overlay(pdf_bytes, lambda p: over(p, "Helvetica")), kind, {**truth, "tool": "pypdf overlay"}, issuer))
+                           _stamp_overlay(pdf_bytes, functools.partial(over, font="Helvetica")), kind, {**truth, "tool": OVERLAY_TOOL}, issuer))
         items.append(_item(f"other-font-figure-{tag}", "tampered", "other-font-figure", "pdf",
-                           _stamp_overlay(pdf_bytes, lambda p: over(p, "Courier-Bold")), kind, {**truth, "tool": "pypdf overlay"}, issuer))
+                           _stamp_overlay(pdf_bytes, functools.partial(over, font="Courier-Bold")), kind, {**truth, "tool": OVERLAY_TOOL}, issuer))
         items.append(_item(f"pasted-image-{tag}", "tampered", "pasted-image", "pdf", _stamp_overlay(pdf_bytes, logo), kind,
-                           {"changed": "logo-or-signature", "page": 1, "box": [380, 640, 540, 690], "tool": "pypdf overlay"}, issuer))
+                           {"changed": "logo-or-signature", "page": 1, "box": [380, 640, 540, 690], "tool": OVERLAY_TOOL}, issuer))
 
-        picture, amount_image, image_box = page_image(kind, person, issuer, rng)
+        picture, _, image_box = page_image(kind, person, issuer, rng)
         x0, y0, x1, y1 = image_box
         copy = picture.copy()
         copy.paste(picture.crop((x0, y0 + 70, x1 + 40, y1 + 70)), (x0, y0))
@@ -301,6 +305,24 @@ def _ghostscript(pdf_bytes, setting):
             return handle.read()
 
 
+def _negative(workflow, index, who, rng, pdf_bytes, picture):
+    """One ordinary document through one ordinary workflow: ``(bytes, media)``. ``who`` is ``(kind, person, issuer)``."""
+    kind, person, issuer = who
+    if workflow == "merged":
+        return _merged(pdf_bytes, clean_pdf("invoice", person, issuer, rng)[0]), "pdf"
+    if workflow == "annotated":
+        return _annotated(pdf_bytes), "pdf"
+    if workflow == "form-filled":
+        return _form_filled(kind, person, issuer, rng), "pdf"
+    if workflow == "qpdf-resaved":
+        return _qpdf_resaved(pdf_bytes), "pdf"
+    if workflow == "scanned-from-print":
+        return _scanned(picture, rng), "pdf"
+    if workflow == "photographed":
+        return _photographed(picture, rng, with_exif=index % 2 == 0), "image"
+    return _ghostscript(pdf_bytes, "/printer" if workflow == "printed-to-pdf" else "/ebook"), "pdf"
+
+
 def negatives_set(per_workflow=35, seed=SEED + 1):
     rng = random.Random(seed)
     available = tools()
@@ -313,23 +335,7 @@ def negatives_set(per_workflow=35, seed=SEED + 1):
             issuer = rng.choice(BANKS if kind == "bank-statement" else EMPLOYERS)
             pdf_bytes, _, _ = clean_pdf(kind, person, issuer, rng, pages=3 if kind == "bank-statement" else 1)
             picture, _, _ = page_image(kind, person, issuer, rng)
-            media = "pdf"
-            if workflow == "merged":
-                blob = _merged(pdf_bytes, clean_pdf("invoice", person, issuer, rng)[0])
-            elif workflow == "annotated":
-                blob = _annotated(pdf_bytes)
-            elif workflow == "form-filled":
-                blob = _form_filled(kind, person, issuer, rng)
-            elif workflow == "qpdf-resaved":
-                blob = _qpdf_resaved(pdf_bytes)
-            elif workflow == "scanned-from-print":
-                blob = _scanned(picture, rng)
-            elif workflow == "photographed":
-                blob, media = _photographed(picture, rng, with_exif=index % 2 == 0), "image"
-            elif workflow == "printed-to-pdf":
-                blob = _ghostscript(pdf_bytes, "/printer")
-            else:
-                blob = _ghostscript(pdf_bytes, "/ebook")
+            blob, media = _negative(workflow, index, (kind, person, issuer), rng, pdf_bytes, picture)
             items.append(_item(f"{workflow}-{index:02d}-{kind}", "negative", workflow, media, blob, kind, None, issuer))
     return items
 

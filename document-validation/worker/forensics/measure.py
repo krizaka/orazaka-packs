@@ -106,6 +106,21 @@ def baseline():
         return json.load(handle)["signals"]
 
 
+def _signal_failure(signal, pinned):
+    """The sentence a signal fails the gate with, or ``None``: under the bar, or under its baseline."""
+    name = f"{signal['signalId']} ({signal['level']})"
+    if pinned and pinned["level"] == signal["level"]:
+        if signal["falsePositiveRate"] > pinned["maxRate"]:
+            return f"{name} got worse: {signal['falsePositiveRate']:.1%} of ordinary documents > its baseline {pinned['maxRate']:.1%}"
+        return None
+    fired = f"fired on {signal['falsePositives']} of {signal['negatives']} ordinary documents"
+    if signal["level"] == "incohérent" and signal["falsePositives"] > 0:
+        return f"{name} {fired}: switch it off in authenticity-signals.json"
+    if signal["level"] == "inhabituel" and signal["falsePositives"] / signal["negatives"] > INHABITUEL_BAR:
+        return f"{name} {fired} ({signal['falsePositiveRate']:.1%} > 5 %): switch it off in authenticity-signals.json"
+    return None
+
+
 def gate(results, disabled=None, known=None):
     """The failures, as sentences; ``[]`` when every enabled signal is under the bar (or under its baseline)."""
     disabled = disabled_signals() if disabled is None else disabled
@@ -116,15 +131,9 @@ def gate(results, disabled=None, known=None):
     for signal in results["signals"]:
         if signal["signalId"] in disabled or not signal["negatives"]:
             continue
-        pinned = known.get(signal["signalId"])
-        if pinned and pinned["level"] == signal["level"]:
-            if signal["falsePositiveRate"] > pinned["maxRate"]:
-                failures.append(f"{signal['signalId']} ({signal['level']}) got worse: {signal['falsePositiveRate']:.1%} of ordinary documents > its baseline {pinned['maxRate']:.1%}")
-            continue
-        if signal["level"] == "incohérent" and signal["falsePositives"] > 0:
-            failures.append(f"{signal['signalId']} (incohérent) fired on {signal['falsePositives']} of {signal['negatives']} ordinary documents: switch it off in authenticity-signals.json")
-        elif signal["level"] == "inhabituel" and signal["falsePositives"] / signal["negatives"] > INHABITUEL_BAR:
-            failures.append(f"{signal['signalId']} (inhabituel) fired on {signal['falsePositives']} of {signal['negatives']} ordinary documents ({signal['falsePositiveRate']:.1%} > 5 %): switch it off in authenticity-signals.json")
+        failure = _signal_failure(signal, known.get(signal["signalId"]))
+        if failure:
+            failures.append(failure)
     return failures
 
 

@@ -116,6 +116,15 @@ def test_the_baseline_lists_only_signals_the_catalogue_knows():
         assert signal in known_ids, signal
 
 
+def test_the_cases_over_the_bar_are_flagged_in_the_catalogue_and_in_the_report():
+    """The CTO decision: an over-the-bar signal stays (the baseline only goes down) and says so, so a consumer hides it."""
+    pinned = measure.baseline()
+    flagged = {(entry["signalId"], entry["level"]) for entry in a.CATALOGUE["signals"].values() if entry.get("overTheBar")}
+    assert flagged == {(signal, pin["level"]) for signal, pin in pinned.items()}
+    assert a._emit("PDF-ID-001")["overTheBar"] is True
+    assert "overTheBar" not in a._emit("PDF-META-001.producer", producer="x")
+
+
 def test_the_real_corpus_passes_the_gate():
     """The measurement itself: every enabled signal is under the bar or under its baseline."""
     results = measure.measure(corpus.build(per_type=4, per_workflow=35))
