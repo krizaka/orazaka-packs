@@ -41,9 +41,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "entry"
-    ],
+    "required": ["entry"],
     "properties": {
       "entry": {
         "type": "string",

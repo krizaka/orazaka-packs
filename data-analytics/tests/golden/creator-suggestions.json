@@ -19,9 +19,9 @@
         }
       },
       "assertions": [
-        {"path": ["suggestions", "titles"], "type": "array"},
-        {"path": ["suggestions", "description"], "includes": "basil"},
-        {"path": ["suggestions", "tags"], "includes": "small space gardening"}
+        { "path": ["suggestions", "titles"], "type": "array" },
+        { "path": ["suggestions", "description"], "includes": "basil" },
+        { "path": ["suggestions", "tags"], "includes": "small space gardening" }
       ]
     },
     {
@@ -34,21 +34,25 @@
       },
       "expected": {
         "suggestions": {
-          "titles": ["Plier un bateau en papier brouillon", "Une feuille utilisée devient un bateau", "Un petit bateau sans colle"],
+          "titles": [
+            "Plier un bateau en papier brouillon",
+            "Une feuille utilisée devient un bateau",
+            "Un petit bateau sans colle"
+          ],
           "description": "Une feuille déjà utilisée, quelques plis et un petit bateau en papier, sans colle.",
           "tags": ["papier", "pliage", "bateau", "papier brouillon", "sans colle"],
           "why": "Les propositions mettent en avant le papier déjà utilisé et le pliage sans colle."
         }
       },
       "assertions": [
-        {"path": ["suggestions", "description"], "includes": "sans colle"},
-        {"path": ["suggestions", "tags"], "includes": "pliage"},
-        {"path": ["suggestions", "why"], "type": "string"}
+        { "path": ["suggestions", "description"], "includes": "sans colle" },
+        { "path": ["suggestions", "tags"], "includes": "pliage" },
+        { "path": ["suggestions", "why"], "type": "string" }
       ]
     },
     {
       "id": "minimal-title-no-invented-promise",
-      "input": {"title": "Clay cup", "language": "en"},
+      "input": { "title": "Clay cup", "language": "en" },
       "expected": {
         "suggestions": {
           "titles": ["Clay cup", "A cup in clay", "The clay cup"],
@@ -58,9 +62,9 @@
         }
       },
       "assertions": [
-        {"path": ["suggestions", "description"], "includes": "clay cup"},
-        {"path": ["suggestions", "titles"], "type": "array"},
-        {"path": ["suggestions", "tags"], "includes": "clay"}
+        { "path": ["suggestions", "description"], "includes": "clay cup" },
+        { "path": ["suggestions", "titles"], "type": "array" },
+        { "path": ["suggestions", "tags"], "includes": "clay" }
       ]
     }
   ]

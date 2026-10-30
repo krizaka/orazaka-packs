@@ -25,9 +25,7 @@
         "id": "register",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "assess"
-        ],
+        "dependsOn": ["assess"],
         "inputs": {
           "prompt": "From this assessment: {{steps.assess.content}}, write the entry for the firm's register of confidentiality incidents with these fields: description of the information involved | circumstances | date or period | date the firm became aware | number of people affected | assessment of the risk (as a reading, to be decided) | measures taken | date of notices (leave empty). Write in {{inputs.language}} (fr = Québec French, en = English). The very first line of your answer is exactly this sentence in that language: fr: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » en: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. ». Use only the facts given; never invent a fact about the firm, mark anything missing as « À confirmer » (fr) or « To confirm » (en). You prepare, you never decide: the person in charge decides. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section."
         },
@@ -40,9 +38,7 @@
         "id": "notices",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "assess"
-        ],
+        "dependsOn": ["assess"],
         "inputs": {
           "prompt": "From this assessment: {{steps.assess.content}}. If the reading is YES or UNCERTAIN, draft two notices: (1) the notice to the Commission d'accès à l'information, (2) the notice to the persons concerned in plain language. Leave every decision, date and signature EMPTY. If the reading is NO, write only one line saying that no notice is drafted because the criteria do not point to a risk of serious injury and that the person in charge may decide otherwise. Write in {{inputs.language}} (fr = Québec French, en = English). The very first line of your answer is exactly this sentence in that language: fr: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » en: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. ». Use only the facts given; never invent a fact about the firm, mark anything missing as « À confirmer » (fr) or « To confirm » (en). You prepare, you never decide: the person in charge decides. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section."
         },
@@ -99,11 +95,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "firmName",
-      "incidentDescription",
-      "dataInvolved"
-    ],
+    "required": ["firmName", "incidentDescription", "dataInvolved"],
     "properties": {
       "firmName": {
         "type": "string",
@@ -216,10 +208,7 @@
       },
       "language": {
         "type": "string",
-        "enum": [
-          "fr",
-          "en"
-        ],
+        "enum": ["fr", "en"],
         "default": "fr",
         "title": "Langue",
         "description": "La langue du document produit.",

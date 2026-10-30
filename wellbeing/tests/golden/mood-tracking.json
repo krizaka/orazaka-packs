@@ -3,32 +3,42 @@
   "cases": [
     {
       "id": "three-day-observation",
-      "input": {"entries": "Lundi : humeur 2/5, réunion tardive.\nMardi : humeur 3/5, promenade.\nMercredi : humeur 3/5, promenade."},
-      "expected": {"summary": "L'humeur notée est de 2/5 lundi et de 3/5 mardi et mercredi. Une promenade est mentionnée ces deux derniers jours ; cette coïncidence ne permet pas d'établir une cause.\n- Évoquer la réunion tardive de lundi.\n- Décrire les promenades de mardi et mercredi."},
+      "input": {
+        "entries": "Lundi : humeur 2/5, réunion tardive.\nMardi : humeur 3/5, promenade.\nMercredi : humeur 3/5, promenade."
+      },
+      "expected": {
+        "summary": "L'humeur notée est de 2/5 lundi et de 3/5 mardi et mercredi. Une promenade est mentionnée ces deux derniers jours ; cette coïncidence ne permet pas d'établir une cause.\n- Évoquer la réunion tardive de lundi.\n- Décrire les promenades de mardi et mercredi."
+      },
       "assertions": [
-        {"path": ["summary"], "includes": "2/5 lundi"},
-        {"path": ["summary"], "includes": "3/5 mardi et mercredi"},
-        {"path": ["summary"], "includes": "ne permet pas d'établir une cause"}
+        { "path": ["summary"], "includes": "2/5 lundi" },
+        { "path": ["summary"], "includes": "3/5 mardi et mercredi" },
+        { "path": ["summary"], "includes": "ne permet pas d'établir une cause" }
       ]
     },
     {
       "id": "one-entry-no-trend",
-      "input": {"entries": "Vendredi : 4/5. Lecture au calme."},
-      "expected": {"summary": "Le seul relevé fourni indique 4/5 vendredi et mentionne une lecture au calme. Un seul relevé ne montre pas d'évolution.\n- Évoquer ce moment de lecture au calme."},
+      "input": { "entries": "Vendredi : 4/5. Lecture au calme." },
+      "expected": {
+        "summary": "Le seul relevé fourni indique 4/5 vendredi et mentionne une lecture au calme. Un seul relevé ne montre pas d'évolution.\n- Évoquer ce moment de lecture au calme."
+      },
       "assertions": [
-        {"path": ["summary"], "includes": "4/5 vendredi"},
-        {"path": ["summary"], "includes": "Un seul relevé"},
-        {"path": ["summary"], "includes": "lecture au calme"}
+        { "path": ["summary"], "includes": "4/5 vendredi" },
+        { "path": ["summary"], "includes": "Un seul relevé" },
+        { "path": ["summary"], "includes": "lecture au calme" }
       ]
     },
     {
       "id": "ambiguous-scale-and-missing-day",
-      "input": {"entries": "Lundi : 2, échelle non précisée.\nMardi : pas de relevé.\nMercredi : « mieux ? », sans note."},
-      "expected": {"summary": "Lundi porte la note 2 sur une échelle non précisée ; mardi n'a pas de relevé. Mercredi contient « mieux ? » sans note : la comparaison reste ambiguë et aucune évolution chiffrée ne peut être décrite.\n- Préciser l'échelle du lundi si souhaité.\n- Évoquer ce que signifie « mieux ? »."},
+      "input": {
+        "entries": "Lundi : 2, échelle non précisée.\nMardi : pas de relevé.\nMercredi : « mieux ? », sans note."
+      },
+      "expected": {
+        "summary": "Lundi porte la note 2 sur une échelle non précisée ; mardi n'a pas de relevé. Mercredi contient « mieux ? » sans note : la comparaison reste ambiguë et aucune évolution chiffrée ne peut être décrite.\n- Préciser l'échelle du lundi si souhaité.\n- Évoquer ce que signifie « mieux ? »."
+      },
       "assertions": [
-        {"path": ["summary"], "includes": "échelle non précisée"},
-        {"path": ["summary"], "includes": "mardi n'a pas de relevé"},
-        {"path": ["summary"], "includes": "comparaison reste ambiguë"}
+        { "path": ["summary"], "includes": "échelle non précisée" },
+        { "path": ["summary"], "includes": "mardi n'a pas de relevé" },
+        { "path": ["summary"], "includes": "comparaison reste ambiguë" }
       ]
     }
   ]

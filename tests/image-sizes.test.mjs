@@ -5,7 +5,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const bp = JSON.parse(readFileSync(new URL("../orazaka-media/studios/image-generation/blueprint.json", import.meta.url), "utf8"));
+const bp = JSON.parse(
+  readFileSync(new URL("../orazaka-media/studios/image-generation/blueprint.json", import.meta.url), "utf8"),
+);
 const props = bp.inputSchema.properties;
 
 test("the model field names the size field and what each known model makes", () => {

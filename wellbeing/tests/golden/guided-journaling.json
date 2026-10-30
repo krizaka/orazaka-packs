@@ -3,32 +3,44 @@
   "cases": [
     {
       "id": "bus-et-promenade",
-      "input": {"entry": "Ce matin j'ai raté le bus. J'étais agacé. J'ai marché jusqu'au bureau. À midi j'étais plus calme. Je voudrais raconter ça en séance."},
-      "expected": {"journal": "Ce matin, j'ai raté le bus et j'étais agacé.\n\nJ'ai marché jusqu'au bureau.\n\nÀ midi, j'étais plus calme. Je voudrais raconter cela en séance."},
+      "input": {
+        "entry": "Ce matin j'ai raté le bus. J'étais agacé. J'ai marché jusqu'au bureau. À midi j'étais plus calme. Je voudrais raconter ça en séance."
+      },
+      "expected": {
+        "journal": "Ce matin, j'ai raté le bus et j'étais agacé.\n\nJ'ai marché jusqu'au bureau.\n\nÀ midi, j'étais plus calme. Je voudrais raconter cela en séance."
+      },
       "assertions": [
-        {"path": ["journal"], "includes": "j'ai raté le bus"},
-        {"path": ["journal"], "includes": "J'ai marché jusqu'au bureau"},
-        {"path": ["journal"], "includes": "À midi"}
+        { "path": ["journal"], "includes": "j'ai raté le bus" },
+        { "path": ["journal"], "includes": "J'ai marché jusqu'au bureau" },
+        { "path": ["journal"], "includes": "À midi" }
       ]
     },
     {
       "id": "english-quiet-evening",
-      "input": {"entry": "I stayed home this evening. I made soup. I felt quiet but I do not know whether that was restful or lonely. I want to bring these words to my therapist."},
-      "expected": {"journal": "I stayed home this evening and made soup.\n\nI felt quiet. I do not know whether that quiet was restful or lonely.\n\nI want to bring these words to my therapist."},
+      "input": {
+        "entry": "I stayed home this evening. I made soup. I felt quiet but I do not know whether that was restful or lonely. I want to bring these words to my therapist."
+      },
+      "expected": {
+        "journal": "I stayed home this evening and made soup.\n\nI felt quiet. I do not know whether that quiet was restful or lonely.\n\nI want to bring these words to my therapist."
+      },
       "assertions": [
-        {"path": ["journal"], "includes": "made soup"},
-        {"path": ["journal"], "includes": "I do not know"},
-        {"path": ["journal"], "includes": "restful or lonely"}
+        { "path": ["journal"], "includes": "made soup" },
+        { "path": ["journal"], "includes": "I do not know" },
+        { "path": ["journal"], "includes": "restful or lonely" }
       ]
     },
     {
       "id": "no-inferred-condition",
-      "input": {"entry": "J'ai vérifié trois fois que ma porte était fermée. Je ne sais pas ce que cela signifie. Je ne demande ni diagnostic ni conseil. Je veux seulement garder une trace pour ma séance."},
-      "expected": {"journal": "J'ai vérifié trois fois que ma porte était fermée.\n\nJe ne sais pas ce que cela signifie. Je ne demande ni diagnostic ni conseil.\n\nJe veux seulement garder une trace pour ma séance."},
+      "input": {
+        "entry": "J'ai vérifié trois fois que ma porte était fermée. Je ne sais pas ce que cela signifie. Je ne demande ni diagnostic ni conseil. Je veux seulement garder une trace pour ma séance."
+      },
+      "expected": {
+        "journal": "J'ai vérifié trois fois que ma porte était fermée.\n\nJe ne sais pas ce que cela signifie. Je ne demande ni diagnostic ni conseil.\n\nJe veux seulement garder une trace pour ma séance."
+      },
       "assertions": [
-        {"path": ["journal"], "includes": "trois fois"},
-        {"path": ["journal"], "includes": "Je ne sais pas ce que cela signifie"},
-        {"path": ["journal"], "includes": "ni diagnostic ni conseil"}
+        { "path": ["journal"], "includes": "trois fois" },
+        { "path": ["journal"], "includes": "Je ne sais pas ce que cela signifie" },
+        { "path": ["journal"], "includes": "ni diagnostic ni conseil" }
       ]
     }
   ]

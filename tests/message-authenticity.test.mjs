@@ -15,20 +15,34 @@ test("one capability, drained by the worker declared in worker.yaml; the bluepri
   assert.match(pack, /key: orazaka\.message\.authenticity\.read/);
   assert.match(pack, /routingKey: job\.authenticity\.read/);
   assert.match(text("worker/worker.yaml"), /- "job\.authenticity\.\*"/);
-  assert.deepEqual(blueprint.definition.steps.map((s) => s.featureKey), ["orazaka.message.authenticity.read"]);
+  assert.deepEqual(
+    blueprint.definition.steps.map((s) => s.featureKey),
+    ["orazaka.message.authenticity.read"],
+  );
 });
 
 test("no generative step: a model that writes has nothing to do in an authenticity check", () => {
   for (const s of blueprint.definition.steps) assert.ok(!/chat\.completion|generate|script/.test(s.featureKey));
-  assert.doesNotMatch(text("worker/authenticity_worker.py") + text("worker/classifier.py"), /\.generate\(|CausalLM|Seq2SeqLM/);
+  assert.doesNotMatch(
+    text("worker/authenticity_worker.py") + text("worker/classifier.py"),
+    /\.generate\(|CausalLM|Seq2SeqLM/,
+  );
 });
 
 test("sensitive, guarded against writing for anyone, a lone Studio, no product word", () => {
   assert.match(pack, /^regulatoryClass: SENSITIVE$/m);
   assert.match(pack, /écris à ma place/);
   assert.doesNotMatch(pack, /^catalog:/m);
-  const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? (e.name === ".venv" || e.name === "__pycache__" ? [] : walk(`${d}${e.name}/`)) : [`${d}${e.name}`]));
-  for (const f of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f) && !f.includes("calibration/"))) assert.doesNotMatch(readFileSync(f, "utf8").replace(/^\s*#.*$/gm, ""), /yomizaka|akinaza/i, f);
+  const walk = (d) =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory()
+        ? e.name === ".venv" || e.name === "__pycache__"
+          ? []
+          : walk(`${d}${e.name}/`)
+        : [`${d}${e.name}`],
+    );
+  for (const f of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f) && !f.includes("calibration/")))
+    assert.doesNotMatch(readFileSync(f, "utf8").replace(/^\s*#.*$/gm, ""), /yomizaka|akinaza/i, f);
 });
 
 test("the ruleset: a pinned open model, thresholds in order, the limits said", () => {
@@ -36,7 +50,13 @@ test("the ruleset: a pinned open model, thresholds in order, the limits said", (
   assert.equal(ruleset.classifier.license, "Apache-2.0");
   for (const [lang, t] of Object.entries(ruleset.languages)) assert.ok(t.mid < t.high && t.high < 1, lang);
   assert.ok(ruleset.minWords >= 6);
-  for (const must of ["CAN_BE_WRONG", "UNRELIABLE_ON_SHORT_TEXTS", "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING", "A_SIGNAL_NEVER_A_VERDICT"]) assert.ok(ruleset.limits.includes(must));
+  for (const must of [
+    "CAN_BE_WRONG",
+    "UNRELIABLE_ON_SHORT_TEXTS",
+    "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING",
+    "A_SIGNAL_NEVER_A_VERDICT",
+  ])
+    assert.ok(ruleset.limits.includes(must));
 });
 
 test("the calibration is recorded, honest and not flattering: false « HIGH » is zero and the ruleset says what that costs", () => {

@@ -16,7 +16,8 @@ const steps = blueprint.definition.steps;
 test("every capability the blueprint uses is contributed here or is a core one", () => {
   const contributed = [...pack.matchAll(/^    - key: (orazaka\.[a-z.]+)$/gm)].map((m) => m[1]);
   assert.deepEqual(contributed.sort(), ["orazaka.photo.profile.assess", "orazaka.photo.profile.inspect"]);
-  for (const s of steps) assert.ok(contributed.includes(s.featureKey) || s.featureKey.startsWith("orazaka.core."), s.featureKey);
+  for (const s of steps)
+    assert.ok(contributed.includes(s.featureKey) || s.featureKey.startsWith("orazaka.core."), s.featureKey);
 });
 
 test("each routing key of the pack is drained by the worker's bindings, which live in worker.yaml only", () => {
@@ -25,7 +26,8 @@ test("each routing key of the pack is drained by the worker's bindings, which li
   assert.match(pack, /name: orazaka-worker-photo\n\s+bindings:\n\s+- "job\.photo\.\*"/);
 });
 
-test("a step input only reads inputs the Studio declares and steps that come before it", () => assertLinksResolve(blueprint));
+test("a step input only reads inputs the Studio declares and steps that come before it", () =>
+  assertLinksResolve(blueprint));
 
 test("the vision step runs once per photo and cannot fail the whole check", () => {
   const look = steps.find((s) => s.id === "look");
@@ -37,15 +39,32 @@ test("the vision step runs once per photo and cannot fail the whole check", () =
 
 test("the prompt asks for JSON only, three booleans, no description, no name, and false when unsure", () => {
   const prompt = steps.find((s) => s.id === "look").inputs.prompt;
-  for (const must of ["ONE JSON object", "appears_under_18", "text_or_contact_overlay", "screenshot_or_photo_of_screen", "Do not describe", "Do not name anyone", "If unsure, answer false"]) assert.ok(prompt.includes(must), must);
-  for (const field of ruleset.look.checks.map((c) => c.field)) assert.ok(prompt.includes(field), `ruleset field ${field} is asked`);
+  for (const must of [
+    "ONE JSON object",
+    "appears_under_18",
+    "text_or_contact_overlay",
+    "screenshot_or_photo_of_screen",
+    "Do not describe",
+    "Do not name anyone",
+    "If unsure, answer false",
+  ])
+    assert.ok(prompt.includes(must), must);
+  for (const field of ruleset.look.checks.map((c) => c.field))
+    assert.ok(prompt.includes(field), `ruleset field ${field} is asked`);
 });
 
 test("the pack is sensitive, guarded, a lone Studio, and carries no product word", () => {
   assert.match(pack, /^regulatoryClass: SENSITIVE$/m);
   assert.match(pack, /^scopeGuard:/m);
   assert.doesNotMatch(pack, /^catalog:/m);
-  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? (d.name === "models" || d.name === "__pycache__" || d.name === ".venv" ? [] : walk(`${dir}${d.name}/`)) : [`${dir}${d.name}`]));
+  const walk = (dir) =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((d) =>
+      d.isDirectory()
+        ? d.name === "models" || d.name === "__pycache__" || d.name === ".venv"
+          ? []
+          : walk(`${dir}${d.name}/`)
+        : [`${dir}${d.name}`],
+    );
   for (const file of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f))) {
     const body = readFileSync(file, "utf8").replace(/^\s*#.*$/gm, ""); // a header comment may say who it was written for
     assert.doesNotMatch(body, /yomizaka|akinaza/i, `${file}: a pack names no product`);

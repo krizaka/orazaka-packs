@@ -42,10 +42,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "clips",
-      "edit"
-    ],
+    "required": ["clips", "edit"],
     "properties": {
       "clips": {
         "type": "array",

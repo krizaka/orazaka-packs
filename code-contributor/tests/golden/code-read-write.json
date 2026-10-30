@@ -11,9 +11,7 @@
       },
       "assertions": [
         {
-          "path": [
-            "closedBy"
-          ],
+          "path": ["closedBy"],
           "equals": "client"
         }
       ]
@@ -28,9 +26,7 @@
       },
       "assertions": [
         {
-          "path": [
-            "closedBy"
-          ],
+          "path": ["closedBy"],
           "equals": "client"
         }
       ]
@@ -45,9 +41,7 @@
       },
       "assertions": [
         {
-          "path": [
-            "closedBy"
-          ],
+          "path": ["closedBy"],
           "equals": "client"
         }
       ]

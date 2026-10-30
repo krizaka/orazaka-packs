@@ -13,15 +13,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "differences"
-          ],
+          "path": ["differences"],
           "includes": "45 jours"
         },
         {
-          "path": [
-            "summary"
-          ],
+          "path": ["summary"],
           "includes": "1 écart"
         }
       ]
@@ -38,15 +34,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "differences"
-          ],
+          "path": ["differences"],
           "includes": "Aucun écart"
         },
         {
-          "path": [
-            "summary"
-          ],
+          "path": ["summary"],
           "includes": "0 écart"
         }
       ]
@@ -63,15 +55,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "differences"
-          ],
+          "path": ["differences"],
           "includes": "omission"
         },
         {
-          "path": [
-            "summary"
-          ],
+          "path": ["summary"],
           "includes": "ne dit pas quelle version prévaut"
         }
       ]

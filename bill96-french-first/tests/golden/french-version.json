@@ -13,21 +13,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "french"
-          ],
+          "path": ["french"],
           "includes": "non certifiée"
         },
         {
-          "path": [
-            "french"
-          ],
+          "path": ["french"],
           "includes": "1,5 %"
         },
         {
-          "path": [
-            "glossary"
-          ],
+          "path": ["glossary"],
           "includes": "usage courant"
         }
       ]
@@ -45,15 +39,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "french"
-          ],
+          "path": ["french"],
           "includes": "conditions d'utilisation"
         },
         {
-          "path": [
-            "glossary"
-          ],
+          "path": ["glossary"],
           "includes": "glossaire de l'entreprise"
         }
       ]
@@ -70,15 +60,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "glossary"
-          ],
+          "path": ["glossary"],
           "includes": "Passages douteux"
         },
         {
-          "path": [
-            "french"
-          ],
+          "path": ["french"],
           "includes": "à réviser"
         }
       ]

@@ -13,10 +13,12 @@ for (const pack of readdirSync(root, { withFileTypes: true })) {
   if (!pack.isDirectory() || !existsSync(studios)) continue;
   for (const s of readdirSync(studios)) {
     const file = join(studios, s, "blueprint.json");
-    if (existsSync(file)) files.push({ where: `${pack.name}/studios/${s}`, bp: JSON.parse(readFileSync(file, "utf8")) });
+    if (existsSync(file))
+      files.push({ where: `${pack.name}/studios/${s}`, bp: JSON.parse(readFileSync(file, "utf8")) });
   }
 }
-const HOSTED = /\b(gpt-[0-9o][\w.-]*|o[1-4](-mini)?|chatgpt[\w.-]*|claude-[\w.-]+|gemini-[\w.-]+|text-embedding-3[\w-]*|dall-e[\w-]*|whisper-1)\b/i;
+const HOSTED =
+  /\b(gpt-[0-9o][\w.-]*|o[1-4](-mini)?|chatgpt[\w.-]*|claude-[\w.-]+|gemini-[\w.-]+|text-embedding-3[\w-]*|dall-e[\w-]*|whisper-1)\b/i;
 
 test("blueprints are found", () => assert.ok(files.length >= 8));
 

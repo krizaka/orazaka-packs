@@ -4,7 +4,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const bp = JSON.parse(readFileSync(new URL("../orazaka-media/studios/video-generation/blueprint.json", import.meta.url), "utf8"));
+const bp = JSON.parse(
+  readFileSync(new URL("../orazaka-media/studios/video-generation/blueprint.json", import.meta.url), "utf8"),
+);
 
 test("`upscale` is an optional input: none by default, 1080p or 2160p (4K)", () => {
   const upscale = bp.inputSchema.properties.upscale;

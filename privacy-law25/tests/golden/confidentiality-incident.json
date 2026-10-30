@@ -19,21 +19,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "assessment"
-          ],
+          "path": ["assessment"],
           "includes": "INCERTAIN"
         },
         {
-          "path": [
-            "assessment"
-          ],
+          "path": ["assessment"],
           "includes": "La personne responsable décide"
         },
         {
-          "path": [
-            "notices"
-          ],
+          "path": ["notices"],
           "includes": "Commission d'accès à l'information"
         }
       ]
@@ -55,21 +49,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "assessment"
-          ],
+          "path": ["assessment"],
           "includes": "YES"
         },
         {
-          "path": [
-            "assessment"
-          ],
+          "path": ["assessment"],
           "includes": "The person in charge decides"
         },
         {
-          "path": [
-            "notices"
-          ],
+          "path": ["notices"],
           "includes": "left empty"
         }
       ]
@@ -91,15 +79,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "notices"
-          ],
+          "path": ["notices"],
           "includes": "Aucun avis rédigé"
         },
         {
-          "path": [
-            "assessment"
-          ],
+          "path": ["assessment"],
           "includes": "NON"
         }
       ]

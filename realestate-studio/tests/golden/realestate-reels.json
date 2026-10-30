@@ -14,18 +14,27 @@
         "rooms": "Trois scènes synthétiques d'illustration, dont un carré bleu sur fond orange et un cercle orange sur fond bleu ; elles ne permettent pas de décrire les pièces réelles du bien fictif."
       },
       "assertions": [
-        {"path": ["reel"], "nonEmpty": true},
-        {"path": ["caption"], "includes": "42 m²"},
-        {"path": ["caption"], "includes": "balcon"},
-        {"path": ["caption"], "includes": "synthétiques"},
-        {"path": ["rooms"], "includes": "carré bleu"},
-        {"path": ["rooms"], "includes": "cercle orange"}
+        { "path": ["reel"], "nonEmpty": true },
+        { "path": ["caption"], "includes": "42 m²" },
+        { "path": ["caption"], "includes": "balcon" },
+        { "path": ["caption"], "includes": "synthétiques" },
+        { "path": ["rooms"], "includes": "carré bleu" },
+        { "path": ["rooms"], "includes": "cercle orange" }
       ]
     },
     {
       "id": "eight-photo-house-boundary",
       "input": {
-        "photos": ["asset:scene", "asset:scene-two", "asset:scene-three", "asset:scene-four", "asset:scene-five", "asset:scene-six", "asset:scene-seven", "asset:scene-eight"],
+        "photos": [
+          "asset:scene",
+          "asset:scene-two",
+          "asset:scene-three",
+          "asset:scene-four",
+          "asset:scene-five",
+          "asset:scene-six",
+          "asset:scene-seven",
+          "asset:scene-eight"
+        ],
         "propertyBrief": "Bien fictif : maison de 96 m², trois chambres, jardin. Huit scènes synthétiques de test, aucune photo du logement.",
         "platform": "youtube-short"
       },
@@ -35,12 +44,12 @@
         "rooms": "Huit scènes synthétiques fournies pour tester le montage, dont un carré bleu sur fond orange et un cercle orange sur fond bleu ; aucune description de pièce réelle n'est établie."
       },
       "assertions": [
-        {"path": ["reel"], "type": "string"},
-        {"path": ["caption"], "includes": "96 m²"},
-        {"path": ["caption"], "includes": "trois chambres"},
-        {"path": ["caption"], "includes": "jardin"},
-        {"path": ["rooms"], "includes": "carré bleu"},
-        {"path": ["rooms"], "includes": "cercle orange"}
+        { "path": ["reel"], "type": "string" },
+        { "path": ["caption"], "includes": "96 m²" },
+        { "path": ["caption"], "includes": "trois chambres" },
+        { "path": ["caption"], "includes": "jardin" },
+        { "path": ["rooms"], "includes": "carré bleu" },
+        { "path": ["rooms"], "includes": "cercle orange" }
       ]
     },
     {
@@ -56,11 +65,11 @@
         "rooms": "Scènes synthétiques d'illustration uniquement, dont un carré bleu sur fond orange et un cercle orange sur fond bleu ; elles ne prouvent ni l'accessibilité ni l'état du studio fictif."
       },
       "assertions": [
-        {"path": ["reel"], "nonEmpty": true},
-        {"path": ["caption"], "includes": "24 m²"},
-        {"path": ["caption"], "includes": "ne sont pas renseignés"},
-        {"path": ["caption"], "includes": "sans promesse de rentabilité"},
-        {"path": ["rooms"], "includes": "carré bleu"}
+        { "path": ["reel"], "nonEmpty": true },
+        { "path": ["caption"], "includes": "24 m²" },
+        { "path": ["caption"], "includes": "ne sont pas renseignés" },
+        { "path": ["caption"], "includes": "sans promesse de rentabilité" },
+        { "path": ["rooms"], "includes": "carré bleu" }
       ]
     }
   ]

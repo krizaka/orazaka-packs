@@ -11,15 +11,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "glossary"
-          ],
+          "path": ["glossary"],
           "includes": "contrat de service"
         },
         {
-          "path": [
-            "glossary"
-          ],
+          "path": ["glossary"],
           "includes": "English | French | Source | Note"
         }
       ]
@@ -35,15 +31,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "glossary"
-          ],
+          "path": ["glossary"],
           "includes": "supplier | fournisseur"
         },
         {
-          "path": [
-            "glossary"
-          ],
+          "path": ["glossary"],
           "includes": "livrable"
         }
       ]
@@ -59,9 +51,7 @@
       },
       "assertions": [
         {
-          "path": [
-            "glossary"
-          ],
+          "path": ["glossary"],
           "includes": "à réviser"
         }
       ]

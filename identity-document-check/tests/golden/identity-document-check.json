@@ -30,13 +30,7 @@
             "present": true,
             "format": "TD3",
             "checksumsValid": true,
-            "uncovered": [
-              "nameLine",
-              "sex",
-              "issuer",
-              "nationality",
-              "documentCode"
-            ]
+            "uncovered": ["nameLine", "sex", "issuer", "nationality", "documentCode"]
           },
           "barcode": {
             "present": false
@@ -59,24 +53,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "CONSISTENT"
         },
         {
-          "path": [
-            "report",
-            "mrz",
-            "checksumsValid"
-          ],
+          "path": ["report", "mrz", "checksumsValid"],
           "equals": true
         },
         {
-          "path": [
-            "report",
-            "limits"
-          ],
+          "path": ["report", "limits"],
           "includes": "NAME_LINE_HAS_NO_CHECK_DIGIT"
         }
       ]
@@ -110,13 +95,7 @@
             "present": true,
             "format": "TD3",
             "checksumsValid": false,
-            "uncovered": [
-              "nameLine",
-              "sex",
-              "issuer",
-              "nationality",
-              "documentCode"
-            ]
+            "uncovered": ["nameLine", "sex", "issuer", "nationality", "documentCode"]
           },
           "barcode": {
             "present": false
@@ -186,37 +165,19 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "INCONSISTENT"
         },
         {
-          "path": [
-            "report",
-            "findings",
-            0,
-            "code"
-          ],
+          "path": ["report", "findings", 0, "code"],
           "equals": "MRZ_CHECKSUM_FAILED"
         },
         {
-          "path": [
-            "report",
-            "findings",
-            0,
-            "evidence",
-            "region"
-          ],
+          "path": ["report", "findings", 0, "evidence", "region"],
           "equals": "mrz.line2[0:9]"
         },
         {
-          "path": [
-            "report",
-            "findings",
-            0,
-            "basis"
-          ],
+          "path": ["report", "findings", 0, "basis"],
           "equals": "DETERMINISTIC"
         }
       ]
@@ -251,13 +212,7 @@
             "present": true,
             "format": "TD3",
             "checksumsValid": true,
-            "uncovered": [
-              "nameLine",
-              "sex",
-              "issuer",
-              "nationality",
-              "documentCode"
-            ]
+            "uncovered": ["nameLine", "sex", "issuer", "nationality", "documentCode"]
           },
           "barcode": {
             "present": false
@@ -308,26 +263,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "INCONSISTENT"
         },
         {
-          "path": [
-            "report",
-            "findings",
-            0,
-            "code"
-          ],
+          "path": ["report", "findings", 0, "code"],
           "equals": "PRINTED_MRZ_MISMATCH"
         },
         {
-          "path": [
-            "report",
-            "age",
-            "years"
-          ],
+          "path": ["report", "age", "years"],
           "equals": 36
         }
       ]
@@ -361,13 +305,7 @@
             "present": true,
             "format": "TD3",
             "checksumsValid": true,
-            "uncovered": [
-              "nameLine",
-              "sex",
-              "issuer",
-              "nationality",
-              "documentCode"
-            ]
+            "uncovered": ["nameLine", "sex", "issuer", "nationality", "documentCode"]
           },
           "barcode": {
             "present": false
@@ -404,27 +342,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "REVIEW"
         },
         {
-          "path": [
-            "report",
-            "findings",
-            0,
-            "code"
-          ],
+          "path": ["report", "findings", 0, "code"],
           "equals": "TAMPERING_SIGNAL"
         },
         {
-          "path": [
-            "report",
-            "findings",
-            0,
-            "basis"
-          ],
+          "path": ["report", "findings", 0, "basis"],
           "equals": "MODEL"
         }
       ]
@@ -458,13 +384,7 @@
           },
           "barcode": {
             "present": true,
-            "fields": [
-              "dateOfBirth",
-              "dateOfExpiry",
-              "documentNumber",
-              "givenNames",
-              "surname"
-            ]
+            "fields": ["dateOfBirth", "dateOfExpiry", "documentNumber", "givenNames", "surname"]
           },
           "age": {
             "years": 36,
@@ -512,25 +432,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "INCONSISTENT"
         },
         {
-          "path": [
-            "report",
-            "barcode",
-            "present"
-          ],
+          "path": ["report", "barcode", "present"],
           "equals": true
         },
         {
-          "path": [
-            "report",
-            "mrz",
-            "present"
-          ],
+          "path": ["report", "mrz", "present"],
           "equals": false
         }
       ]

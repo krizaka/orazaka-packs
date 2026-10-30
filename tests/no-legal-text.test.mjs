@@ -25,7 +25,15 @@ const TEXT_FILES = /\.(json|ya?ml|md|txt|py|mjs|java)$/;
 
 /** SHA-256 of a text once normalised: NFC, every run of whitespace one space, trimmed (citations.content_hash). */
 export const contentHash = (text) =>
-  createHash("sha256").update(text.normalize("NFC").replace(/[\s ]+/g, " ").trim(), "utf8").digest("hex");
+  createHash("sha256")
+    .update(
+      text
+        .normalize("NFC")
+        .replace(/[\s ]+/g, " ")
+        .trim(),
+      "utf8",
+    )
+    .digest("hex");
 
 function trackedFiles() {
   try {
@@ -45,7 +53,8 @@ function trackedFiles() {
 function* strings(value, path = "") {
   if (typeof value === "string") yield [path, value];
   else if (Array.isArray(value)) for (const [i, v] of value.entries()) yield* strings(v, `${path}[${i}]`);
-  else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) yield* strings(v, `${path}.${k}`);
+  else if (value && typeof value === "object")
+    for (const [k, v] of Object.entries(value)) yield* strings(v, `${path}.${k}`);
 }
 
 /** Hashes of the articles held by reference under any `law/` directory. */
@@ -79,12 +88,16 @@ export function violations(files, read, hashes = heldHashes(files, read)) {
       }
       for (const [path, value] of strings(json)) {
         if (/\.quote$/.test(path) && value.length > QUOTE_MAX) {
-          found.push(`${f}${path}: a quote of ${value.length} characters (max ${QUOTE_MAX}) is a passage, not the article`);
+          found.push(
+            `${f}${path}: a quote of ${value.length} characters (max ${QUOTE_MAX}) is a passage, not the article`,
+          );
         }
       }
     }
     // The whole article pasted anywhere: a JSON/YAML string, a line, or a paragraph of any text file.
-    const candidates = f.endsWith(".json") ? [...strings(safeParse(content))].map(([, v]) => v) : content.split(/\n{2,}|\n/);
+    const candidates = f.endsWith(".json")
+      ? [...strings(safeParse(content))].map(([, v]) => v)
+      : content.split(/\n{2,}|\n/);
     for (const c of candidates) {
       if (c.length >= 40 && hashes.has(contentHash(c)) && !/(^|\/)law\/[^/]+\.json$/.test(f)) {
         found.push(`${f}: holds the complete text of a held article`);
@@ -112,7 +125,12 @@ test("no file of the repository holds a Québec article's text or a long verbati
 test("the guard fails on a law file with a text, a long quote and a pasted article", () => {
   const article = "Le locateur est tenu de donner un préavis. ".repeat(6).trim();
   const files = {
-    "x/law/CCQ-1-1-fr-2000-01-01.json": JSON.stringify({ instrument: "CCQ-1991", ref: "1", contentHash: contentHash(article), text: "court" }),
+    "x/law/CCQ-1-1-fr-2000-01-01.json": JSON.stringify({
+      instrument: "CCQ-1991",
+      ref: "1",
+      contentHash: contentHash(article),
+      text: "court",
+    }),
     "x/rules.json": JSON.stringify({ law: [{ quote: "a".repeat(QUOTE_MAX + 1) }], note: article }),
     "x/README.md": `intro\n\n${article}\n`,
     "x/law/TEST-1-9-fr-2020-01-01.json": JSON.stringify({ instrument: "TEST-1", ref: "9", text: "Article fictif." }),
@@ -130,7 +148,8 @@ test("every article held under law/ is a reference: instrument, ref, official ad
   assert.ok(files.length >= 3);
   for (const f of files) {
     const a = JSON.parse(readFileSync(join(root, f), "utf8"));
-    for (const k of ["instrument", "ref", "language", "inForceFrom", "contentHash", "officialUrl"]) assert.ok(a[k], `${f}: ${k}`);
+    for (const k of ["instrument", "ref", "language", "inForceFrom", "contentHash", "officialUrl"])
+      assert.ok(a[k], `${f}: ${k}`);
     assert.match(a.contentHash, /^[0-9a-f]{64}$/, f);
   }
 });

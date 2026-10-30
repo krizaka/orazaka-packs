@@ -10,8 +10,8 @@
         "seed": "137",
         "upscale": "none"
       },
-      "expected": {"video": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}]
+      "expected": { "video": "asset:video" },
+      "assertions": [{ "path": ["video"], "nonEmpty": true }]
     },
     {
       "id": "french-animate-synthetic-scene",
@@ -23,8 +23,8 @@
         "seed": "149",
         "upscale": "none"
       },
-      "expected": {"video": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}]
+      "expected": { "video": "asset:video" },
+      "assertions": [{ "path": ["video"], "nonEmpty": true }]
     },
     {
       "id": "square-second-scene-still-camera",
@@ -36,8 +36,8 @@
         "seed": "0",
         "upscale": "none"
       },
-      "expected": {"video": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}]
+      "expected": { "video": "asset:video" },
+      "assertions": [{ "path": ["video"], "nonEmpty": true }]
     }
   ]
 }

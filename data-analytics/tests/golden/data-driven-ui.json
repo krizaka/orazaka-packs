@@ -12,9 +12,9 @@
         "answer": "The library recorded 45 loans; Tuesday led with 18.\n```a2ui\n{\"version\":\"v0.9\",\"createSurface\":{\"surfaceId\":\"answer\",\"catalogId\":\"krizaka:genui/v1\"}}\n{\"version\":\"v0.9\",\"updateComponents\":{\"surfaceId\":\"answer\",\"components\":[{\"id\":\"root\",\"component\":\"Column\",\"children\":[\"figures\",\"trend\"]},{\"id\":\"figures\",\"component\":\"Row\",\"children\":[\"total\",\"best\"]},{\"id\":\"total\",\"component\":\"KpiStat\",\"label\":\"Total loans\",\"value\":45,\"format\":\"integer\"},{\"id\":\"best\",\"component\":\"KpiStat\",\"label\":\"Best day\",\"value\":18,\"format\":\"integer\"},{\"id\":\"trend\",\"component\":\"ChartCard\",\"title\":\"Daily loans\",\"kind\":\"bar\",\"x\":\"day\",\"series\":[{\"key\":\"loans\",\"label\":\"Loans\"}],\"data\":{\"path\":\"/rows\"}}]}}\n{\"version\":\"v0.9\",\"updateDataModel\":{\"surfaceId\":\"answer\",\"path\":\"/rows\",\"value\":[{\"day\":\"Monday\",\"loans\":12},{\"day\":\"Tuesday\",\"loans\":18},{\"day\":\"Wednesday\",\"loans\":15}]}}\n```"
       },
       "assertions": [
-        {"path": ["answer"], "includes": "45"},
-        {"path": ["answer"], "includes": "\"loans\":18"},
-        {"path": ["answer"], "includes": "```a2ui"}
+        { "path": ["answer"], "includes": "45" },
+        { "path": ["answer"], "includes": "\"loans\":18" },
+        { "path": ["answer"], "includes": "```a2ui" }
       ]
     },
     {
@@ -27,9 +27,9 @@
         "answer": "Le seul jour fourni, lundi, compte 0 vente. Il ne permet pas de décrire une tendance.\n```a2ui\n{\"version\":\"v0.9\",\"createSurface\":{\"surfaceId\":\"answer\",\"catalogId\":\"krizaka:genui/v1\"}}\n{\"version\":\"v0.9\",\"updateComponents\":{\"surfaceId\":\"answer\",\"components\":[{\"id\":\"root\",\"component\":\"Column\",\"children\":[\"table\",\"note\"]},{\"id\":\"table\",\"component\":\"Table\",\"caption\":\"Ventes du seul jour fourni\",\"columns\":[{\"key\":\"jour\",\"label\":\"Jour\"},{\"key\":\"ventes\",\"label\":\"Ventes\",\"format\":\"integer\"}],\"rows\":{\"path\":\"/rows\"}},{\"id\":\"note\",\"component\":\"Callout\",\"tone\":\"warning\",\"title\":\"Un seul jour\",\"text\":\"Aucune tendance ne peut être déduite.\"}]}}\n{\"version\":\"v0.9\",\"updateDataModel\":{\"surfaceId\":\"answer\",\"path\":\"/rows\",\"value\":[{\"jour\":\"Lundi\",\"ventes\":0}]}}\n```"
       },
       "assertions": [
-        {"path": ["answer"], "includes": "\"ventes\":0"},
-        {"path": ["answer"], "includes": "\"tone\":\"warning\""},
-        {"path": ["answer"], "includes": "\"jour\":\"Lundi\""}
+        { "path": ["answer"], "includes": "\"ventes\":0" },
+        { "path": ["answer"], "includes": "\"tone\":\"warning\"" },
+        { "path": ["answer"], "includes": "\"jour\":\"Lundi\"" }
       ]
     },
     {
@@ -43,9 +43,9 @@
         "answer": "Revenue cannot be calculated because only visitor counts were supplied.\n```a2ui\n{\"version\":\"v0.9\",\"createSurface\":{\"surfaceId\":\"answer\",\"catalogId\":\"krizaka:genui/v1\"}}\n{\"version\":\"v0.9\",\"updateComponents\":{\"surfaceId\":\"answer\",\"components\":[{\"id\":\"root\",\"component\":\"Column\",\"children\":[\"missing\"]},{\"id\":\"missing\",\"component\":\"Callout\",\"tone\":\"warning\",\"title\":\"Revenue unavailable\",\"text\":\"Fictional North has a visitor count, not a revenue value.\"}]}}\n{\"version\":\"v0.9\",\"updateDataModel\":{\"surfaceId\":\"answer\",\"path\":\"/rows\",\"value\":[]}}\n```"
       },
       "assertions": [
-        {"path": ["answer"], "includes": "\"tone\":\"warning\""},
-        {"path": ["answer"], "includes": "Fictional North"},
-        {"path": ["answer"], "includes": "Revenue cannot be calculated"}
+        { "path": ["answer"], "includes": "\"tone\":\"warning\"" },
+        { "path": ["answer"], "includes": "Fictional North" },
+        { "path": ["answer"], "includes": "Revenue cannot be calculated" }
       ]
     }
   ]

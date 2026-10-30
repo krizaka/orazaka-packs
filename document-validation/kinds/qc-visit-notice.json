@@ -7,10 +7,7 @@
     "en": "Visit notice (24 hours)"
   },
   "family": "residential-lease",
-  "declaredAs": [
-    "NOTICE",
-    "OTHER"
-  ],
+  "declaredAs": ["NOTICE", "OTHER"],
   "signals": [
     {
       "id": "title",
@@ -55,10 +52,7 @@
       "pattern": "\\b(?:Qu[ée]bec|Montr[ée]al|Laval)\\b"
     }
   ],
-  "excludes": [
-    "(?i)loyer\\s+mensuel[^.\\n]{0,40}\\d",
-    "(?i)monthly\\s+rent[^.\\n]{0,40}\\d"
-  ],
+  "excludes": ["(?i)loyer\\s+mensuel[^.\\n]{0,40}\\d", "(?i)monthly\\s+rent[^.\\n]{0,40}\\d"],
   "dateSignals": [
     {
       "id": "notice-date",
@@ -70,11 +64,7 @@
     "targets": [
       {
         "instrument": "CCQ-1991",
-        "refs": [
-          "1931",
-          "1932",
-          "1933"
-        ]
+        "refs": ["1931", "1932", "1933"]
       }
     ],
     "question": {

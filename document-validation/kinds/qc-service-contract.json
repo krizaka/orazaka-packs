@@ -7,9 +7,7 @@
     "en": "Service contract"
   },
   "family": "service-contract",
-  "declaredAs": [
-    "SERVICE_CONTRACT"
-  ],
+  "declaredAs": ["SERVICE_CONTRACT"],
   "signals": [
     {
       "id": "title",
@@ -59,9 +57,7 @@
       "pattern": "\\b(?:Qu[ée]bec|Montr[ée]al|Laval)\\b"
     }
   ],
-  "excludes": [
-    "(?i)\\bbail\\s+de\\s+logement|\\bresidential\\s+lease"
-  ],
+  "excludes": ["(?i)\\bbail\\s+de\\s+logement|\\bresidential\\s+lease"],
   "dateSignals": [
     {
       "id": "signature-date",

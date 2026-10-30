@@ -12,7 +12,11 @@ const pack = read("pack.yaml");
 const listening = JSON.parse(read("listening/listening.json"));
 const fixtures = JSON.parse(read("listening/risk-fixtures.json"));
 
-const fold = (v) => v.normalize("NFD").replace(/\p{M}+/gu, "").toLowerCase();
+const fold = (v) =>
+  v
+    .normalize("NFD")
+    .replace(/\p{M}+/gu, "")
+    .toLowerCase();
 
 /** The crisisTerms of pack.yaml: the list items under `crisisTerms:` until the next key. */
 export function crisisTerms(yaml) {
@@ -48,7 +52,9 @@ test("an apostrophe cue is written with both apostrophes", () => {
 test("every risk fixture is caught, in both languages", () => {
   assert.ok(fixtures.mustTrigger.length >= 10);
   for (const { text, locale } of fixtures.mustTrigger) assert.ok(caught(text), `${locale}: not caught: ${text}`);
-  assert.ok(fixtures.mustTrigger.some((f) => f.locale === "en") && fixtures.mustTrigger.some((f) => f.locale.startsWith("fr")));
+  assert.ok(
+    fixtures.mustTrigger.some((f) => f.locale === "en") && fixtures.mustTrigger.some((f) => f.locale.startsWith("fr")),
+  );
 });
 
 test("an ordinary spoken turn does not raise the crisis panel", () => {
@@ -87,13 +93,19 @@ test("a presence is stylised, says it is an AI, and has a catalogued voice for e
 });
 
 test("each presence has its own voice in each language", () => {
-  for (const lang of ["fr-FR", "en"]) assert.equal(new Set(listening.presences.map((p) => p.voices[lang])).size, listening.presences.length, `two presences share a ${lang} voice`);
+  for (const lang of ["fr-FR", "en"])
+    assert.equal(
+      new Set(listening.presences.map((p) => p.voices[lang])).size,
+      listening.presences.length,
+      `two presences share a ${lang} voice`,
+    );
 });
 
 test("every voice names a licence, and a copyleft one is flagged for review", () => {
   for (const [name, v] of Object.entries(listening.voices)) {
     assert.ok(v.licence, `${name}: no licence`);
-    if (/AGPL|GPL|non-commercial/.test(v.licence)) assert.ok(v.licenceReview, `${name}: copyleft without a review note`);
+    if (/AGPL|GPL|non-commercial/.test(v.licence))
+      assert.ok(v.licenceReview, `${name}: copyleft without a review note`);
   }
   assert.equal(listening.ear.stt.model, "whisper-base");
   assert.ok(listening.ear.stt.maxSeconds <= 30);
@@ -111,7 +123,11 @@ test("the ear and the mouth are Orazaka's: the door is the voice turn under an i
 
 test("the words of the data stay clear of the care vocabulary", () => {
   const never = /\b(therap|psycholog|patient|clinic|diagnos(?!is\b)|treatment|session(?!-)|coach)/i;
-  const strings = JSON.stringify({ ...listening, voices: undefined, conversation: { ...listening.conversation, never: undefined } });
+  const strings = JSON.stringify({
+    ...listening,
+    voices: undefined,
+    conversation: { ...listening.conversation, never: undefined },
+  });
   assert.ok(!never.test(strings), `care vocabulary in listening.json: ${strings.match(never)?.[0]}`);
 });
 
@@ -123,22 +139,42 @@ const block = (key) => {
 
 test("the system prompt tells the model to answer in the person's language, in both languages", () => {
   const prompt = block("systemPrompt");
-  assert.match(prompt, /If they speak English, answer in English from start to\s+finish|answer in English from start to finish/);
+  assert.match(
+    prompt,
+    /If they speak English, answer in English from start to\s+finish|answer in English from start to finish/,
+  );
   assert.match(prompt, /si elle t'écrit ou te parle en anglais, tu réponds en anglais/);
-  assert.match(prompt, /Je suis une IA, un voisin virtuel : ni une personne, ni un professionnel, ni un service d'urgence/);
-  assert.match(prompt, /I'm an AI, a virtual\s+neighbour: not a person, not a professional and not an emergency service/);
+  assert.match(
+    prompt,
+    /Je suis une IA, un voisin virtuel : ni une personne, ni un professionnel, ni un service d'urgence/,
+  );
+  assert.match(
+    prompt,
+    /I'm an AI, a virtual\s+neighbour: not a person, not a professional and not an emergency service/,
+  );
   assert.match(prompt, /never give a phone number/);
 });
 
 test("the English half of the prompt keeps every refusal of the French half", () => {
   const en = block("systemPrompt").split('You are "the neighbour"')[1] ?? "";
-  for (const rule of [/give no advice/, /never name a condition/, /never analyse their mood or feelings/, /never\s+promise an improvement/, /never present yourself as a person/, /never give a phone number/, /One question at a time/]) assert.match(en, rule);
+  for (const rule of [
+    /give no advice/,
+    /never name a condition/,
+    /never analyse their mood or feelings/,
+    /never\s+promise an improvement/,
+    /never present yourself as a person/,
+    /never give a phone number/,
+    /One question at a time/,
+  ])
+    assert.match(en, rule);
   assert.ok(!/\d{3}[- ]?\d{3,4}|\b988\b|\b811\b/.test(en), "the prompt never carries a number");
 });
 
 test("the fixed crisis reply speaks both languages: the original French first, then the English, then the region's line", () => {
   const reply = block("response");
-  assert.ok(reply.startsWith("Je m'arrête là, parce que ce que vous venez d'écrire compte plus que l'exercice en cours."));
+  assert.ok(
+    reply.startsWith("Je m'arrête là, parce que ce que vous venez d'écrire compte plus que l'exercice en cours."),
+  );
   assert.match(reply, /Des personnes formées écoutent, gratuitement et tout de suite :/);
   assert.match(reply, /I'm stopping here, because what you just wrote matters more than the exercise we were doing\./);
   assert.match(reply, /Trained people listen, for free and right away:$/);
@@ -166,5 +202,11 @@ test("session-summary 1.0.1 writes in the person's language and never quotes wha
   assert.match(prompt, /never quote a sentence that does not appear word for word/);
   assert.match(prompt, /tu n'interprètes pas son humeur/, "the earlier refusals are kept");
   assert.match(prompt, /aucun diagnostic/);
-  assert.deepEqual(bp.definition.outputs[0].schema.required, ["themes", "whatHelped", "smallStep", "bringToTherapist", "locale"]);
+  assert.deepEqual(bp.definition.outputs[0].schema.required, [
+    "themes",
+    "whatHelped",
+    "smallStep",
+    "bringToTherapist",
+    "locale",
+  ]);
 });

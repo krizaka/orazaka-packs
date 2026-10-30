@@ -20,7 +20,10 @@ test("no handler of any pack leaves billableCapability empty", () => {
   for (const dir of packs) {
     const pack = YAML.parse(readFileSync(`${root}${dir}/pack.yaml`, "utf8"));
     for (const cap of pack.requires?.capabilities ?? []) {
-      assert.ok(cap.billableCapability, `${dir}: ${cap.key} leaves billableCapability empty (declare NONE if it is not billable)`);
+      assert.ok(
+        cap.billableCapability,
+        `${dir}: ${cap.key} leaves billableCapability empty (declare NONE if it is not billable)`,
+      );
       assert.ok(allowed.includes(cap.billableCapability), `${dir}: ${cap.key}: ${cap.billableCapability}`);
     }
   }

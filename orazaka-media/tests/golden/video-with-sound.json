@@ -11,8 +11,11 @@
         "foley": "Gentle water movement and a faint paper rustle.",
         "seed": "157"
       },
-      "expected": {"video": "asset:video", "silent": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+      "expected": { "video": "asset:video", "silent": "asset:video" },
+      "assertions": [
+        { "path": ["video"], "nonEmpty": true },
+        { "path": ["silent"], "nonEmpty": true }
+      ]
     },
     {
       "id": "french-synthetic-scene-reveal",
@@ -25,8 +28,11 @@
         "foley": "Ambiance de pièce discrète et souffle léger.",
         "seed": "163"
       },
-      "expected": {"video": "asset:video", "silent": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+      "expected": { "video": "asset:video", "silent": "asset:video" },
+      "assertions": [
+        { "path": ["video"], "nonEmpty": true },
+        { "path": ["silent"], "nonEmpty": true }
+      ]
     },
     {
       "id": "square-foley-only-experiment",
@@ -38,8 +44,11 @@
         "foley": "Sparse dry wooden taps with a gentle wind bed; no voices or melody.",
         "seed": "0"
       },
-      "expected": {"video": "asset:video", "silent": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+      "expected": { "video": "asset:video", "silent": "asset:video" },
+      "assertions": [
+        { "path": ["video"], "nonEmpty": true },
+        { "path": ["silent"], "nonEmpty": true }
+      ]
     }
   ]
 }

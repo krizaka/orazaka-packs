@@ -7,10 +7,7 @@
     "en": "Dwelling condition report"
   },
   "family": "residential-lease",
-  "declaredAs": [
-    "CONDITION_REPORT",
-    "OTHER"
-  ],
+  "declaredAs": ["CONDITION_REPORT", "OTHER"],
   "signals": [
     {
       "id": "title",
@@ -67,12 +64,7 @@
     "targets": [
       {
         "instrument": "CCQ-1991",
-        "refs": [
-          "1893",
-          "1900",
-          "1910",
-          "1911"
-        ]
+        "refs": ["1893", "1900", "1910", "1911"]
       }
     ],
     "question": {

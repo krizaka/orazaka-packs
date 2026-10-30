@@ -31,16 +31,8 @@
       "onPass": "La facture porte une date.",
       "onFail": "Aucune date de facture n'est indiquée. Elle fait partie des renseignements exigés de toute pièce justificative, quel que soit le montant.",
       "fixtures": {
-        "pass": [
-          "Date de la facture : 2026-10-12",
-          "Facture émise le 12 octobre 2026",
-          "Invoice date: 12/10/2026"
-        ],
-        "fail": [
-          "Facture n° 2041. Total : 575,00 $",
-          "Date d'échéance : 2026-11-11",
-          "Date à confirmer."
-        ]
+        "pass": ["Date de la facture : 2026-10-12", "Facture émise le 12 octobre 2026", "Invoice date: 12/10/2026"],
+        "fail": ["Facture n° 2041. Total : 575,00 $", "Date d'échéance : 2026-11-11", "Date à confirmer."]
       }
     },
     {
@@ -56,11 +48,7 @@
       "onPass": "Le total à payer est chiffré.",
       "onFail": "Le total à payer n'est pas chiffré en dollars. Il fait partie des renseignements exigés de toute pièce justificative.",
       "fixtures": {
-        "pass": [
-          "Total : 1 149,75 $",
-          "TOTAL $ 1149.75",
-          "Total à payer 575 CAD"
-        ],
+        "pass": ["Total : 1 149,75 $", "TOTAL $ 1149.75", "Total à payer 575 CAD"],
         "fail": [
           "Sous-total : 1 000,00 $",
           "Total à venir",
@@ -83,16 +71,8 @@
       "onPass": "Un numéro de TPS bien formé figure sur la facture.",
       "onFail": "Aucun numéro de TPS bien formé (9 chiffres, RT, 4 chiffres). Pour une facture de 100 $ ou plus, le numéro d'inscription du fournisseur est exigé pour que l'acheteur réclame son crédit de taxe sur les intrants ; il n'est pas exigé en dessous.",
       "fixtures": {
-        "pass": [
-          "TPS : 123456789 RT0001",
-          "N° de TPS 123 456 789RT 0001",
-          "Numéro de TPS/TVH : 123456789RT0002"
-        ],
-        "fail": [
-          "TPS : 52,50 $",
-          "TPS : 12345678RT0001",
-          "Numéro de TPS à venir"
-        ]
+        "pass": ["TPS : 123456789 RT0001", "N° de TPS 123 456 789RT 0001", "Numéro de TPS/TVH : 123456789RT0002"],
+        "fail": ["TPS : 52,50 $", "TPS : 12345678RT0001", "Numéro de TPS à venir"]
       }
     },
     {
@@ -109,16 +89,8 @@
       "onPass": "Aucun numéro de TPS mal formé.",
       "onFail": "Un numéro de TPS est mal formé : il doit compter 9 chiffres, les lettres RT et 4 chiffres. Un numéro faux empêche l'acheteur de réclamer son crédit de taxe sur les intrants.",
       "fixtures": {
-        "pass": [
-          "TPS : 123456789 RT0001",
-          "N° de TPS 123 456 789RT 0001",
-          "Aucun numéro à indiquer."
-        ],
-        "fail": [
-          "TPS : 12345678RT0001",
-          "TPS : 123456789 RT001",
-          "TPS 1234567890RT0001"
-        ]
+        "pass": ["TPS : 123456789 RT0001", "N° de TPS 123 456 789RT 0001", "Aucun numéro à indiquer."],
+        "fail": ["TPS : 12345678RT0001", "TPS : 123456789 RT001", "TPS 1234567890RT0001"]
       }
     },
     {
@@ -135,16 +107,8 @@
       "onPass": "Aucun numéro de TVQ mal formé.",
       "onFail": "Un numéro de TVQ est mal formé : il doit compter 10 chiffres, les lettres TQ et 4 chiffres. Il peut être vérifié auprès de Revenu Québec.",
       "fixtures": {
-        "pass": [
-          "TVQ : 1234567890 TQ0001",
-          "N° de TVQ 1234567890TQ0001",
-          "TPS : 123456789 RT0001"
-        ],
-        "fail": [
-          "TVQ : 123456789 TQ0001",
-          "TVQ : 1234567890 TQ001",
-          "TVQ 12345678901TQ0001"
-        ]
+        "pass": ["TVQ : 1234567890 TQ0001", "N° de TVQ 1234567890TQ0001", "TPS : 123456789 RT0001"],
+        "fail": ["TVQ : 123456789 TQ0001", "TVQ : 1234567890 TQ001", "TVQ 12345678901TQ0001"]
       }
     },
     {
@@ -160,15 +124,8 @@
       "onPass": "Un numéro de TVQ bien formé figure sur la facture.",
       "onFail": "Aucun numéro de TVQ bien formé (10 chiffres, TQ, 4 chiffres). Un fournisseur inscrit à la TVQ le porte d'ordinaire : à demander à qui a émis la facture. Cette règle informe, elle ne conclut pas.",
       "fixtures": {
-        "pass": [
-          "TVQ : 1234567890 TQ 0001",
-          "N° de TVQ 1234567890TQ0001"
-        ],
-        "fail": [
-          "TVQ : 52,50 $",
-          "TVQ : 123456789 TQ0001",
-          "Numéro de TVQ à venir"
-        ]
+        "pass": ["TVQ : 1234567890 TQ 0001", "N° de TVQ 1234567890TQ0001"],
+        "fail": ["TVQ : 52,50 $", "TVQ : 123456789 TQ0001", "Numéro de TVQ à venir"]
       }
     },
     {
@@ -184,17 +141,8 @@
       "onPass": "Les taxes sont indiquées, ou dites incluses.",
       "onFail": "Ni le montant des taxes ni la mention « taxes incluses » ne figurent sur la facture. Pour une facture de 100 $ ou plus, l'un ou l'autre est exigé pour que l'acheteur réclame son crédit de taxe sur les intrants.",
       "fixtures": {
-        "pass": [
-          "TPS (5 %) : 52,50 $",
-          "TVQ 9,975 % : 104,74 $",
-          "Prix, taxes incluses.",
-          "TPS $ 52.50"
-        ],
-        "fail": [
-          "Total : 1 050,00 $",
-          "TPS : 123456789 RT0001",
-          "Taxes à calculer."
-        ]
+        "pass": ["TPS (5 %) : 52,50 $", "TVQ 9,975 % : 104,74 $", "Prix, taxes incluses.", "TPS $ 52.50"],
+        "fail": ["Total : 1 050,00 $", "TPS : 123456789 RT0001", "Taxes à calculer."]
       }
     },
     {
@@ -210,15 +158,8 @@
       "onPass": "Les conditions de paiement sont indiquées.",
       "onFail": "Aucune condition de paiement n'est indiquée. Pour une facture de 500 $ ou plus, elles font partie des renseignements exigés ; en dessous, la règle informe seulement.",
       "fixtures": {
-        "pass": [
-          "Conditions de paiement : net 30 jours",
-          "Payable dans les 30 jours.",
-          "Date d'échéance : 2026-11-11"
-        ],
-        "fail": [
-          "Merci de votre confiance.",
-          "Total : 575,00 $"
-        ]
+        "pass": ["Conditions de paiement : net 30 jours", "Payable dans les 30 jours.", "Date d'échéance : 2026-11-11"],
+        "fail": ["Merci de votre confiance.", "Total : 575,00 $"]
       }
     }
   ]

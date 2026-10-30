@@ -17,12 +17,8 @@
       "onPass": "La visite est prévue entre 9 heures et 21 heures.",
       "onFail": "L'avis fixe une visite avant 9 heures ou après 21 heures ; le locataire peut la refuser, à moins d'une urgence (art. 1932).",
       "fixtures": {
-        "pass": [
-          "La visite aura lieu le 22 octobre à 10 h."
-        ],
-        "fail": [
-          "La visite aura lieu le 22 octobre à 7 h."
-        ]
+        "pass": ["La visite aura lieu le 22 octobre à 10 h."],
+        "fail": ["La visite aura lieu le 22 octobre à 7 h."]
       },
       "law": [
         {

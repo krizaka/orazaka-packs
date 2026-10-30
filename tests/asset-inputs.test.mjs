@@ -12,7 +12,8 @@ for (const pack of readdirSync(root, { withFileTypes: true })) {
   if (!pack.isDirectory() || !existsSync(studios)) continue;
   for (const s of readdirSync(studios)) {
     const file = join(studios, s, "blueprint.json");
-    if (existsSync(file)) blueprints.push({ file: `${pack.name}/studios/${s}`, bp: JSON.parse(readFileSync(file, "utf8")) });
+    if (existsSync(file))
+      blueprints.push({ file: `${pack.name}/studios/${s}`, bp: JSON.parse(readFileSync(file, "utf8")) });
   }
 }
 
@@ -27,7 +28,10 @@ test("every file input declares an asset format and a matching contentMediaType"
   for (const { where, def } of props) {
     const f = def.format;
     if (f === "asset-id") {
-      assert.ok(Object.values(KINDS).includes(def.contentMediaType), `${where}: asset-id needs contentMediaType image/*|video/*|audio/*`);
+      assert.ok(
+        Object.values(KINDS).includes(def.contentMediaType),
+        `${where}: asset-id needs contentMediaType image/*|video/*|audio/*`,
+      );
     } else if (typeof f === "string" && f.startsWith("asset:")) {
       const kind = f.slice("asset:".length);
       assert.ok(KINDS[kind], `${where}: unknown asset kind ${f}`);
@@ -41,7 +45,9 @@ test("every file input declares an asset format and a matching contentMediaType"
 
 test("an input that takes an uploaded file is never left as plain text", () => {
   for (const { where, key, def } of props) {
-    const takesFile = /fichiers? envoy|identifiant d'un (de vos )?fichier|l'identifiant du fichier/i.test(def.description ?? "") || (key === "image" && def.maxLength);
+    const takesFile =
+      /fichiers? envoy|identifiant d'un (de vos )?fichier|l'identifiant du fichier/i.test(def.description ?? "") ||
+      (key === "image" && def.maxLength);
     if (!takesFile) continue;
     assert.ok(def.format?.startsWith("asset"), `${where}: declares no asset format`);
   }

@@ -43,9 +43,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "assetId"
-    ],
+    "required": ["assetId"],
     "properties": {
       "assetId": {
         "type": "string",

@@ -4,7 +4,21 @@
   "description": "A kind of document the pack recognises, as data. `identify` (worker/identify.py) scores each kind by its signals; no model, no code per kind. Patterns are Python regular expressions; a pattern may start with an inline flag such as (?i).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["kindId", "jurisdiction", "label", "family", "declaredAs", "signals", "jurisdictionHints", "excludes", "dateSignals", "asOfFrom", "ruleset", "status", "fixtures"],
+  "required": [
+    "kindId",
+    "jurisdiction",
+    "label",
+    "family",
+    "declaredAs",
+    "signals",
+    "jurisdictionHints",
+    "excludes",
+    "dateSignals",
+    "asOfFrom",
+    "ruleset",
+    "status",
+    "fixtures"
+  ],
   "$defs": {
     "pattern": { "type": "string", "minLength": 1 },
     "weighted": {
@@ -20,7 +34,11 @@
   },
   "properties": {
     "$schema": { "type": "string" },
-    "kindId": { "type": "string", "pattern": "^[a-z]{2}(?:-[a-z]{3})?-[a-z0-9-]+$", "description": "<jurisdiction>-<name>, equal to the file's name." },
+    "kindId": {
+      "type": "string",
+      "pattern": "^[a-z]{2}(?:-[a-z]{3})?-[a-z0-9-]+$",
+      "description": "<jurisdiction>-<name>, equal to the file's name."
+    },
     "jurisdiction": { "type": "string", "pattern": "^[A-Z]{2}(?:-[A-Z]{3})?$" },
     "label": {
       "type": "object",
@@ -33,12 +51,28 @@
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "items": { "type": "string", "enum": ["LEASE", "NOTICE", "CONDITION_REPORT", "INVOICE", "SERVICE_CONTRACT", "OTHER"] },
+      "items": {
+        "type": "string",
+        "enum": ["LEASE", "NOTICE", "CONDITION_REPORT", "INVOICE", "SERVICE_CONTRACT", "OTHER"]
+      },
       "description": "The values of the declared kind (what the user said it is) that agree with this kind."
     },
-    "signals": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/weighted" }, "description": "What the text says when it is this kind. A kind needs at least one of them to be detected." },
-    "jurisdictionHints": { "type": "array", "items": { "$ref": "#/$defs/weighted" }, "description": "Jurisdiction signals: they add to the kind's weight and, when no jurisdiction is declared, name the jurisdiction." },
-    "excludes": { "type": "array", "items": { "$ref": "#/$defs/pattern" }, "description": "A text that matches one is never this kind." },
+    "signals": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "$ref": "#/$defs/weighted" },
+      "description": "What the text says when it is this kind. A kind needs at least one of them to be detected."
+    },
+    "jurisdictionHints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/weighted" },
+      "description": "Jurisdiction signals: they add to the kind's weight and, when no jurisdiction is declared, name the jurisdiction."
+    },
+    "excludes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/pattern" },
+      "description": "A text that matches one is never this kind."
+    },
     "dateSignals": {
       "type": "array",
       "items": {
@@ -47,11 +81,17 @@
         "required": ["id", "pattern"],
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-          "pattern": { "$ref": "#/$defs/pattern", "description": "At least one capturing group; the first group that matched is the date, as written." }
+          "pattern": {
+            "$ref": "#/$defs/pattern",
+            "description": "At least one capturing group; the first group that matched is the date, as written."
+          }
         }
       }
     },
-    "asOfFrom": { "type": ["string", "null"], "description": "The id of the date signal whose date is the `asOf` of the check." },
+    "asOfFrom": {
+      "type": ["string", "null"],
+      "description": "The id of the date signal whose date is the `asOf` of the check."
+    },
     "retrieval": {
       "type": "object",
       "additionalProperties": false,
@@ -66,8 +106,18 @@
             "additionalProperties": false,
             "required": ["instrument", "refs"],
             "properties": {
-              "instrument": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9.-]*$", "description": "The instrument code of the corpus (law_instrument.code), such as CCQ-1991." },
-              "refs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:\\([0-9a-z]+\\))*$" }, "description": "The articles of that instrument, only these are read: nothing outside them reaches the model." }
+              "instrument": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9.-]*$",
+                "description": "The instrument code of the corpus (law_instrument.code), such as CCQ-1991."
+              },
+              "refs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:\\([0-9a-z]+\\))*$" },
+                "description": "The articles of that instrument, only these are read: nothing outside them reaches the model."
+              }
             }
           }
         },
@@ -79,8 +129,15 @@
         }
       }
     },
-    "ruleset": { "type": ["string", "null"], "description": "The ruleset that judges this kind; null while the kind is only KNOWN." },
-    "status": { "type": "string", "enum": ["PROMOTED", "KNOWN", "RETIRED"], "description": "PROMOTED: a ruleset exists. KNOWN: recognised, no ruleset (the run says so). RETIRED: no longer detected." },
+    "ruleset": {
+      "type": ["string", "null"],
+      "description": "The ruleset that judges this kind; null while the kind is only KNOWN."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["PROMOTED", "KNOWN", "RETIRED"],
+      "description": "PROMOTED: a ruleset exists. KNOWN: recognised, no ruleset (the run says so). RETIRED: no longer detected."
+    },
     "fixtures": {
       "type": "array",
       "minItems": 2,
@@ -90,10 +147,18 @@
         "required": ["file", "expect"],
         "properties": {
           "file": { "type": "string", "pattern": "^fixtures/[a-z0-9-]+/[a-z0-9-]+\\.txt$" },
-          "expect": { "type": "string", "enum": ["MATCH", "NO_MATCH"], "description": "MATCH: identify detects this kind. NO_MATCH: it does not." },
+          "expect": {
+            "type": "string",
+            "enum": ["MATCH", "NO_MATCH"],
+            "description": "MATCH: identify detects this kind. NO_MATCH: it does not."
+          },
           "form": { "type": "string", "enum": ["FILLED", "BLANK"] },
           "language": { "type": "string", "enum": ["fr", "en"] },
-          "documentDate": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "The date identify must read (null: none, the blank form)." }
+          "documentDate": {
+            "type": ["string", "null"],
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "The date identify must read (null: none, the blank form)."
+          }
         }
       }
     }

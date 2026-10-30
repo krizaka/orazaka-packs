@@ -8,8 +8,11 @@
         "size": "1024x1280",
         "seed": "17"
       },
-      "expected": {"image": "asset:scene", "seed": "17", "model": "synthetic-image", "generationMs": "125"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "17"}]
+      "expected": { "image": "asset:scene", "seed": "17", "model": "synthetic-image", "generationMs": "125" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "17" }
+      ]
     },
     {
       "id": "french-garden-breakfast",
@@ -18,8 +21,11 @@
         "size": "1360x768",
         "seed": "29"
       },
-      "expected": {"image": "asset:scene", "seed": "29", "model": "synthetic-image", "generationMs": "132"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "29"}]
+      "expected": { "image": "asset:scene", "seed": "29", "model": "synthetic-image", "generationMs": "132" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "29" }
+      ]
     },
     {
       "id": "square-empty-reading-chair",
@@ -28,8 +34,11 @@
         "size": "1024x1024",
         "seed": "0"
       },
-      "expected": {"image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "119"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "0"}]
+      "expected": { "image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "119" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "0" }
+      ]
     }
   ]
 }

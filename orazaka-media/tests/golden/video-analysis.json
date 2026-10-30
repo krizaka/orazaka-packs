@@ -3,41 +3,41 @@
   "cases": [
     {
       "id": "silent-original-square-motion-study",
-      "input": {"assetId": "asset:video"},
+      "input": { "assetId": "asset:video" },
       "expected": {
         "transcript": "",
         "keyframes": 1
       },
       "assertions": [
-        {"path": ["transcript"], "type": "string"},
-        {"path": ["transcript"], "equals": ""},
-        {"path": ["keyframes"], "type": "number"},
-        {"path": ["keyframes"], "atLeast": 1}
+        { "path": ["transcript"], "type": "string" },
+        { "path": ["transcript"], "equals": "" },
+        { "path": ["keyframes"], "type": "number" },
+        { "path": ["keyframes"], "atLeast": 1 }
       ]
     },
     {
       "id": "wordless-original-circle-title-card",
-      "input": {"assetId": "asset:video-two"},
+      "input": { "assetId": "asset:video-two" },
       "expected": {
         "transcript": "",
         "keyframes": 1
       },
       "assertions": [
-        {"path": ["transcript"], "type": "string"},
-        {"path": ["transcript"], "equals": ""},
-        {"path": ["keyframes"], "type": "number"},
-        {"path": ["keyframes"], "atLeast": 1}
+        { "path": ["transcript"], "type": "string" },
+        { "path": ["transcript"], "equals": "" },
+        { "path": ["keyframes"], "type": "number" },
+        { "path": ["keyframes"], "atLeast": 1 }
       ]
     },
     {
       "id": "original-geometric-transition-no-speech",
-      "input": {"assetId": "asset:video-three"},
-      "expected": {"transcript": "", "keyframes": 1},
+      "input": { "assetId": "asset:video-three" },
+      "expected": { "transcript": "", "keyframes": 1 },
       "assertions": [
-        {"path": ["transcript"], "type": "string"},
-        {"path": ["transcript"], "equals": ""},
-        {"path": ["keyframes"], "type": "number"},
-        {"path": ["keyframes"], "atLeast": 1}
+        { "path": ["transcript"], "type": "string" },
+        { "path": ["transcript"], "equals": "" },
+        { "path": ["keyframes"], "type": "number" },
+        { "path": ["keyframes"], "atLeast": 1 }
       ]
     }
   ]

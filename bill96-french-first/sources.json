@@ -2,8 +2,28 @@
   "note": "References only. No text of any statute is reproduced in this repository: the wording of Québec statutes is not pinned here (licence question, krizaka/orazaka#393). Each reference is checked by the client's legal counsel before the pack is sold (krizaka/.github#22).",
   "verifiedBy": null,
   "references": [
-    { "id": "charter-french-language", "title": "Charter of the French language", "citation": "RLRQ, c. C-11", "sections": [], "usedFor": ["the French-first requirement for contracts, commercial communications, products, websites and employee documents"] },
-    { "id": "bill-96", "title": "An Act respecting French, the official and common language of Québec", "citation": "S.Q. 2022, c. 14", "sections": [], "usedFor": ["the amending act"] },
-    { "id": "oqlf", "title": "Office québécois de la langue française: recommended usage and Grand dictionnaire terminologique", "citation": "https://www.oqlf.gouv.qc.ca", "sections": [], "usedFor": ["terminology sources named in every glossary"] }
+    {
+      "id": "charter-french-language",
+      "title": "Charter of the French language",
+      "citation": "RLRQ, c. C-11",
+      "sections": [],
+      "usedFor": [
+        "the French-first requirement for contracts, commercial communications, products, websites and employee documents"
+      ]
+    },
+    {
+      "id": "bill-96",
+      "title": "An Act respecting French, the official and common language of Québec",
+      "citation": "S.Q. 2022, c. 14",
+      "sections": [],
+      "usedFor": ["the amending act"]
+    },
+    {
+      "id": "oqlf",
+      "title": "Office québécois de la langue française: recommended usage and Grand dictionnaire terminologique",
+      "citation": "https://www.oqlf.gouv.qc.ca",
+      "sections": [],
+      "usedFor": ["terminology sources named in every glossary"]
+    }
   ]
 }

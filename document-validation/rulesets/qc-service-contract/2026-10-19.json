@@ -108,10 +108,7 @@
           "Signature du prestataire : ______",
           "Signed by both parties."
         ],
-        "fail": [
-          "Le prestataire livre le site au plus tard le 1er décembre.",
-          "Le prix est de 4 000 $."
-        ]
+        "fail": ["Le prestataire livre le site au plus tard le 1er décembre.", "Le prix est de 4 000 $."]
       }
     }
   ]

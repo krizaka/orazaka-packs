@@ -86,7 +86,12 @@ test("each Studio is a published blueprint over existing capabilities, labelled 
 test("closed choices are chosen, never typed (no free-text model, languages are an enum)", () => {
   for (const key of STUDIOS) {
     const props = blueprint(key).inputSchema.properties;
-    if (props.model) assert.deepEqual(props.model["x-options"], { source: "models", category: "chat" }, `${key}: a model is picked from the catalogue, never typed`);
+    if (props.model)
+      assert.deepEqual(
+        props.model["x-options"],
+        { source: "models", category: "chat" },
+        `${key}: a model is picked from the catalogue, never typed`,
+      );
     assert.deepEqual(props.language.enum, ["en", "fr"]);
   }
 });
@@ -97,13 +102,15 @@ test("video understanding looks at a keyframe, then answers in JSON with safety 
   assert.equal(blueprint("video-understanding").inputSchema.properties.assetId.contentMediaType, "image/*");
   assert.equal(read.featureKey, "orazaka.core.chat.completion");
   assert.deepEqual(read.dependsOn, [see.id]);
-  for (const word of ["JSON", "topics", "tags", "safetyLabels", "never decide"]) assert.ok(read.inputs.prompt.includes(word), word);
+  for (const word of ["JSON", "topics", "tags", "safetyLabels", "never decide"])
+    assert.ok(read.inputs.prompt.includes(word), word);
 });
 
 test("creator suggestions are proposals the creator approves, from the creator's own text", () => {
   const [step] = blueprint("creator-suggestions").definition.steps;
   assert.equal(step.featureKey, "orazaka.core.chat.completion");
-  for (const word of ["JSON", "titles", "tags", "creator approves", "{{inputs.title}}"]) assert.ok(step.inputs.prompt.includes(word), word);
+  for (const word of ["JSON", "titles", "tags", "creator approves", "{{inputs.title}}"])
+    assert.ok(step.inputs.prompt.includes(word), word);
 });
 
 test("the pack never handles a raw identity: its docs state the pseudonym rule (Loi 25)", () => {
@@ -115,11 +122,23 @@ test("data-driven UI (ADR-082): one LLM step that answers in A2UI v0.9 with the 
   const [step] = blueprint("data-driven-ui").definition.steps;
   assert.equal(step.featureKey, "orazaka.core.chat.completion");
   const prompt = step.inputs.prompt;
-  for (const words of ["```a2ui", "\"version\":\"v0.9\"", "krizaka:genui/v1", "createSurface", "updateComponents", "updateDataModel", "\"id\":\"root\"", "ONE line", "complete, valid example"]) {
+  for (const words of [
+    "```a2ui",
+    '"version":"v0.9"',
+    "krizaka:genui/v1",
+    "createSurface",
+    "updateComponents",
+    "updateDataModel",
+    '"id":"root"',
+    "ONE line",
+    "complete, valid example",
+  ]) {
     assert.ok(prompt.includes(words), words);
   }
-  for (const component of ["Column", "Row", "Text", "Callout", "KpiStat", "ChartCard", "Table"]) assert.ok(prompt.includes(`"component":"${component}"`), component);
-  for (const rule of ["never invent", "No other component", "no HTML, no URL, no code"]) assert.ok(prompt.includes(rule), rule);
+  for (const component of ["Column", "Row", "Text", "Callout", "KpiStat", "ChartCard", "Table"])
+    assert.ok(prompt.includes(`"component":"${component}"`), component);
+  for (const rule of ["never invent", "No other component", "no HTML, no URL, no code"])
+    assert.ok(prompt.includes(rule), rule);
   const props = blueprint("data-driven-ui").inputSchema.properties;
   assert.equal(props.question.maxLength, 20000);
   // Launchable from the chat bar: one step, one required prose input — the message, data pasted in it or not.

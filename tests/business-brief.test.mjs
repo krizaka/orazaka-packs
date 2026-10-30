@@ -20,7 +20,16 @@ test("the inputs are aggregates only: no client, no history, no price", () => {
 
 test("the prompt forbids names, history, prices and invented deadlines, and uses OQLF vocabulary", () => {
   const prompt = step.inputs.prompt;
-  for (const must of ["aggregates only", "Never include a client name", "a greeting by name", "history", "a price, a discount or an invented deadline", "OQLF", "Output only the message"]) assert.ok(prompt.includes(must), must);
+  for (const must of [
+    "aggregates only",
+    "Never include a client name",
+    "a greeting by name",
+    "history",
+    "a price, a discount or an invented deadline",
+    "OQLF",
+    "Output only the message",
+  ])
+    assert.ok(prompt.includes(must), must);
   assert.match(prompt, /sms: at most 160 characters/);
   assert.match(prompt, /push: at most 90 characters/);
 });
@@ -32,13 +41,17 @@ test("one step, one attempt, a short timeout, so the product's port can wait for
   assert.equal(contract.timeoutMs, 30000);
   assert.match(contract.fallback, /bilingual template/);
   const declared = Object.keys(props);
-  for (const m of String(step.inputs.prompt).matchAll(/\{\{inputs\.([A-Za-z0-9]+)/g)) assert.ok(declared.includes(m[1]), `unknown input ${m[1]}`);
+  for (const m of String(step.inputs.prompt).matchAll(/\{\{inputs\.([A-Za-z0-9]+)/g))
+    assert.ok(declared.includes(m[1]), `unknown input ${m[1]}`);
 });
 
 test("the recorded contract request is valid for the Studio and its response carries the output and the run id the product keeps", () => {
   const validate = new Ajv({ strict: false, validateFormats: false }).compile(blueprint.inputSchema);
   assert.ok(validate(contract.request.input), JSON.stringify(validate.errors));
-  assert.deepEqual(Object.keys(contract.response.outputs), blueprint.definition.outputs.map((o) => o.key));
+  assert.deepEqual(
+    Object.keys(contract.response.outputs),
+    blueprint.definition.outputs.map((o) => o.key),
+  );
   assert.match(contract.response.runId, /^run_[A-Za-z0-9]+$/);
   assert.match(contract.kept, /runId is stored with the sent message/);
   const message = contract.response.outputs.invitation;

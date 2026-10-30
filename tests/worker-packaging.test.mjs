@@ -19,12 +19,19 @@ function packaged() {
   const copy = join(dir, "orazaka-packs");
   cpSync(ROOT, copy, { recursive: true, filter: (src) => !/[\\/](\.git|node_modules)([\\/]|$)/.test(src) });
   mkdirSync(join(dir, "stubs", "pika"), { recursive: true });
-  writeFileSync(join(dir, "stubs", "pika", "__init__.py"), "# stub: the broker module only needs the name at import time\n");
+  writeFileSync(
+    join(dir, "stubs", "pika", "__init__.py"),
+    "# stub: the broker module only needs the name at import time\n",
+  );
   return { dir, copy };
 }
 
 const python = (cwd, dir, code) =>
-  spawnSync("python3", ["-c", code], { cwd, env: { PATH: process.env.PATH, PYTHONPATH: join(dir, "stubs"), PYTHONDONTWRITEBYTECODE: "1" }, encoding: "utf8" });
+  spawnSync("python3", ["-c", code], {
+    cwd,
+    env: { PATH: process.env.PATH, PYTHONPATH: join(dir, "stubs"), PYTHONDONTWRITEBYTECODE: "1" },
+    encoding: "utf8",
+  });
 
 test("there are pack workers to check", () => {
   assert.ok(workers.length >= 4, `found ${workers.join(", ")}`);
@@ -34,8 +41,16 @@ test("every worker's broker resolves worker_broker from the packaged repository 
   const { dir, copy } = packaged();
   try {
     for (const pack of workers) {
-      const run = python(join(copy, pack, "worker"), dir, "import broker, worker_broker; assert broker.connection_parameters is worker_broker.connection_parameters");
-      assert.equal(run.status, 0, `${pack}/worker/broker.py does not find worker-common/worker_broker.py in the packaged form:\n${run.stderr}`);
+      const run = python(
+        join(copy, pack, "worker"),
+        dir,
+        "import broker, worker_broker; assert broker.connection_parameters is worker_broker.connection_parameters",
+      );
+      assert.equal(
+        run.status,
+        0,
+        `${pack}/worker/broker.py does not find worker-common/worker_broker.py in the packaged form:\n${run.stderr}`,
+      );
     }
   } finally {
     rmSync(dir, { recursive: true, force: true });

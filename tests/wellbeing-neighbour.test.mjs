@@ -21,9 +21,23 @@ const prompt = block("systemPrompt");
 const [fr, en] = prompt.split('You are "the neighbour"');
 
 // The wellbeing lexicon: none of these in a text, ours or a model's.
-const FORBIDDEN = [/th[ée]rap/i, /\bpsy/i, /soigne|\bsoins?\b|\bcare\b|\bcure\b|gu[ée]ri/i, /\btreat/i, /traitement/i, /diagnos/i, /clinic/i, /m[ée]dic/i, /\bpatient/i, /s[ée]ance|\bsession/i, /coach/i, /bien-?[êe]tre|wellbeing/i];
+const FORBIDDEN = [
+  /th[ée]rap/i,
+  /\bpsy/i,
+  /soigne|\bsoins?\b|\bcare\b|\bcure\b|gu[ée]ri/i,
+  /\btreat/i,
+  /traitement/i,
+  /diagnos/i,
+  /clinic/i,
+  /m[ée]dic/i,
+  /\bpatient/i,
+  /s[ée]ance|\bsession/i,
+  /coach/i,
+  /bien-?[êe]tre|wellbeing/i,
+];
 const sentences = (t) => t.split(/(?<=[.!?…])\s+/).filter(Boolean);
-const ADVICE = /\b(tu devrais|tu dois|il faut que tu|essaie de|you should|you must|you need to|try to|make sure you)\b/i;
+const ADVICE =
+  /\b(tu devrais|tu dois|il faut que tu|essaie de|you should|you must|you need to|try to|make sure you)\b/i;
 
 test("the prompt is the neighbour's, in both languages, and says it is an AI", () => {
   assert.ok(fr && en, "a French half and an English half");
@@ -82,8 +96,14 @@ const groups = ["loop", "askForTheAnswer", "lastExchange", "healthQuestion"];
 
 test("each behaviour has a French and an English fixture", () => {
   for (const g of groups) {
-    assert.ok(fixtures[g].some((f) => f.locale.startsWith("fr")), `${g}: no French fixture`);
-    assert.ok(fixtures[g].some((f) => f.locale === "en"), `${g}: no English fixture`);
+    assert.ok(
+      fixtures[g].some((f) => f.locale.startsWith("fr")),
+      `${g}: no French fixture`,
+    );
+    assert.ok(
+      fixtures[g].some((f) => f.locale === "en"),
+      `${g}: no English fixture`,
+    );
   }
 });
 
@@ -99,9 +119,16 @@ test("every example reply is short, free of advice, of the care vocabulary and o
 });
 
 test("the examples show the behaviours: another angle, « I don't know, but you'll find it » + an anecdote, a warm close", () => {
-  for (const { locale, reply } of fixtures.loop) assert.match(reply, locale === "en" ? /Maybe there is another angle\.\.\./ : /Peut-être qu'il y a une autre piste\.\.\./);
+  for (const { locale, reply } of fixtures.loop)
+    assert.match(
+      reply,
+      locale === "en" ? /Maybe there is another angle\.\.\./ : /Peut-être qu'il y a une autre piste\.\.\./,
+    );
   for (const { locale, reply } of fixtures.askForTheAnswer) {
-    assert.match(reply, locale === "en" ? /^I don't know, but you'll find it\./ : /^Je ne sais pas, mais tu trouveras\./);
+    assert.match(
+      reply,
+      locale === "en" ? /^I don't know, but you'll find it\./ : /^Je ne sais pas, mais tu trouveras\./,
+    );
     assert.ok(sentences(reply).length >= 2, "an anecdote or a joke follows");
   }
   for (const { locale, reply, context } of fixtures.lastExchange) {
@@ -109,5 +136,6 @@ test("the examples show the behaviours: another angle, « I don't know, but you'
     assert.match(reply, locale === "en" ? /goodbye|safe travels|pleasure/i : /bonne route|plaisir/i);
     assert.ok(!reply.includes("?"), `${locale}: the close asks nothing`);
   }
-  for (const { locale, reply } of fixtures.healthQuestion) assert.match(reply, locale === "en" ? /not my department/ : /pas mon rayon/);
+  for (const { locale, reply } of fixtures.healthQuestion)
+    assert.match(reply, locale === "en" ? /not my department/ : /pas mon rayon/);
 });

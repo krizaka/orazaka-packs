@@ -19,8 +19,14 @@ test("golden coverage exceptions only decrease against the PR base", () => {
   if (base) assert.match(base, /^[0-9a-f]{40}$/);
   let previous = ["document-validation/compliance-check", "document-validation/document-authenticity"];
   if (base) {
-    const files = execFileSync("git", ["ls-tree", "--name-only", base, "--", "golden-ratchet.json"], { cwd: root, encoding: "utf8" });
-    if (files.trim()) previous = JSON.parse(execFileSync("git", ["show", `${base}:golden-ratchet.json`], { cwd: root, encoding: "utf8" })).exceptions;
+    const files = execFileSync("git", ["ls-tree", "--name-only", base, "--", "golden-ratchet.json"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    if (files.trim())
+      previous = JSON.parse(
+        execFileSync("git", ["show", `${base}:golden-ratchet.json`], { cwd: root, encoding: "utf8" }),
+      ).exceptions;
   }
   checkRatchet(ratchet.exceptions, previous);
 });

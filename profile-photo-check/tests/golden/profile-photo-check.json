@@ -16,22 +16,36 @@
           "rulesetId": "profile-photo",
           "rulesetVersion": "2026-10-17",
           "rulesetRevision": 1,
-          "photos": [{"index": 0, "kind": "NO_FACE", "faceCount": 0, "findings": [{"code": "UNVERIFIED", "severity": "INFO"}]}],
-          "identity": {"status": "NOT_COMPARED", "compared": 0},
-          "counts": {"photos": 1, "facePhotos": 0, "required": {"minPhotos": 4, "maxPhotos": 6, "minFacePhotos": 2}},
+          "photos": [
+            {
+              "index": 0,
+              "kind": "NO_FACE",
+              "faceCount": 0,
+              "findings": [{ "code": "UNVERIFIED", "severity": "INFO" }]
+            }
+          ],
+          "identity": { "status": "NOT_COMPARED", "compared": 0 },
+          "counts": {
+            "photos": 1,
+            "facePhotos": 0,
+            "required": { "minPhotos": 4, "maxPhotos": 6, "minFacePhotos": 2 }
+          },
           "passes": false,
-          "blockers": [{"code": "TOO_FEW_PHOTOS", "photos": []}, {"code": "TOO_FEW_FACE_PHOTOS", "photos": []}],
+          "blockers": [
+            { "code": "TOO_FEW_PHOTOS", "photos": [] },
+            { "code": "TOO_FEW_FACE_PHOTOS", "photos": [] }
+          ],
           "limits": ["FACE_IDENTITY_IS_A_MISMATCH_DETECTOR", "NO_CELEBRITY_RECOGNITION", "MODEL_ANSWERS_CAN_BE_WRONG"]
         },
         "passes": "false"
       },
       "assertions": [
-        {"path": ["report", "passes"], "equals": false},
-        {"path": ["report", "blockers", 0, "code"], "equals": "TOO_FEW_PHOTOS"},
-        {"path": ["report", "blockers", 1, "code"], "equals": "TOO_FEW_FACE_PHOTOS"},
-        {"path": ["report", "photos", 0, "kind"], "equals": "NO_FACE"},
-        {"path": ["report", "identity"], "equals": {"status": "NOT_COMPARED", "compared": 0}},
-        {"path": ["report", "limits"], "includes": "NO_CELEBRITY_RECOGNITION"}
+        { "path": ["report", "passes"], "equals": false },
+        { "path": ["report", "blockers", 0, "code"], "equals": "TOO_FEW_PHOTOS" },
+        { "path": ["report", "blockers", 1, "code"], "equals": "TOO_FEW_FACE_PHOTOS" },
+        { "path": ["report", "photos", 0, "kind"], "equals": "NO_FACE" },
+        { "path": ["report", "identity"], "equals": { "status": "NOT_COMPARED", "compared": 0 } },
+        { "path": ["report", "limits"], "includes": "NO_CELEBRITY_RECOGNITION" }
       ]
     },
     {
@@ -49,23 +63,30 @@
           "rulesetId": "profile-photo",
           "rulesetVersion": "2026-10-17",
           "rulesetRevision": 1,
-          "photos": [{"index": 0, "kind": "NO_FACE", "faceCount": 0, "findings": []}, {"index": 1, "kind": "NO_FACE", "faceCount": 0, "findings": []}],
-          "identity": {"status": "NOT_COMPARABLE", "compared": 0},
-          "counts": {"photos": 2, "facePhotos": 0, "required": {"minPhotos": 2, "maxPhotos": 4, "minFacePhotos": 1}},
+          "photos": [
+            { "index": 0, "kind": "NO_FACE", "faceCount": 0, "findings": [] },
+            { "index": 1, "kind": "NO_FACE", "faceCount": 0, "findings": [] }
+          ],
+          "identity": { "status": "NOT_COMPARABLE", "compared": 0 },
+          "counts": {
+            "photos": 2,
+            "facePhotos": 0,
+            "required": { "minPhotos": 2, "maxPhotos": 4, "minFacePhotos": 1 }
+          },
           "passes": false,
-          "blockers": [{"code": "TOO_FEW_FACE_PHOTOS", "photos": []}],
+          "blockers": [{ "code": "TOO_FEW_FACE_PHOTOS", "photos": [] }],
           "limits": ["FACE_IDENTITY_IS_A_MISMATCH_DETECTOR", "NO_CELEBRITY_RECOGNITION", "MODEL_ANSWERS_CAN_BE_WRONG"]
         },
         "passes": "false"
       },
       "assertions": [
-        {"path": ["report", "passes"], "equals": false},
-        {"path": ["report", "blockers", 0, "code"], "equals": "TOO_FEW_FACE_PHOTOS"},
-        {"path": ["report", "counts", "photos"], "equals": 2},
-        {"path": ["report", "counts", "facePhotos"], "equals": 0},
-        {"path": ["report", "photos", 1, "kind"], "equals": "NO_FACE"},
-        {"path": ["report", "identity"], "equals": {"status": "NOT_COMPARABLE", "compared": 0}},
-        {"path": ["report", "limits"], "includes": "FACE_IDENTITY_IS_A_MISMATCH_DETECTOR"}
+        { "path": ["report", "passes"], "equals": false },
+        { "path": ["report", "blockers", 0, "code"], "equals": "TOO_FEW_FACE_PHOTOS" },
+        { "path": ["report", "counts", "photos"], "equals": 2 },
+        { "path": ["report", "counts", "facePhotos"], "equals": 0 },
+        { "path": ["report", "photos", 1, "kind"], "equals": "NO_FACE" },
+        { "path": ["report", "identity"], "equals": { "status": "NOT_COMPARABLE", "compared": 0 } },
+        { "path": ["report", "limits"], "includes": "FACE_IDENTITY_IS_A_MISMATCH_DETECTOR" }
       ]
     },
     {
@@ -83,23 +104,33 @@
           "rulesetId": "profile-photo",
           "rulesetVersion": "2026-10-17",
           "rulesetRevision": 1,
-          "photos": [{"index": 0, "kind": "NO_FACE", "faceCount": 0, "findings": []}, {"index": 1, "kind": "NO_FACE", "faceCount": 0, "findings": []}],
-          "identity": {"status": "NOT_COMPARED", "compared": 0},
-          "counts": {"photos": 2, "facePhotos": 0, "required": {"minPhotos": 1, "maxPhotos": 1, "minFacePhotos": 1}},
+          "photos": [
+            { "index": 0, "kind": "NO_FACE", "faceCount": 0, "findings": [] },
+            { "index": 1, "kind": "NO_FACE", "faceCount": 0, "findings": [] }
+          ],
+          "identity": { "status": "NOT_COMPARED", "compared": 0 },
+          "counts": {
+            "photos": 2,
+            "facePhotos": 0,
+            "required": { "minPhotos": 1, "maxPhotos": 1, "minFacePhotos": 1 }
+          },
           "passes": false,
-          "blockers": [{"code": "TOO_MANY_PHOTOS", "photos": []}, {"code": "TOO_FEW_FACE_PHOTOS", "photos": []}],
+          "blockers": [
+            { "code": "TOO_MANY_PHOTOS", "photos": [] },
+            { "code": "TOO_FEW_FACE_PHOTOS", "photos": [] }
+          ],
           "limits": ["FACE_IDENTITY_IS_A_MISMATCH_DETECTOR", "NO_CELEBRITY_RECOGNITION", "MODEL_ANSWERS_CAN_BE_WRONG"]
         },
         "passes": "false"
       },
       "assertions": [
-        {"path": ["report", "passes"], "equals": false},
-        {"path": ["report", "blockers", 0, "code"], "equals": "TOO_MANY_PHOTOS"},
-        {"path": ["report", "blockers", 1, "code"], "equals": "TOO_FEW_FACE_PHOTOS"},
-        {"path": ["report", "counts", "required", "maxPhotos"], "equals": 1},
-        {"path": ["report", "photos", 0, "faceCount"], "equals": 0},
-        {"path": ["report", "identity"], "equals": {"status": "NOT_COMPARED", "compared": 0}},
-        {"path": ["report", "limits"], "includes": "MODEL_ANSWERS_CAN_BE_WRONG"}
+        { "path": ["report", "passes"], "equals": false },
+        { "path": ["report", "blockers", 0, "code"], "equals": "TOO_MANY_PHOTOS" },
+        { "path": ["report", "blockers", 1, "code"], "equals": "TOO_FEW_FACE_PHOTOS" },
+        { "path": ["report", "counts", "required", "maxPhotos"], "equals": 1 },
+        { "path": ["report", "photos", 0, "faceCount"], "equals": 0 },
+        { "path": ["report", "identity"], "equals": { "status": "NOT_COMPARED", "compared": 0 } },
+        { "path": ["report", "limits"], "includes": "MODEL_ANSWERS_CAN_BE_WRONG" }
       ]
     }
   ]

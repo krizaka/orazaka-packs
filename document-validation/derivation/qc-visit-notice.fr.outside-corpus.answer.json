@@ -15,13 +15,8 @@
       "onPass": "L'avis annonce un préavis de 24 heures.",
       "onFail": "L'avis n'annonce pas de préavis de 24 heures. Le locateur doit le donner, à moins d'une urgence (art. 1931).",
       "fixtures": {
-        "pass": [
-          "Le locateur vous donne un préavis de 24 heures avant la visite.",
-          "Préavis : vingt-quatre heures."
-        ],
-        "fail": [
-          "Le locateur visitera le logement demain matin."
-        ]
+        "pass": ["Le locateur vous donne un préavis de 24 heures avant la visite.", "Préavis : vingt-quatre heures."],
+        "fail": ["Le locateur visitera le logement demain matin."]
       },
       "law": [
         {
@@ -51,9 +46,7 @@
           "Le locateur souhaite faire visiter le logement par un acquéreur éventuel.",
           "Objet : vérifier l'état du logement."
         ],
-        "fail": [
-          "Le locateur passera au logement."
-        ]
+        "fail": ["Le locateur passera au logement."]
       },
       "law": [
         {

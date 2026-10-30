@@ -60,9 +60,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "video"
-    ],
+    "required": ["video"],
     "properties": {
       "video": {
         "type": "string",
@@ -122,9 +120,7 @@
       },
       "foleyModel": {
         "type": "string",
-        "enum": [
-          "mmaudio-large-44k-v2"
-        ],
+        "enum": ["mmaudio-large-44k-v2"],
         "title": "Modèle de bruitage (facultatif)",
         "description": "Ajoute des bruitages (licence non commerciale). Vide : pas de bruitage.",
         "x-advanced": true,

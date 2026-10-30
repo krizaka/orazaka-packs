@@ -3,29 +3,29 @@
   "cases": [
     {
       "id": "silent-fictional-workshop-room-bed",
-      "input": {"assetId": "asset:audio"},
-      "expected": {"transcript": ""},
+      "input": { "assetId": "asset:audio" },
+      "expected": { "transcript": "" },
       "assertions": [
-        {"path": ["transcript"], "type": "string"},
-        {"path": ["transcript"], "equals": ""}
+        { "path": ["transcript"], "type": "string" },
+        { "path": ["transcript"], "equals": "" }
       ]
     },
     {
       "id": "wordless-fictional-installation-tone",
-      "input": {"assetId": "asset:audio-two"},
-      "expected": {"transcript": ""},
+      "input": { "assetId": "asset:audio-two" },
+      "expected": { "transcript": "" },
       "assertions": [
-        {"path": ["transcript"], "type": "string"},
-        {"path": ["transcript"], "equals": ""}
+        { "path": ["transcript"], "type": "string" },
+        { "path": ["transcript"], "equals": "" }
       ]
     },
     {
       "id": "short-electronic-transition-no-speech",
-      "input": {"assetId": "asset:audio-three"},
-      "expected": {"transcript": ""},
+      "input": { "assetId": "asset:audio-three" },
+      "expected": { "transcript": "" },
       "assertions": [
-        {"path": ["transcript"], "type": "string"},
-        {"path": ["transcript"], "equals": ""}
+        { "path": ["transcript"], "type": "string" },
+        { "path": ["transcript"], "equals": "" }
       ]
     }
   ]

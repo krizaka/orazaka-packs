@@ -21,9 +21,7 @@
           "Le locateur souhaite faire visiter le logement par un acquéreur éventuel.",
           "Objet : vérifier l'état du logement."
         ],
-        "fail": [
-          "Le locateur passera au logement."
-        ]
+        "fail": ["Le locateur passera au logement."]
       },
       "law": [
         {

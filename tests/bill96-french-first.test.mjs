@@ -14,10 +14,14 @@ const blueprints = Object.fromEntries(STUDIOS.map((k) => [k, JSON.parse(read(`st
 const steps = Object.values(blueprints).flatMap((bp) => bp.definition.steps);
 
 test("the manifest ships the four Studios in the business-compliance shelf, sensitive, guarded, priced", () => {
-  assert.deepEqual(manifest.studios.map((s) => s.key), STUDIOS);
+  assert.deepEqual(
+    manifest.studios.map((s) => s.key),
+    STUDIOS,
+  );
   assert.equal(manifest.catalog.categoryKey, "business-compliance");
   assert.equal(manifest.regulatoryClass, "SENSITIVE");
-  for (const term of ["traduction certifiée", "certified translation", "legal advice"]) assert.ok(manifest.scopeGuard.refusedTerms.includes(term), term);
+  for (const term of ["traduction certifiée", "certified translation", "legal advice"])
+    assert.ok(manifest.scopeGuard.refusedTerms.includes(term), term);
   assert.ok(manifest.pricing.priceCents > 0 && manifest.pricing.includedCredits > 0);
 });
 
@@ -35,7 +39,8 @@ test("terminology sources are named and a legal term is never invented, nor a st
     assert.match(step.inputs.prompt, /Never invent a legal term/, step.id);
     assert.match(step.inputs.prompt, /Never quote a statute/, step.id);
   }
-  for (const ref of sources.references) assert.deepEqual(Object.keys(ref).sort(), ["citation", "id", "sections", "title", "usedFor"]);
+  for (const ref of sources.references)
+    assert.deepEqual(Object.keys(ref).sort(), ["citation", "id", "sections", "title", "usedFor"]);
   assert.equal(sources.verifiedBy, null);
 });
 
@@ -48,11 +53,17 @@ test("the firm glossary is the plain form the other Studios take as their glossa
 });
 
 test("the consistency check never decides which version prevails", () => {
-  assert.match(blueprints["bilingual-consistency-check"].definition.steps[1].inputs.prompt, /Do not decide which version prevails/);
+  assert.match(
+    blueprints["bilingual-consistency-check"].definition.steps[1].inputs.prompt,
+    /Do not decide which version prevails/,
+  );
 });
 
 test("French leads where Bill 96 asks it: the copy Studio writes French first, English kept after", () => {
-  assert.match(blueprints["french-first-copy"].definition.steps[0].inputs.prompt, /write the French first, then keep the English equivalent/);
+  assert.match(
+    blueprints["french-first-copy"].definition.steps[0].inputs.prompt,
+    /write the French first, then keep the English equivalent/,
+  );
 });
 
 test("no public wording of a legal rule, no escrow, no hosted model", () => {
@@ -62,6 +73,7 @@ test("no public wording of a legal rule, no escrow, no hosted model", () => {
 });
 
 test("the catalogue and the golden cases cover the same Studios", () => {
-  for (const lang of ["en", "fr"]) assert.deepEqual(Object.keys(YAML.parse(read(`i18n/${lang}.yaml`)).studios).sort(), [...STUDIOS].sort());
+  for (const lang of ["en", "fr"])
+    assert.deepEqual(Object.keys(YAML.parse(read(`i18n/${lang}.yaml`)).studios).sort(), [...STUDIOS].sort());
   assert.deepEqual(readdirSync(`${root}tests/golden`).sort(), STUDIOS.map((k) => `${k}.json`).sort());
 });

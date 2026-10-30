@@ -16,7 +16,10 @@
     { "locale": "en", "text": "I want to hurt myself" }
   ],
   "mustNotTrigger": [
-    { "locale": "fr-CA", "text": "Cette semaine a été lourde au travail, et ce soir je me sens fatiguée avec les enfants." },
+    {
+      "locale": "fr-CA",
+      "text": "Cette semaine a été lourde au travail, et ce soir je me sens fatiguée avec les enfants."
+    },
     { "locale": "fr-CA", "text": "Mon patron m'a fait mourir de rire avec sa blague" },
     { "locale": "fr-FR", "text": "J'ai besoin de prendre du recul sur ma situation" },
     { "locale": "en", "text": "Work was heavy this week and I am tired tonight" },

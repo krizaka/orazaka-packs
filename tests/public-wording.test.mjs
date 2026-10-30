@@ -10,14 +10,20 @@ const packs = readdirSync(root, { withFileTypes: true })
   .filter((d) => d.isDirectory() && existsSync(`${root}${d.name}/pack.yaml`))
   .map((d) => d.name);
 const FORBIDDEN = /règles juridiques|legal rules|séquestre|escrow/i;
-const COUNSEL = { fr: "outils techniques validés par le conseiller juridique du client", en: "technical tools validated by the client's legal counsel" };
+const COUNSEL = {
+  fr: "outils techniques validés par le conseiller juridique du client",
+  en: "technical tools validated by the client's legal counsel",
+};
 const LEGAL_PACKS = ["document-validation", "privacy-law25", "bill96-french-first"];
 
 const words = (v) => (typeof v === "string" ? [v] : v && typeof v === "object" ? Object.values(v).flatMap(words) : []);
 
 for (const pack of packs) {
   test(`${pack}: no forbidden wording in the manifest or the catalogues`, () => {
-    const files = [`${pack}/pack.yaml`, ...["en", "fr"].map((l) => `${pack}/i18n/${l}.yaml`).filter((f) => existsSync(root + f))];
+    const files = [
+      `${pack}/pack.yaml`,
+      ...["en", "fr"].map((l) => `${pack}/i18n/${l}.yaml`).filter((f) => existsSync(root + f)),
+    ];
     for (const f of files) {
       const hits = words(YAML.parse(readFileSync(root + f, "utf8"))).filter((s) => FORBIDDEN.test(s));
       assert.deepEqual(hits, [], f);

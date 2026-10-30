@@ -41,11 +41,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "shopName",
-      "service",
-      "freeSlots"
-    ],
+    "required": ["shopName", "service", "freeSlots"],
     "properties": {
       "shopName": {
         "type": "string",
@@ -108,11 +104,7 @@
       },
       "channel": {
         "type": "string",
-        "enum": [
-          "sms",
-          "email",
-          "push"
-        ],
+        "enum": ["sms", "email", "push"],
         "default": "sms",
         "title": "Canal",
         "description": "Où le message sera lu : sa longueur en dépend.",
@@ -139,11 +131,7 @@
       },
       "tone": {
         "type": "string",
-        "enum": [
-          "warm",
-          "direct",
-          "premium"
-        ],
+        "enum": ["warm", "direct", "premium"],
         "default": "warm",
         "title": "Ton de la boutique",
         "description": "La façon dont la boutique parle à ses clients.",
@@ -170,10 +158,7 @@
       },
       "language": {
         "type": "string",
-        "enum": [
-          "fr",
-          "en"
-        ],
+        "enum": ["fr", "en"],
         "default": "fr",
         "title": "Langue",
         "description": "La langue du message.",

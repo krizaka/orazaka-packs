@@ -30,9 +30,7 @@
         "id": "consent-documents",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.consent.check",
-        "dependsOn": [
-          "plan"
-        ],
+        "dependsOn": ["plan"],
         "inputs": {
           "purpose": "DOCUMENTS",
           "consentedPurposes": "{{inputs.consentedPurposes}}"
@@ -46,10 +44,7 @@
         "id": "documents",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.documents.assess",
-        "dependsOn": [
-          "plan",
-          "consent-documents"
-        ],
+        "dependsOn": ["plan", "consent-documents"],
         "condition": "{{steps.consent_documents.status}} == 'GRANTED'",
         "inputs": {
           "plan": "{{steps.plan.planJson}}",
@@ -66,11 +61,7 @@
         "id": "gate-documents",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.cutoff.decide",
-        "dependsOn": [
-          "plan",
-          "consent-documents",
-          "documents"
-        ],
+        "dependsOn": ["plan", "consent-documents", "documents"],
         "inputs": {
           "plan": "{{steps.plan.planJson}}",
           "stage": "documents",
@@ -87,9 +78,7 @@
         "id": "consent-courts",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.consent.check",
-        "dependsOn": [
-          "gate-documents"
-        ],
+        "dependsOn": ["gate-documents"],
         "condition": "{{steps.gate_documents.decision}} == 'CONTINUE'",
         "inputs": {
           "purpose": "COURT_RECORDS",
@@ -104,9 +93,7 @@
         "id": "courts",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.checks.courtrecords",
-        "dependsOn": [
-          "consent-courts"
-        ],
+        "dependsOn": ["consent-courts"],
         "condition": "{{steps.consent_courts.status}} == 'GRANTED'",
         "inputs": {
           "subject": "{{inputs.subject}}",
@@ -121,12 +108,7 @@
         "id": "gate-courts",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.cutoff.decide",
-        "dependsOn": [
-          "plan",
-          "gate-documents",
-          "consent-courts",
-          "courts"
-        ],
+        "dependsOn": ["plan", "gate-documents", "consent-courts", "courts"],
         "condition": "{{steps.consent_courts.status}} is not null",
         "inputs": {
           "plan": "{{steps.plan.planJson}}",
@@ -144,9 +126,7 @@
         "id": "consent-credit",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.consent.check",
-        "dependsOn": [
-          "gate-courts"
-        ],
+        "dependsOn": ["gate-courts"],
         "condition": "{{steps.gate_courts.decision}} == 'CONTINUE'",
         "inputs": {
           "purpose": "CREDIT",
@@ -161,9 +141,7 @@
         "id": "credit",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.checks.credit",
-        "dependsOn": [
-          "consent-credit"
-        ],
+        "dependsOn": ["consent-credit"],
         "condition": "{{steps.consent_credit.status}} == 'GRANTED'",
         "inputs": {
           "subject": "{{inputs.subject}}",
@@ -178,12 +156,7 @@
         "id": "gate-credit",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.screening.cutoff.decide",
-        "dependsOn": [
-          "plan",
-          "gate-courts",
-          "consent-credit",
-          "credit"
-        ],
+        "dependsOn": ["plan", "gate-courts", "consent-credit", "credit"],
         "condition": "{{steps.consent_credit.status}} is not null",
         "inputs": {
           "plan": "{{steps.plan.planJson}}",
@@ -247,39 +220,20 @@
         },
         "schema": {
           "type": "object",
-          "required": [
-            "status",
-            "stages",
-            "ledger",
-            "limits",
-            "subjectRef"
-          ],
+          "required": ["status", "stages", "ledger", "limits", "subjectRef"],
           "properties": {
             "status": {
               "type": "string",
-              "enum": [
-                "COMPLETED",
-                "STOPPED",
-                "INCOMPLETE"
-              ]
+              "enum": ["COMPLETED", "STOPPED", "INCOMPLETE"]
             },
             "stoppedAt": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "stopCode": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "ruleId": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "subjectRef": {
               "type": "string",
@@ -289,24 +243,14 @@
               "type": "array",
               "items": {
                 "type": "object",
-                "required": [
-                  "stage",
-                  "state",
-                  "charged",
-                  "credits"
-                ],
+                "required": ["stage", "state", "charged", "credits"],
                 "properties": {
                   "stage": {
                     "type": "string"
                   },
                   "state": {
                     "type": "string",
-                    "enum": [
-                      "RAN",
-                      "REFUSED",
-                      "UNAVAILABLE",
-                      "NOT_RUN"
-                    ]
+                    "enum": ["RAN", "REFUSED", "UNAVAILABLE", "NOT_RUN"]
                   },
                   "charged": {
                     "type": "boolean"
@@ -320,11 +264,7 @@
             },
             "ledger": {
               "type": "object",
-              "required": [
-                "total",
-                "byStage",
-                "payer"
-              ],
+              "required": ["total", "byStage", "payer"],
               "properties": {
                 "total": {
                   "type": "integer",
@@ -332,10 +272,7 @@
                 },
                 "payer": {
                   "type": "string",
-                  "enum": [
-                    "LANDLORD",
-                    "APPLICANT"
-                  ]
+                  "enum": ["LANDLORD", "APPLICANT"]
                 }
               }
             },
@@ -366,19 +303,11 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "subject",
-      "consentedPurposes",
-      "authenticityReport"
-    ],
+    "required": ["subject", "consentedPurposes", "authenticityReport"],
     "properties": {
       "subject": {
         "type": "object",
-        "required": [
-          "subjectId",
-          "lastName",
-          "firstName"
-        ],
+        "required": ["subjectId", "lastName", "firstName"],
         "properties": {
           "subjectId": {
             "type": "string",
@@ -417,11 +346,7 @@
         "type": "array",
         "items": {
           "type": "string",
-          "enum": [
-            "DOCUMENTS",
-            "COURT_RECORDS",
-            "CREDIT"
-          ]
+          "enum": ["DOCUMENTS", "COURT_RECORDS", "CREDIT"]
         },
         "uniqueItems": true,
         "title": "Consentements du candidat",
@@ -476,12 +401,7 @@
           "maxItems": 8,
           "items": {
             "type": "object",
-            "required": [
-              "id",
-              "fact",
-              "op",
-              "value"
-            ],
+            "required": ["id", "fact", "op", "value"],
             "properties": {
               "id": {
                 "type": "string",
@@ -492,11 +412,7 @@
               },
               "op": {
                 "type": "string",
-                "enum": [
-                  "equals",
-                  "atLeast",
-                  "in"
-                ]
+                "enum": ["equals", "atLeast", "in"]
               },
               "value": {}
             }

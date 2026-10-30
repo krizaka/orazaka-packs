@@ -3,27 +3,21 @@
   "cases": [
     {
       "id": "mira-map-inventory",
-      "input": {"text": "Mira packed 3 maps."},
-      "expected": {"reversed": ".spam 3 dekcap ariM"},
-      "assertions": [
-        {"path": ["reversed"], "equals": ".spam 3 dekcap ariM"}
-      ]
+      "input": { "text": "Mira packed 3 maps." },
+      "expected": { "reversed": ".spam 3 dekcap ariM" },
+      "assertions": [{ "path": ["reversed"], "equals": ".spam 3 dekcap ariM" }]
     },
     {
       "id": "zoe-nacre-postcard",
-      "input": {"text": "Zoé rêve à Nacre."},
-      "expected": {"reversed": ".ercaN à evêr éoZ"},
-      "assertions": [
-        {"path": ["reversed"], "equals": ".ercaN à evêr éoZ"}
-      ]
+      "input": { "text": "Zoé rêve à Nacre." },
+      "expected": { "reversed": ".ercaN à evêr éoZ" },
+      "assertions": [{ "path": ["reversed"], "equals": ".ercaN à evêr éoZ" }]
     },
     {
       "id": "aster-beryl-two-lines",
-      "input": {"text": "Aster\nBeryl 42!"},
-      "expected": {"reversed": "!24 lyreB\nretsA"},
-      "assertions": [
-        {"path": ["reversed"], "equals": "!24 lyreB\nretsA"}
-      ]
+      "input": { "text": "Aster\nBeryl 42!" },
+      "expected": { "reversed": "!24 lyreB\nretsA" },
+      "assertions": [{ "path": ["reversed"], "equals": "!24 lyreB\nretsA" }]
     }
   ]
 }

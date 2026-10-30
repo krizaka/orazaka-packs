@@ -25,9 +25,7 @@
         "id": "gaps",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "inventory"
-        ],
+        "dependsOn": ["inventory"],
         "inputs": {
           "prompt": "Here is an inventory draft: {{steps.inventory.content}}. List, as short numbered questions for the person in charge, what is missing or doubtful (retention not stated, access not stated, third-party hosting, outside-Québec hosting, consent basis). Nothing else, no answer to the questions. Write in {{inputs.language}} (fr = Québec French, en = English). The very first line of your answer is exactly this sentence in that language: fr: « Brouillon préparé par Orazaka — ce n'est pas un avis juridique : la personne responsable de la protection des renseignements personnels ou un avocat doit le valider avant tout usage. » en: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. ». Use only the facts given; never invent a fact about the firm, mark anything missing as « À confirmer » (fr) or « To confirm » (en). You prepare, you never decide: the person in charge decides. Cite your sources by reference only, never by quoting a text: the Act respecting the protection of personal information in the private sector (RLRQ, c. P-39.1) as amended by Law 25 (S.Q. 2021, c. 25), with the section numbers that apply, and the guides of the Commission d'accès à l'information du Québec (CAI). Never reproduce the wording of a section."
         },
@@ -70,10 +68,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "firmName",
-      "description"
-    ],
+    "required": ["firmName", "description"],
     "properties": {
       "firmName": {
         "type": "string",
@@ -113,10 +108,7 @@
       },
       "language": {
         "type": "string",
-        "enum": [
-          "fr",
-          "en"
-        ],
+        "enum": ["fr", "en"],
         "default": "fr",
         "title": "Langue",
         "description": "La langue du document produit.",

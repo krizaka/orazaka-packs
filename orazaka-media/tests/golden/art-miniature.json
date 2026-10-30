@@ -8,8 +8,11 @@
         "size": "1360x768",
         "seed": "41"
       },
-      "expected": {"image": "asset:scene", "seed": "41", "model": "synthetic-image", "generationMs": "144"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "41"}]
+      "expected": { "image": "asset:scene", "seed": "41", "model": "synthetic-image", "generationMs": "144" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "41" }
+      ]
     },
     {
       "id": "french-clockwork-bakery",
@@ -18,8 +21,11 @@
         "size": "1024x1280",
         "seed": "53"
       },
-      "expected": {"image": "asset:scene", "seed": "53", "model": "synthetic-image", "generationMs": "151"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "53"}]
+      "expected": { "image": "asset:scene", "seed": "53", "model": "synthetic-image", "generationMs": "151" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "53" }
+      ]
     },
     {
       "id": "portrait-unoccupied-miniature-observatory",
@@ -27,8 +33,8 @@
         "subject": "An unoccupied original miniature observatory inside a walnut shell, with a tiny brass telescope, indigo felt sky and embroidered stars; no lettering.",
         "size": "768x1360"
       },
-      "expected": {"image": "asset:scene", "seed": "67", "model": "synthetic-image", "generationMs": "139"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}]
+      "expected": { "image": "asset:scene", "seed": "67", "model": "synthetic-image", "generationMs": "139" },
+      "assertions": [{ "path": ["image"], "nonEmpty": true }]
     }
   ]
 }

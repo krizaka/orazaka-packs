@@ -3,21 +3,25 @@
   "cases": [
     {
       "id": "english-fictional-museum-welcome",
-      "input": {"text": "Welcome to the imaginary Lantern House. Our exhibition of invented mechanical gardens begins in the amber room. Please take your time."},
-      "expected": {"audio": "asset:audio"},
-      "assertions": [{"path": ["audio"], "nonEmpty": true}]
+      "input": {
+        "text": "Welcome to the imaginary Lantern House. Our exhibition of invented mechanical gardens begins in the amber room. Please take your time."
+      },
+      "expected": { "audio": "asset:audio" },
+      "assertions": [{ "path": ["audio"], "nonEmpty": true }]
     },
     {
       "id": "french-fictional-workshop-instructions",
-      "input": {"text": "Bienvenue à l'atelier fictif des Nuages de Papier. Posez votre feuille sur la table, pliez les deux coins, puis prenez une courte pause."},
-      "expected": {"audio": "asset:audio"},
-      "assertions": [{"path": ["audio"], "nonEmpty": true}]
+      "input": {
+        "text": "Bienvenue à l'atelier fictif des Nuages de Papier. Posez votre feuille sur la table, pliez les deux coins, puis prenez une courte pause."
+      },
+      "expected": { "audio": "asset:audio" },
+      "assertions": [{ "path": ["audio"], "nonEmpty": true }]
     },
     {
       "id": "short-countdown-with-punctuation",
-      "input": {"text": "Three… two… one. Begin!"},
-      "expected": {"audio": "asset:audio"},
-      "assertions": [{"path": ["audio"], "nonEmpty": true}]
+      "input": { "text": "Three… two… one. Begin!" },
+      "expected": { "audio": "asset:audio" },
+      "assertions": [{ "path": ["audio"], "nonEmpty": true }]
     }
   ]
 }

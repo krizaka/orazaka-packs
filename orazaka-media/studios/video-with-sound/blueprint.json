@@ -30,9 +30,7 @@
         "id": "sound",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.studio.media.sound",
-        "dependsOn": [
-          "video"
-        ],
+        "dependsOn": ["video"],
         "inputs": {
           "video": "{{steps.video.url}}",
           "music": "{{inputs.music:}}",
@@ -79,10 +77,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "prompt",
-      "music"
-    ],
+    "required": ["prompt", "music"],
     "properties": {
       "prompt": {
         "type": "string",
@@ -124,11 +119,7 @@
       },
       "aspect": {
         "type": "string",
-        "enum": [
-          "9:16",
-          "16:9",
-          "1:1"
-        ],
+        "enum": ["9:16", "16:9", "1:1"],
         "default": "9:16",
         "title": "Format",
         "description": "9:16 : la vidéo verticale (TikTok, Reels, Shorts).",
@@ -180,86 +171,26 @@
           "source": "models",
           "category": "video",
           "facts": {
-            "ltx-video-0.9.8-13b-distilled": [
-              "1216×704",
-              "704×1216",
-              "5 s"
-            ],
-            "wan2.2-i2v-a14b-hq": [
-              "720p",
-              "5 s",
-              "40 steps"
-            ],
-            "wan2.2-i2v-a14b": [
-              "720p",
-              "5 s",
-              "16 fps"
-            ],
-            "wan2.2-t2v-a14b": [
-              "1280×720",
-              "5 s",
-              "16 fps"
-            ],
-            "wan2-2-t2v-a14b": [
-              "832×480",
-              "5 s",
-              "16 fps"
-            ],
-            "wan2.2-ti2v-5b": [
-              "704×1280",
-              "5 s",
-              "24 fps"
-            ],
-            "wan2.1-t2v-1.3b": [
-              "480×832",
-              "5 s",
-              "16 fps"
-            ],
+            "ltx-video-0.9.8-13b-distilled": ["1216×704", "704×1216", "5 s"],
+            "wan2.2-i2v-a14b-hq": ["720p", "5 s", "40 steps"],
+            "wan2.2-i2v-a14b": ["720p", "5 s", "16 fps"],
+            "wan2.2-t2v-a14b": ["1280×720", "5 s", "16 fps"],
+            "wan2-2-t2v-a14b": ["832×480", "5 s", "16 fps"],
+            "wan2.2-ti2v-5b": ["704×1280", "5 s", "24 fps"],
+            "wan2.1-t2v-1.3b": ["480×832", "5 s", "16 fps"],
             "animatediff-lightning-mps": []
           },
           "aspectField": "aspect",
           "aspects": {
-            "wan2-2-t2v-a14b": [
-              "16:9"
-            ],
-            "wan2.2-t2v-a14b": [
-              "16:9",
-              "9:16",
-              "1:1"
-            ],
-            "wan2.2-i2v-a14b": [
-              "16:9",
-              "9:16",
-              "1:1"
-            ],
-            "wan2.2-i2v-a14b-hq": [
-              "16:9",
-              "9:16",
-              "1:1"
-            ],
-            "ltx-video-0.9.8-13b-distilled": [
-              "16:9",
-              "9:16",
-              "1:1"
-            ],
-            "wan2.2-ti2v-5b": [
-              "9:16",
-              "16:9",
-              "1:1"
-            ],
-            "wan2.1-t2v-1.3b": [
-              "9:16",
-              "16:9",
-              "1:1"
-            ],
-            "animatediff-lightning-mps": [
-              "9:16",
-              "16:9",
-              "1:1"
-            ],
-            "stable-video-diffusion-img2vid-xt": [
-              "16:9"
-            ]
+            "wan2-2-t2v-a14b": ["16:9"],
+            "wan2.2-t2v-a14b": ["16:9", "9:16", "1:1"],
+            "wan2.2-i2v-a14b": ["16:9", "9:16", "1:1"],
+            "wan2.2-i2v-a14b-hq": ["16:9", "9:16", "1:1"],
+            "ltx-video-0.9.8-13b-distilled": ["16:9", "9:16", "1:1"],
+            "wan2.2-ti2v-5b": ["9:16", "16:9", "1:1"],
+            "wan2.1-t2v-1.3b": ["9:16", "16:9", "1:1"],
+            "animatediff-lightning-mps": ["9:16", "16:9", "1:1"],
+            "stable-video-diffusion-img2vid-xt": ["16:9"]
           }
         },
         "x-advanced": true,
@@ -402,9 +333,7 @@
       },
       "foleyModel": {
         "type": "string",
-        "enum": [
-          "mmaudio-large-44k-v2"
-        ],
+        "enum": ["mmaudio-large-44k-v2"],
         "title": "Modèle de bruitage (facultatif)",
         "description": "Ajoute des bruitages (licence non commerciale). Vide : pas de bruitage.",
         "x-advanced": true,

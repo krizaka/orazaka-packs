@@ -54,12 +54,7 @@
         },
         "schema": {
           "type": "object",
-          "required": [
-            "header",
-            "pages",
-            "signals",
-            "realExamination"
-          ],
+          "required": ["header", "pages", "signals", "realExamination"],
           "properties": {
             "header": {
               "type": "string",
@@ -73,13 +68,7 @@
               "type": "array",
               "items": {
                 "type": "object",
-                "required": [
-                  "signalId",
-                  "level",
-                  "observation",
-                  "mayIndicate",
-                  "where"
-                ],
+                "required": ["signalId", "level", "observation", "mayIndicate", "where"],
                 "properties": {
                   "signalId": {
                     "type": "string",
@@ -87,11 +76,7 @@
                   },
                   "level": {
                     "type": "string",
-                    "enum": [
-                      "observé",
-                      "inhabituel",
-                      "incohérent"
-                    ]
+                    "enum": ["observé", "inhabituel", "incohérent"]
                   },
                   "observation": {
                     "type": "string",
@@ -126,11 +111,7 @@
             },
             "documentType": {
               "type": "string",
-              "enum": [
-                "pdf",
-                "image",
-                "office"
-              ]
+              "enum": ["pdf", "image", "office"]
             },
             "mediaType": {
               "type": "string"
@@ -151,9 +132,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "documentBase64"
-    ],
+    "required": ["documentBase64"],
     "properties": {
       "documentBase64": {
         "type": "string",

@@ -6,7 +6,11 @@
     "orazaka.core.checks.identity": "IDENTITY"
   },
   "inputs": {
-    "subject": { "type": "object", "required": ["subjectId", "lastName", "firstName"], "optional": ["birthDate", "address"] },
+    "subject": {
+      "type": "object",
+      "required": ["subjectId", "lastName", "firstName"],
+      "optional": ["birthDate", "address"]
+    },
     "consentedPurposes": { "type": "array", "items": "string" }
   },
   "outputs": ["outcome", "refusal", "category", "providerRef", "calls", "resultJson"],

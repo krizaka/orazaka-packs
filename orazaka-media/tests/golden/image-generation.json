@@ -9,8 +9,11 @@
         "negativePrompt": "text, logos, signatures",
         "seed": "127"
       },
-      "expected": {"image": "asset:scene", "seed": "127", "model": "synthetic-image", "generationMs": "162"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "127"}]
+      "expected": { "image": "asset:scene", "seed": "127", "model": "synthetic-image", "generationMs": "162" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "127" }
+      ]
     },
     {
       "id": "french-imaginary-botanical-cover",
@@ -20,8 +23,11 @@
         "negativePrompt": "lettres, marques, filigranes",
         "seed": "131"
       },
-      "expected": {"image": "asset:scene", "seed": "131", "model": "synthetic-image", "generationMs": "176"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "131"}]
+      "expected": { "image": "asset:scene", "seed": "131", "model": "synthetic-image", "generationMs": "176" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "131" }
+      ]
     },
     {
       "id": "small-square-abstract-shapes",
@@ -31,8 +37,11 @@
         "seed": "0",
         "negativePrompt": ""
       },
-      "expected": {"image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "96"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "0"}]
+      "expected": { "image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "96" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "0" }
+      ]
     }
   ]
 }

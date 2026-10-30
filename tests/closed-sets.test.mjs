@@ -23,7 +23,8 @@ for (const pack of readdirSync(root, { withFileTypes: true })) {
 }
 
 /** Fields whose values are a known set, wherever they appear. */
-const CLOSED = /(^model$|Model$|^voice$|^aspect$|^size$|^locale$|^language$|^platform$|^jurisdiction$|^category$|^status$)/;
+const CLOSED =
+  /(^model$|Model$|^voice$|^aspect$|^size$|^locale$|^language$|^platform$|^jurisdiction$|^category$|^status$)/;
 /** The model categories orazaka_models carries and a form may be fed from. */
 const MODEL_CATEGORIES = ["image", "video", "speech", "audio", "vision", "chat", "foley", "music"];
 
@@ -45,7 +46,11 @@ test("a catalogue-fed field names a real model category and carries no list of i
     if (!options) continue;
     assert.equal(options.source, "models", `${where}: the only source is the model catalogue`);
     assert.ok(MODEL_CATEGORIES.includes(options.category), `${where}: unknown model category ${options.category}`);
-    assert.equal(def.enum, undefined, `${where}: a hand-kept enum drifts from orazaka_models — let the catalogue feed it`);
+    assert.equal(
+      def.enum,
+      undefined,
+      `${where}: a hand-kept enum drifts from orazaka_models — let the catalogue feed it`,
+    );
     assert.equal(def.type, "string", `${where}: a model is a string`);
   }
 });
@@ -80,7 +85,12 @@ test("a select has at least one choice and a lowercase catalogue category", () =
   for (const { where, def } of selects) {
     if (def.enum) assert.ok(def.enum.length >= 1, `${where}: an empty enum is an empty select`);
     const category = def["x-options"]?.category;
-    if (category) assert.equal(category, category.toLowerCase(), `${where}: the catalogue's categories are lowercase (« CHAT » matched no model and drew an empty select)`);
+    if (category)
+      assert.equal(
+        category,
+        category.toLowerCase(),
+        `${where}: the catalogue's categories are lowercase (« CHAT » matched no model and drew an empty select)`,
+      );
   }
 });
 
@@ -91,7 +101,10 @@ test("every select carries its words in English and French, with a helper of at 
       assert.ok(words, `${where}: x-i18n.${lang} is missing`);
       assert.ok(words.title?.trim(), `${where}: ${lang} title`);
       assert.ok(words.description?.trim(), `${where}: ${lang} helper`);
-      assert.ok(words.description.length <= HELPER_MAX, `${where}: ${lang} helper is ${words.description.length} characters, the maximum is ${HELPER_MAX}`);
+      assert.ok(
+        words.description.length <= HELPER_MAX,
+        `${where}: ${lang} helper is ${words.description.length} characters, the maximum is ${HELPER_MAX}`,
+      );
       for (const value of def.enum ?? []) {
         assert.ok(words.options?.[value]?.trim(), `${where}: ${lang} label of « ${value} »`);
       }
@@ -100,7 +113,10 @@ test("every select carries its words in English and French, with a helper of at 
         assert.ok(option.hint.length <= 100, `${where}: ${lang} hint of ${id} is one line (≤ 100 characters)`);
       }
     }
-    assert.ok((def.description ?? "").length <= HELPER_MAX, `${where}: the base helper (read by older clients) is ${(def.description ?? "").length} characters`);
+    assert.ok(
+      (def.description ?? "").length <= HELPER_MAX,
+      `${where}: the base helper (read by older clients) is ${(def.description ?? "").length} characters`,
+    );
   }
 });
 
@@ -110,13 +126,18 @@ test("the models of a field are the same in both languages and their facts name 
     const en = Object.keys(def["x-i18n"].en.options ?? {}).sort();
     const fr = Object.keys(def["x-i18n"].fr.options ?? {}).sort();
     assert.deepEqual(en, fr, `${where}: the same models are described in English and French`);
-    for (const id of Object.keys(def["x-options"].facts ?? {})) assert.ok(en.includes(id), `${where}: facts for ${id}, which has no words`);
+    for (const id of Object.keys(def["x-options"].facts ?? {}))
+      assert.ok(en.includes(id), `${where}: facts for ${id}, which has no words`);
   }
 });
 
 test("a long description of the models is never written into a helper", () => {
   for (const { where, def } of selects) {
-    assert.doesNotMatch(def.description ?? "", /GPU|i\/s|[0-9]{3,4}×[0-9]{3,4}/, `${where}: resolutions and GPUs belong to the client's comparison, fed by the catalogue`);
+    assert.doesNotMatch(
+      def.description ?? "",
+      /GPU|i\/s|[0-9]{3,4}×[0-9]{3,4}/,
+      `${where}: resolutions and GPUs belong to the client's comparison, fed by the catalogue`,
+    );
   }
 });
 
@@ -140,7 +161,10 @@ test("every field of every Studio has its title and helper in English and French
       assert.ok(words, `${where}: x-i18n.${lang} is missing`);
       assert.ok(words.title?.trim(), `${where}: ${lang} title`);
       assert.ok(words.description?.trim(), `${where}: ${lang} helper`);
-      assert.ok(words.description.length <= HELPER_MAX, `${where}: ${lang} helper is ${words.description.length} characters, the maximum is ${HELPER_MAX}`);
+      assert.ok(
+        words.description.length <= HELPER_MAX,
+        `${where}: ${lang} helper is ${words.description.length} characters, the maximum is ${HELPER_MAX}`,
+      );
     }
   }
 });
@@ -174,18 +198,25 @@ for (const pack of readdirSync(root, { withFileTypes: true })) {
   if (!pack.isDirectory() || !existsSync(studios)) continue;
   for (const s of readdirSync(studios)) {
     const file = join(studios, s, "blueprint.json");
-    if (existsSync(file)) blueprints.push({ where: `${pack.name}/studios/${s}`, studio: s, bp: JSON.parse(readFileSync(file, "utf8")) });
+    if (existsSync(file))
+      blueprints.push({ where: `${pack.name}/studios/${s}`, studio: s, bp: JSON.parse(readFileSync(file, "utf8")) });
   }
 }
 
 test("every output of every Studio has its label in English and French (« Votre image », « Graine… » showed on the English page)", () => {
-  const outputs = blueprints.flatMap(({ where, bp }) => (bp.definition.outputs ?? []).map((o) => ({ where: `${where}#${o.key}`, o })));
+  const outputs = blueprints.flatMap(({ where, bp }) =>
+    (bp.definition.outputs ?? []).map((o) => ({ where: `${where}#${o.key}`, o })),
+  );
   assert.ok(outputs.length >= 55, "the audit found the outputs");
   const french = /[àâçéèêëîïôûùœ]|\b(votre|vos|le|la|les|un|une|des|du|ce|qui|est|avec|sans|pour)\b/i;
   for (const { where, o } of outputs) {
     for (const lang of ["en", "fr"]) assert.ok(o["x-i18n"]?.[lang]?.label?.trim(), `${where}: x-i18n.${lang}.label`);
     assert.equal(o["x-i18n"].fr.label, o.label, `${where}: the base label (older clients) is the French one`);
-    assert.doesNotMatch(o["x-i18n"].en.label.replace(/Québec|Montréal/g, ""), french, `${where}: the English label reads as French: « ${o["x-i18n"].en.label} »`);
+    assert.doesNotMatch(
+      o["x-i18n"].en.label.replace(/Québec|Montréal/g, ""),
+      french,
+      `${where}: the English label reads as French: « ${o["x-i18n"].en.label} »`,
+    );
   }
 });
 
@@ -200,7 +231,11 @@ test("a pack's English and French catalogue name the same Studios, each with a l
       let key = null;
       for (const line of studios.split("\n")) {
         const k = /^  ([a-z0-9-]+):\s*$/.exec(line);
-        if (k) { key = k[1]; found[key] = {}; continue; }
+        if (k) {
+          key = k[1];
+          found[key] = {};
+          continue;
+        }
         const f = /^    (label|tagline):\s*(.+)$/.exec(line);
         if (f && key) found[key][f[1]] = f[2].trim();
       }
@@ -208,13 +243,21 @@ test("a pack's English and French catalogue name the same Studios, each with a l
     };
     const en = read("en");
     const fr = read("fr");
-    assert.deepEqual(Object.keys(en).sort(), Object.keys(fr).sort(), `${pack.name}: the same Studios in both languages`);
+    assert.deepEqual(
+      Object.keys(en).sort(),
+      Object.keys(fr).sort(),
+      `${pack.name}: the same Studios in both languages`,
+    );
     for (const [studio, words] of Object.entries(en)) {
       for (const lang of ["en", "fr"]) {
         const w = (lang === "en" ? en : fr)[studio];
         assert.ok(w.label && w.tagline, `${pack.name}/${studio}: ${lang} label and tagline`);
       }
-      assert.notEqual(words.tagline, fr[studio].tagline, `${pack.name}/${studio}: the French tagline is not the English one`);
+      assert.notEqual(
+        words.tagline,
+        fr[studio].tagline,
+        `${pack.name}/${studio}: the French tagline is not the English one`,
+      );
     }
   }
 });
@@ -226,10 +269,18 @@ test("the video Studios' model field declares the aspects each model can make, t
     const aspects = bp.inputSchema.properties.aspect.enum;
     const opt = model["x-options"];
     assert.equal(opt.aspectField, "aspect", `${studio}: the field the aspects govern`);
-    for (const id of Object.keys(opt.facts)) assert.ok(id in opt.aspects, `${studio}: ${id} has facts, so it declares its aspects`);
+    for (const id of Object.keys(opt.facts))
+      assert.ok(id in opt.aspects, `${studio}: ${id} has facts, so it declares its aspects`);
     for (const [id, list] of Object.entries(opt.aspects)) {
-      assert.ok(list.length >= 1 && list.every((a) => aspects.includes(a)), `${studio}/${id}: aspects within the field's enum`);
+      assert.ok(
+        list.length >= 1 && list.every((a) => aspects.includes(a)),
+        `${studio}/${id}: aspects within the field's enum`,
+      );
     }
-    assert.deepEqual(opt.aspects["wan2-2-t2v-a14b"], ["16:9"], `${studio}: the hosted Wan makes 16:9 only (run 6567e02a)`);
+    assert.deepEqual(
+      opt.aspects["wan2-2-t2v-a14b"],
+      ["16:9"],
+      `${studio}: the hosted Wan makes 16:9 only (run 6567e02a)`,
+    );
   }
 });

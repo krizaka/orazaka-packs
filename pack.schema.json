@@ -4,12 +4,7 @@
   "title": "Orazaka pack manifest",
   "description": "The unit of distribution (ADR-037 §3.2). One directory, one manifest, one transactional install. Everything a pack contributes to the platform is declared here or in a file this manifest names; nothing about a pack is knowable only from a seed file.",
   "type": "object",
-  "required": [
-    "apiVersion",
-    "key",
-    "version",
-    "studios"
-  ],
+  "required": ["apiVersion", "key", "version", "studios"],
   "additionalProperties": false,
   "properties": {
     "apiVersion": {
@@ -25,37 +20,22 @@
     },
     "tier": {
       "description": "What the pack needs from the platform. DATA reuses existing capabilities and ships no code; CAPABILITY adds in-process executors; WORKER brings its own out-of-process worker. Phase D installs DATA packs; the other two are declared so a manifest written today survives phases H and beyond.",
-      "enum": [
-        "DATA",
-        "CAPABILITY",
-        "WORKER"
-      ],
+      "enum": ["DATA", "CAPABILITY", "WORKER"],
       "default": "DATA"
     },
     "distribution": {
       "description": "Where the pack may be obtained. Read by the open-core split (phase G); recorded now so no pack has to be re-licensed later.",
-      "enum": [
-        "OSS",
-        "CLOUD",
-        "PARTNER"
-      ],
+      "enum": ["OSS", "CLOUD", "PARTNER"],
       "default": "OSS"
     },
     "regulatoryClass": {
       "description": "Drives the seven controls of phase I. STANDARD until that phase gives the other two teeth.",
-      "enum": [
-        "STANDARD",
-        "SENSITIVE",
-        "REGULATED"
-      ],
+      "enum": ["STANDARD", "SENSITIVE", "REGULATED"],
       "default": "STANDARD"
     },
     "kind": {
       "description": "How the pack reaches the user (ADR-061). VERTICAL: chosen and installed; the installation is a row that pins a version and records consent. TOOLKIT: an entitled actor simply has it; the installation is derived from entitlement and never stored, and a run resolves the latest published version once, at start. Orthogonal to `tier` and `regulatoryClass` — a TOOLKIT implies neither CAPABILITY nor STANDARD — and never read from the key: echo-toolkit is a VERTICAL.",
-      "enum": [
-        "VERTICAL",
-        "TOOLKIT"
-      ],
+      "enum": ["VERTICAL", "TOOLKIT"],
       "default": "VERTICAL"
     },
     "requires": {
@@ -87,10 +67,7 @@
           "description": "Platform API scopes the pack's buyers use, served by a platform service rather than a Studio run (the recommender of ADR-078 lives in orazaka-knowledge-service). Declared so the catalogue and the docs can say which key scopes the pack opens; the edge's ApiKeyScopes is the authority that enforces them (exact method + path, fail closed), and a test keeps the two identical. The installer records nothing from this block.",
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "service",
-            "scopes"
-          ],
+          "required": ["service", "scopes"],
           "properties": {
             "service": {
               "description": "The platform service that serves these routes.",
@@ -104,10 +81,7 @@
               "items": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": [
-                  "key",
-                  "routes"
-                ],
+                "required": ["key", "routes"],
                 "properties": {
                   "key": {
                     "description": "An API-key scope, `<area>:<verb>`.",
@@ -134,30 +108,18 @@
     "catalog": {
       "description": "The shelf entry: a `pack` row, its category and its bundling of Studios. OPTIONAL, and its absence is a real case rather than an oversight — trade-showcase and outbound-prospection are Studios that belong to no pack, and a manifest format that could not express today's catalogue would fail its first test. Without it the bundle ships Studios only, and no pack/pack_i18n/pack_studio/billing_pack row is written.",
       "type": "object",
-      "required": [
-        "categoryKey",
-        "iconKey"
-      ],
+      "required": ["categoryKey", "iconKey"],
       "additionalProperties": false,
       "properties": {
         "categoryKey": {
           "description": "The shelf the pack stands on: a CLOSED list, so a typo fails here and not on a buyer's screen. Its label is the `category:` block of the pack's i18n (EN and FR); the catalogue and the sites group by it, read from the generated data.",
-          "enum": [
-            "business-compliance",
-            "creativity-media",
-            "wellbeing",
-            "data-analytics", "developer-tools"
-          ]
+          "enum": ["business-compliance", "creativity-media", "wellbeing", "data-analytics", "developer-tools"]
         },
         "iconKey": {
           "$ref": "#/$defs/iconKey"
         },
         "status": {
-          "enum": [
-            "DRAFT",
-            "PUBLISHED",
-            "WITHDRAWN"
-          ],
+          "enum": ["DRAFT", "PUBLISHED", "WITHDRAWN"],
           "default": "DRAFT"
         },
         "sortWeight": {
@@ -167,9 +129,7 @@
         "category": {
           "description": "The category to create if it does not exist. Omit to require that the shelf already exists — an install then fails loudly rather than inventing a shelf under a typo.",
           "type": "object",
-          "required": [
-            "iconKey"
-          ],
+          "required": ["iconKey"],
           "additionalProperties": false,
           "properties": {
             "iconKey": {
@@ -186,10 +146,7 @@
     "pricing": {
       "description": "What the pack costs and what buying it grants — the billing_pack half. Required when `catalog` is present, because a pack row with no price is unsellable and a PAID Studio with no pack is unreachable.",
       "type": "object",
-      "required": [
-        "priceCents",
-        "includedCredits"
-      ],
+      "required": ["priceCents", "includedCredits"],
       "additionalProperties": false,
       "properties": {
         "priceCents": {
@@ -219,10 +176,7 @@
       "description": "The domain this pack REFUSES to answer in. Required for regulatoryClass SENSITIVE and rejected at install without it, because a control that is optional is not a control (ADR-051). The engine holds the interceptor and never the subject: a legal pack refusing legal advice and a medical pack refusing diagnosis are the same code and two manifests.",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "refusedTerms",
-        "refusal"
-      ],
+      "required": ["refusedTerms", "refusal"],
       "properties": {
         "refusedTerms": {
           "description": "Terms whose presence in the turn refuses it. Matched case-insensitively on word boundaries, never as substrings.",
@@ -244,10 +198,7 @@
       "description": "The versioned consent a REGULATED pack requires before it may be installed. Consent is to a STATEMENT, not to a checkbox: bumping the version stops every existing installation until its owner agrees again, and that cost is the point (GDPR Art. 9, Loi 25 — health data is a special category).",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "version",
-        "statement"
-      ],
+      "required": ["version", "statement"],
       "properties": {
         "version": {
           "type": "string",
@@ -276,12 +227,7 @@
       "description": "A REGULATED pack's crisis handling. The response is FIXED and reviewed by a person — a model asked to compose a crisis reply produces a number that looks like a crisis line, and someone will dial it. A region with no verified resource is a region the pack does not install in.",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "crisisTerms",
-        "response",
-        "safetyReviewRef",
-        "resources"
-      ],
+      "required": ["crisisTerms", "response", "safetyReviewRef", "resources"],
       "properties": {
         "crisisTerms": {
           "type": "array",
@@ -309,14 +255,7 @@
           "additionalProperties": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "region",
-              "label",
-              "contact",
-              "availability",
-              "sourceUrl",
-              "verifiedOn"
-            ],
+            "required": ["region", "label", "contact", "availability", "sourceUrl", "verifiedOn"],
             "properties": {
               "region": {
                 "type": "string",
@@ -359,14 +298,10 @@
     {
       "description": "A catalogued pack must carry a price: `billing_pack_entitlement` is what makes the purchase usable, and PackCoherenceRules fails the build when a pack_studio row has no matching grant (ADR-036 invariant #3).",
       "if": {
-        "required": [
-          "catalog"
-        ]
+        "required": ["catalog"]
       },
       "then": {
-        "required": [
-          "pricing"
-        ]
+        "required": ["pricing"]
       }
     },
     {
@@ -380,20 +315,14 @@
                   "const": "PAID"
                 }
               },
-              "required": [
-                "pricing"
-              ]
+              "required": ["pricing"]
             }
           }
         },
-        "required": [
-          "studios"
-        ]
+        "required": ["studios"]
       },
       "then": {
-        "required": [
-          "catalog"
-        ]
+        "required": ["catalog"]
       }
     },
     {
@@ -404,9 +333,7 @@
             "const": "TOOLKIT"
           }
         },
-        "required": [
-          "kind"
-        ]
+        "required": ["kind"]
       },
       "then": {
         "properties": {
@@ -426,25 +353,17 @@
             "const": "TOOLKIT"
           }
         },
-        "required": [
-          "kind"
-        ]
+        "required": ["kind"]
       },
       "then": {
-        "required": [
-          "catalog"
-        ],
+        "required": ["catalog"],
         "not": {
           "anyOf": [
             {
-              "required": [
-                "consent"
-              ]
+              "required": ["consent"]
             },
             {
-              "required": [
-                "safety"
-              ]
+              "required": ["safety"]
             }
           ]
         }
@@ -480,13 +399,7 @@
     },
     "capability": {
       "type": "object",
-      "required": [
-        "key",
-        "routingKey",
-        "handlerKey",
-        "inputSchema",
-        "outputSchema"
-      ],
+      "required": ["key", "routingKey", "handlerKey", "inputSchema", "outputSchema"],
       "additionalProperties": false,
       "properties": {
         "key": {
@@ -504,26 +417,11 @@
         },
         "billableUnit": {
           "description": "Omit where the unit is a property of the MODEL rather than of the capability — credit_pricebook keeps `unit` out of its key for exactly that reason.",
-          "enum": [
-            "OUTPUT_SECOND",
-            "IMAGE_STEP",
-            "KILOCHAR",
-            "AUDIO_MINUTE",
-            "KILOTOKEN",
-            "GPU_SECOND",
-            "CALL"
-          ]
+          "enum": ["OUTPUT_SECOND", "IMAGE_STEP", "KILOCHAR", "AUDIO_MINUTE", "KILOTOKEN", "GPU_SECOND", "CALL"]
         },
         "billableCapability": {
           "description": "WHAT the capability bills as, declared and never inferred. NONE: a step that only orchestrates or presents (plan, consent, gate, report) and is not billable on its own.",
-          "enum": [
-            "NONE",
-            "CHAT",
-            "IMAGE",
-            "AUDIO",
-            "VIDEO",
-            "AGENT"
-          ]
+          "enum": ["NONE", "CHAT", "IMAGE", "AUDIO", "VIDEO", "AGENT"]
         },
         "enabled": {
           "type": "boolean",
@@ -532,10 +430,7 @@
         "inputSchema": {
           "type": "object",
           "description": "What a CALLER MAY PASS, as a JSON Schema: types, `required`, defaults, and `format: prose | asset-id` where a composer must know which of its two holdings fills the input (ADR-068 §3), and `format: asset:image | asset:video | asset:audio` (with `contentMediaType`) on an input that takes an uploaded file, so a client renders a file picker instead of a text field (an asset id is never typed). This is what payloadTemplate carried as an untyped string of ${placeholders} (ADR-069).",
-          "required": [
-            "type",
-            "properties"
-          ],
+          "required": ["type", "properties"],
           "properties": {
             "type": {
               "const": "object"
@@ -557,10 +452,7 @@
         "outputSchema": {
           "type": "object",
           "description": "What a SUCCESSFUL EXECUTION PUBLISHES, with types. Every {{steps.<out>.<field>}} link in every blueprint references one of these fields, and until ADR-069 nothing declared them — so no rule could check a link and the one hand-written table that tried was wrong.",
-          "required": [
-            "type",
-            "properties"
-          ],
+          "required": ["type", "properties"],
           "properties": {
             "type": {
               "const": "object"
@@ -581,10 +473,7 @@
     },
     "worker": {
       "type": "object",
-      "required": [
-        "name",
-        "bindings"
-      ],
+      "required": ["name", "bindings"],
       "additionalProperties": false,
       "properties": {
         "name": {
@@ -610,14 +499,7 @@
     },
     "studio": {
       "type": "object",
-      "required": [
-        "key",
-        "profession",
-        "iconKey",
-        "pricing",
-        "entitlementKey",
-        "blueprint"
-      ],
+      "required": ["key", "profession", "iconKey", "pricing", "entitlementKey", "blueprint"],
       "additionalProperties": false,
       "properties": {
         "key": {
@@ -631,11 +513,7 @@
           "$ref": "#/$defs/iconKey"
         },
         "pricing": {
-          "enum": [
-            "FREE",
-            "INCLUDED",
-            "PAID"
-          ]
+          "enum": ["FREE", "INCLUDED", "PAID"]
         },
         "entitlementKey": {
           "type": "string",
@@ -643,11 +521,7 @@
           "description": "studio.<studioKey>. Read verbatim by EntitlementSnapshot.allows, which is why adding a Studio needs zero billing code."
         },
         "status": {
-          "enum": [
-            "DRAFT",
-            "PUBLISHED",
-            "WITHDRAWN"
-          ],
+          "enum": ["DRAFT", "PUBLISHED", "WITHDRAWN"],
           "default": "DRAFT"
         },
         "publisherId": {
