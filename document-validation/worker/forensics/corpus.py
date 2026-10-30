@@ -61,6 +61,11 @@ def tools() -> dict:
 
 
 # ── the clean documents ──────────────────────────────────────────────────────
+def _seeded(seed):
+    """The corpus' one generator: seeded so the same seed gives the same bytes. Test data only, never a secret or a token."""
+    return random.Random(seed)
+
+
 def _money(rng) -> str:
     return f"{rng.randrange(1200, 9800)}.{rng.randrange(0, 100):02d}"
 
@@ -185,7 +190,7 @@ OVERLAY_TOOL = "pypdf overlay"
 
 
 def tampered_set(per_type=10, seed=SEED):
-    rng = random.Random(seed)
+    rng = _seeded(seed)
     items = []
     for index in range(per_type):
         kind, person, issuer = KINDS[index % 4], rng.choice(PEOPLE), rng.choice(EMPLOYERS if index % 4 != 1 else BANKS)
@@ -324,7 +329,7 @@ def _negative(workflow, index, who, rng, pdf_bytes, picture):
 
 
 def negatives_set(per_workflow=35, seed=SEED + 1):
-    rng = random.Random(seed)
+    rng = _seeded(seed)
     available = tools()
     items = []
     for workflow, needs in NEGATIVE_WORKFLOWS.items():
