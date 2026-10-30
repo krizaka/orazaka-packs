@@ -183,14 +183,24 @@ class AllPaths(unittest.TestCase):
         self.assertEqual(r.report["stages"][1]["facts"], {"outcome": "NO_MATCH", "category": "NONE"})
         self.assertEqual(r.report["stages"][2]["facts"], {"outcome": "NO_MATCH"})
 
-    def test_a_stop_after_documents_never_reaches_a_provider(self):
+    def test_a_document_signal_never_stops_an_applicant_by_default(self):
+        """The product ADR on signals and Law 25 s. 12.1: a signal goes to a human with its evidence, it never decides."""
         r = run(applicant(report=DOCTORED))
-        self.assertEqual((r.report["status"], r.report["stoppedAt"], r.report["stopCode"], r.report["ruleId"]), ("STOPPED", "documents", "CUTOFF", "CUT-DOC-MAJOR-SIGNALS"))
-        self.assertEqual([s["state"] for s in r.report["stages"]], ["RAN", "NOT_RUN", "NOT_RUN"])
+        self.assertEqual(r.report["stages"][0]["facts"]["majorSignals"], 1)
+        self.assertEqual(r.report["stages"][0]["state"], "RAN")
+        self.assertEqual((r.report["status"], r.report["stopCode"], r.report["ruleId"], r.report["ruleSource"]), ("COMPLETED", None, None, None))
+        self.assertEqual(r.engine.calls, ["COURT_RECORDS", "CREDIT"], "the saga goes on to the stages the landlord consented to")
+
+    def test_a_stop_on_a_signal_is_the_managers_rule_and_the_report_says_so(self):
+        rule = {"id": "CUT-MANAGER-MAJOR", "fact": "majorSignals", "op": "atLeast", "value": 1}
+        r = run(applicant(report=DOCTORED, cutoffs={"documents": [rule]}))
+        self.assertEqual((r.report["status"], r.report["stoppedAt"], r.report["stopCode"], r.report["ruleId"]), ("STOPPED", "documents", "CUTOFF", "CUT-MANAGER-MAJOR"))
+        self.assertEqual(r.report["ruleSource"], "MANAGER")
         self.assertEqual(r.engine.calls, [])
-        self.assertEqual(r.report["ledger"]["total"], 10)
-        for later in ("consent-courts", "courts", "consent-credit", "credit"):
-            self.assertNotIn(later, r.executed)
+
+    def test_a_court_stop_by_the_default_says_the_pack_is_the_source(self):
+        r = run(applicant("Tremblay"))
+        self.assertEqual((r.report["ruleId"], r.report["ruleSource"]), ("CUT-COURT-FILE-FOUND", "PACK"))
 
     def test_a_stop_after_court_records_never_calls_credit_and_never_charges_it(self):
         r = run(applicant("Tremblay"))

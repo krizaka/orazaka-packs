@@ -202,7 +202,7 @@ def plan(payload: dict) -> dict:
         raise InvalidInput("'creditCap' cannot pay the first stage")
     applicant_pays = _bool(payload.get("applicantPaysFees"), "applicantPaysFees")
     stages = [
-        {"id": s["id"], "purpose": s["purpose"], "credits": s["credits"], "facts": s["facts"], "cutoffs": cutoffs[s["id"]]}
+        {"id": s["id"], "purpose": s["purpose"], "credits": s["credits"], "facts": s["facts"], "cutoffs": cutoffs[s["id"]], "cutoffSource": "MANAGER" if s["id"] in (payload.get("cutoffs") or {}) else "PACK"}
         for s in ruleset["stages"]
     ]
     result = {
@@ -300,7 +300,7 @@ def cutoff(payload: dict) -> dict:
     result = _result(plan_, stage, payload, "result")
     index = [s["id"] for s in plan_["stages"]].index(stage_id)
     following = plan_["stages"][index + 1] if index + 1 < len(plan_["stages"]) else None
-    stops = {"decision": STOP, "ruleId": None}
+    stops = {"decision": STOP, "ruleId": None, "ruleSource": None}
     if payload.get("consent") != GRANTED:
         stops["code"] = "NO_CONSENT"
     elif result is None:
@@ -311,11 +311,11 @@ def cutoff(payload: dict) -> dict:
         spent += result["credits"]
         hit = next((rule for rule in stage["cutoffs"] if rule_holds(rule, dict(result["facts"], outcome=result["outcome"]))), None)
         if hit:
-            stops.update(code="CUTOFF", ruleId=hit["id"])
+            stops.update(code="CUTOFF", ruleId=hit["id"], ruleSource=stage.get("cutoffSource", "PACK"))
         elif following and plan_["creditCap"] and spent + following["credits"] > plan_["creditCap"]:
             stops["code"] = "BUDGET"
         else:
-            stops = {"decision": CONTINUE, "code": "NONE", "ruleId": None}
+            stops = {"decision": CONTINUE, "code": "NONE", "ruleId": None, "ruleSource": None}
     decision = dict(stops, stage=stage_id, spentCredits=spent, next=None if stops["decision"] == STOP or not following else following["id"])
     return dict(decision, decisionJson=json.dumps(decision))
 
@@ -373,6 +373,7 @@ def report(payload: dict) -> dict:
         "stoppedAt": stop["stage"] if stop else None,
         "stopCode": stop["code"] if stop else None,
         "ruleId": stop["ruleId"] if stop else None,
+        "ruleSource": stop.get("ruleSource") if stop else None,
         "stages": entries,
         "ledger": {"unit": "credits", "payer": plan_["payer"], "creditCap": plan_["creditCap"], "total": total, "byStage": {e["stage"]: e["credits"] for e in entries}},
         "limits": limits,

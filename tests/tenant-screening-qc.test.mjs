@@ -115,7 +115,7 @@ test("the cut-offs are data: the ruleset holds them, the worker's code names no 
       for (const v of [rule.value].flat()) if (stage.values?.[rule.fact]) assert.ok(stage.values[rule.fact].includes(v), `${rule.id}: ${v}`);
     }
   }
-  assert.deepEqual(ruleset.stages[0].cutoffs.map((r) => r.id), ["CUT-DOC-MAJOR-SIGNALS"]);
+  assert.deepEqual(ruleset.stages[0].cutoffs, [], "a document signal is never a default cut-off (orazaka-packs#181)");
   assert.deepEqual(ruleset.stages[1].cutoffs.map((r) => r.id), ["CUT-COURT-FILE-FOUND"]);
   for (const f of ["screening.py", "handlers.py", "screening_worker.py"]) assert.doesNotMatch(text(`worker/${f}`), /CUT-[A-Z]/, f);
   assert.ok(blueprint.inputSchema.properties.cutoffs, "the manager's rules are an input");
@@ -159,14 +159,14 @@ test("the worker never logs more than the job id and the routing key", () => {
 test("the goldens cover the five paths and are all fictional", () => {
   assert.deepEqual(golden.cases.map((c) => c.id), [
     "clean-applicant-runs-all-three-stages",
-    "doctored-pay-stub-stops-at-documents",
+    "doctored-pay-stub-stops-at-documents-only-by-the-managers-rule",
     "tal-file-found-stops-before-credit",
     "provider-error-is-not-charged",
     "missing-court-consent-stops-visibly",
   ]);
   const by = Object.fromEntries(golden.cases.map((c) => [c.id, c.expected.report]));
-  assert.equal(by["doctored-pay-stub-stops-at-documents"].stoppedAt, "documents");
-  assert.equal(by["doctored-pay-stub-stops-at-documents"].ledger.byStage.courts, 0);
+  assert.equal(by["doctored-pay-stub-stops-at-documents-only-by-the-managers-rule"].stoppedAt, "documents");
+  assert.equal(by["doctored-pay-stub-stops-at-documents-only-by-the-managers-rule"].ledger.byStage.courts, 0);
   assert.equal(by["tal-file-found-stops-before-credit"].ledger.byStage.credit, 0);
   assert.equal(by["clean-applicant-runs-all-three-stages"].ledger.total, ruleset.stages.reduce((n, s) => n + s.credits, 0));
   assert.equal(by["provider-error-is-not-charged"].stages[1].credits, 0);
@@ -180,7 +180,7 @@ test("the Studio is worded in both languages", () => {
 });
 
 test("a ruleset is dated data: a change is a new dated file, the older ones stay as they were", () => {
-  assert.deepEqual(rulesets, ["2026-10-24.json", "2026-10-25.json"]);
+  assert.deepEqual(rulesets, ["2026-10-24.json", "2026-10-25.json", "2026-10-30.json"]);
   for (const file of rulesets) assert.equal(JSON.parse(text(`rules/screening-cutoffs/${file}`)).version, file.slice(0, 10));
   const first = JSON.parse(text("rules/screening-cutoffs/2026-10-24.json"));
   assert.deepEqual(first.stages.find((s) => s.id === "courts").facts, ["outcome"], "2026-10-24 is never rewritten");
@@ -202,4 +202,15 @@ test("the versions say what changed: the pack lost two capabilities (major), the
   assert.equal(blueprint.definition.version, blueprint.version);
   assert.match(blueprint.changelog, /^1\.1\.0 — /);
   assert.match(blueprint.changelog, /orazaka\.core\.checks/);
+});
+
+test("a document signal never decides: no ruleset since 2026-10-30 cuts off on documents, and the stop that a manager chose says so (orazaka-packs#181)", () => {
+  for (const file of rulesets.filter((f) => f >= "2026-10-30")) {
+    const rs = JSON.parse(text(`rules/screening-cutoffs/${file}`));
+    assert.deepEqual(rs.stages.find((s) => s.id === "documents").cutoffs, [], file);
+    assert.ok(rs.limits.includes("A_DOCUMENT_SIGNAL_NEVER_STOPS_BY_DEFAULT"), file);
+  }
+  const old = JSON.parse(text("rules/screening-cutoffs/2026-10-25.json"));
+  assert.deepEqual(old.stages[0].cutoffs.map((r) => r.id), ["CUT-DOC-MAJOR-SIGNALS"], "2026-10-25 is never rewritten");
+  assert.match(text("worker/screening.py"), /ruleSource/);
 });
