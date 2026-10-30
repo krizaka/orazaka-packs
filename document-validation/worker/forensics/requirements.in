@@ -1,5 +1,5 @@
-pypdf==5.9.0
+pypdf==6.21.2
 pikepdf==9.11.0
 reportlab==4.4.4
-Pillow==11.3.0
+Pillow==13.0.0
 pyyaml
