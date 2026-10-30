@@ -241,6 +241,23 @@ document**. The report step returns `resultCacheable: false` when the day came f
 cd worker && python3 test_check.py   # plays the blueprint step by step: the recordings, each outcome, a 1.x call, both quotes
 ```
 
+## The lecture — a document with no promoted ruleset (ADR-089 §6, orazaka-packs#130)
+
+`compliance-check` 2.1.0. A document of a `KNOWN` kind with no ruleset (`UNSUPPORTED_KIND`) or of no kind (`KIND_UNKNOWN`) is never judged and the report says so. Two things are added, and nothing else:
+
+| | |
+|:---|:---|
+| `kindDemand` | `{ jurisdiction, kindId }` (`UNKNOWN` when there is no kind). It is the only thing counted: **never a word of the document**, nor a quote, date or language (ADR-064). The review queue of orazaka-ai-engine reads it to decide what to derive next; demand alone starts nothing. |
+| `lecture` | **Off by default, and asked for twice**: the caller passes `lecture: true` **and** the switch `AI_LAW_LECTURE_ENABLED=true` is on (the environment form of `law.lecture.enabled`). A `CHECKED` document never gets one. |
+
+The lecture is one `orazaka.core.research.grounded` call over `law-corpus` (`sources`, `jurisdiction`, `asOf`, `language`, a question that asks for **no verdict**, the kind's own `targets` when it has some, and the document as data). Its claims pair a citation of the law (article url, quote, content hash) with a citation of the document (`document://input` and the passage). `lecture.py` re-checks them and rebuilds the object from a closed list of fields:
+
+- a claim is **`VERIFIED` only when both quotes are found** (the article, verified by the grounded step and again here when the pack holds its text; the passage, in the document as given). Otherwise `TO_VALIDATE` with the reason by name: `ARTICLE_NOT_VERIFIED`, `QUOTE_NOT_IN_ARTICLE`, `PASSAGE_ABSENT`, `PASSAGE_NOT_IN_DOCUMENT`. A claim whose document passage is absent is never `VERIFIED`;
+- **no verdict field**: nothing a model adds (`verdict`, `score`…) is copied, and the blueprint's output contract has `additionalProperties: false` on the lecture, its claims and their parts;
+- **`audit` is always `"UNAUDITED"`**, with claims or none; the product must show it, with the bilingual `notice`.
+
+The grounded step is `onError: SKIP`: without it the report is the same unsupported-kind report, with its demand. Tested in `worker/test_lecture.py` (off by default; both legs; the planted verdict field; the contract; demand without content). Without `lecture`, a 2.0 run gives the same report as before (plus `kindDemand`).
+
 ## Known limits (demo documents under `worker/fixtures/`)
 
 - The **lease** rules read French wording (the language of the mandatory form). An English lease is not read: it comes
@@ -329,3 +346,39 @@ produced, no signal that names a person, and every report states what it did not
 .venv/bin/python worker/test_authenticity.py        # the gate
 .venv/bin/python worker/test_authenticity_formats.py # the catalogue, XMP, /ID, images, office files
 ```
+
+## Measured, not believed — the forensic corpus
+
+`worker/forensics/` is the gate of every forensic signal (orazaka-packs#176, Yomizaka ADR-0014 O1): no signal ships before it is measured here.
+`corpus.py` builds, from one seed and no clock, fictitious documents (invented employers and banks marked « fictif », persons ending in `-Demo`,
+no real issuer's template or logo, nothing sent online): pay stubs, bank statements, employment letters, invoices. `measure.py` runs
+`authenticity.analyse` over them and writes `results.json`. The tools live in a container (`forensics/Dockerfile`: pypdf, pikepdf, qpdf,
+Ghostscript, Pillow, reportlab), never on a developer's machine; CI runs the Python-only workflows (no Ghostscript, 210 negatives).
+
+* **70 tampered files, with their ground truth** (page, box, tool): an amount replaced in an incremental save, the same in a full rewrite, a white
+  rectangle with new text above, a figure in another font, a pasted logo image, a copy-moved region in a JPEG, a JPEG re-saved after an edit.
+* **280 ordinary negatives** (the false-positive set): merged, annotated, form-filled, re-saved by qpdf, printed to PDF and compressed by Ghostscript,
+  scanned from a print, photographed (with and without EXIF). Not run: LibreOffice conversions and a mail client's own conversion.
+
+| Tamper type | Files | Flagged (`inhabituel` or `incohérent`) |
+|:---|:---:|:---:|
+| amount, incremental save | 10 | 10 (the extra revision) |
+| amount, full rewrite | 10 | 10 (only through `PDF-ID-001`, a signal that also fires on 12 % of ordinary files) |
+| white rectangle + new text | 10 | 0 |
+| figure in another font | 10 | 0 (`PDF-FONT-001` needs three pages and a font used once) |
+| pasted logo / signature image | 10 | 0 |
+| JPEG, region copy-moved | 10 | 0 |
+| JPEG, re-saved after an edit | 10 | 0 |
+
+An honest floor: **the signals read metadata and structure, so a clean overlay or a re-saved picture leaves nothing they read.** CPU time per
+document: median 0.5 ms, p95 1.6 ms.
+
+**The gate** (`test_forensics.py`, in CI): a signal whose `incohérent` case fires on any ordinary negative, or whose `inhabituel` case fires on more
+than 5 % of them, fails the build. A signal under the bar is switched off with `"enabled": false` on its cases in `authenticity-signals.json`
+(then never emitted), never loosened. Three signals shipped before the corpus and measure over the bar: `PDF-ID-001` (12 %), `PDF-META-001`
+(`absent`, 12.5 %) and `IMG-META-001` (`absent`, 6 %). They are pinned in `forensics/gate-baseline.json` as a ratchet (the rate may only go down; a new
+signal is never added there). Decision (CTO, 2026-10-30): they are kept, and the manifest says so: each of these cases carries `"overTheBar": true` in
+`authenticity-signals.json`, and the report's signal carries `overTheBar: true`, so a consumer hides it from the person who reads the report (Yomizaka hides it
+from landlords, yomizaka#651). A test keeps the flags and the baseline identical.
+
+Run: `docker build -t krizaka-forensics -f worker/forensics/Dockerfile worker/forensics && docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/pack" -w /pack/worker krizaka-forensics python forensics/measure.py --write`.

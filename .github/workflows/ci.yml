@@ -89,7 +89,7 @@ jobs:
     # YuNet + SFace on a public-domain photograph.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@1002810b78ccc24e284ec8209e8e0b55ff06ea33 # v1.5.2
     with:
       working-directory: profile-photo-check/worker
       requirements: profile-photo-check/requirements.txt
@@ -106,27 +106,29 @@ jobs:
     # contract, the screening — no model needed. These tests existed but no job ran them (2026-10-22).
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@1002810b78ccc24e284ec8209e8e0b55ff06ea33 # v1.5.2
     with:
       working-directory: document-validation/worker
-      extra-packages: pypdf pika pyyaml
+      extra-packages: pypdf pika pyyaml pikepdf reportlab Pillow
       test-command: |
         set -euo pipefail
         python test_rules.py
         python test_golden.py
         python test_authenticity.py
         python test_authenticity_formats.py
+        python test_forensics.py
         python test_screening.py
         python test_identify.py
         python test_check.py
         python test_regex_safety.py
         python test_derivation.py
+        python test_lecture.py
 
   py-authenticity:
     # message-authenticity's worker: language, thresholds, the closed report, protocol conformance — no model needed.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@1002810b78ccc24e284ec8209e8e0b55ff06ea33 # v1.5.2
     with:
       working-directory: message-authenticity/worker
       extra-packages: pika pyyaml
@@ -138,7 +140,7 @@ jobs:
     # media-safety's worker: the closed rules (a safety check fails closed), the protocol — no model needed.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@1002810b78ccc24e284ec8209e8e0b55ff06ea33 # v1.5.2
     with:
       working-directory: media-safety/worker
       extra-packages: pika pyyaml
@@ -151,7 +153,7 @@ jobs:
     # after the court records with credit never called, a provider error, a missing consent — no model, no network.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@1002810b78ccc24e284ec8209e8e0b55ff06ea33 # v1.5.2
     with:
       working-directory: tenant-screening-qc/worker
       extra-packages: pika pyyaml
@@ -162,7 +164,7 @@ jobs:
     # the cross-checks, the payload checks — no model, no network.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@1002810b78ccc24e284ec8209e8e0b55ff06ea33 # v1.5.2
     with:
       working-directory: identity-document-check/worker
       extra-packages: pika pyyaml
@@ -176,7 +178,7 @@ jobs:
     # The broker connection every worker shares (worker-common/worker_broker.py): tested once.
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-ci.yml@3f78a2d25b154a21cabbc5d57b8278f6b1ddf0f1 # v1.5.2
+    uses: krizaka/.github/.github/workflows/python-ci.yml@1002810b78ccc24e284ec8209e8e0b55ff06ea33 # v1.5.2
     with:
       working-directory: worker-common
       extra-packages: pika

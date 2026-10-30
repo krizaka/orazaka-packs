@@ -1,0 +1,139 @@
+{
+  "corpus": {
+    "seed": 176,
+    "negatives": 280,
+    "tampered": 70,
+    "tools": {
+      "ghostscript": true
+    },
+    "negativeWorkflows": [
+      "annotated",
+      "compressed",
+      "form-filled",
+      "merged",
+      "photographed",
+      "printed-to-pdf",
+      "qpdf-resaved",
+      "scanned-from-print"
+    ],
+    "tamperTypes": [
+      "incremental-amount",
+      "rewritten-amount",
+      "white-rectangle-text",
+      "other-font-figure",
+      "pasted-image",
+      "jpeg-copy-move",
+      "jpeg-resaved-after-edit"
+    ]
+  },
+  "signals": [
+    {
+      "signalId": "IMG-META-001",
+      "level": "inhabituel",
+      "falsePositives": 17,
+      "negatives": 280,
+      "falsePositiveRate": 0.0607,
+      "upperBound95": 0.0897,
+      "recallByTamperType": {}
+    },
+    {
+      "signalId": "IMG-META-001",
+      "level": "observé",
+      "falsePositives": 18,
+      "negatives": 280,
+      "falsePositiveRate": 0.0643,
+      "upperBound95": 0.0938,
+      "recallByTamperType": {
+        "jpeg-copy-move": 10,
+        "jpeg-resaved-after-edit": 10
+      }
+    },
+    {
+      "signalId": "PDF-ID-001",
+      "level": "inhabituel",
+      "falsePositives": 34,
+      "negatives": 280,
+      "falsePositiveRate": 0.1214,
+      "upperBound95": 0.1584,
+      "recallByTamperType": {
+        "rewritten-amount": 10
+      }
+    },
+    {
+      "signalId": "PDF-META-001",
+      "level": "inhabituel",
+      "falsePositives": 35,
+      "negatives": 280,
+      "falsePositiveRate": 0.125,
+      "upperBound95": 0.1623,
+      "recallByTamperType": {}
+    },
+    {
+      "signalId": "PDF-META-001",
+      "level": "observé",
+      "falsePositives": 210,
+      "negatives": 280,
+      "falsePositiveRate": 0.75,
+      "upperBound95": 0.7922,
+      "recallByTamperType": {
+        "incremental-amount": 10,
+        "rewritten-amount": 10,
+        "white-rectangle-text": 10,
+        "other-font-figure": 10,
+        "pasted-image": 10
+      }
+    },
+    {
+      "signalId": "PDF-REV-001",
+      "level": "inhabituel",
+      "falsePositives": 0,
+      "negatives": 280,
+      "falsePositiveRate": 0.0,
+      "upperBound95": 0.0106,
+      "recallByTamperType": {
+        "incremental-amount": 10
+      }
+    }
+  ],
+  "recallPerTamperType": {
+    "incremental-amount": {
+      "documents": 10,
+      "flagged": 10,
+      "recall": 1.0
+    },
+    "jpeg-copy-move": {
+      "documents": 10,
+      "flagged": 0,
+      "recall": 0.0
+    },
+    "jpeg-resaved-after-edit": {
+      "documents": 10,
+      "flagged": 0,
+      "recall": 0.0
+    },
+    "other-font-figure": {
+      "documents": 10,
+      "flagged": 0,
+      "recall": 0.0
+    },
+    "pasted-image": {
+      "documents": 10,
+      "flagged": 0,
+      "recall": 0.0
+    },
+    "rewritten-amount": {
+      "documents": 10,
+      "flagged": 10,
+      "recall": 1.0
+    },
+    "white-rectangle-text": {
+      "documents": 10,
+      "flagged": 0,
+      "recall": 0.0
+    }
+  },
+  "cpuSeconds": {
+    "median": 0.0005,
+    "p95": 0.00161
+  }
+}

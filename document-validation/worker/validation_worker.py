@@ -38,6 +38,7 @@ import broker
 import citations
 import compliance
 import identify
+import lecture
 import rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -273,7 +274,25 @@ def _resolve(payload: dict) -> dict:
     except rules.RulesetNotFound as missing:
         # A date no version of the kind's ruleset covers: said by name, never the closest version.
         raise InvalidJobPayload(str(missing)) from missing
-    return {"outcome": resolved["outcome"], "resolvedJson": json.dumps(resolved, ensure_ascii=False)}
+    out = {"outcome": resolved["outcome"], "resolvedJson": json.dumps(resolved, ensure_ascii=False)}
+    out.update(_lecture_request(resolved, payload))
+    return out
+
+
+def _lecture_request(resolved: dict, payload: dict) -> dict:
+    """The grounded call of the lecture (ADR-089 §6), asked only of a document with no promoted ruleset, when the caller
+    wants it and the switch is on. Otherwise ``needsLecture`` is false and every other field is empty."""
+    needs = resolved["outcome"] != identify.CHECK and lecture.wanted(payload.get("lecture")) and lecture.enabled()
+    asked = lecture.request(resolved["identification"]) if needs else {}
+    return {
+        "needsLecture": needs,
+        "lectureSources": ",".join(asked.get("sources", [])),
+        "lectureJurisdiction": asked.get("jurisdiction", ""),
+        "lectureAsOf": asked.get("asOf", ""),
+        "lectureLanguage": asked.get("language", ""),
+        "lectureQuestion": asked.get("question", ""),
+        "lectureTargets": json.dumps(asked.get("targets", []), ensure_ascii=False) if needs else "",
+    }
 
 
 def _report(payload: dict) -> dict:
@@ -283,6 +302,9 @@ def _report(payload: dict) -> dict:
     checked = resolved.get("outcome") == identify.CHECK
     ruleset = rules.resolve(resolved["ruleset"]["id"], resolved["identification"]["asOf"]) if checked else None
     report = compliance.report(resolved, ruleset, screened, str(payload.get("judgment") or ""), ARTICLES)
+    if not checked and lecture.wanted(payload.get("lecture")) and lecture.enabled():
+        # Never a verdict: the claims of the grounded call, re-checked on both quotes (ADR-089 section 6).
+        report["lecture"] = lecture.verify(payload["claims"], str(payload.get("document") or ""), ARTICLES)
     return {
         "report": report,
         "reportJson": json.dumps(report, ensure_ascii=False, indent=2),

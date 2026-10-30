@@ -33,6 +33,7 @@ KIND_FIXTURES = PACK / "kinds" / "fixtures"
 BLUEPRINT = json.loads((PACK / "studios" / "compliance-check" / "blueprint.json").read_text(encoding="utf-8"))
 ROUTES = {c["key"]: c["routingKey"] for c in yaml.safe_load((PACK / "pack.yaml").read_text(encoding="utf-8"))["requires"]["capabilities"]}
 CHAT = "orazaka.core.chat.completion"
+GROUNDED = "orazaka.core.research.grounded"
 TEST_ARTICLES = citations.load_articles(str(FIXTURES / "law"))
 
 
@@ -60,14 +61,21 @@ def _holds(condition: str, inputs: dict, steps: dict) -> bool:
     return (rendered == literal.strip("'\"")) == (operator == "==")
 
 
-def run(document: str, *, judge=None, classify=None, **inputs) -> tuple:
-    """The 2.0 report of ``document`` and the model calls the run made, as ``[step id, …]``."""
+def run(document: str, *, judge=None, classify=None, grounded=None, **inputs) -> tuple:
+    """The 2.0 report of ``document`` and the model calls the run made, as ``[step id, …]``.
+
+    ``grounded`` answers the lecture's grounded call (ADR-089 §6): a function of the step's inputs returning the claims.
+    """
     inputs = {"document": document, **inputs}
     steps, calls, answers = {}, [], {"judge": judge, "classify": classify}
     for step in BLUEPRINT["definition"]["steps"]:
         if step.get("condition") and not _holds(step["condition"], inputs, steps):
             continue
         payload = {name: _value(t, inputs, steps) for name, t in step["inputs"].items()}
+        if step["featureKey"] == GROUNDED:
+            calls.append(step["id"])
+            steps[step["out"]] = {"claims": json.dumps(grounded(payload) if callable(grounded) else (grounded or []), ensure_ascii=False)}
+            continue
         if step["featureKey"] == CHAT:
             calls.append(step["id"])
             answer = answers[step["id"]]
@@ -98,6 +106,8 @@ def assert_conforms(schema: dict, value, path: str) -> None:
         for name, item in value.items():
             if name in schema.get("properties", {}):
                 assert_conforms(schema["properties"][name], item, f"{path}.{name}")
+            elif schema.get("additionalProperties") is False:
+                raise AssertionError(f"{path}.{name}: not declared and additionalProperties is false")
             else:
                 assert schema.get("additionalProperties", True) is not False, f"{path}.{name}: not declared"
 
@@ -205,7 +215,7 @@ def test_a_citation_that_pins_no_article_says_so_on_every_finding():
 
 
 def test_the_2x_blueprint_is_versioned_so_pinned_1x_installations_keep_their_steps():
-    assert BLUEPRINT["version"] == BLUEPRINT["definition"]["version"] == "2.0.0"
+    assert BLUEPRINT["version"] == BLUEPRINT["definition"]["version"] == "2.1.0"
     assert ROUTES["orazaka.validation.document.screen"] == "job.validation.screen"
     assert ROUTES["orazaka.validation.document.assemble"] == "job.validation.assemble", "1.x installations still call it"
 
