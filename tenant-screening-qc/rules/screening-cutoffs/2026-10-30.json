@@ -1,0 +1,56 @@
+{
+  "rulesetId": "tenant-screening-qc",
+  "version": "2026-10-30",
+  "revision": 1,
+  "provider": "mock",
+  "operators": ["equals", "atLeast", "in"],
+  "documents": {
+    "majorLevels": ["incohérent"],
+    "unusualLevels": ["inhabituel"]
+  },
+  "stages": [
+    {
+      "id": "documents",
+      "purpose": "DOCUMENTS",
+      "credits": 10,
+      "facts": ["majorSignals", "unusualSignals", "leaseFailures"],
+      "cutoffs": []
+    },
+    {
+      "id": "courts",
+      "purpose": "COURT_RECORDS",
+      "credits": 30,
+      "facts": ["outcome", "category"],
+      "values": {
+        "outcome": ["MATCH", "NO_MATCH"],
+        "category": ["TAL_NON_PAYMENT", "TAL_OTHER", "CRIMINAL", "CIVIL", "NONE"]
+      },
+      "cutoffs": [
+        {
+          "id": "CUT-COURT-FILE-FOUND",
+          "fact": "outcome",
+          "op": "equals",
+          "value": "MATCH"
+        }
+      ]
+    },
+    {
+      "id": "credit",
+      "purpose": "CREDIT",
+      "credits": 20,
+      "facts": ["outcome"],
+      "values": {
+        "outcome": ["MATCH", "NO_MATCH"]
+      },
+      "cutoffs": []
+    }
+  ],
+  "limits": [
+    "MOCK_PROVIDER_ONLY",
+    "NO_DECISION_ON_THE_APPLICANT",
+    "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+    "A_DOCUMENT_SIGNAL_NEVER_STOPS_BY_DEFAULT",
+    "AN_OUTCOME_IS_NOT_THE_RECORD",
+    "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
+  ]
+}

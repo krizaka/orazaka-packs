@@ -20,6 +20,7 @@ RULESETS = os.path.join(HERE, "..", "rules", "screening-cutoffs")
 
 CONTINUE, STOP = "CONTINUE", "STOP"
 GRANTED, REFUSED_CONSENT = "GRANTED", "REFUSED"
+SIGNAL_STAGE = "documents"  # the stage whose facts are forensic signals (Law 25 s. 12.1)
 #: The engine's check answer, its closed sets (``CheckStepResult``; tests/contracts/orazaka-core-checks.json).
 ENGINE_OUTCOMES = ("MATCH", "NO_MATCH", "PROVIDER_ERROR", "TIMEOUT", "REFUSED")
 ENGINE_ANSWERED = ("MATCH", "NO_MATCH")
@@ -202,7 +203,7 @@ def plan(payload: dict) -> dict:
         raise InvalidInput("'creditCap' cannot pay the first stage")
     applicant_pays = _bool(payload.get("applicantPaysFees"), "applicantPaysFees")
     stages = [
-        {"id": s["id"], "purpose": s["purpose"], "credits": s["credits"], "facts": s["facts"], "cutoffs": cutoffs[s["id"]]}
+        {"id": s["id"], "purpose": s["purpose"], "credits": s["credits"], "facts": s["facts"], "cutoffs": cutoffs[s["id"]], "cutoffSource": "MANAGER" if s["id"] in (payload.get("cutoffs") or {}) else "PACK"}
         for s in ruleset["stages"]
     ]
     result = {
@@ -300,7 +301,7 @@ def cutoff(payload: dict) -> dict:
     result = _result(plan_, stage, payload, "result")
     index = [s["id"] for s in plan_["stages"]].index(stage_id)
     following = plan_["stages"][index + 1] if index + 1 < len(plan_["stages"]) else None
-    stops = {"decision": STOP, "ruleId": None}
+    stops = {"decision": STOP, "ruleId": None, "ruleSource": None}
     if payload.get("consent") != GRANTED:
         stops["code"] = "NO_CONSENT"
     elif result is None:
@@ -311,11 +312,11 @@ def cutoff(payload: dict) -> dict:
         spent += result["credits"]
         hit = next((rule for rule in stage["cutoffs"] if rule_holds(rule, dict(result["facts"], outcome=result["outcome"]))), None)
         if hit:
-            stops.update(code="CUTOFF", ruleId=hit["id"])
+            stops.update(code="CUTOFF", ruleId=hit["id"], ruleSource=stage.get("cutoffSource", "PACK"))
         elif following and plan_["creditCap"] and spent + following["credits"] > plan_["creditCap"]:
             stops["code"] = "BUDGET"
         else:
-            stops = {"decision": CONTINUE, "code": "NONE", "ruleId": None}
+            stops = {"decision": CONTINUE, "code": "NONE", "ruleId": None, "ruleSource": None}
     decision = dict(stops, stage=stage_id, spentCredits=spent, next=None if stops["decision"] == STOP or not following else following["id"])
     return dict(decision, decisionJson=json.dumps(decision))
 
@@ -364,6 +365,11 @@ def report(payload: dict) -> dict:
     limits = list(plan_["limits"])
     if plan_["payer"] == "APPLICANT":
         limits.append("APPLICANT_PAYS_FEES_MAY_CONTRAVENE_CCQ_1904")
+    # Law 25 s. 12.1: a stop that rests on a document signal is the manager's own rule (never the pack's): the report says so
+    # and tells the applicant a person may review it. The evidence is named by stage, the record itself is not copied.
+    signal_stop = bool(stop and stop["code"] == "CUTOFF" and stop.get("ruleSource") == "MANAGER" and stop["stage"] == SIGNAL_STAGE)
+    if signal_stop:
+        limits.append("MANAGER_RULE_ON_A_SIGNAL_APPLICANT_MAY_ASK_HUMAN_REVIEW_LAW_25_S12_1")
     body = {
         "rulesetId": plan_["rulesetId"],
         "rulesetVersion": plan_["rulesetVersion"],
@@ -373,8 +379,10 @@ def report(payload: dict) -> dict:
         "stoppedAt": stop["stage"] if stop else None,
         "stopCode": stop["code"] if stop else None,
         "ruleId": stop["ruleId"] if stop else None,
+        "ruleSource": stop.get("ruleSource") if stop else None,
         "stages": entries,
         "ledger": {"unit": "credits", "payer": plan_["payer"], "creditCap": plan_["creditCap"], "total": total, "byStage": {e["stage"]: e["credits"] for e in entries}},
         "limits": limits,
+        **({"decisionBy": "MANAGER", "humanReview": {"available": True, "basis": "LAW_25_S12_1", "evidence": SIGNAL_STAGE}} if signal_stop else {}),
     }
     return {"report": body, "reportJson": json.dumps(body), "status": status}
