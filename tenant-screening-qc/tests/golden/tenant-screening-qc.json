@@ -43,7 +43,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-25",
+          "rulesetVersion": "2026-10-30",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-1",
           "status": "COMPLETED",
@@ -106,9 +106,11 @@
             "MOCK_PROVIDER_ONLY",
             "NO_DECISION_ON_THE_APPLICANT",
             "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "A_DOCUMENT_SIGNAL_NEVER_STOPS_BY_DEFAULT",
             "AN_OUTCOME_IS_NOT_THE_RECORD",
             "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
-          ]
+          ],
+          "ruleSource": null
         },
         "status": "COMPLETED"
       },
@@ -178,7 +180,7 @@
       ]
     },
     {
-      "id": "doctored-pay-stub-stops-at-documents",
+      "id": "doctored-pay-stub-stops-at-documents-only-by-the-managers-rule",
       "input": {
         "subject": {
           "subjectId": "fictional-applicant-2",
@@ -214,18 +216,28 @@
               "verdict": "PASS"
             }
           ]
+        },
+        "cutoffs": {
+          "documents": [
+            {
+              "id": "CUT-MANAGER-MAJOR-SIGNALS",
+              "fact": "majorSignals",
+              "op": "atLeast",
+              "value": 1
+            }
+          ]
         }
       },
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-25",
+          "rulesetVersion": "2026-10-30",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-2",
           "status": "STOPPED",
           "stoppedAt": "documents",
           "stopCode": "CUTOFF",
-          "ruleId": "CUT-DOC-MAJOR-SIGNALS",
+          "ruleId": "CUT-MANAGER-MAJOR-SIGNALS",
           "stages": [
             {
               "stage": "documents",
@@ -277,9 +289,11 @@
             "MOCK_PROVIDER_ONLY",
             "NO_DECISION_ON_THE_APPLICANT",
             "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "A_DOCUMENT_SIGNAL_NEVER_STOPS_BY_DEFAULT",
             "AN_OUTCOME_IS_NOT_THE_RECORD",
             "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
-          ]
+          ],
+          "ruleSource": "MANAGER"
         },
         "status": "STOPPED"
       },
@@ -351,7 +365,14 @@
             "report",
             "ruleId"
           ],
-          "equals": "CUT-DOC-MAJOR-SIGNALS"
+          "equals": "CUT-MANAGER-MAJOR-SIGNALS"
+        },
+        {
+          "path": [
+            "report",
+            "ruleSource"
+          ],
+          "equals": "MANAGER"
         }
       ]
     },
@@ -397,7 +418,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-25",
+          "rulesetVersion": "2026-10-30",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-3",
           "status": "STOPPED",
@@ -458,9 +479,11 @@
             "MOCK_PROVIDER_ONLY",
             "NO_DECISION_ON_THE_APPLICANT",
             "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "A_DOCUMENT_SIGNAL_NEVER_STOPS_BY_DEFAULT",
             "AN_OUTCOME_IS_NOT_THE_RECORD",
             "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
-          ]
+          ],
+          "ruleSource": "PACK"
         },
         "status": "STOPPED"
       },
@@ -578,7 +601,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-25",
+          "rulesetVersion": "2026-10-30",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-4",
           "status": "INCOMPLETE",
@@ -639,9 +662,11 @@
             "MOCK_PROVIDER_ONLY",
             "NO_DECISION_ON_THE_APPLICANT",
             "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "A_DOCUMENT_SIGNAL_NEVER_STOPS_BY_DEFAULT",
             "AN_OUTCOME_IS_NOT_THE_RECORD",
             "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
-          ]
+          ],
+          "ruleSource": null
         },
         "status": "INCOMPLETE"
       },
@@ -751,7 +776,7 @@
       "expected": {
         "report": {
           "rulesetId": "tenant-screening-qc",
-          "rulesetVersion": "2026-10-25",
+          "rulesetVersion": "2026-10-30",
           "rulesetRevision": 1,
           "subjectRef": "fictional-applicant-5",
           "status": "INCOMPLETE",
@@ -809,9 +834,11 @@
             "MOCK_PROVIDER_ONLY",
             "NO_DECISION_ON_THE_APPLICANT",
             "A_STOP_IS_A_CUTOFF_NOT_A_VERDICT",
+            "A_DOCUMENT_SIGNAL_NEVER_STOPS_BY_DEFAULT",
             "AN_OUTCOME_IS_NOT_THE_RECORD",
             "APPLICANT_DOES_NOT_PAY_BY_DEFAULT"
-          ]
+          ],
+          "ruleSource": null
         },
         "status": "INCOMPLETE"
       },
