@@ -1,12 +1,12 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "status": "PUBLISHED",
   "estimatedCredits": 120,
-  "changelog": "2.0.0 — ADR-089 §4 : le document est identifié avant d'être jugé. identify (type, juridiction, date, langue, comparés au type déclaré) → classify (seulement quand deux types sont à égalité, citation vérifiée) → resolve (le corpus en vigueur à asOf pour le type détecté ; jamais le bail pour un autre type) → screen → judge (seulement quand une règle le demande) → report. Le rapport porte `contract` 2.0, `identification`, `outcome` (CHECKED, UNSUPPORTED_KIND, KIND_UNKNOWN) et `ruleset` {id, version, revision, reviewStatus} ; chaque constat porte ses deux vérifications : le passage est dans le document, la citation est dans le texte de l'article que le corpus fixe (contentHash). Un verdict dont l'une échoue devient INSUFFICIENT_EVIDENCE ; sans passage, jamais de PASS. Le contrat du rapport est déclaré sur l'étape report (orazaka-studio#59). `jurisdiction` devient facultative ; `declaredKind` entre. Aucun type par défaut : juger un texte non reconnu par le bail de la juridiction reste le comportement 1.x (hérité), réservé aux installations épinglées sur 1.x. Une citation non épinglée le dit, constat par constat (« citation non épinglée »). Un run dont le jour vient de l'horloge (asOfSource TODAY) n'est jamais repris du cache (resultCacheable : false) ; un run 2.0 l'est seulement quand asOf est donné ou lu dans le document. 1.7.2 — qc-invoice : un « sub-total » anglais n'est plus pris pour le total (QC-INV-002). 1.7.1 — qc-invoice lit la mise en page d'une facture réelle (colonnes alignées, calcul entre crochets, libellé et valeur sur deux lignes) : fin des faux échecs sur la date, le total et les taxes (orazaka-packs#81) ; la preuve citée reste le passage exact. 1.7.0 — libellés des sorties en anglais et français (x-i18n). 1.6.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.5.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Contrôle de conformité documentaire — déterministe d'abord, modèle en second. 1.0.1 : la structure traverse l'appel au modèle en JSON explicite. 1.0.2 : jugement en onError=FAIL, faute de pouvoir distinguer un refus d'une panne. 1.1.0 : la distinction existe (ADR-053). SKIP quand le modèle est tombé — un rapport 9/10 déterministe reste utile, et la règle de jugement se rend en INSUFFICIENT_EVIDENCE, ce qui est vrai. FAIL sur GUARD_REFUSAL — un refus doit atteindre l'utilisateur, jamais être avalé dans un rapport qu'il croira complet. 1.1.1 : justification écrite du SKIP, exigée par BlueprintFitnessTest. 1.2.0 : juridiction QC (bail de logement, Code civil du Québec art. 1851 et suiv.), corpus marqué à faire relire par un avocat. 1.3.0 : `ruleset` optionnel — un second corpus de la même juridiction (la facture du Québec) se choisit par son nom ; sans lui, le bail, comme avant. 1.4.0 : second corpus nommé, `qc-service-contract` (contrat de service du Québec, première étape : droit fédéral lu à la source).",
+  "changelog": "2.1.0 — ADR-089 §6 : la lecture d'un document dont le type n'a pas de corpus promu (UNSUPPORTED_KIND ou KIND_UNKNOWN), désactivée par défaut. Sur demande (`lecture: true`) et si l'interrupteur `AI_LAW_LECTURE_ENABLED` est actif, un appel de recherche sourcée rapproche des articles du corpus de lois de passages du document ; chaque affirmation est VERIFIED seulement si les deux citations se retrouvent (l'article, le passage du document). Aucun verdict : le contrat de sortie refuse tout champ hors liste, `audit` vaut toujours UNAUDITED. Le rapport porte aussi `kindDemand` (juridiction et type, jamais le contenu) que la file de revue compte pour décider quoi dériver ensuite. Sans `lecture`, rien ne change : un run 2.0 donne le même rapport. 2.0.0 — ADR-089 §4 : le document est identifié avant d'être jugé. identify (type, juridiction, date, langue, comparés au type déclaré) → classify (seulement quand deux types sont à égalité, citation vérifiée) → resolve (le corpus en vigueur à asOf pour le type détecté ; jamais le bail pour un autre type) → screen → judge (seulement quand une règle le demande) → report. Le rapport porte `contract` 2.0, `identification`, `outcome` (CHECKED, UNSUPPORTED_KIND, KIND_UNKNOWN) et `ruleset` {id, version, revision, reviewStatus} ; chaque constat porte ses deux vérifications : le passage est dans le document, la citation est dans le texte de l'article que le corpus fixe (contentHash). Un verdict dont l'une échoue devient INSUFFICIENT_EVIDENCE ; sans passage, jamais de PASS. Le contrat du rapport est déclaré sur l'étape report (orazaka-studio#59). `jurisdiction` devient facultative ; `declaredKind` entre. Aucun type par défaut : juger un texte non reconnu par le bail de la juridiction reste le comportement 1.x (hérité), réservé aux installations épinglées sur 1.x. Une citation non épinglée le dit, constat par constat (« citation non épinglée »). Un run dont le jour vient de l'horloge (asOfSource TODAY) n'est jamais repris du cache (resultCacheable : false) ; un run 2.0 l'est seulement quand asOf est donné ou lu dans le document. 1.7.2 — qc-invoice : un « sub-total » anglais n'est plus pris pour le total (QC-INV-002). 1.7.1 — qc-invoice lit la mise en page d'une facture réelle (colonnes alignées, calcul entre crochets, libellé et valeur sur deux lignes) : fin des faux échecs sur la date, le total et les taxes (orazaka-packs#81) ; la preuve citée reste le passage exact. 1.7.0 — libellés des sorties en anglais et français (x-i18n). 1.6.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.5.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. Contrôle de conformité documentaire — déterministe d'abord, modèle en second. 1.0.1 : la structure traverse l'appel au modèle en JSON explicite. 1.0.2 : jugement en onError=FAIL, faute de pouvoir distinguer un refus d'une panne. 1.1.0 : la distinction existe (ADR-053). SKIP quand le modèle est tombé — un rapport 9/10 déterministe reste utile, et la règle de jugement se rend en INSUFFICIENT_EVIDENCE, ce qui est vrai. FAIL sur GUARD_REFUSAL — un refus doit atteindre l'utilisateur, jamais être avalé dans un rapport qu'il croira complet. 1.1.1 : justification écrite du SKIP, exigée par BlueprintFitnessTest. 1.2.0 : juridiction QC (bail de logement, Code civil du Québec art. 1851 et suiv.), corpus marqué à faire relire par un avocat. 1.3.0 : `ruleset` optionnel — un second corpus de la même juridiction (la facture du Québec) se choisit par son nom ; sans lui, le bail, comme avant. 1.4.0 : second corpus nommé, `qc-service-contract` (contrat de service du Québec, première étape : droit fédéral lu à la source).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "compliance-check",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "steps": [
       {
         "id": "identify",
@@ -56,12 +56,39 @@
         "inputs": {
           "identification": "{{steps.identification.identificationJson}}",
           "classification": "{{steps.classification.content:}}",
-          "document": "{{inputs.document}}"
+          "document": "{{inputs.document}}",
+          "lecture": "{{inputs.lecture:}}"
         },
         "out": "resolved",
         "onError": "FAIL",
         "maxAttempts": 1,
         "timeout": "PT1M"
+      },
+      {
+        "id": "lecture",
+        "kind": "CAPABILITY",
+        "featureKey": "orazaka.core.research.grounded",
+        "dependsOn": [
+          "resolve"
+        ],
+        "condition": "{{steps.resolved.needsLecture}} == true",
+        "inputs": {
+          "sources": "{{steps.resolved.lectureSources}}",
+          "jurisdiction": "{{steps.resolved.lectureJurisdiction}}",
+          "asOf": "{{steps.resolved.lectureAsOf}}",
+          "language": "{{steps.resolved.lectureLanguage}}",
+          "question": "{{steps.resolved.lectureQuestion}}",
+          "targets": "{{steps.resolved.lectureTargets}}",
+          "document": "{{inputs.document}}"
+        },
+        "out": "lectured",
+        "onError": "SKIP",
+        "maxAttempts": 1,
+        "timeout": "PT3M",
+        "onErrorByCause": {
+          "GUARD_REFUSAL": "FAIL"
+        },
+        "skipRationale": "La lecture est un ajout facultatif : sans elle, le rapport dit toujours UNSUPPORTED_KIND ou KIND_UNKNOWN, sans aucun verdict, et il compte la demande. Une lecture manquante vaut mieux qu'une lecture devinée. Le refus de garde-fou doit atteindre l'utilisateur (ADR-053)."
       },
       {
         "id": "screen",
@@ -107,12 +134,16 @@
         "dependsOn": [
           "resolve",
           "screen",
-          "judge"
+          "judge",
+          "lecture"
         ],
         "inputs": {
           "resolved": "{{steps.resolved.resolvedJson}}",
           "screened": "{{steps.screened.screenedJson:}}",
-          "judgment": "{{steps.judgment.content:}}"
+          "judgment": "{{steps.judgment.content:}}",
+          "document": "{{inputs.document}}",
+          "lecture": "{{inputs.lecture:}}",
+          "claims": "{{steps.lectured.claims:}}"
         },
         "out": "report",
         "onError": "FAIL",
@@ -280,6 +311,134 @@
                               "ARTICLE_NOT_HELD",
                               "QUOTE_NOT_IN_ARTICLE"
                             ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "kindDemand": {
+                  "type": "object",
+                  "required": [
+                    "jurisdiction",
+                    "kindId"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "jurisdiction": {
+                      "type": "string"
+                    },
+                    "kindId": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "lecture": {
+                  "type": "object",
+                  "required": [
+                    "audit",
+                    "notice",
+                    "claims"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "audit": {
+                      "enum": [
+                        "UNAUDITED"
+                      ]
+                    },
+                    "notice": {
+                      "type": "object",
+                      "required": [
+                        "fr",
+                        "en"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "fr": {
+                          "type": "string"
+                        },
+                        "en": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "text",
+                          "status",
+                          "article",
+                          "passage",
+                          "checks"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "text": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "VERIFIED",
+                              "TO_VALIDATE"
+                            ]
+                          },
+                          "reason": {
+                            "enum": [
+                              "ARTICLE_NOT_VERIFIED",
+                              "QUOTE_NOT_IN_ARTICLE",
+                              "PASSAGE_ABSENT",
+                              "PASSAGE_NOT_IN_DOCUMENT"
+                            ]
+                          },
+                          "article": {
+                            "type": "object",
+                            "required": [
+                              "url",
+                              "quote",
+                              "contentHash"
+                            ],
+                            "additionalProperties": false,
+                            "properties": {
+                              "url": {
+                                "type": "string"
+                              },
+                              "quote": {
+                                "type": "string"
+                              },
+                              "contentHash": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "passage": {
+                            "type": "string"
+                          },
+                          "checks": {
+                            "type": "object",
+                            "required": [
+                              "article",
+                              "passage"
+                            ],
+                            "additionalProperties": false,
+                            "properties": {
+                              "article": {
+                                "enum": [
+                                  "VERIFIED",
+                                  "ARTICLE_NOT_VERIFIED",
+                                  "QUOTE_NOT_IN_ARTICLE"
+                                ]
+                              },
+                              "passage": {
+                                "enum": [
+                                  "VERIFIED",
+                                  "ABSENT",
+                                  "NOT_IN_DOCUMENT"
+                                ]
+                              }
+                            }
                           }
                         }
                       }
@@ -461,6 +620,21 @@
               "qc-invoice": "Facture du Québec",
               "qc-service-contract": "Contrat de service du Québec"
             }
+          }
+        }
+      },
+      "lecture": {
+        "type": "boolean",
+        "title": "Lecture du droit proche",
+        "description": "Sans corpus pour ce type : extraits de la loi près de passages du document, non audités. Jamais un verdict.",
+        "x-i18n": {
+          "en": {
+            "title": "Reading of the nearby law",
+            "description": "With no ruleset for this kind: law extracts beside passages of the document, unaudited. Never a verdict."
+          },
+          "fr": {
+            "title": "Lecture du droit proche",
+            "description": "Sans corpus pour ce type : extraits de la loi près de passages du document, non audités. Jamais un verdict."
           }
         }
       }

@@ -13,7 +13,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: document-validation
-version: 1.11.0
+version: 1.12.0
 tier: WORKER
 distribution: CLOUD
 regulatoryClass: SENSITIVE
@@ -120,13 +120,21 @@ requires:
           identification: { type: string, description: "La sortie de l'étape identify (JSON)." }
           classification: { type: string, description: "La réponse du modèle à l'étape classify, quand elle a eu lieu : gardée seulement si elle nomme un type à égalité et cite le document." }
           document: { type: string, description: "Le document, pour vérifier la citation du modèle." }
+          lecture: { type: boolean, description: "Vrai quand l'appelant demande la lecture d'un document sans corpus promu (ADR-089 §6) ; sans effet tant que l'interrupteur AI_LAW_LECTURE_ENABLED n'est pas actif." }
         required: [identification, document]
       outputSchema:
         type: object
         properties:
           outcome: { type: string, description: "CHECK | UNSUPPORTED_KIND | KIND_UNKNOWN" }
           resolvedJson: { type: string, description: "L'identification retenue et le corpus en vigueur à asOf pour le type utilisé {id, version, revision, reviewStatus}, en JSON." }
-        required: [outcome, resolvedJson]
+          needsLecture: { type: boolean, description: "Vrai quand le document n'a pas de corpus promu, que l'appelant veut la lecture et que l'interrupteur est actif : l'étape lecture pose alors sa question à la recherche sourcée." }
+          lectureSources: { type: string, description: "Les sources de la recherche sourcée de la lecture (le corpus de lois) ; vide sans lecture." }
+          lectureJurisdiction: { type: string, description: "La juridiction de la question de la lecture ; vide sans lecture." }
+          lectureAsOf: { type: string, description: "Le jour auquel la loi est lue pour la lecture ; vide sans lecture." }
+          lectureLanguage: { type: string, description: "La langue de la question de la lecture (fr ou en) ; vide sans lecture." }
+          lectureQuestion: { type: string, description: "La question de la lecture, sans aucun verdict demandé ; vide sans lecture." }
+          lectureTargets: { type: string, description: "Les instruments et articles du type, en JSON ; vide sans lecture." }
+        required: [outcome, resolvedJson, needsLecture, lectureSources, lectureJurisdiction, lectureAsOf, lectureLanguage, lectureQuestion, lectureTargets]
     - key: orazaka.validation.document.report
       routingKey: job.validation.report
       handlerKey: validation.report
@@ -139,6 +147,9 @@ requires:
           resolved: { type: string, description: "La sortie de l'étape resolve (JSON)." }
           screened: { type: string, description: "La sortie de l'étape screen (JSON) ; vide quand aucun corpus ne s'applique." }
           judgment: { type: string, description: "La réponse du modèle aux règles de jugement ; vide quand il n'a pas été appelé." }
+          document: { type: string, description: "Le document, pour vérifier les passages de la lecture." }
+          lecture: { type: boolean, description: "Vrai quand l'appelant a demandé la lecture (ADR-089 §6)." }
+          claims: { type: string, description: "Les affirmations de la recherche sourcée de la lecture (JSON) ; vide quand elle n'a pas eu lieu. Chacune est revérifiée sur ses deux citations : jamais un verdict." }
         required: [resolved]
       outputSchema:
         type: object

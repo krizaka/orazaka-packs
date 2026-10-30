@@ -19,6 +19,7 @@ import json
 
 import citations
 import identify
+import lecture
 import quotes
 import rules
 
@@ -92,6 +93,8 @@ def report(resolved: dict, ruleset, screened: dict, judgment: str, articles: dic
             "asOf": identification["asOf"],
             "summary": rules.summarise([]),
             "findings": [],
+            # The one thing counted about a document with no promoted ruleset: where from and which kind, never content.
+            "kindDemand": lecture.kind_demand(identification),
         }
     text = str(screened.get("documentText") or "")
     by_id = {rule["ruleId"]: rule for rule in ruleset["rules"]}
