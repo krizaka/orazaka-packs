@@ -1,0 +1,21 @@
+# Not formatted by Prettier: generated files, lockfiles, vendored code, build output (the `formatter` rule, krizaka/.github#427).
+node_modules
+dist
+build
+coverage
+.next
+.turbo
+.expo
+out
+*.min.*
+package-lock.json
+pnpm-lock.yaml
+CHANGELOG.md
+
+# generated: audit data and the bundled functions (npm run functions:bundle)
+public/audits
+functions/packages
+.venv
+__pycache__
+*.lock
+message-authenticity/calibration/*.json
