@@ -2,7 +2,7 @@
 
 - **Status:** Accepted (2026-10-17)
 - **RFC:** [krizaka/orazaka discussion #174](https://github.com/krizaka/orazaka/discussions/174) — consumers:
-  krizaka/orochia#226 (creator `/insights`), krizaka/yasakia#86 (admin analytics)
+  a former product's issue (creator `/insights`), a former product's issue (admin analytics)
 - **Builds on:** [ADR-078](ADR-078-recommendations.md) (the recommender, its tenant key, pseudonyms and settings)
 - **Numbering:** the Orazaka ADR sequence (ADR-079 automations and ADR-080 cinema are open in krizaka/orazaka); recorded
   here, like ADR-078, because it is the serving half of the `data-analytics` pack.
@@ -10,9 +10,9 @@
 ## Context
 
 Products need to know what their users do, and they must not each build an analytics stack: the rule of the house is
-that a product's intelligence runs on Orazaka. Orochia already sends its recommender events (`VIEW` with `watchedPct`,
-`LIKE`, `TIP`, `SKIP`…) and reads per-creator insights (ADR-078 §7). Yasakia waits for a place to send what is not a
-recommendation at all — a voice talk, an answered batch, an intro (yasakia#86). The RFC asks for KPIs, cohorts, funnels
+that a product's intelligence runs on Orazaka. a former product already sends its recommender events (`VIEW` with `watchedPct`,
+`LIKE`, `TIP`, `SKIP`…) and reads per-creator insights (ADR-078 §7). a former product waits for a place to send what is not a
+recommendation at all — a voice talk, an answered batch, an intro (a former product's issue). The RFC asks for KPIs, cohorts, funnels
 and top items, multi-tenant, Loi 25-compliant, and cheap. The dev budget allows no new recurring cost without a written
 yes, and the dev PostgreSQL cluster allows **22 connections** in all.
 
@@ -43,7 +43,7 @@ events. Analytics reads them where they are: one write, two reads.
 - A kind whose source is `recommender` is **refused** at `POST /api/v1/analytics/events` with the endpoint to use
   instead: a product sends each event once, so nothing is counted twice.
 - **`analytics_event_all`** is a view: `analytics_event` ∪ `reco_event` (kind lower-cased, `watched_pct` as the value,
-  the item's creator as the owner). Every insight reads the view, so Orochia's existing outbox feeds analytics with **no
+  the item's creator as the owner). Every insight reads the view, so a former product's existing outbox feeds analytics with **no
   change on its side**, history included.
 
 ### 3. Insights — computed on read, in SQL, bounded
@@ -70,7 +70,7 @@ events. Analytics reads them where they are: one write, two reads.
 
 ### 4. Personal data (Loi 25)
 
-- **Pseudonymous only.** The product sends `HMAC-SHA256(AI_PSEUDONYM_KEY, userId)` (Orochia already does); the service
+- **Pseudonymous only.** The product sends `HMAC-SHA256(AI_PSEUDONYM_KEY, userId)` (a former product already does); the service
   refuses a subject that is not 16–128 characters of `[A-Za-z0-9_-]`, so an e-mail or a name never fits. Orazaka holds
   no key to reverse it.
 - **k-anonymity.** No figure is returned for fewer than `minAudience` distinct subjects (default 3): a range, an owner, a
@@ -89,7 +89,7 @@ seeded by the migration; read through a one-minute cache; bounds checked in code
 ### 6. Scopes and the pack
 
 Two new key scopes at the edge (`ApiKeyScopes`, exact method + path, fail closed): `analytics:sync` and
-`analytics:read`; `/api/v1/analytics` routes to the knowledge service. `reco:*` stay as they are (Orochia's live key);
+`analytics:read`; `/api/v1/analytics` routes to the knowledge service. `reco:*` stay as they are (a former product's live key);
 the RFC's unification is not worth breaking a working contract. The `data-analytics` pack declares the four routes
 under `requires.api`, tested identical to the edge.
 
@@ -97,10 +97,10 @@ under `requires.api`, tested identical to the edge.
 
 - **Cost: 0 $/month, 0 new connection, 0 new JVM.** Storage ≈ 250 bytes per event with its indexes: one million events
   ≈ 250 MB of the dev cluster's 10 GB; 180-day retention bounds it.
-- Orochia's creator page gains KPIs, cohorts and a funnel from events it already sends; watch-time arrives the day its
+- a former product's creator page gains KPIs, cohorts and a funnel from events it already sends; watch-time arrives the day its
   player sends `watchedPct` (ADR-078 Deferred), with no change here.
-- Yasakia gets a place for its events with a key holding `analytics:sync analytics:read` and nothing else.
+- a former product gets a place for its events with a key holding `analytics:sync analytics:read` and nothing else.
 - Deferred — and what brings each back: daily rollups (a query over 1 s in the request log), per-tenant custom funnels
-  saved as rows (a second consumer asking for one), anomaly detection on report spikes (yasakia#86's safety view, once
+  saved as rows (a second consumer asking for one), anomaly detection on report spikes (a former product's issue's safety view, once
   a baseline of weeks exists), geospatial heatmaps (never on precise positions; coarse cells only, with a written
   decision).

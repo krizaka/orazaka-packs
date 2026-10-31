@@ -82,6 +82,6 @@ scope).
 - Measured: with the first prompt, the default model wrote objects over several lines and forgot `"component"` — the
   renderer refused the surface and the chat fell back to the text, as designed. The prompt now gives the exact three
   lines and a complete example; a stray closing brace is tolerated (krizaka/krizaka-ui#317).
-- Recording: run `186125cd-f9f3-47ed-8976-db52e9ac3d06`, the chat answering with a live dashboard over Orochia's real
+- Recording: run `186125cd-f9f3-47ed-8976-db52e9ac3d06`, the chat answering with a live dashboard over a former product's real
   activity — [video](https://krizaka-assets.b-cdn.net/site/products/orazaka/video/genui-chat.fa80de9821.mp4)
   ([webm](https://krizaka-assets.b-cdn.net/site/products/orazaka/video/genui-chat.fe6a22927c.webm)).
