@@ -13,7 +13,8 @@ const steps = blueprint.definition.steps;
 test("every capability the blueprint uses is contributed here or is a core one", () => {
   const mine = [...pack.matchAll(/^    - key: (orazaka\.[a-z.]+)$/gm)].map((m) => m[1]);
   assert.deepEqual(mine, ["orazaka.safety.media.assess"]);
-  for (const s of steps) assert.ok(mine.includes(s.featureKey) || s.featureKey.startsWith("orazaka.core."), s.featureKey);
+  for (const s of steps)
+    assert.ok(mine.includes(s.featureKey) || s.featureKey.startsWith("orazaka.core."), s.featureKey);
   assert.match(text("worker/worker.yaml"), /- "job\.safety\.\*"/);
 });
 
@@ -24,7 +25,8 @@ test("a safety check never skips a model step: onError is FAIL everywhere (an un
 
 test("the vision prompt asks JSON only, three booleans, no description and « true » when unsure; the ruleset reads the same fields", () => {
   const prompt = steps.find((s) => s.id === "look").inputs.prompt;
-  for (const must of ["ONE JSON object", "Do not describe", "Do not name anyone", "If unsure, answer true"]) assert.ok(prompt.includes(must), must);
+  for (const must of ["ONE JSON object", "Do not describe", "Do not name anyone", "If unsure, answer true"])
+    assert.ok(prompt.includes(must), must);
   for (const c of ruleset.look.checks) assert.ok(prompt.includes(c.field), c.field);
   const read = steps.find((s) => s.id === "read").inputs.prompt;
   for (const c of ruleset.listen.checks) assert.ok(read.includes(c.field), c.field);
@@ -32,7 +34,8 @@ test("the vision prompt asks JSON only, three booleans, no description and « tr
 });
 
 test("the audio steps only run when there is audio, and the assessment waits for all of them", () => {
-  for (const id of ["listen", "read"]) assert.equal(steps.find((s) => s.id === id).condition, "{{inputs.audio}} is not null");
+  for (const id of ["listen", "read"])
+    assert.equal(steps.find((s) => s.id === id).condition, "{{inputs.audio}} is not null");
   assert.deepEqual(steps.find((s) => s.id === "assess").dependsOn.sort(), ["look", "read"]);
 });
 
@@ -41,8 +44,16 @@ test("sensitive, a lone Studio, identifies no one, carries no product word, fail
   assert.match(pack, /identify this person/);
   assert.doesNotMatch(pack, /^catalog:/m);
   assert.ok(ruleset.limits.includes("FAILS_CLOSED_WHEN_UNREADABLE"));
-  const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? (e.name === ".venv" || e.name === "__pycache__" ? [] : walk(`${d}${e.name}/`)) : [`${d}${e.name}`]));
-  for (const f of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f))) assert.doesNotMatch(readFileSync(f, "utf8").replace(/^\s*#.*$/gm, ""), /yomizaka|akinaza/i, f);
+  const walk = (d) =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory()
+        ? e.name === ".venv" || e.name === "__pycache__"
+          ? []
+          : walk(`${d}${e.name}/`)
+        : [`${d}${e.name}`],
+    );
+  for (const f of walk(root).filter((f) => /\.(py|yaml|json)$/.test(f)))
+    assert.doesNotMatch(readFileSync(f, "utf8").replace(/^\s*#.*$/gm, ""), /yomizaka|akinaza/i, f);
 });
 
 test("the Studio is worded in both languages", () => {

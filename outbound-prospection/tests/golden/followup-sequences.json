@@ -13,10 +13,10 @@
         "ladders": "Atelier Quartz Fictif\nJ+3 — Objet : Votre démonstration du calendrier partagé\nVous avez demandé une démonstration mardi.\nQuel créneau conviendrait à votre atelier ?\nJe peux vous présenter le calendrier partagé.\n\nJ+7 — Objet : Un créneau pour le calendrier ?\nJe reviens sur votre demande de démonstration.\nSouhaitez-vous fixer un créneau ?\nSinon, je peux laisser le sujet en pause.\n\nJ+14 — Objet : Mettre la demande en pause\nJe clôture ce suivi de démonstration.\nVous pourrez reprendre contact si le sujet revient.\nAucune réservation n'a été faite."
       },
       "assertions": [
-        {"path": ["sequence"], "includes": "Atelier Quartz Fictif"},
-        {"path": ["sequence"], "includes": "demandé une démonstration mardi"},
-        {"path": ["sequence"], "includes": "J+14"},
-        {"path": ["ladders"], "includes": "Votre démonstration du calendrier partagé"}
+        { "path": ["sequence"], "includes": "Atelier Quartz Fictif" },
+        { "path": ["sequence"], "includes": "demandé une démonstration mardi" },
+        { "path": ["sequence"], "includes": "J+14" },
+        { "path": ["ladders"], "includes": "Votre démonstration du calendrier partagé" }
       ]
     },
     {
@@ -31,10 +31,10 @@
         "ladders": "Atelier Sauge Fictif\nJ+3 — Objet : Le registre partagé des commandes\nJe reviens sur mon message de la semaine passée.\nLe suivi partagé des commandes vous intéresse-t-il ?\nVous pouvez me dire si le sujet n'est pas pertinent.\nJ+7 — Objet : En reparler plus tard ?\nJe laisse cette proposition à votre disposition.\nAucun accord n'a été donné.\nJe peux arrêter les relances sur simple demande.\nJ+14 — Objet : Fin du suivi\nJe termine cette série de messages.\nLe registre restera une possibilité si besoin.\nAucune action n'est engagée.\n\nAtelier Argile Fictif\nJ+3 — Objet : Votre suivi des commandes\nMon premier message est resté sans réponse.\nSouhaitez-vous examiner un registre partagé ?\nUn refus suffit pour arrêter ce suivi.\nJ+7 — Objet : Une autre priorité ?\nLe sujet arrive peut-être au mauvais moment.\nAucun accord n'est présumé.\nJe peux mettre la proposition en pause.\nJ+14 — Objet : Dernier message sur le registre\nJe clos ce suivi.\nVous pourrez revenir vers nous si utile.\nAucune commande n'a été passée."
       },
       "assertions": [
-        {"path": ["sequence"], "includes": "Atelier Sauge Fictif"},
-        {"path": ["sequence"], "includes": "Atelier Argile Fictif"},
-        {"path": ["sequence"], "includes": "sans réponse"},
-        {"path": ["ladders"], "includes": "J+14"}
+        { "path": ["sequence"], "includes": "Atelier Sauge Fictif" },
+        { "path": ["sequence"], "includes": "Atelier Argile Fictif" },
+        { "path": ["sequence"], "includes": "sans réponse" },
+        { "path": ["ladders"], "includes": "J+14" }
       ]
     },
     {
@@ -49,9 +49,9 @@
         "ladders": "Association Rivage Fictive\nDans deux mois — Objet : Reprendre après le vote du budget\nAucune relance avant le délai demandé : je reprends après le vote du budget.\nEst-ce le bon moment pour évoquer les réservations de salles ?\nSinon, nous pouvons en rester là.\n\nDeux mois et une semaine — Objet : Votre calendrier de réservation\nJe reviens sur l'outil de réservation de salles.\nAucune urgence commerciale n'est annoncée.\nJe peux mettre la proposition en pause.\n\nDeux mois et deux semaines — Objet : Clore ce suivi\nJe termine ces relances.\nVous pourrez revenir si utile.\nAucun engagement n'est attendu."
       },
       "assertions": [
-        {"path": ["sequence"], "includes": "Dans deux mois"},
-        {"path": ["sequence"], "includes": "vote du budget"},
-        {"path": ["ladders"], "includes": "Aucune relance avant le délai demandé"}
+        { "path": ["sequence"], "includes": "Dans deux mois" },
+        { "path": ["sequence"], "includes": "vote du budget" },
+        { "path": ["ladders"], "includes": "Aucune relance avant le délai demandé" }
       ]
     }
   ]

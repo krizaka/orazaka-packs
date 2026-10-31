@@ -13,15 +13,18 @@
         "angles": "Atelier Nacre Fictif : proposer un tableau de suivi des devis adapté à une menuiserie de six personnes."
       },
       "assertions": [
-        {"path": ["sequence"], "includes": "Atelier Nacre Fictif"},
-        {"path": ["sequence"], "includes": "suivi des devis"},
-        {"path": ["angles"], "includes": "six personnes"}
+        { "path": ["sequence"], "includes": "Atelier Nacre Fictif" },
+        { "path": ["sequence"], "includes": "suivi des devis" },
+        { "path": ["angles"], "includes": "six personnes" }
       ]
     },
     {
       "id": "two-distinct-fictional-prospects",
       "input": {
-        "prospects": ["Studio Brume Fictif, agence de trois personnes", "Studio Galet Fictif, agence de huit personnes"],
+        "prospects": [
+          "Studio Brume Fictif, agence de trois personnes",
+          "Studio Galet Fictif, agence de huit personnes"
+        ],
         "offer": "Centraliser les retours clients sur des maquettes",
         "icp": "Petites agences de design"
       },
@@ -30,9 +33,9 @@
         "angles": "Studio Brume Fictif : centraliser les retours clients pour une équipe de trois personnes.\nStudio Galet Fictif : regrouper les commentaires sur les maquettes pour huit personnes."
       },
       "assertions": [
-        {"path": ["sequence"], "includes": "Studio Brume Fictif"},
-        {"path": ["sequence"], "includes": "Studio Galet Fictif"},
-        {"path": ["angles"], "includes": "maquettes"}
+        { "path": ["sequence"], "includes": "Studio Brume Fictif" },
+        { "path": ["sequence"], "includes": "Studio Galet Fictif" },
+        { "path": ["angles"], "includes": "maquettes" }
       ]
     },
     {
@@ -46,9 +49,9 @@
         "angles": "Entreprise Sillage Fictive : vérifier si le classement des demandes entrantes est pertinent, sans présumer de sa taille ou de ses besoins."
       },
       "assertions": [
-        {"path": ["sequence"], "includes": "Entreprise Sillage Fictive"},
-        {"path": ["sequence"], "includes": "demandes entrantes"},
-        {"path": ["angles"], "includes": "sans présumer"}
+        { "path": ["sequence"], "includes": "Entreprise Sillage Fictive" },
+        { "path": ["sequence"], "includes": "demandes entrantes" },
+        { "path": ["angles"], "includes": "sans présumer" }
       ]
     }
   ]

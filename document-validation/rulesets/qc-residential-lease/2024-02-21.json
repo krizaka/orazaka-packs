@@ -243,9 +243,7 @@
         "pass": [
           "Le règlement de l'immeuble ci-joint, remis au locataire avant la conclusion du bail, en fait partie. Il porte sur la jouissance, l'usage et l'entretien des logements et des lieux d'usage commun."
         ],
-        "fail": [
-          "Le règlement de l'immeuble sera remis au locataire après la signature du bail."
-        ]
+        "fail": ["Le règlement de l'immeuble sera remis au locataire après la signature du bail."]
       }
     },
     {
@@ -319,9 +317,7 @@
           "Formulaire obligatoire du Tribunal administratif du logement.",
           "Le présent bail est établi sur le formulaire obligatoire de bail de logement."
         ],
-        "fail": [
-          "Bail verbal, sans autre formalité, pour un logement de quatre pièces."
-        ]
+        "fail": ["Bail verbal, sans autre formalité, pour un logement de quatre pièces."]
       }
     },
     {

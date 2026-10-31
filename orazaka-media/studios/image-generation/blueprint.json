@@ -87,9 +87,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "prompt"
-    ],
+    "required": ["prompt"],
     "properties": {
       "prompt": {
         "type": "string",
@@ -113,13 +111,7 @@
       },
       "size": {
         "type": "string",
-        "enum": [
-          "1024x1024",
-          "1024x1280",
-          "1360x768",
-          "768x1360",
-          "512x512"
-        ],
+        "enum": ["1024x1024", "1024x1280", "1360x768", "768x1360", "512x512"],
         "default": "1024x1024",
         "title": "Format",
         "description": "La forme de l'image : 4:5 pour les réseaux, 16:9 pour une bannière.",
@@ -197,29 +189,16 @@
           "source": "models",
           "category": "image",
           "facts": {
-            "flux-2-klein-4b": [
-              "1024²"
-            ],
-            "z-image-turbo": [
-              "1024²"
-            ],
-            "stable-diffusion-3.5-large": [
-              "1024²"
-            ],
-            "v1-5-pruned-emaonly": [
-              "512²"
-            ],
+            "flux-2-klein-4b": ["1024²"],
+            "z-image-turbo": ["1024²"],
+            "stable-diffusion-3.5-large": ["1024²"],
+            "v1-5-pruned-emaonly": ["512²"],
             "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized": []
           },
           "aspectField": "size",
           "aspects": {
-            "stable-diffusion-3.5-large": [
-              "1024x1024",
-              "512x512"
-            ],
-            "v1-5-pruned-emaonly": [
-              "512x512"
-            ]
+            "stable-diffusion-3.5-large": ["1024x1024", "512x512"],
+            "v1-5-pruned-emaonly": ["512x512"]
           }
         },
         "x-advanced": true,

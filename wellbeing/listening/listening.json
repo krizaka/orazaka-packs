@@ -85,11 +85,7 @@
       "source": "ENERGY",
       "why": "the voice turn returns no word timings (ADR-076 section 2); a track computed from the characters would lie"
     },
-    "idle": [
-      "breathing",
-      "blink",
-      "gaze"
-    ]
+    "idle": ["breathing", "blink", "gaze"]
   },
   "presences": [
     {

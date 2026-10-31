@@ -42,9 +42,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "treatment"
-    ],
+    "required": ["treatment"],
     "properties": {
       "treatment": {
         "type": "string",

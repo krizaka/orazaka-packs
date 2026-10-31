@@ -19,7 +19,10 @@ test("requirements floors stay at or above the patched releases", () => {
       const m = /^([A-Za-z0-9_.-]+)\s*(?:>=|==|~=)\s*([0-9][0-9.]*)/.exec(line.trim());
       if (!m || !MINIMUM[m[1].toLowerCase()]) continue;
       seen++;
-      assert.ok(atLeast(parse(m[2]), MINIMUM[m[1].toLowerCase()]), `${pack.name}: ${line.trim()} is below ${MINIMUM[m[1].toLowerCase()].join(".")}`);
+      assert.ok(
+        atLeast(parse(m[2]), MINIMUM[m[1].toLowerCase()]),
+        `${pack.name}: ${line.trim()} is below ${MINIMUM[m[1].toLowerCase()].join(".")}`,
+      );
     }
   }
   assert.ok(seen >= 2, "torch and transformers are declared by message-authenticity");

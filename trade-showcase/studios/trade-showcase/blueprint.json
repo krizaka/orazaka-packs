@@ -28,9 +28,7 @@
         "id": "caption",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "describe"
-        ],
+        "dependsOn": ["describe"],
         "inputs": {
           "prompt": "Rédige la légende de vitrine d'un artisan {{inputs.trade}} pour {{config.brandName}}. Réalisations: {{steps.photoDescriptions.analysis}}. Ton: {{config.tone}}. {{config.signature:}}"
         },
@@ -43,9 +41,7 @@
         "id": "showcase",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.media.image",
-        "dependsOn": [
-          "describe"
-        ],
+        "dependsOn": ["describe"],
         "maxParallel": 0,
         "inputs": {
           "prompt": "Visuel de vitrine pour {{config.brandName}}, artisan {{inputs.trade}}. Réalisations: {{steps.photoDescriptions.analysis}}. Ton: {{config.tone}}.",
@@ -104,10 +100,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "photos",
-      "trade"
-    ],
+    "required": ["photos", "trade"],
     "properties": {
       "photos": {
         "type": "array",
@@ -155,11 +148,7 @@
       "title": "Nom de l'entreprise"
     },
     "tone": {
-      "enum": [
-        "premium",
-        "chaleureux",
-        "direct"
-      ],
+      "enum": ["premium", "chaleureux", "direct"],
       "default": "chaleureux"
     },
     "imageSize": {

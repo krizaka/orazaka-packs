@@ -7,9 +7,7 @@
     "en": "Invoice"
   },
   "family": "invoice",
-  "declaredAs": [
-    "INVOICE"
-  ],
+  "declaredAs": ["INVOICE"],
   "signals": [
     {
       "id": "title",

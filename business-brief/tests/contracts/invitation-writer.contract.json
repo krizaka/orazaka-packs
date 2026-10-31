@@ -7,10 +7,7 @@
     "input": {
       "shopName": "Salon Brume",
       "service": "Coupe et coiffage",
-      "freeSlots": [
-        "Mardi 14 h",
-        "Jeudi 10 h"
-      ],
+      "freeSlots": ["Mardi 14 h", "Jeudi 10 h"],
       "channel": "sms",
       "tone": "warm",
       "language": "fr"

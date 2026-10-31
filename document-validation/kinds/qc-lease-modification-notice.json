@@ -7,10 +7,7 @@
     "en": "Notice of lease change"
   },
   "family": "residential-lease",
-  "declaredAs": [
-    "NOTICE",
-    "OTHER"
-  ],
+  "declaredAs": ["NOTICE", "OTHER"],
   "signals": [
     {
       "id": "title",

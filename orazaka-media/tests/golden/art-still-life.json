@@ -8,8 +8,11 @@
         "size": "1024x1280",
         "seed": "71"
       },
-      "expected": {"image": "asset:scene", "seed": "71", "model": "synthetic-image", "generationMs": "124"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "71"}]
+      "expected": { "image": "asset:scene", "seed": "71", "model": "synthetic-image", "generationMs": "124" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "71" }
+      ]
     },
     {
       "id": "french-copper-and-plums",
@@ -18,8 +21,11 @@
         "size": "1360x768",
         "seed": "83"
       },
-      "expected": {"image": "asset:scene", "seed": "83", "model": "synthetic-image", "generationMs": "136"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "83"}]
+      "expected": { "image": "asset:scene", "seed": "83", "model": "synthetic-image", "generationMs": "136" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "83" }
+      ]
     },
     {
       "id": "minimal-single-empty-bowl",
@@ -28,8 +34,11 @@
         "size": "1024x1024",
         "seed": "0"
       },
-      "expected": {"image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "111"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "0"}]
+      "expected": { "image": "asset:scene", "seed": "0", "model": "synthetic-image", "generationMs": "111" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "0" }
+      ]
     }
   ]
 }

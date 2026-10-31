@@ -25,9 +25,7 @@
         "id": "english",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "french"
-        ],
+        "dependsOn": ["french"],
         "inputs": {
           "prompt": "Translate this policy into plain English, section by section, keeping « To confirm » for every « À confirmer » and the validation sentence translated as: « Draft prepared by Orazaka — not legal advice: the person in charge of the protection of personal information or a lawyer must validate it before any use. » Policy: {{steps.policyFr.content}}"
         },
@@ -70,11 +68,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "firmName",
-      "activities",
-      "dataKinds"
-    ],
+    "required": ["firmName", "activities", "dataKinds"],
     "properties": {
       "firmName": {
         "type": "string",

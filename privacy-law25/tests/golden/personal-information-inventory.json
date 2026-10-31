@@ -14,21 +14,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "inventory"
-          ],
+          "path": ["inventory"],
           "includes": "n'est pas un avis juridique"
         },
         {
-          "path": [
-            "inventory"
-          ],
+          "path": ["inventory"],
           "includes": "À confirmer"
         },
         {
-          "path": [
-            "gaps"
-          ],
+          "path": ["gaps"],
           "includes": "Où le logiciel"
         }
       ]
@@ -46,21 +40,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "inventory"
-          ],
+          "path": ["inventory"],
           "includes": "not legal advice"
         },
         {
-          "path": [
-            "inventory"
-          ],
+          "path": ["inventory"],
           "includes": "sensitive"
         },
         {
-          "path": [
-            "gaps"
-          ],
+          "path": ["gaps"],
           "includes": "outside Québec"
         }
       ]
@@ -78,15 +66,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "inventory"
-          ],
+          "path": ["inventory"],
           "includes": "À confirmer"
         },
         {
-          "path": [
-            "gaps"
-          ],
+          "path": ["gaps"],
           "includes": "consentement"
         }
       ]

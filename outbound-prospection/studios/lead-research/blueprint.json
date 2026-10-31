@@ -28,9 +28,7 @@
         "id": "score",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "research"
-        ],
+        "dependsOn": ["research"],
         "inputs": {
           "prompt": "Voici des fiches de qualification : {{steps.briefs.content}}. Classe ces prospects du plus au moins prioritaire pour l'offre suivante : {{inputs.offer}}. Pour chacun, une ligne : nom, priorité (haute/moyenne/basse), la raison en six mots."
         },
@@ -42,9 +40,7 @@
       {
         "id": "dossier",
         "kind": "TRANSFORM",
-        "dependsOn": [
-          "score"
-        ],
+        "dependsOn": ["score"],
         "inputs": {
           "body": "{{steps.briefs.content}}",
           "subject": "{{inputs.offer}}",
@@ -89,11 +85,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "prospects",
-      "offer",
-      "icp"
-    ],
+    "required": ["prospects", "offer", "icp"],
     "properties": {
       "prospects": {
         "type": "array",
@@ -154,11 +146,7 @@
   },
   "configSchema": {
     "tone": {
-      "enum": [
-        "premium",
-        "chaleureux",
-        "direct"
-      ],
+      "enum": ["premium", "chaleureux", "direct"],
       "default": "direct"
     },
     "signature": {

@@ -6,8 +6,16 @@ import Ajv from "ajv";
 const ajv = new Ajv({ strict: false, validateFormats: false, allErrors: true });
 const operators = ["equals", "includes", "nonEmpty", "type", "atLeast"];
 const readJson = (path) => JSON.parse(readFileSync(path, "utf8"));
-const canonical = (value) => Array.isArray(value) ? value.map(canonical) :
-  value && typeof value === "object" ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])])) : value;
+const canonical = (value) =>
+  Array.isArray(value)
+    ? value.map(canonical)
+    : value && typeof value === "object"
+      ? Object.fromEntries(
+          Object.keys(value)
+            .sort()
+            .map((key) => [key, canonical(value[key])]),
+        )
+      : value;
 
 export function assertOutput(output, assertions) {
   for (const assertion of assertions) {
@@ -17,12 +25,17 @@ export function assertOutput(output, assertions) {
     let actual = output;
     for (const part of assertion.path) {
       if (typeof actual === "string") actual = JSON.parse(actual);
-      assert.ok(actual !== null && typeof actual === "object" && Object.hasOwn(actual, part), `missing output path ${assertion.path.join(".")}`);
+      assert.ok(
+        actual !== null && typeof actual === "object" && Object.hasOwn(actual, part),
+        `missing output path ${assertion.path.join(".")}`,
+      );
       actual = actual[part];
     }
     const label = assertion.path.join(".");
     switch (ops[0]) {
-      case "equals": assert.deepEqual(actual, assertion.equals, label); break;
+      case "equals":
+        assert.deepEqual(actual, assertion.equals, label);
+        break;
       case "includes":
         assert.ok((typeof actual === "string" || Array.isArray(actual)) && actual.includes(assertion.includes), label);
         break;
@@ -31,11 +44,18 @@ export function assertOutput(output, assertions) {
         break;
       case "nonEmpty":
         assert.equal(assertion.nonEmpty, true, "nonEmpty must be true");
-        assert.ok((typeof actual === "string" && actual.trim().length > 0) || (Array.isArray(actual) && actual.length > 0), label);
-        if (typeof actual === "string") assert.doesNotMatch(actual, /^\s*\{\{[^}]*\}\}\s*$/, `${label}: unresolved output template`);
+        assert.ok(
+          (typeof actual === "string" && actual.trim().length > 0) || (Array.isArray(actual) && actual.length > 0),
+          label,
+        );
+        if (typeof actual === "string")
+          assert.doesNotMatch(actual, /^\s*\{\{[^}]*\}\}\s*$/, `${label}: unresolved output template`);
         break;
       case "type": {
-        assert.ok(["object", "array", "string", "number", "boolean"].includes(assertion.type), "unknown assertion type");
+        assert.ok(
+          ["object", "array", "string", "number", "boolean"].includes(assertion.type),
+          "unknown assertion type",
+        );
         const type = Array.isArray(actual) ? "array" : actual === null ? "null" : typeof actual;
         assert.equal(type, assertion.type, label);
         break;
@@ -46,7 +66,10 @@ export function assertOutput(output, assertions) {
 
 export function validateCases(fixture, blueprint) {
   assert.ok(typeof fixture.studio === "string" && fixture.studio.length > 0, "missing Studio key");
-  assert.ok(Array.isArray(fixture.cases) && fixture.cases.length >= 3 && fixture.cases.length <= 5, `${fixture.studio}: ship 3–5 golden cases`);
+  assert.ok(
+    Array.isArray(fixture.cases) && fixture.cases.length >= 3 && fixture.cases.length <= 5,
+    `${fixture.studio}: ship 3–5 golden cases`,
+  );
   const validate = ajv.compile(blueprint.inputSchema);
   const ids = new Set();
   const inputs = new Set();
@@ -60,8 +83,12 @@ export function validateCases(fixture, blueprint) {
     const signature = JSON.stringify(canonical(c.input));
     assert.ok(!inputs.has(signature), `${c.id}: duplicate input`);
     inputs.add(signature);
-    assert.ok(c.expected && typeof c.expected === "object" && !Array.isArray(c.expected), `${c.id}: expected output object required`);
-    for (const key of Object.keys(c.expected)) assert.ok(outputKeys.includes(key), `${c.id}: undeclared expected output ${key}`);
+    assert.ok(
+      c.expected && typeof c.expected === "object" && !Array.isArray(c.expected),
+      `${c.id}: expected output object required`,
+    );
+    for (const key of Object.keys(c.expected))
+      assert.ok(outputKeys.includes(key), `${c.id}: undeclared expected output ${key}`);
     assert.ok(Array.isArray(c.assertions) && c.assertions.length > 0, `${c.id}: output assertions required`);
     for (const a of c.assertions) {
       assert.ok(outputKeys.includes(a.path?.[0]), `${c.id}: assertion does not address a declared output`);
@@ -94,7 +121,9 @@ export function discover(root) {
     }
     return input;
   };
-  for (const pack of readdirSync(root).sort().filter((name) => existsSync(join(root, name, "pack.yaml")))) {
+  for (const pack of readdirSync(root)
+    .sort()
+    .filter((name) => existsSync(join(root, name, "pack.yaml")))) {
     const studios = join(root, pack, "studios");
     const covered = [];
     for (const studio of readdirSync(studios).sort()) {
@@ -114,11 +143,18 @@ export function discover(root) {
       assert.equal(blueprint.definition.studioKey, studio);
       validateCases(fixture, blueprint);
       const resolvedInputs = fixture.cases.map((c) => JSON.stringify(canonical(resolveAssets(c.input))));
-      assert.equal(new Set(resolvedInputs).size, fixture.cases.length, `${studio}: asset aliases do not count as distinct inputs`);
+      assert.equal(
+        new Set(resolvedInputs).size,
+        fixture.cases.length,
+        `${studio}: asset aliases do not count as distinct inputs`,
+      );
       covered.push(studio);
       suites.push({ ...fixture, pack, studio, blueprint });
     }
-    assert.ok(covered.length > 0 || exceptions.some((key) => key.startsWith(`${pack}/`)), `${pack}: no golden coverage`);
+    assert.ok(
+      covered.length > 0 || exceptions.some((key) => key.startsWith(`${pack}/`)),
+      `${pack}: no golden coverage`,
+    );
   }
   for (const key of exceptions) assert.ok(known.has(key), `stale golden exception ${key}`);
   return suites;

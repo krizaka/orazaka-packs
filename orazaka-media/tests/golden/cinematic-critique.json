@@ -8,8 +8,10 @@
       },
       "expected": {
         "critique": {
-          "scores": {"story": 4, "continuity": 3},
-          "rejectedShots": [{"id": 4, "reason": "The empty cupboard does not advance the crossing or the lantern's recovery."}],
+          "scores": { "story": 4, "continuity": 3 },
+          "rejectedShots": [
+            { "id": 4, "reason": "The empty cupboard does not advance the crossing or the lantern's recovery." }
+          ],
           "changes": [
             "Show Neri passing the fallen lantern to Oru so the recovery is earned.",
             "Replace the cupboard insert with a continuous crossing that preserves the lantern's screen direction."
@@ -17,11 +19,11 @@
         }
       },
       "assertions": [
-        {"path": ["critique", "scores", "story"], "type": "number"},
-        {"path": ["critique", "rejectedShots", 0, "id"], "equals": 4},
-        {"path": ["critique", "rejectedShots", 0, "reason"], "nonEmpty": true},
-        {"path": ["critique", "changes", 0], "includes": "Neri"},
-        {"path": ["critique", "changes", 1], "nonEmpty": true}
+        { "path": ["critique", "scores", "story"], "type": "number" },
+        { "path": ["critique", "rejectedShots", 0, "id"], "equals": 4 },
+        { "path": ["critique", "rejectedShots", 0, "reason"], "nonEmpty": true },
+        { "path": ["critique", "changes", 0], "includes": "Neri" },
+        { "path": ["critique", "changes", 1], "nonEmpty": true }
       ]
     },
     {
@@ -31,8 +33,10 @@
       },
       "expected": {
         "critique": {
-          "scores": {"histoire": 6, "continuite": 2},
-          "rejectedShots": [{"id": 3, "reason": "Le désert ensoleillé contredit la pluie, le lieu et la direction établis."}],
+          "scores": { "histoire": 6, "continuite": 2 },
+          "rejectedShots": [
+            { "id": 3, "reason": "Le désert ensoleillé contredit la pluie, le lieu et la direction établis." }
+          ],
           "changes": [
             "Garder Lune sous la pluie et orientée vers la droite pendant toute la traversée.",
             "Montrer Piko stabilisant la planche avant que les deux amis ne plantent la graine."
@@ -40,11 +44,11 @@
         }
       },
       "assertions": [
-        {"path": ["critique", "scores", "continuite"], "type": "number"},
-        {"path": ["critique", "rejectedShots", 0, "id"], "equals": 3},
-        {"path": ["critique", "rejectedShots", 0, "reason"], "nonEmpty": true},
-        {"path": ["critique", "changes", 0], "includes": "Lune"},
-        {"path": ["critique", "changes", 1], "nonEmpty": true}
+        { "path": ["critique", "scores", "continuite"], "type": "number" },
+        { "path": ["critique", "rejectedShots", 0, "id"], "equals": 3 },
+        { "path": ["critique", "rejectedShots", 0, "reason"], "nonEmpty": true },
+        { "path": ["critique", "changes", 0], "includes": "Lune" },
+        { "path": ["critique", "changes", 1], "nonEmpty": true }
       ]
     },
     {
@@ -54,7 +58,7 @@
       },
       "expected": {
         "critique": {
-          "scores": {"story": 8, "continuity": 9},
+          "scores": { "story": 8, "continuity": 9 },
           "rejectedShots": [],
           "changes": [
             "Preserve the silence and hold the final reflected light a little longer.",
@@ -63,10 +67,10 @@
         }
       },
       "assertions": [
-        {"path": ["critique", "scores", "continuity"], "type": "number"},
-        {"path": ["critique", "rejectedShots"], "equals": []},
-        {"path": ["critique", "changes", 0], "includes": "silence"},
-        {"path": ["critique", "changes", 1], "includes": "clay"}
+        { "path": ["critique", "scores", "continuity"], "type": "number" },
+        { "path": ["critique", "rejectedShots"], "equals": [] },
+        { "path": ["critique", "changes", 0], "includes": "silence" },
+        { "path": ["critique", "changes", 1], "includes": "clay" }
       ]
     }
   ]

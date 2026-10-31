@@ -20,9 +20,9 @@
         }
       },
       "assertions": [
-        {"path": ["summary", "locale"], "equals": "en"},
-        {"path": ["summary", "smallStep"], "includes": "walk tomorrow"},
-        {"path": ["summary", "bringToTherapist"], "includes": "The noisy office"}
+        { "path": ["summary", "locale"], "equals": "en" },
+        { "path": ["summary", "smallStep"], "includes": "walk tomorrow" },
+        { "path": ["summary", "bringToTherapist"], "includes": "The noisy office" }
       ]
     },
     {
@@ -44,9 +44,9 @@
         }
       },
       "assertions": [
-        {"path": ["summary", "locale"], "equals": "fr-CA"},
-        {"path": ["summary", "whatHelped"], "includes": "liste des cartons"},
-        {"path": ["summary", "smallStep"], "includes": "emballer"}
+        { "path": ["summary", "locale"], "equals": "fr-CA" },
+        { "path": ["summary", "whatHelped"], "includes": "liste des cartons" },
+        { "path": ["summary", "smallStep"], "includes": "emballer" }
       ]
     },
     {
@@ -68,9 +68,9 @@
         }
       },
       "assertions": [
-        {"path": ["summary", "bringToTherapist"], "equals": []},
-        {"path": ["summary", "smallStep"], "includes": "Aucun petit pas"},
-        {"path": ["summary", "whatHelped"], "includes": "ne sait pas"}
+        { "path": ["summary", "bringToTherapist"], "equals": [] },
+        { "path": ["summary", "smallStep"], "includes": "Aucun petit pas" },
+        { "path": ["summary", "whatHelped"], "includes": "ne sait pas" }
       ]
     }
   ]

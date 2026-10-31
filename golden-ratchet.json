@@ -1,6 +1,3 @@
 {
-  "exceptions": [
-    "document-validation/compliance-check",
-    "document-validation/document-authenticity"
-  ]
+  "exceptions": ["document-validation/compliance-check", "document-validation/document-authenticity"]
 }

@@ -52,6 +52,7 @@ jobs:
           package-manager-cache: false
           node-version: 22
       - run: npm ci --ignore-scripts
+      - run: npm run format:check
       - run: npm test
         env:
           GOLDEN_BASE_SHA: ${{ github.event.pull_request.base.sha }}

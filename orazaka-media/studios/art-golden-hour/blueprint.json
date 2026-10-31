@@ -86,9 +86,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "subject"
-    ],
+    "required": ["subject"],
     "properties": {
       "subject": {
         "type": "string",
@@ -112,12 +110,7 @@
       },
       "size": {
         "type": "string",
-        "enum": [
-          "1024x1280",
-          "1360x768",
-          "1024x1024",
-          "768x1360"
-        ],
+        "enum": ["1024x1280", "1360x768", "1024x1024", "768x1360"],
         "default": "1024x1280",
         "title": "Format",
         "description": "La forme de l'image : 4:5 pour les réseaux, 16:9 pour une bannière.",

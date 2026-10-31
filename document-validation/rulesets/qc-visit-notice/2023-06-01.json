@@ -27,10 +27,7 @@
       "onPass": "Le préavis donné est d'au moins 24 heures.",
       "onFail": "Le préavis est inférieur à 24 heures. L'article 1931 exige au locateur un préavis de 24 heures, sauf urgence ; une visite annoncée plus tôt n'est pas conforme.",
       "fixtures": {
-        "pass": [
-          "Préavis de 24 heures donné le 1er novembre 2026.",
-          "Préavis de 48 heures, remis par courriel."
-        ],
+        "pass": ["Préavis de 24 heures donné le 1er novembre 2026.", "Préavis de 48 heures, remis par courriel."],
         "fail": [
           "Préavis de 2 heures avant la visite.",
           "Préavis de 0 heure : la visite a lieu dès la remise de l'avis."
@@ -67,10 +64,7 @@
           "Le locateur entend vérifier l'état du logement.",
           "Le locateur souhaite faire visiter le logement à un acquéreur éventuel."
         ],
-        "fail": [
-          "Le présent avis concerne le logement du troisième étage.",
-          "Motif : ____________________."
-        ]
+        "fail": ["Le présent avis concerne le logement du troisième étage.", "Motif : ____________________."]
       },
       "lawRef": [
         {
@@ -103,10 +97,7 @@
           "La visite aura lieu le 2 novembre 2026 entre 10 h et 12 h.",
           "La visite prévue à 20 h 30 est reportée au lendemain."
         ],
-        "fail": [
-          "La visite aura lieu le 3 novembre 2026 à 7 h.",
-          "La visite aura lieu le 3 novembre 2026 à 22 heures."
-        ]
+        "fail": ["La visite aura lieu le 3 novembre 2026 à 7 h.", "La visite aura lieu le 3 novembre 2026 à 22 heures."]
       },
       "lawRef": [
         {
@@ -139,10 +130,7 @@
           "Des travaux auront lieu le 4 novembre 2026 entre 8 h et 16 h, à moins d'urgence.",
           "Des travaux auront lieu le 4 novembre 2026 à 6 h 30 : travaux urgents de fuite d'eau."
         ],
-        "fail": [
-          "Des travaux auront lieu le 4 novembre 2026 à 6 h 30.",
-          "Les travaux se dérouleront de 18 h à 20 h."
-        ]
+        "fail": ["Des travaux auront lieu le 4 novembre 2026 à 6 h 30.", "Les travaux se dérouleront de 18 h à 20 h."]
       },
       "lawRef": [
         {
@@ -175,10 +163,7 @@
           "Le locataire peut refuser la visite si le locateur ne peut être présent.",
           "Le locataire peut refuser la visite avant 9 heures et après 21 heures."
         ],
-        "fail": [
-          "Le locataire renonce à son droit de refuser la visite.",
-          "Le locataire ne peut refuser la visite."
-        ]
+        "fail": ["Le locataire renonce à son droit de refuser la visite.", "Le locataire ne peut refuser la visite."]
       },
       "lawRef": [
         {

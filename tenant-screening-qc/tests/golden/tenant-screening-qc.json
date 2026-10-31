@@ -10,11 +10,7 @@
           "firstName": "Camille",
           "birthDate": "1990-01-01"
         },
-        "consentedPurposes": [
-          "DOCUMENTS",
-          "COURT_RECORDS",
-          "CREDIT"
-        ],
+        "consentedPurposes": ["DOCUMENTS", "COURT_RECORDS", "CREDIT"],
         "authenticityReport": {
           "signals": [
             {
@@ -116,46 +112,27 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "COMPLETED"
         },
         {
-          "path": [
-            "report",
-            "status"
-          ],
+          "path": ["report", "status"],
           "equals": "COMPLETED"
         },
         {
-          "path": [
-            "report",
-            "stoppedAt"
-          ],
+          "path": ["report", "stoppedAt"],
           "equals": null
         },
         {
-          "path": [
-            "report",
-            "stopCode"
-          ],
+          "path": ["report", "stopCode"],
           "equals": null
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "total"
-          ],
+          "path": ["report", "ledger", "total"],
           "equals": 60
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "byStage"
-          ],
+          "path": ["report", "ledger", "byStage"],
           "equals": {
             "documents": 10,
             "courts": 30,
@@ -163,18 +140,11 @@
           }
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "payer"
-          ],
+          "path": ["report", "ledger", "payer"],
           "equals": "LANDLORD"
         },
         {
-          "path": [
-            "report",
-            "limits"
-          ],
+          "path": ["report", "limits"],
           "includes": "NO_DECISION_ON_THE_APPLICANT"
         }
       ]
@@ -188,11 +158,7 @@
           "firstName": "Camille",
           "birthDate": "1990-01-01"
         },
-        "consentedPurposes": [
-          "DOCUMENTS",
-          "COURT_RECORDS",
-          "CREDIT"
-        ],
+        "consentedPurposes": ["DOCUMENTS", "COURT_RECORDS", "CREDIT"],
         "authenticityReport": {
           "signals": [
             {
@@ -299,46 +265,27 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "STOPPED"
         },
         {
-          "path": [
-            "report",
-            "status"
-          ],
+          "path": ["report", "status"],
           "equals": "STOPPED"
         },
         {
-          "path": [
-            "report",
-            "stoppedAt"
-          ],
+          "path": ["report", "stoppedAt"],
           "equals": "documents"
         },
         {
-          "path": [
-            "report",
-            "stopCode"
-          ],
+          "path": ["report", "stopCode"],
           "equals": "CUTOFF"
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "total"
-          ],
+          "path": ["report", "ledger", "total"],
           "equals": 10
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "byStage"
-          ],
+          "path": ["report", "ledger", "byStage"],
           "equals": {
             "documents": 10,
             "courts": 0,
@@ -346,32 +293,19 @@
           }
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "payer"
-          ],
+          "path": ["report", "ledger", "payer"],
           "equals": "LANDLORD"
         },
         {
-          "path": [
-            "report",
-            "limits"
-          ],
+          "path": ["report", "limits"],
           "includes": "NO_DECISION_ON_THE_APPLICANT"
         },
         {
-          "path": [
-            "report",
-            "ruleId"
-          ],
+          "path": ["report", "ruleId"],
           "equals": "CUT-MANAGER-MAJOR-SIGNALS"
         },
         {
-          "path": [
-            "report",
-            "ruleSource"
-          ],
+          "path": ["report", "ruleSource"],
           "equals": "MANAGER"
         }
       ]
@@ -385,11 +319,7 @@
           "firstName": "Camille",
           "birthDate": "1990-01-01"
         },
-        "consentedPurposes": [
-          "DOCUMENTS",
-          "COURT_RECORDS",
-          "CREDIT"
-        ],
+        "consentedPurposes": ["DOCUMENTS", "COURT_RECORDS", "CREDIT"],
         "authenticityReport": {
           "signals": [
             {
@@ -489,46 +419,27 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "STOPPED"
         },
         {
-          "path": [
-            "report",
-            "status"
-          ],
+          "path": ["report", "status"],
           "equals": "STOPPED"
         },
         {
-          "path": [
-            "report",
-            "stoppedAt"
-          ],
+          "path": ["report", "stoppedAt"],
           "equals": "courts"
         },
         {
-          "path": [
-            "report",
-            "stopCode"
-          ],
+          "path": ["report", "stopCode"],
           "equals": "CUTOFF"
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "total"
-          ],
+          "path": ["report", "ledger", "total"],
           "equals": 40
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "byStage"
-          ],
+          "path": ["report", "ledger", "byStage"],
           "equals": {
             "documents": 10,
             "courts": 30,
@@ -536,25 +447,15 @@
           }
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "payer"
-          ],
+          "path": ["report", "ledger", "payer"],
           "equals": "LANDLORD"
         },
         {
-          "path": [
-            "report",
-            "limits"
-          ],
+          "path": ["report", "limits"],
           "includes": "NO_DECISION_ON_THE_APPLICANT"
         },
         {
-          "path": [
-            "report",
-            "ruleId"
-          ],
+          "path": ["report", "ruleId"],
           "equals": "CUT-COURT-FILE-FOUND"
         }
       ]
@@ -568,11 +469,7 @@
           "firstName": "Camille",
           "birthDate": "1990-01-01"
         },
-        "consentedPurposes": [
-          "DOCUMENTS",
-          "COURT_RECORDS",
-          "CREDIT"
-        ],
+        "consentedPurposes": ["DOCUMENTS", "COURT_RECORDS", "CREDIT"],
         "authenticityReport": {
           "signals": [
             {
@@ -672,46 +569,27 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "INCOMPLETE"
         },
         {
-          "path": [
-            "report",
-            "status"
-          ],
+          "path": ["report", "status"],
           "equals": "INCOMPLETE"
         },
         {
-          "path": [
-            "report",
-            "stoppedAt"
-          ],
+          "path": ["report", "stoppedAt"],
           "equals": "courts"
         },
         {
-          "path": [
-            "report",
-            "stopCode"
-          ],
+          "path": ["report", "stopCode"],
           "equals": "PROVIDER_ERROR"
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "total"
-          ],
+          "path": ["report", "ledger", "total"],
           "equals": 10
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "byStage"
-          ],
+          "path": ["report", "ledger", "byStage"],
           "equals": {
             "documents": 10,
             "courts": 0,
@@ -719,18 +597,11 @@
           }
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "payer"
-          ],
+          "path": ["report", "ledger", "payer"],
           "equals": "LANDLORD"
         },
         {
-          "path": [
-            "report",
-            "limits"
-          ],
+          "path": ["report", "limits"],
           "includes": "NO_DECISION_ON_THE_APPLICANT"
         }
       ]
@@ -744,10 +615,7 @@
           "firstName": "Camille",
           "birthDate": "1990-01-01"
         },
-        "consentedPurposes": [
-          "DOCUMENTS",
-          "CREDIT"
-        ],
+        "consentedPurposes": ["DOCUMENTS", "CREDIT"],
         "authenticityReport": {
           "signals": [
             {
@@ -844,46 +712,27 @@
       },
       "assertions": [
         {
-          "path": [
-            "status"
-          ],
+          "path": ["status"],
           "equals": "INCOMPLETE"
         },
         {
-          "path": [
-            "report",
-            "status"
-          ],
+          "path": ["report", "status"],
           "equals": "INCOMPLETE"
         },
         {
-          "path": [
-            "report",
-            "stoppedAt"
-          ],
+          "path": ["report", "stoppedAt"],
           "equals": "courts"
         },
         {
-          "path": [
-            "report",
-            "stopCode"
-          ],
+          "path": ["report", "stopCode"],
           "equals": "NO_CONSENT"
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "total"
-          ],
+          "path": ["report", "ledger", "total"],
           "equals": 10
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "byStage"
-          ],
+          "path": ["report", "ledger", "byStage"],
           "equals": {
             "documents": 10,
             "courts": 0,
@@ -891,18 +740,11 @@
           }
         },
         {
-          "path": [
-            "report",
-            "ledger",
-            "payer"
-          ],
+          "path": ["report", "ledger", "payer"],
           "equals": "LANDLORD"
         },
         {
-          "path": [
-            "report",
-            "limits"
-          ],
+          "path": ["report", "limits"],
           "includes": "NO_DECISION_ON_THE_APPLICANT"
         }
       ]

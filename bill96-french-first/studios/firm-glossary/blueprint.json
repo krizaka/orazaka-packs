@@ -41,9 +41,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "documents"
-    ],
+    "required": ["documents"],
     "properties": {
       "documents": {
         "type": "string",

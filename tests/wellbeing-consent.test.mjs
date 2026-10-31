@@ -67,7 +67,12 @@ test("the statement covers spoken exchanges and says the sound is not kept", () 
 test("the English statement says what the French one says: same figures, same promises", () => {
   const figures = (t) => (t.match(/\b\d+\b/g) ?? []).sort().join(",");
   assert.equal(figures(fr), figures(en));
-  for (const [f, e] of [[/RGPD/, /GDPR/], [/Loi 25/, /Law 25/], [/jamais utilisés pour entraîner/, /never used to train/], [/n'est pas un service d'urgence/, /not an emergency service/]]) {
+  for (const [f, e] of [
+    [/RGPD/, /GDPR/],
+    [/Loi 25/, /Law 25/],
+    [/jamais utilisés pour entraîner/, /never used to train/],
+    [/n'est pas un service d'urgence/, /not an emergency service/],
+  ]) {
     assert.match(fr, f);
     assert.match(en, e);
   }

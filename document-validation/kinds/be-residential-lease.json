@@ -7,9 +7,7 @@
     "en": "Residential lease (Wallonia)"
   },
   "family": "residential-lease",
-  "declaredAs": [
-    "LEASE"
-  ],
+  "declaredAs": ["LEASE"],
   "signals": [
     {
       "id": "title",
@@ -39,9 +37,7 @@
       "pattern": "€|(?i:\\beuros?\\b)"
     }
   ],
-  "excludes": [
-    "(?i)loi\\s+(?:n°\\s*)?89-462|tribunal\\s+administratif\\s+du\\s+logement"
-  ],
+  "excludes": ["(?i)loi\\s+(?:n°\\s*)?89-462|tribunal\\s+administratif\\s+du\\s+logement"],
   "dateSignals": [
     {
       "id": "signature-date",

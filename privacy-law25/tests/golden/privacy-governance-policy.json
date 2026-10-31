@@ -16,21 +16,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "policyFr"
-          ],
+          "path": ["policyFr"],
           "includes": "n'est pas un avis juridique"
         },
         {
-          "path": [
-            "policyEn"
-          ],
+          "path": ["policyEn"],
           "includes": "not legal advice"
         },
         {
-          "path": [
-            "policyFr"
-          ],
+          "path": ["policyFr"],
           "includes": "sept ans"
         }
       ]
@@ -49,15 +43,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "policyFr"
-          ],
+          "path": ["policyFr"],
           "includes": "À confirmer"
         },
         {
-          "path": [
-            "policyEn"
-          ],
+          "path": ["policyEn"],
           "includes": "To confirm"
         }
       ]
@@ -77,15 +67,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "policyFr"
-          ],
+          "path": ["policyFr"],
           "includes": "désabonnement"
         },
         {
-          "path": [
-            "policyEn"
-          ],
+          "path": ["policyEn"],
           "includes": "unsubscribe"
         }
       ]

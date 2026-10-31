@@ -3,56 +3,74 @@
   "cases": [
     {
       "id": "mira-short-english-invitation",
-      "input": {"text": "Would you join Mira for tea?", "locale": "en"},
+      "input": { "text": "Would you join Mira for tea?", "locale": "en" },
       "expected": {
         "report": {
           "detector": "UNAVAILABLE",
           "language": "en",
           "rulesetVersion": "2026-10-17",
-          "limits": ["CAN_BE_WRONG", "UNRELIABLE_ON_SHORT_TEXTS", "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING", "A_SIGNAL_NEVER_A_VERDICT"]
+          "limits": [
+            "CAN_BE_WRONG",
+            "UNRELIABLE_ON_SHORT_TEXTS",
+            "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING",
+            "A_SIGNAL_NEVER_A_VERDICT"
+          ]
         }
       },
       "assertions": [
-        {"path": ["report", "detector"], "equals": "UNAVAILABLE"},
-        {"path": ["report", "language"], "equals": "en"},
-        {"path": ["report", "limits"], "includes": "UNRELIABLE_ON_SHORT_TEXTS"},
-        {"path": ["report", "limits"], "includes": "A_SIGNAL_NEVER_A_VERDICT"}
+        { "path": ["report", "detector"], "equals": "UNAVAILABLE" },
+        { "path": ["report", "language"], "equals": "en" },
+        { "path": ["report", "limits"], "includes": "UNRELIABLE_ON_SHORT_TEXTS" },
+        { "path": ["report", "limits"], "includes": "A_SIGNAL_NEVER_A_VERDICT" }
       ]
     },
     {
       "id": "zoe-short-french-reply",
-      "input": {"text": "Je retrouve Zoé dans le jardin.", "locale": "en"},
+      "input": { "text": "Je retrouve Zoé dans le jardin.", "locale": "en" },
       "expected": {
         "report": {
           "detector": "UNAVAILABLE",
           "language": "fr",
           "rulesetVersion": "2026-10-17",
-          "limits": ["CAN_BE_WRONG", "UNRELIABLE_ON_SHORT_TEXTS", "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING", "A_SIGNAL_NEVER_A_VERDICT"]
+          "limits": [
+            "CAN_BE_WRONG",
+            "UNRELIABLE_ON_SHORT_TEXTS",
+            "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING",
+            "A_SIGNAL_NEVER_A_VERDICT"
+          ]
         }
       },
       "assertions": [
-        {"path": ["report", "detector"], "equals": "UNAVAILABLE"},
-        {"path": ["report", "language"], "equals": "fr"},
-        {"path": ["report", "limits"], "includes": "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING"},
-        {"path": ["report", "limits"], "includes": "A_SIGNAL_NEVER_A_VERDICT"}
+        { "path": ["report", "detector"], "equals": "UNAVAILABLE" },
+        { "path": ["report", "language"], "equals": "fr" },
+        { "path": ["report", "limits"], "includes": "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING" },
+        { "path": ["report", "limits"], "includes": "A_SIGNAL_NEVER_A_VERDICT" }
       ]
     },
     {
       "id": "beryl-unsupported-german-travel-note",
-      "input": {"text": "Morgen besucht Beryl unsere kleine Sternwarte. Danach sammeln sieben Reisende bunte Steine entlang einer ruhigen Küste. Später trinken alle gemeinsam warmen Kräutertee.", "locale": "fr"},
+      "input": {
+        "text": "Morgen besucht Beryl unsere kleine Sternwarte. Danach sammeln sieben Reisende bunte Steine entlang einer ruhigen Küste. Später trinken alle gemeinsam warmen Kräutertee.",
+        "locale": "fr"
+      },
       "expected": {
         "report": {
           "detector": "UNAVAILABLE",
           "language": "other",
           "rulesetVersion": "2026-10-17",
-          "limits": ["CAN_BE_WRONG", "UNRELIABLE_ON_SHORT_TEXTS", "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING", "A_SIGNAL_NEVER_A_VERDICT"]
+          "limits": [
+            "CAN_BE_WRONG",
+            "UNRELIABLE_ON_SHORT_TEXTS",
+            "UNRELIABLE_ON_NON_NATIVE_AND_FRENCH_WRITING",
+            "A_SIGNAL_NEVER_A_VERDICT"
+          ]
         }
       },
       "assertions": [
-        {"path": ["report", "detector"], "equals": "UNAVAILABLE"},
-        {"path": ["report", "language"], "equals": "other"},
-        {"path": ["report", "limits"], "includes": "CAN_BE_WRONG"},
-        {"path": ["report", "limits"], "includes": "A_SIGNAL_NEVER_A_VERDICT"}
+        { "path": ["report", "detector"], "equals": "UNAVAILABLE" },
+        { "path": ["report", "language"], "equals": "other" },
+        { "path": ["report", "limits"], "includes": "CAN_BE_WRONG" },
+        { "path": ["report", "limits"], "includes": "A_SIGNAL_NEVER_A_VERDICT" }
       ]
     }
   ]

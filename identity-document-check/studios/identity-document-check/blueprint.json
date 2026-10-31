@@ -26,9 +26,7 @@
         "id": "verify",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.identity.document.verify",
-        "dependsOn": [
-          "read"
-        ],
+        "dependsOn": ["read"],
         "inputs": {
           "reading": "{{steps.reading.analysis}}",
           "asOf": "{{inputs.asOf:}}",
@@ -74,9 +72,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "document"
-    ],
+    "required": ["document"],
     "properties": {
       "document": {
         "type": "string",

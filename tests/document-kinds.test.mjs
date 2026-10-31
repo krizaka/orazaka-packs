@@ -60,14 +60,21 @@ test("a kind is named by its file, and every fixture it lists exists", () => {
       assert.ok(existsSync(join(kindsDir, fixture.file)), `${name}: missing ${fixture.file}`);
       assert.ok(fixture.file.startsWith(`fixtures/${kind.kindId}/`), `${name}: a fixture lives under its kind`);
     }
-    assert.ok(kind.fixtures.some((f) => f.expect === "MATCH") && kind.fixtures.some((f) => f.expect === "NO_MATCH"), `${name}: a pass and a fail fixture`);
+    assert.ok(
+      kind.fixtures.some((f) => f.expect === "MATCH") && kind.fixtures.some((f) => f.expect === "NO_MATCH"),
+      `${name}: a pass and a fail fixture`,
+    );
   }
 });
 
 test("a PROMOTED kind names a shipped ruleset and a KNOWN one names none", () => {
   for (const name of kindFiles) {
     const kind = load(name);
-    if (kind.status === "PROMOTED") assert.ok(existsSync(join(root, "document-validation", "rulesets", kind.ruleset)), `${name}: no ruleset ${kind.ruleset}`);
+    if (kind.status === "PROMOTED")
+      assert.ok(
+        existsSync(join(root, "document-validation", "rulesets", kind.ruleset)),
+        `${name}: no ruleset ${kind.ruleset}`,
+      );
     if (kind.status === "KNOWN") assert.equal(kind.ruleset, null, name);
   }
 });
@@ -77,14 +84,21 @@ test("the pack declares the identify capability on the routing key its worker se
   const capability = pack.requires.capabilities.find((c) => c.key === "orazaka.validation.document.identify");
   assert.ok(capability, "orazaka.validation.document.identify");
   assert.equal(capability.routingKey, "job.validation.identify");
-  assert.ok(pack.requires.workers.some((w) => w.bindings.includes("job.validation.*")), "the validation worker drains job.validation.*");
+  assert.ok(
+    pack.requires.workers.some((w) => w.bindings.includes("job.validation.*")),
+    "the validation worker drains job.validation.*",
+  );
 });
 
 test("no kind quotes a real template: the fixtures are marked fictional", () => {
   for (const name of kindFiles) {
     for (const fixture of load(name).fixtures.filter((f) => f.expect === "MATCH")) {
       const text = readFileSync(join(kindsDir, fixture.file), "utf8");
-      assert.match(text, /démonstration|demonstration|fictif|fictive|fictional/i, `${fixture.file}: say it is fictional`);
+      assert.match(
+        text,
+        /démonstration|demonstration|fictif|fictive|fictional/i,
+        `${fixture.file}: say it is fictional`,
+      );
     }
   }
 });

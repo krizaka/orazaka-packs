@@ -24,9 +24,5 @@
       { "id": "SCREENSHOT", "field": "screenshot_or_photo_of_screen", "severity": "BLOCK" }
     ]
   },
-  "limits": [
-    "FACE_IDENTITY_IS_A_MISMATCH_DETECTOR",
-    "NO_CELEBRITY_RECOGNITION",
-    "MODEL_ANSWERS_CAN_BE_WRONG"
-  ]
+  "limits": ["FACE_IDENTITY_IS_A_MISMATCH_DETECTOR", "NO_CELEBRITY_RECOGNITION", "MODEL_ANSWERS_CAN_BE_WRONG"]
 }

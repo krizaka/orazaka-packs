@@ -25,7 +25,10 @@ export function jobsOf(text) {
 describe("the parser", () => {
   it("splits jobs", () => {
     const j = jobsOf("name: x\njobs:\n  a:\n    runs-on: u\n  b:\n    uses: o/r/.github/workflows/w.yml@abc\n");
-    assert.deepEqual(j.map((x) => x.name), ["a", "b"]);
+    assert.deepEqual(
+      j.map((x) => x.name),
+      ["a", "b"],
+    );
   });
 });
 
@@ -33,7 +36,11 @@ for (const file of readdirSync(WORKFLOWS).filter((n) => /\.ya?ml$/.test(n))) {
   const text = readFileSync(join(WORKFLOWS, file), "utf8");
   describe(file, () => {
     it("never sleeps for minutes on a billed runner", () => {
-      assert.doesNotMatch(text.replace(/#.*$/gm, ""), /\bsleep\s+\d{3,}\b/, "poll for the condition instead of sleeping");
+      assert.doesNotMatch(
+        text.replace(/#.*$/gm, ""),
+        /\bsleep\s+\d{3,}\b/,
+        "poll for the condition instead of sleeping",
+      );
     });
     it("every job that runs on a runner has a timeout-minutes", () => {
       for (const job of jobsOf(text).filter((j) => /^\s{4}runs-on:/m.test(j.text))) {
@@ -46,12 +53,21 @@ for (const file of readdirSync(WORKFLOWS).filter((n) => /\.ya?ml$/.test(n))) {
     });
     it("a gated job or step runs unless the gate said exactly false (fail open)", () => {
       for (const job of jobsOf(text).filter((j) => /^\s{4}needs:.*\bchanges\b/m.test(j.text))) {
-        assert.match(job.text, /!cancelled\(\)/, `${file}: ${job.name} needs the gate, so its if must start with !cancelled()`);
-        assert.doesNotMatch(job.text, /outputs\.[a-z-]+\s*==\s*'true'/, `${file}: ${job.name} must test != 'false', never == 'true'`);
+        assert.match(
+          job.text,
+          /!cancelled\(\)/,
+          `${file}: ${job.name} needs the gate, so its if must start with !cancelled()`,
+        );
+        assert.doesNotMatch(
+          job.text,
+          /outputs\.[a-z-]+\s*==\s*'true'/,
+          `${file}: ${job.name} must test != 'false', never == 'true'`,
+        );
       }
     });
     it("a reusable workflow is pinned by SHA", () => {
-      for (const m of text.matchAll(/^\s*uses:\s*(krizaka\/\S+)/gm)) assert.match(m[1], /@[0-9a-f]{40}\b/, `${file}: ${m[1]}`);
+      for (const m of text.matchAll(/^\s*uses:\s*(krizaka\/\S+)/gm))
+        assert.match(m[1], /@[0-9a-f]{40}\b/, `${file}: ${m[1]}`);
     });
   });
 }

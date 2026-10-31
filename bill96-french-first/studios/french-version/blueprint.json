@@ -25,9 +25,7 @@
         "id": "glossary",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "translate"
-        ],
+        "dependsOn": ["translate"],
         "inputs": {
           "prompt": "From the source document {{inputs.document}} and this French version {{steps.translation.content}}, list the terms you chose as a table: Source term | French term | Source of the term | Doubt (yes/no). Then list the doubtful passages, each with a one-line reason. The first line of your answer is exactly this sentence: fr « Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique. » en « Automated, uncertified translation — to be reviewed by a professional before any use, above all for a legal document. » (use the one that matches the output language). Mark anything you are unsure of as « À réviser » (fr) or « To review » (en). Name the terminology source of every term you choose (the usage recommended by the Office québécois de la langue française, OQLF, and its Grand dictionnaire terminologique, when one applies; otherwise say « usage courant »). Never invent a legal term: when no established Québec term exists, keep the source term in brackets and flag the passage. Never quote a statute; refer to it by name only."
         },
@@ -70,9 +68,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "document"
-    ],
+    "required": ["document"],
     "properties": {
       "document": {
         "type": "string",
@@ -94,12 +90,7 @@
       },
       "documentKind": {
         "type": "string",
-        "enum": [
-          "contract",
-          "policy",
-          "terms",
-          "product-sheet"
-        ],
+        "enum": ["contract", "policy", "terms", "product-sheet"],
         "default": "contract",
         "title": "Type de document",
         "description": "La nature du document, pour le registre à employer.",

@@ -29,9 +29,7 @@
         "id": "script",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "describe"
-        ],
+        "dependsOn": ["describe"],
         "inputs": {
           "prompt": "Écris le script d'un Reel immobilier pour {{inputs.platform}}: accroche, voix off, légende et hashtags. Le bien: {{inputs.propertyBrief}}. Les pièces: {{steps.roomDescriptions.analysis}}. Ton: {{config.tone}}."
         },
@@ -43,9 +41,7 @@
       {
         "id": "approve",
         "kind": "APPROVAL",
-        "dependsOn": [
-          "script"
-        ],
+        "dependsOn": ["script"],
         "inputs": {
           "preview": "{{steps.script.content}}"
         },
@@ -57,9 +53,7 @@
         "id": "assemble",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.studio.media.compose",
-        "dependsOn": [
-          "approve"
-        ],
+        "dependsOn": ["approve"],
         "inputs": {
           "photos": "{{inputs.photos}}"
         },
@@ -116,10 +110,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "photos",
-      "propertyBrief"
-    ],
+    "required": ["photos", "propertyBrief"],
     "properties": {
       "photos": {
         "type": "array",
@@ -176,11 +167,7 @@
         }
       },
       "platform": {
-        "enum": [
-          "instagram-reel",
-          "tiktok",
-          "youtube-short"
-        ],
+        "enum": ["instagram-reel", "tiktok", "youtube-short"],
         "default": "instagram-reel",
         "title": "Plateforme",
         "description": "Où le reel sera publié : cela règle le format et le rythme.",
@@ -213,11 +200,7 @@
       "title": "Nom de l'agence"
     },
     "tone": {
-      "enum": [
-        "premium",
-        "chaleureux",
-        "direct"
-      ],
+      "enum": ["premium", "chaleureux", "direct"],
       "default": "premium"
     },
     "signature": {

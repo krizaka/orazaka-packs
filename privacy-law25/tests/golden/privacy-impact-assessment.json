@@ -18,21 +18,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "efvp"
-          ],
+          "path": ["efvp"],
           "includes": "hors Québec"
         },
         {
-          "path": [
-            "efvp"
-          ],
+          "path": ["efvp"],
           "includes": "seule à décider"
         },
         {
-          "path": [
-            "efvp"
-          ],
+          "path": ["efvp"],
           "includes": "n'est pas un avis juridique"
         }
       ]
@@ -53,21 +47,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "efvp"
-          ],
+          "path": ["efvp"],
           "includes": "not legal advice"
         },
         {
-          "path": [
-            "efvp"
-          ],
+          "path": ["efvp"],
           "includes": "alone decides"
         },
         {
-          "path": [
-            "efvp"
-          ],
+          "path": ["efvp"],
           "includes": "Hosted in Québec"
         }
       ]
@@ -88,15 +76,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "efvp"
-          ],
+          "path": ["efvp"],
           "includes": "à confirmer"
         },
         {
-          "path": [
-            "efvp"
-          ],
+          "path": ["efvp"],
           "includes": "seule à décider"
         }
       ]

@@ -9,15 +9,26 @@ const root = new URL("../privacy-law25/", import.meta.url).pathname;
 const read = (p) => readFileSync(`${root}${p}`, "utf8");
 const manifest = YAML.parse(read("pack.yaml"));
 const sources = JSON.parse(read("sources.json"));
-const STUDIOS = ["personal-information-inventory", "privacy-impact-assessment", "confidentiality-incident", "privacy-governance-policy"];
+const STUDIOS = [
+  "personal-information-inventory",
+  "privacy-impact-assessment",
+  "confidentiality-incident",
+  "privacy-governance-policy",
+];
 const blueprints = Object.fromEntries(STUDIOS.map((k) => [k, JSON.parse(read(`studios/${k}/blueprint.json`))]));
 const prompts = (bp) => bp.definition.steps.map((s) => s.inputs.prompt);
 
 test("the manifest ships the four Studios, in the business-compliance shelf, sensitive and guarded", () => {
-  assert.deepEqual(manifest.studios.map((s) => s.key), STUDIOS);
+  assert.deepEqual(
+    manifest.studios.map((s) => s.key),
+    STUDIOS,
+  );
   assert.equal(manifest.catalog.categoryKey, "business-compliance");
   assert.equal(manifest.regulatoryClass, "SENSITIVE");
-  assert.ok(manifest.scopeGuard.refusedTerms.includes("legal advice") && manifest.scopeGuard.refusedTerms.includes("avis juridique"));
+  assert.ok(
+    manifest.scopeGuard.refusedTerms.includes("legal advice") &&
+      manifest.scopeGuard.refusedTerms.includes("avis juridique"),
+  );
   assert.ok(manifest.pricing.priceCents > 0 && manifest.pricing.includedCredits > 0);
   for (const s of manifest.studios) assert.equal(s.pricing, "PAID");
 });
@@ -42,12 +53,22 @@ test("the person in charge decides: decisions, dates and signatures are left emp
 });
 
 test("sources are cited by reference only: the prompts forbid quoting a section and sources.json holds no text", () => {
-  for (const bp of Object.values(blueprints)) for (const step of bp.definition.steps.filter((x) => x.id !== "english")) assert.match(step.inputs.prompt, /Never reproduce the wording of a section|never by quoting a text/i, `${step.id}: cite by reference only`);
+  for (const bp of Object.values(blueprints))
+    for (const step of bp.definition.steps.filter((x) => x.id !== "english"))
+      assert.match(
+        step.inputs.prompt,
+        /Never reproduce the wording of a section|never by quoting a text/i,
+        `${step.id}: cite by reference only`,
+      );
   for (const ref of sources.references) {
     assert.deepEqual(Object.keys(ref).sort(), ["citation", "id", "sections", "title", "usedFor"]);
   }
   assert.match(sources.note, /not pinned here/);
-  assert.equal(sources.verifiedBy, null, "no reference is claimed as verified by a lawyer before the lawyer has answered");
+  assert.equal(
+    sources.verifiedBy,
+    null,
+    "no reference is claimed as verified by a lawyer before the lawyer has answered",
+  );
 });
 
 test("no public wording of a legal rule, no escrow, no hosted model", () => {
@@ -58,12 +79,14 @@ test("no public wording of a legal rule, no escrow, no hosted model", () => {
 
 test("the incident Studio reads three criteria and drafts no notice when they do not point to serious injury", () => {
   const [assess, , notices] = prompts(blueprints["confidentiality-incident"]);
-  for (const criterion of ["sensitivity", "anticipated consequences", "likelihood"]) assert.match(assess, new RegExp(criterion));
+  for (const criterion of ["sensitivity", "anticipated consequences", "likelihood"])
+    assert.match(assess, new RegExp(criterion));
   assert.match(notices, /If the reading is NO, write only one line saying that no notice is drafted/);
 });
 
 test("the catalogue names the same Studios in English and French", () => {
-  const en = YAML.parse(read("i18n/en.yaml")), fr = YAML.parse(read("i18n/fr.yaml"));
+  const en = YAML.parse(read("i18n/en.yaml")),
+    fr = YAML.parse(read("i18n/fr.yaml"));
   assert.deepEqual(Object.keys(en.studios).sort(), [...STUDIOS].sort());
   assert.deepEqual(Object.keys(fr.studios).sort(), [...STUDIOS].sort());
 });

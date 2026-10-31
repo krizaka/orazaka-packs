@@ -54,8 +54,20 @@
       }
     ],
     "outputs": [
-      { "key": "report", "label": "Verdict, en codes", "from": "{{steps.assessment.reportJson}}", "type": "JSON", "x-i18n": {"en": {"label": "Verdict, as codes"}, "fr": {"label": "Verdict, en codes"}} },
-      { "key": "passes", "label": "L'ensemble passe", "from": "{{steps.assessment.passes}}", "type": "TEXT", "x-i18n": {"en": {"label": "The set passes"}, "fr": {"label": "L'ensemble passe"}} }
+      {
+        "key": "report",
+        "label": "Verdict, en codes",
+        "from": "{{steps.assessment.reportJson}}",
+        "type": "JSON",
+        "x-i18n": { "en": { "label": "Verdict, as codes" }, "fr": { "label": "Verdict, en codes" } }
+      },
+      {
+        "key": "passes",
+        "label": "L'ensemble passe",
+        "from": "{{steps.assessment.passes}}",
+        "type": "TEXT",
+        "x-i18n": { "en": { "label": "The set passes" }, "fr": { "label": "L'ensemble passe" } }
+      }
     ]
   },
   "inputSchema": {
@@ -66,7 +78,13 @@
         "type": "array",
         "minItems": 1,
         "maxItems": 12,
-        "items": { "type": "string", "format": "asset-id", "contentMediaType": "image/*", "minLength": 8, "maxLength": 120 },
+        "items": {
+          "type": "string",
+          "format": "asset-id",
+          "contentMediaType": "image/*",
+          "minLength": 8,
+          "maxLength": 120
+        },
         "title": "Les photos (fichiers envoyés)",
         "description": "Les identifiants des photos envoyées, pour la lecture par le modèle de vision.",
         "x-i18n": {
@@ -100,10 +118,61 @@
           }
         }
       },
-      "compareFaces": { "type": "boolean", "default": true, "title": "Comparer les visages entre eux", "description": "Traitement biométrique : à n'activer qu'avec le consentement explicite de la personne. Faux : les visages sont seulement comptés.", "x-i18n": {"en": {"title": "Compare the faces with each other", "description": "Biometric processing: only enable with the person's explicit consent. Off: faces are only counted."}, "fr": {"title": "Comparer les visages entre eux", "description": "Traitement biométrique : à n'activer qu'avec le consentement explicite de la personne. Désactivé : on compte les visages."}} },
-      "minPhotos": { "type": "integer", "minimum": 1, "maximum": 12, "default": 4, "title": "Photos au moins", "x-i18n": {"en": {"title": "At least this many photos", "description": "The fewest photos accepted."}, "fr": {"title": "Photos au moins", "description": "Le moins de photos accepté."}} },
-      "maxPhotos": { "type": "integer", "minimum": 1, "maximum": 12, "default": 6, "title": "Photos au plus", "x-i18n": {"en": {"title": "At most this many photos", "description": "The most photos accepted."}, "fr": {"title": "Photos au plus", "description": "Le plus de photos accepté."}} },
-      "minFacePhotos": { "type": "integer", "minimum": 0, "maximum": 12, "default": 2, "title": "Photos de visage au moins", "x-i18n": {"en": {"title": "At least this many face photos", "description": "The fewest photos in which a face must be found."}, "fr": {"title": "Photos de visage au moins", "description": "Le moins de photos où un visage doit être trouvé."}} }
+      "compareFaces": {
+        "type": "boolean",
+        "default": true,
+        "title": "Comparer les visages entre eux",
+        "description": "Traitement biométrique : à n'activer qu'avec le consentement explicite de la personne. Faux : les visages sont seulement comptés.",
+        "x-i18n": {
+          "en": {
+            "title": "Compare the faces with each other",
+            "description": "Biometric processing: only enable with the person's explicit consent. Off: faces are only counted."
+          },
+          "fr": {
+            "title": "Comparer les visages entre eux",
+            "description": "Traitement biométrique : à n'activer qu'avec le consentement explicite de la personne. Désactivé : on compte les visages."
+          }
+        }
+      },
+      "minPhotos": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 12,
+        "default": 4,
+        "title": "Photos au moins",
+        "x-i18n": {
+          "en": { "title": "At least this many photos", "description": "The fewest photos accepted." },
+          "fr": { "title": "Photos au moins", "description": "Le moins de photos accepté." }
+        }
+      },
+      "maxPhotos": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 12,
+        "default": 6,
+        "title": "Photos au plus",
+        "x-i18n": {
+          "en": { "title": "At most this many photos", "description": "The most photos accepted." },
+          "fr": { "title": "Photos au plus", "description": "Le plus de photos accepté." }
+        }
+      },
+      "minFacePhotos": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 12,
+        "default": 2,
+        "title": "Photos de visage au moins",
+        "x-i18n": {
+          "en": {
+            "title": "At least this many face photos",
+            "description": "The fewest photos in which a face must be found."
+          },
+          "fr": {
+            "title": "Photos de visage au moins",
+            "description": "Le moins de photos où un visage doit être trouvé."
+          }
+        }
+      }
     }
   },
   "configSchema": { "type": "object", "properties": {} }

@@ -11,8 +11,15 @@ assert.ok(values.config, "Usage: npm run golden:run -- --config /absolute/path/s
 const configPath = resolve(values.config);
 const config = JSON.parse(readFileSync(configPath, "utf8"));
 config.token = readFileSync(resolve(dirname(configPath), config.tokenFile), "utf8").trim();
-config.assets = JSON.parse(readFileSync(config.assetsFile ? resolve(dirname(configPath), config.assetsFile) : new URL("./assets.json", import.meta.url), "utf8"));
-const suites = discover(fileURLToPath(new URL("../..", import.meta.url))).filter((suite) => !values.pack || suite.pack === values.pack);
+config.assets = JSON.parse(
+  readFileSync(
+    config.assetsFile ? resolve(dirname(configPath), config.assetsFile) : new URL("./assets.json", import.meta.url),
+    "utf8",
+  ),
+);
+const suites = discover(fileURLToPath(new URL("../..", import.meta.url))).filter(
+  (suite) => !values.pack || suite.pack === values.pack,
+);
 assert.ok(suites.length > 0, "no matching golden suites");
 let failed = 0;
 for (const suite of suites) {

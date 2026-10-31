@@ -6,10 +6,7 @@
       "input": {
         "shopName": "Salon Brume",
         "service": "Coupe et coiffage",
-        "freeSlots": [
-          "Mardi 14 h",
-          "Jeudi 10 h"
-        ],
+        "freeSlots": ["Mardi 14 h", "Jeudi 10 h"],
         "channel": "sms",
         "tone": "warm",
         "language": "fr"
@@ -19,21 +16,15 @@
       },
       "assertions": [
         {
-          "path": [
-            "invitation"
-          ],
+          "path": ["invitation"],
           "includes": "Salon Brume"
         },
         {
-          "path": [
-            "invitation"
-          ],
+          "path": ["invitation"],
           "includes": "mardi 14 h"
         },
         {
-          "path": [
-            "invitation"
-          ],
+          "path": ["invitation"],
           "includes": "Réservez"
         }
       ]
@@ -43,9 +34,7 @@
       "input": {
         "shopName": "Brume Salon",
         "service": "Cut and style",
-        "freeSlots": [
-          "Friday 4:30 pm"
-        ],
+        "freeSlots": ["Friday 4:30 pm"],
         "channel": "email",
         "tone": "premium",
         "language": "en"
@@ -55,15 +44,11 @@
       },
       "assertions": [
         {
-          "path": [
-            "invitation"
-          ],
+          "path": ["invitation"],
           "includes": "Subject:"
         },
         {
-          "path": [
-            "invitation"
-          ],
+          "path": ["invitation"],
           "includes": "Friday at 4:30 pm"
         }
       ]
@@ -73,9 +58,7 @@
       "input": {
         "shopName": "Salon Brume",
         "service": "Coloration",
-        "freeSlots": [
-          "Samedi 9 h"
-        ],
+        "freeSlots": ["Samedi 9 h"],
         "channel": "push",
         "tone": "direct",
         "language": "fr"
@@ -85,9 +68,7 @@
       },
       "assertions": [
         {
-          "path": [
-            "invitation"
-          ],
+          "path": ["invitation"],
           "includes": "samedi 9 h"
         }
       ]

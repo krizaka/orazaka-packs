@@ -31,13 +31,7 @@
         "schema": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "themes",
-            "whatHelped",
-            "smallStep",
-            "bringToTherapist",
-            "locale"
-          ],
+          "required": ["themes", "whatHelped", "smallStep", "bringToTherapist", "locale"],
           "properties": {
             "themes": {
               "type": "array",
@@ -67,13 +61,7 @@
             },
             "locale": {
               "type": "string",
-              "enum": [
-                "fr-CA",
-                "fr-FR",
-                "fr",
-                "en",
-                "nl"
-              ]
+              "enum": ["fr-CA", "fr-FR", "fr", "en", "nl"]
             }
           }
         },
@@ -90,10 +78,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "turns",
-      "locale"
-    ],
+    "required": ["turns", "locale"],
     "properties": {
       "turns": {
         "type": "string",
@@ -165,13 +150,7 @@
       },
       "locale": {
         "type": "string",
-        "enum": [
-          "fr-CA",
-          "fr-FR",
-          "fr",
-          "en",
-          "nl"
-        ],
+        "enum": ["fr-CA", "fr-FR", "fr", "en", "nl"],
         "title": "Langue du résumé",
         "description": "La langue dans laquelle le résumé est écrit.",
         "x-i18n": {

@@ -20,50 +20,321 @@
           "style": "Original miniature garden at blue dusk after rain, copper and ivory characters against indigo wet stone, amber lantern practical, tactile felt and metal, shallow focus, no text or logos.",
           "keep": "Neri always has a round copper shell and six short black legs; Oru always has ivory felt wings with plain ochre tips; the lantern is a small amber glass globe.",
           "arc": [
-            {"beat": "hook", "purpose": "Establish the fading lantern and the far bank.", "emotion": "concern", "intensity": 0.15},
-            {"beat": "journey", "purpose": "Reveal the clash between guarding and sharing.", "emotion": "frustration", "intensity": 0.4},
-            {"beat": "turn", "purpose": "Make cooperation necessary when the lantern slips.", "emotion": "fear then trust", "intensity": 0.8},
-            {"beat": "payoff", "purpose": "Earn a shared dry shelter and steady light.", "emotion": "relief", "intensity": 0.25}
+            {
+              "beat": "hook",
+              "purpose": "Establish the fading lantern and the far bank.",
+              "emotion": "concern",
+              "intensity": 0.15
+            },
+            {
+              "beat": "journey",
+              "purpose": "Reveal the clash between guarding and sharing.",
+              "emotion": "frustration",
+              "intensity": 0.4
+            },
+            {
+              "beat": "turn",
+              "purpose": "Make cooperation necessary when the lantern slips.",
+              "emotion": "fear then trust",
+              "intensity": 0.8
+            },
+            {
+              "beat": "payoff",
+              "purpose": "Earn a shared dry shelter and steady light.",
+              "emotion": "relief",
+              "intensity": 0.25
+            }
           ],
           "characters": [
-            {"id": "neri", "description": "Original thumb-sized beetle with round hammered copper shell, six short black legs and two curved black antennae.", "promise": "The determined lantern carrier.", "intention": "Bring the fading lantern to the dry far bank."},
-            {"id": "oru", "description": "Original palm-sized ivory felt moth with rounded wings, plain ochre wing tips and two soft curled antennae.", "promise": "The light seeker who becomes a helper.", "intention": "Stay close to the lantern and learn to protect it with Neri."}
+            {
+              "id": "neri",
+              "description": "Original thumb-sized beetle with round hammered copper shell, six short black legs and two curved black antennae.",
+              "promise": "The determined lantern carrier.",
+              "intention": "Bring the fading lantern to the dry far bank."
+            },
+            {
+              "id": "oru",
+              "description": "Original palm-sized ivory felt moth with rounded wings, plain ochre wing tips and two soft curled antennae.",
+              "promise": "The light seeker who becomes a helper.",
+              "intention": "Stay close to the lantern and learn to protect it with Neri."
+            }
           ],
           "lines": [
-            {"id": "line-1", "shots": [1, 2], "en": "One small light. One wide crossing.", "direction": {"emotion": "concern", "pace": "measured", "emphasis": ["light", "crossing"], "pauseAfter": 0.5}},
-            {"id": "line-2", "shots": [7, 8], "en": "Enough light for both of us.", "direction": {"emotion": "relief", "pace": "slow", "emphasis": ["both"], "pauseAfter": 1}}
+            {
+              "id": "line-1",
+              "shots": [1, 2],
+              "en": "One small light. One wide crossing.",
+              "direction": {
+                "emotion": "concern",
+                "pace": "measured",
+                "emphasis": ["light", "crossing"],
+                "pauseAfter": 0.5
+              }
+            },
+            {
+              "id": "line-2",
+              "shots": [7, 8],
+              "en": "Enough light for both of us.",
+              "direction": { "emotion": "relief", "pace": "slow", "emphasis": ["both"], "pauseAfter": 1 }
+            }
           ],
           "music": {
             "prompt": "Original instrumental miniature chamber score, felt piano and brushed cello, 72 BPM, no vocals.",
             "cues": [
-              {"beat": "hook", "intensity": 0.15, "prompt": "Sparse felt piano, 72 BPM, curious concern, no vocals."},
-              {"beat": "journey", "intensity": 0.4, "prompt": "Pizzicato cello and felt piano, 80 BPM, gentle friction, no vocals."},
-              {"beat": "turn", "intensity": 0.8, "prompt": "Bowed cello rising over piano pulses, 88 BPM, fear becoming trust, no vocals."},
-              {"beat": "payoff", "intensity": 0.25, "prompt": "Soft piano and sustained cello, 64 BPM, warm relief, no vocals."}
+              { "beat": "hook", "intensity": 0.15, "prompt": "Sparse felt piano, 72 BPM, curious concern, no vocals." },
+              {
+                "beat": "journey",
+                "intensity": 0.4,
+                "prompt": "Pizzicato cello and felt piano, 80 BPM, gentle friction, no vocals."
+              },
+              {
+                "beat": "turn",
+                "intensity": 0.8,
+                "prompt": "Bowed cello rising over piano pulses, 88 BPM, fear becoming trust, no vocals."
+              },
+              {
+                "beat": "payoff",
+                "intensity": 0.25,
+                "prompt": "Soft piano and sustained cello, 64 BPM, warm relief, no vocals."
+              }
             ]
           },
           "references": [],
-          "legal": {"never": []},
+          "legal": { "never": [] },
           "shots": [
-            {"id": 1, "slug": "fading-globe", "seconds": 3, "beat": "hook", "purpose": "Make the threatened light visible.", "characters": ["neri"], "intent": "Protect the lantern.", "gaze": "Neri watches the dimming globe.", "physics": "Six legs brace on wet stone.", "interaction": "Neri cups the lantern.", "interactionKind": "protect", "action": "Neri steadies the globe, shields it, then looks toward the far bank.", "framing": "close-up", "lens": 85, "camera": "Slow dolly in, shallow f/1.4", "lighting": "Amber practical key, blue dusk rim", "atmosphere": "Fine drizzle", "place": "near bank", "keyframe": "Copper beetle Neri, round hammered shell and six black legs, holds amber glass globe on wet indigo stone, 85mm, blue dusk and warm practical, no writing.", "motion": "Dolly slowly in as Neri braces six legs, cups the globe and raises its antennae toward the far bank.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -20}, {"kind": "tap", "at": 1, "gain": -16}]},
-            {"id": 2, "slug": "far-bank", "seconds": 3, "beat": "hook", "purpose": "Establish the goal and obstacle.", "characters": ["neri", "oru"], "intent": "Neri seeks a route; Oru seeks warmth.", "gaze": "Both follow the lantern reflection across the puddle.", "physics": "Neri shifts weight; Oru beats soft wings to land.", "interaction": "Oru lands beside Neri and leans toward the globe.", "interactionKind": "meet", "action": "Oru lands, leans toward the glow, then notices Neri guarding it.", "framing": "wide", "lens": 24, "camera": "Slow crane up, deep focus", "lighting": "Blue dusk key and amber reflected fill", "atmosphere": "Low mist", "place": "near bank", "keyframe": "Round copper beetle Neri with six black legs and ivory felt moth Oru with ochre wing tips beside amber globe, wide puddle ahead, 24mm blue dusk, no writing.", "motion": "Crane gently upward as ivory Oru lands beside copper Neri, folds its wings and follows the glow across the water.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -20}, {"kind": "flap", "at": 1, "gain": -14}]},
-            {"id": 3, "slug": "guarded-step", "seconds": 4, "beat": "journey", "purpose": "Show the cost of refusing help.", "characters": ["neri", "oru"], "intent": "Neri tries to cross alone while Oru asks to follow.", "gaze": "Neri fixes on the next stone; Oru watches the globe.", "physics": "Neri strains forward under the globe; Oru leans in.", "interaction": "Neri nudges Oru away from the lantern.", "interactionKind": "argue", "action": "Neri lifts the globe, nudges Oru back, then wobbles on a narrow stone.", "framing": "medium", "lens": 50, "camera": "Tracking right at walking speed, shallow focus", "lighting": "Amber globe key and cool rim", "atmosphere": "Drizzle and fine spray", "place": "stepping stones", "keyframe": "Copper beetle Neri carries amber globe beside ivory felt moth Oru with ochre tips, wet stepping stones, 50mm dusk side light, no text.", "motion": "Track right as Neri lifts the globe, gently nudges Oru aside and transfers weight onto a narrow wet stone.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -20}, {"kind": "steps", "at": 1, "gain": -14}, {"kind": "rustle", "at": 2, "gain": -18}]},
-            {"id": 4, "slug": "offered-wing", "seconds": 4, "beat": "journey", "purpose": "Offer cooperation before the reversal.", "characters": ["neri", "oru"], "intent": "Oru offers balance; Neri resists then pauses.", "gaze": "Oru watches Neri's slipping legs.", "physics": "Oru plants its feet and extends one wing.", "interaction": "Oru offers Neri a wing to lean on.", "interactionKind": "help", "action": "Oru braces, extends a wing, then Neri hesitates with one leg raised.", "framing": "close-up", "lens": 85, "camera": "Slow push-in, shallow f/1.4", "lighting": "Warm globe key and blue rim", "atmosphere": "Mist at water level", "place": "stepping stones", "keyframe": "Ivory felt moth Oru with ochre wing tips braces beside round copper beetle Neri and amber globe on wet stone, 85mm dusk, no text.", "motion": "Push in slowly as Oru extends an ivory wing and Neri pauses, shifting the lantern's weight toward the offered support.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -20}, {"kind": "rustle", "at": 1, "gain": -16}, {"kind": "tap", "at": 3, "gain": -18}]},
-            {"id": 5, "slug": "falling-light", "seconds": 4, "beat": "turn", "purpose": "Force trust through a visible risk.", "characters": ["neri", "oru"], "intent": "Both try to save the lantern.", "gaze": "Both follow the falling globe.", "physics": "Neri slides; Oru beats hard and grips the handle.", "interaction": "Oru catches the lantern while Neri grips Oru's foot.", "interactionKind": "rescue", "action": "Neri slips, the globe tips, then Oru catches it just above the water.", "framing": "medium", "lens": 35, "camera": "Quick push-in settling to a hold, shallow focus", "lighting": "Amber globe flare and cool water rim", "atmosphere": "Small splash and drizzle", "place": "middle stone", "keyframe": "Copper beetle Neri slips beside amber lantern as ivory felt moth Oru with ochre tips braces over a puddle, 35mm dusk, no writing.", "motion": "Push in as Neri slides, Oru beats its wings with effort and catches the globe handle before it reaches the water.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -20}, {"kind": "flap", "at": 1, "gain": -10}, {"kind": "splash-small", "at": 2, "gain": -12}]},
-            {"id": 6, "slug": "shared-handoff", "seconds": 4, "beat": "turn", "purpose": "Turn rescue into a shared plan.", "characters": ["neri", "oru"], "intent": "Carry the lantern together.", "gaze": "Neri checks Oru's grip before releasing weight.", "physics": "Both lean toward the same center of balance.", "interaction": "Neri passes half the lantern's weight to Oru.", "interactionKind": "hand-off", "action": "Neri steadies the handle, Oru takes its far side, then both step right.", "framing": "close-up", "lens": 85, "camera": "Slow lateral slide, shallow f/1.4", "lighting": "Amber practical key and cool rim", "atmosphere": "Fine mist", "place": "middle stone", "keyframe": "Round copper Neri with six black legs and ivory felt Oru with ochre tips share amber globe handle on wet stepping stone, 85mm dusk light, no writing.", "motion": "Slide right as Neri raises the handle, Oru grips the far side and both carefully transfer weight toward the next stone.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -20}, {"kind": "tap", "at": 1, "gain": -16}, {"kind": "steps", "at": 3, "gain": -14}]},
-            {"id": 7, "slug": "shelter-arrival", "seconds": 4, "beat": "payoff", "purpose": "Answer the crossing question.", "characters": ["neri", "oru"], "intent": "Place the lantern safely.", "gaze": "Both look at the dry leaf shelter.", "physics": "Neri plants its feet; Oru folds its tired wings.", "interaction": "They lower the lantern together.", "interactionKind": "help", "action": "They reach the far bank, lower the globe beneath a leaf, then release it together.", "framing": "wide", "lens": 24, "camera": "Slow tracking right, deep focus", "lighting": "Steady amber key and blue dusk rim", "atmosphere": "Drizzle outside shelter", "place": "far bank", "keyframe": "Copper beetle Neri and ivory felt moth Oru with ochre tips carry amber globe beneath dry broad leaf, wet indigo garden behind, 24mm dusk, no writing.", "motion": "Track right as Neri and Oru arrive, bend together and set the amber globe beneath the leaf shelter.", "transition": "dissolve", "sound": [{"kind": "drizzle", "gain": -22}, {"kind": "steps", "at": 1, "gain": -16}, {"kind": "tap", "at": 3, "gain": -18}]},
-            {"id": 8, "slug": "enough-for-two", "seconds": 4, "beat": "payoff", "purpose": "Hold the earned shared light.", "characters": ["neri", "oru"], "intent": "Rest together in the protected glow.", "gaze": "Neri and Oru meet each other's gaze.", "physics": "Neri relaxes its legs; Oru settles folded wings.", "interaction": "They exchange a gentle antenna touch.", "interactionKind": "celebrate", "action": "Neri shifts closer, Oru touches antennae with Neri, then both rest beside the steady light.", "framing": "medium", "lens": 50, "camera": "Locked-off held final image, shallow focus", "lighting": "Amber lantern key and soft blue rim", "atmosphere": "Distant drizzle bokeh", "place": "far bank", "keyframe": "Round copper beetle Neri with six black legs and ivory felt moth Oru with ochre tips rest beside amber globe under broad leaf, 50mm dusk, no writing.", "motion": "Hold as Neri and Oru exchange an antenna touch, fold into rest and leave the steady lantern centered between them.", "transition": "dissolve", "sound": [{"kind": "drizzle", "gain": -24}, {"kind": "rustle", "at": 1, "gain": -20}, {"kind": "chime", "at": 2, "gain": -18}]}
+            {
+              "id": 1,
+              "slug": "fading-globe",
+              "seconds": 3,
+              "beat": "hook",
+              "purpose": "Make the threatened light visible.",
+              "characters": ["neri"],
+              "intent": "Protect the lantern.",
+              "gaze": "Neri watches the dimming globe.",
+              "physics": "Six legs brace on wet stone.",
+              "interaction": "Neri cups the lantern.",
+              "interactionKind": "protect",
+              "action": "Neri steadies the globe, shields it, then looks toward the far bank.",
+              "framing": "close-up",
+              "lens": 85,
+              "camera": "Slow dolly in, shallow f/1.4",
+              "lighting": "Amber practical key, blue dusk rim",
+              "atmosphere": "Fine drizzle",
+              "place": "near bank",
+              "keyframe": "Copper beetle Neri, round hammered shell and six black legs, holds amber glass globe on wet indigo stone, 85mm, blue dusk and warm practical, no writing.",
+              "motion": "Dolly slowly in as Neri braces six legs, cups the globe and raises its antennae toward the far bank.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -20 },
+                { "kind": "tap", "at": 1, "gain": -16 }
+              ]
+            },
+            {
+              "id": 2,
+              "slug": "far-bank",
+              "seconds": 3,
+              "beat": "hook",
+              "purpose": "Establish the goal and obstacle.",
+              "characters": ["neri", "oru"],
+              "intent": "Neri seeks a route; Oru seeks warmth.",
+              "gaze": "Both follow the lantern reflection across the puddle.",
+              "physics": "Neri shifts weight; Oru beats soft wings to land.",
+              "interaction": "Oru lands beside Neri and leans toward the globe.",
+              "interactionKind": "meet",
+              "action": "Oru lands, leans toward the glow, then notices Neri guarding it.",
+              "framing": "wide",
+              "lens": 24,
+              "camera": "Slow crane up, deep focus",
+              "lighting": "Blue dusk key and amber reflected fill",
+              "atmosphere": "Low mist",
+              "place": "near bank",
+              "keyframe": "Round copper beetle Neri with six black legs and ivory felt moth Oru with ochre wing tips beside amber globe, wide puddle ahead, 24mm blue dusk, no writing.",
+              "motion": "Crane gently upward as ivory Oru lands beside copper Neri, folds its wings and follows the glow across the water.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -20 },
+                { "kind": "flap", "at": 1, "gain": -14 }
+              ]
+            },
+            {
+              "id": 3,
+              "slug": "guarded-step",
+              "seconds": 4,
+              "beat": "journey",
+              "purpose": "Show the cost of refusing help.",
+              "characters": ["neri", "oru"],
+              "intent": "Neri tries to cross alone while Oru asks to follow.",
+              "gaze": "Neri fixes on the next stone; Oru watches the globe.",
+              "physics": "Neri strains forward under the globe; Oru leans in.",
+              "interaction": "Neri nudges Oru away from the lantern.",
+              "interactionKind": "argue",
+              "action": "Neri lifts the globe, nudges Oru back, then wobbles on a narrow stone.",
+              "framing": "medium",
+              "lens": 50,
+              "camera": "Tracking right at walking speed, shallow focus",
+              "lighting": "Amber globe key and cool rim",
+              "atmosphere": "Drizzle and fine spray",
+              "place": "stepping stones",
+              "keyframe": "Copper beetle Neri carries amber globe beside ivory felt moth Oru with ochre tips, wet stepping stones, 50mm dusk side light, no text.",
+              "motion": "Track right as Neri lifts the globe, gently nudges Oru aside and transfers weight onto a narrow wet stone.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -20 },
+                { "kind": "steps", "at": 1, "gain": -14 },
+                { "kind": "rustle", "at": 2, "gain": -18 }
+              ]
+            },
+            {
+              "id": 4,
+              "slug": "offered-wing",
+              "seconds": 4,
+              "beat": "journey",
+              "purpose": "Offer cooperation before the reversal.",
+              "characters": ["neri", "oru"],
+              "intent": "Oru offers balance; Neri resists then pauses.",
+              "gaze": "Oru watches Neri's slipping legs.",
+              "physics": "Oru plants its feet and extends one wing.",
+              "interaction": "Oru offers Neri a wing to lean on.",
+              "interactionKind": "help",
+              "action": "Oru braces, extends a wing, then Neri hesitates with one leg raised.",
+              "framing": "close-up",
+              "lens": 85,
+              "camera": "Slow push-in, shallow f/1.4",
+              "lighting": "Warm globe key and blue rim",
+              "atmosphere": "Mist at water level",
+              "place": "stepping stones",
+              "keyframe": "Ivory felt moth Oru with ochre wing tips braces beside round copper beetle Neri and amber globe on wet stone, 85mm dusk, no text.",
+              "motion": "Push in slowly as Oru extends an ivory wing and Neri pauses, shifting the lantern's weight toward the offered support.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -20 },
+                { "kind": "rustle", "at": 1, "gain": -16 },
+                { "kind": "tap", "at": 3, "gain": -18 }
+              ]
+            },
+            {
+              "id": 5,
+              "slug": "falling-light",
+              "seconds": 4,
+              "beat": "turn",
+              "purpose": "Force trust through a visible risk.",
+              "characters": ["neri", "oru"],
+              "intent": "Both try to save the lantern.",
+              "gaze": "Both follow the falling globe.",
+              "physics": "Neri slides; Oru beats hard and grips the handle.",
+              "interaction": "Oru catches the lantern while Neri grips Oru's foot.",
+              "interactionKind": "rescue",
+              "action": "Neri slips, the globe tips, then Oru catches it just above the water.",
+              "framing": "medium",
+              "lens": 35,
+              "camera": "Quick push-in settling to a hold, shallow focus",
+              "lighting": "Amber globe flare and cool water rim",
+              "atmosphere": "Small splash and drizzle",
+              "place": "middle stone",
+              "keyframe": "Copper beetle Neri slips beside amber lantern as ivory felt moth Oru with ochre tips braces over a puddle, 35mm dusk, no writing.",
+              "motion": "Push in as Neri slides, Oru beats its wings with effort and catches the globe handle before it reaches the water.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -20 },
+                { "kind": "flap", "at": 1, "gain": -10 },
+                { "kind": "splash-small", "at": 2, "gain": -12 }
+              ]
+            },
+            {
+              "id": 6,
+              "slug": "shared-handoff",
+              "seconds": 4,
+              "beat": "turn",
+              "purpose": "Turn rescue into a shared plan.",
+              "characters": ["neri", "oru"],
+              "intent": "Carry the lantern together.",
+              "gaze": "Neri checks Oru's grip before releasing weight.",
+              "physics": "Both lean toward the same center of balance.",
+              "interaction": "Neri passes half the lantern's weight to Oru.",
+              "interactionKind": "hand-off",
+              "action": "Neri steadies the handle, Oru takes its far side, then both step right.",
+              "framing": "close-up",
+              "lens": 85,
+              "camera": "Slow lateral slide, shallow f/1.4",
+              "lighting": "Amber practical key and cool rim",
+              "atmosphere": "Fine mist",
+              "place": "middle stone",
+              "keyframe": "Round copper Neri with six black legs and ivory felt Oru with ochre tips share amber globe handle on wet stepping stone, 85mm dusk light, no writing.",
+              "motion": "Slide right as Neri raises the handle, Oru grips the far side and both carefully transfer weight toward the next stone.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -20 },
+                { "kind": "tap", "at": 1, "gain": -16 },
+                { "kind": "steps", "at": 3, "gain": -14 }
+              ]
+            },
+            {
+              "id": 7,
+              "slug": "shelter-arrival",
+              "seconds": 4,
+              "beat": "payoff",
+              "purpose": "Answer the crossing question.",
+              "characters": ["neri", "oru"],
+              "intent": "Place the lantern safely.",
+              "gaze": "Both look at the dry leaf shelter.",
+              "physics": "Neri plants its feet; Oru folds its tired wings.",
+              "interaction": "They lower the lantern together.",
+              "interactionKind": "help",
+              "action": "They reach the far bank, lower the globe beneath a leaf, then release it together.",
+              "framing": "wide",
+              "lens": 24,
+              "camera": "Slow tracking right, deep focus",
+              "lighting": "Steady amber key and blue dusk rim",
+              "atmosphere": "Drizzle outside shelter",
+              "place": "far bank",
+              "keyframe": "Copper beetle Neri and ivory felt moth Oru with ochre tips carry amber globe beneath dry broad leaf, wet indigo garden behind, 24mm dusk, no writing.",
+              "motion": "Track right as Neri and Oru arrive, bend together and set the amber globe beneath the leaf shelter.",
+              "transition": "dissolve",
+              "sound": [
+                { "kind": "drizzle", "gain": -22 },
+                { "kind": "steps", "at": 1, "gain": -16 },
+                { "kind": "tap", "at": 3, "gain": -18 }
+              ]
+            },
+            {
+              "id": 8,
+              "slug": "enough-for-two",
+              "seconds": 4,
+              "beat": "payoff",
+              "purpose": "Hold the earned shared light.",
+              "characters": ["neri", "oru"],
+              "intent": "Rest together in the protected glow.",
+              "gaze": "Neri and Oru meet each other's gaze.",
+              "physics": "Neri relaxes its legs; Oru settles folded wings.",
+              "interaction": "They exchange a gentle antenna touch.",
+              "interactionKind": "celebrate",
+              "action": "Neri shifts closer, Oru touches antennae with Neri, then both rest beside the steady light.",
+              "framing": "medium",
+              "lens": 50,
+              "camera": "Locked-off held final image, shallow focus",
+              "lighting": "Amber lantern key and soft blue rim",
+              "atmosphere": "Distant drizzle bokeh",
+              "place": "far bank",
+              "keyframe": "Round copper beetle Neri with six black legs and ivory felt moth Oru with ochre tips rest beside amber globe under broad leaf, 50mm dusk, no writing.",
+              "motion": "Hold as Neri and Oru exchange an antenna touch, fold into rest and leave the steady lantern centered between them.",
+              "transition": "dissolve",
+              "sound": [
+                { "kind": "drizzle", "gain": -24 },
+                { "kind": "rustle", "at": 1, "gain": -20 },
+                { "kind": "chime", "at": 2, "gain": -18 }
+              ]
+            }
           ]
         }
       },
       "assertions": [
-        {"path": ["treatment", "logline"], "includes": "Neri"},
-        {"path": ["treatment", "aspect"], "equals": "16:9"},
-        {"path": ["treatment", "arc", 0, "beat"], "equals": "hook"},
-        {"path": ["treatment", "arc", 3, "beat"], "equals": "payoff"},
-        {"path": ["treatment", "characters", 0, "intention"], "nonEmpty": true},
-        {"path": ["treatment", "lines", 0, "en"], "nonEmpty": true},
-        {"path": ["treatment", "shots", 7, "action"], "nonEmpty": true}
+        { "path": ["treatment", "logline"], "includes": "Neri" },
+        { "path": ["treatment", "aspect"], "equals": "16:9" },
+        { "path": ["treatment", "arc", 0, "beat"], "equals": "hook" },
+        { "path": ["treatment", "arc", 3, "beat"], "equals": "payoff" },
+        { "path": ["treatment", "characters", 0, "intention"], "nonEmpty": true },
+        { "path": ["treatment", "lines", 0, "en"], "nonEmpty": true },
+        { "path": ["treatment", "shots", 7, "action"], "nonEmpty": true }
       ]
     },
     {
@@ -85,49 +356,325 @@
           "style": "Original handmade garden in blue felt, pale carved wood and terracotta; gentle rain, overcast key and warm planter-side practical, macro textures, no lettering or logos.",
           "keep": "Lune is always a blue felt mouse with cream ears and a short braided tail; Piko is always a pale wooden hedgehog with blunt carved quills and a moss scarf.",
           "arc": [
-            {"beat": "hook", "purpose": "Show a seed and an unreachable planter.", "emotion": "hope", "intensity": 0.1},
-            {"beat": "journey", "purpose": "Bring Lune and Piko together at the broken bridge.", "emotion": "determination", "intensity": 0.35},
-            {"beat": "turn", "purpose": "Recover the dropped seed by trusting each other.", "emotion": "fear then gratitude", "intensity": 0.75},
-            {"beat": "payoff", "purpose": "Earn the planting and hold their shared pride.", "emotion": "pride", "intensity": 0.2}
+            {
+              "beat": "hook",
+              "purpose": "Show a seed and an unreachable planter.",
+              "emotion": "hope",
+              "intensity": 0.1
+            },
+            {
+              "beat": "journey",
+              "purpose": "Bring Lune and Piko together at the broken bridge.",
+              "emotion": "determination",
+              "intensity": 0.35
+            },
+            {
+              "beat": "turn",
+              "purpose": "Recover the dropped seed by trusting each other.",
+              "emotion": "fear then gratitude",
+              "intensity": 0.75
+            },
+            {
+              "beat": "payoff",
+              "purpose": "Earn the planting and hold their shared pride.",
+              "emotion": "pride",
+              "intensity": 0.2
+            }
           ],
           "characters": [
-            {"id": "lune", "description": "Original small blue felt mouse with cream round ears, black bead eyes and a short blue braided tail.", "promise": "The careful seed keeper.", "intention": "Plant the single seed in the far planter."},
-            {"id": "piko", "description": "Original pale carved wooden hedgehog with blunt quills, round dark eyes and a plain moss scarf.", "promise": "The patient bridge builder.", "intention": "Repair the bridge so Lune can cross safely."}
+            {
+              "id": "lune",
+              "description": "Original small blue felt mouse with cream round ears, black bead eyes and a short blue braided tail.",
+              "promise": "The careful seed keeper.",
+              "intention": "Plant the single seed in the far planter."
+            },
+            {
+              "id": "piko",
+              "description": "Original pale carved wooden hedgehog with blunt quills, round dark eyes and a plain moss scarf.",
+              "promise": "The patient bridge builder.",
+              "intention": "Repair the bridge so Lune can cross safely."
+            }
           ],
           "lines": [
-            {"id": "line-1", "shots": [1, 2], "fr": "Une graine attend son jardin.", "direction": {"emotion": "hope", "pace": "slow", "emphasis": ["graine", "jardin"], "pauseAfter": 0.7}},
-            {"id": "line-2", "shots": [7, 8], "fr": "À deux, le chemin devient possible.", "direction": {"emotion": "gratitude", "pace": "measured", "emphasis": ["deux", "possible"], "pauseAfter": 1}}
+            {
+              "id": "line-1",
+              "shots": [1, 2],
+              "fr": "Une graine attend son jardin.",
+              "direction": { "emotion": "hope", "pace": "slow", "emphasis": ["graine", "jardin"], "pauseAfter": 0.7 }
+            },
+            {
+              "id": "line-2",
+              "shots": [7, 8],
+              "fr": "À deux, le chemin devient possible.",
+              "direction": {
+                "emotion": "gratitude",
+                "pace": "measured",
+                "emphasis": ["deux", "possible"],
+                "pauseAfter": 1
+              }
+            }
           ],
           "music": {
             "prompt": "Original instrumental felt piano, wooden marimba and low strings, intimate garden scale, no vocals.",
             "cues": [
-              {"beat": "hook", "intensity": 0.1, "prompt": "Sparse felt piano, 64 BPM, hopeful curiosity, no vocals."},
-              {"beat": "journey", "intensity": 0.35, "prompt": "Wooden marimba and piano, 76 BPM, patient determination, no vocals."},
-              {"beat": "turn", "intensity": 0.75, "prompt": "Low strings and marimba pulses, 84 BPM, alarm then gratitude, no vocals."},
-              {"beat": "payoff", "intensity": 0.2, "prompt": "Warm piano and soft strings, 60 BPM, quiet pride, no vocals."}
+              {
+                "beat": "hook",
+                "intensity": 0.1,
+                "prompt": "Sparse felt piano, 64 BPM, hopeful curiosity, no vocals."
+              },
+              {
+                "beat": "journey",
+                "intensity": 0.35,
+                "prompt": "Wooden marimba and piano, 76 BPM, patient determination, no vocals."
+              },
+              {
+                "beat": "turn",
+                "intensity": 0.75,
+                "prompt": "Low strings and marimba pulses, 84 BPM, alarm then gratitude, no vocals."
+              },
+              {
+                "beat": "payoff",
+                "intensity": 0.2,
+                "prompt": "Warm piano and soft strings, 60 BPM, quiet pride, no vocals."
+              }
             ]
           },
           "references": [],
-          "legal": {"never": []},
+          "legal": { "never": [] },
           "shots": [
-            {"id": 1, "slug": "single-seed", "seconds": 3, "beat": "hook", "purpose": "Establish the precious seed.", "characters": ["lune"], "intent": "Keep the seed dry.", "gaze": "Lune watches the seed in both paws.", "physics": "Lune curls over the seed with steady breath.", "interaction": "Lune shields the seed.", "interactionKind": "protect", "action": "Lune opens both paws, checks the seed, then folds them against the rain.", "framing": "close-up", "lens": 85, "camera": "Slow dolly in, shallow f/1.4", "lighting": "Overcast key and warm soft rim", "atmosphere": "Gentle rain", "place": "near path", "keyframe": "Original blue felt mouse Lune with cream ears, black bead eyes and braided tail holds one seed on wet garden path, 85mm overcast light and warm rim, no writing.", "motion": "Dolly in as Lune opens its blue felt paws around the seed, checks it and curls inward against the rain.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -22}, {"kind": "rustle", "at": 1, "gain": -18}]},
-            {"id": 2, "slug": "broken-route", "seconds": 3, "beat": "hook", "purpose": "Reveal the unreachable planter.", "characters": ["lune"], "intent": "Find a safe crossing.", "gaze": "Lune follows the broken bridge to the terracotta planter.", "physics": "Lune rises on its toes then steps back.", "interaction": "Lune tests the bridge edge.", "interactionKind": "test", "action": "Lune approaches, touches the loose plank, then recoils as it rocks.", "framing": "wide", "lens": 24, "camera": "Slow crane up, deep focus", "lighting": "Overcast key and warm distant practical", "atmosphere": "Light rain and mist", "place": "bridge entrance", "keyframe": "Blue felt mouse Lune with cream ears and braided tail at broken wooden footbridge, empty terracotta planter beyond, 24mm soft rainy light, no writing.", "motion": "Crane up as Lune tests the plank with one paw and rocks back while keeping the seed against its chest.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -22}, {"kind": "steps", "at": 1, "gain": -16}, {"kind": "block", "at": 2, "gain": -14}]},
-            {"id": 3, "slug": "builder-arrives", "seconds": 4, "beat": "journey", "purpose": "Connect the two intentions.", "characters": ["lune", "piko"], "intent": "Piko offers a plank; Lune shows the seed.", "gaze": "They look from seed to bridge.", "physics": "Piko lowers a carried plank; Lune turns its shoulders.", "interaction": "They meet and compare their goals.", "interactionKind": "meet", "action": "Piko arrives with a plank, Lune shows the seed, then both face the gap.", "framing": "medium", "lens": 35, "camera": "Slow tracking right, shallow focus", "lighting": "Soft overcast key and warm rim", "atmosphere": "Gentle drizzle", "place": "bridge entrance", "keyframe": "Blue felt mouse Lune with cream ears beside pale wooden hedgehog Piko with blunt quills and moss scarf, plank and seed at bridge, 35mm rainy light, no text.", "motion": "Track right as Piko lowers the plank, Lune opens a paw with the seed and both turn toward the bridge gap.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -22}, {"kind": "steps", "at": 1, "gain": -16}, {"kind": "block", "at": 2, "gain": -14}]},
-            {"id": 4, "slug": "shared-repair", "seconds": 4, "beat": "journey", "purpose": "Make progress through cooperation.", "characters": ["lune", "piko"], "intent": "Set the replacement plank.", "gaze": "Both watch the plank ends.", "physics": "Piko braces against the bridge; Lune pushes with one shoulder.", "interaction": "Lune steadies the plank while Piko seats it.", "interactionKind": "help", "action": "Piko lifts the plank, Lune steadies its end, then they slide it into place.", "framing": "medium close-up", "lens": 50, "camera": "Slow push-in, shallow focus", "lighting": "Overcast key and warm reflected fill", "atmosphere": "Drizzle on wood", "place": "bridge", "keyframe": "Pale wooden Piko with blunt quills and moss scarf lifts plank with blue felt Lune, cream ears and braided tail, wet bridge, 50mm soft rain light, no text.", "motion": "Push in as Piko braces and Lune presses a shoulder against the plank until both ends settle onto the supports.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -22}, {"kind": "block", "at": 1, "gain": -14}, {"kind": "rustle", "at": 2, "gain": -18}]},
-            {"id": 5, "slug": "seed-slips", "seconds": 4, "beat": "turn", "purpose": "Threaten the goal after progress.", "characters": ["lune", "piko"], "intent": "Recover the falling seed.", "gaze": "Both track the seed toward a crack.", "physics": "Lune lunges; Piko braces its wooden body.", "interaction": "Piko catches Lune by the forearm as Lune reaches.", "interactionKind": "rescue", "action": "The seed rolls, Lune reaches too far, then Piko steadies Lune above the gap.", "framing": "close-up", "lens": 85, "camera": "Quick push-in easing to a hold, shallow f/1.4", "lighting": "Overcast key and warm edge light", "atmosphere": "Drizzle and small droplets", "place": "bridge", "keyframe": "Blue felt Lune with cream ears reaches for seed near bridge crack while pale wooden Piko in moss scarf braces behind, 85mm rainy side light, no text.", "motion": "Push in as the seed rolls right, Lune leans after it and Piko grips Lune's forearm before the mouse loses balance.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -22}, {"kind": "tap", "at": 1, "gain": -12}, {"kind": "rustle", "at": 2, "gain": -14}]},
-            {"id": 6, "slug": "seed-recovered", "seconds": 4, "beat": "turn", "purpose": "Resolve the risk through mutual trust.", "characters": ["lune", "piko"], "intent": "Save the seed together.", "gaze": "Lune watches the seed; Piko watches Lune's footing.", "physics": "Piko counterbalances while Lune stretches one paw.", "interaction": "Piko supports Lune's reach.", "interactionKind": "help", "action": "Piko leans back, Lune pinches the seed, then both settle onto the bridge.", "framing": "medium", "lens": 35, "camera": "Slow lateral slide right, shallow focus", "lighting": "Soft overcast key and warm rim", "atmosphere": "Gentle mist", "place": "bridge", "keyframe": "Blue felt mouse Lune with cream ears and braided tail reaches from pale wooden Piko's steady grip, moss scarf, seed on bridge plank, 35mm rain light.", "motion": "Slide right as Piko counterbalances, Lune closes a paw around the seed and both lower their weight safely onto the plank.", "transition": "cut", "sound": [{"kind": "drizzle", "gain": -22}, {"kind": "rustle", "at": 1, "gain": -18}, {"kind": "tap", "at": 3, "gain": -16}]},
-            {"id": 7, "slug": "planting-together", "seconds": 4, "beat": "payoff", "purpose": "Fulfill both goals.", "characters": ["lune", "piko"], "intent": "Plant the seed beyond the repaired bridge.", "gaze": "Both watch the soil hollow.", "physics": "Lune kneels; Piko supports the pot rim.", "interaction": "They lower and cover the seed together.", "interactionKind": "hand-off", "action": "Lune places the seed, Piko adds soil, then both gently pat the surface.", "framing": "close-up", "lens": 85, "camera": "Slow dolly in, shallow f/1.4", "lighting": "Warm planter practical key and overcast rim", "atmosphere": "Light drizzle beyond shelter", "place": "planter", "keyframe": "Blue felt Lune with cream ears and pale wooden Piko with moss scarf beside terracotta planter, one seed above soil, 85mm warm practical and rainy rim, no text.", "motion": "Dolly in as Lune lowers the seed, Piko slides soil over it and both press the soil with gentle paws.", "transition": "dissolve", "sound": [{"kind": "drizzle", "gain": -24}, {"kind": "rustle", "at": 1, "gain": -18}, {"kind": "tap", "at": 3, "gain": -20}]},
-            {"id": 8, "slug": "shared-pride", "seconds": 4, "beat": "payoff", "purpose": "Hold the earned beginning, without instant growth.", "characters": ["lune", "piko"], "intent": "Enjoy the completed planting.", "gaze": "Lune looks from the soil to Piko.", "physics": "Both relax their shoulders and settle beside the pot.", "interaction": "Lune and Piko exchange a gentle shoulder nudge.", "interactionKind": "celebrate", "action": "Lune brushes soil from one paw, nudges Piko, then both rest beside the planter.", "framing": "wide", "lens": 24, "camera": "Locked-off held final image, deep focus", "lighting": "Warm practical key and soft overcast rim", "atmosphere": "Fine rain beyond the planter", "place": "planter", "keyframe": "Blue felt mouse Lune with cream ears and braided tail beside pale carved Piko with blunt quills and moss scarf, newly planted terracotta pot and repaired bridge, 24mm rainy warm light.", "motion": "Hold as Lune brushes one paw, nudges Piko's shoulder and both settle beside the still soil while rain continues beyond shelter.", "transition": "dissolve", "sound": [{"kind": "drizzle", "gain": -24}, {"kind": "rustle", "at": 1, "gain": -20}, {"kind": "chime", "at": 2, "gain": -20}]}
+            {
+              "id": 1,
+              "slug": "single-seed",
+              "seconds": 3,
+              "beat": "hook",
+              "purpose": "Establish the precious seed.",
+              "characters": ["lune"],
+              "intent": "Keep the seed dry.",
+              "gaze": "Lune watches the seed in both paws.",
+              "physics": "Lune curls over the seed with steady breath.",
+              "interaction": "Lune shields the seed.",
+              "interactionKind": "protect",
+              "action": "Lune opens both paws, checks the seed, then folds them against the rain.",
+              "framing": "close-up",
+              "lens": 85,
+              "camera": "Slow dolly in, shallow f/1.4",
+              "lighting": "Overcast key and warm soft rim",
+              "atmosphere": "Gentle rain",
+              "place": "near path",
+              "keyframe": "Original blue felt mouse Lune with cream ears, black bead eyes and braided tail holds one seed on wet garden path, 85mm overcast light and warm rim, no writing.",
+              "motion": "Dolly in as Lune opens its blue felt paws around the seed, checks it and curls inward against the rain.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -22 },
+                { "kind": "rustle", "at": 1, "gain": -18 }
+              ]
+            },
+            {
+              "id": 2,
+              "slug": "broken-route",
+              "seconds": 3,
+              "beat": "hook",
+              "purpose": "Reveal the unreachable planter.",
+              "characters": ["lune"],
+              "intent": "Find a safe crossing.",
+              "gaze": "Lune follows the broken bridge to the terracotta planter.",
+              "physics": "Lune rises on its toes then steps back.",
+              "interaction": "Lune tests the bridge edge.",
+              "interactionKind": "test",
+              "action": "Lune approaches, touches the loose plank, then recoils as it rocks.",
+              "framing": "wide",
+              "lens": 24,
+              "camera": "Slow crane up, deep focus",
+              "lighting": "Overcast key and warm distant practical",
+              "atmosphere": "Light rain and mist",
+              "place": "bridge entrance",
+              "keyframe": "Blue felt mouse Lune with cream ears and braided tail at broken wooden footbridge, empty terracotta planter beyond, 24mm soft rainy light, no writing.",
+              "motion": "Crane up as Lune tests the plank with one paw and rocks back while keeping the seed against its chest.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -22 },
+                { "kind": "steps", "at": 1, "gain": -16 },
+                { "kind": "block", "at": 2, "gain": -14 }
+              ]
+            },
+            {
+              "id": 3,
+              "slug": "builder-arrives",
+              "seconds": 4,
+              "beat": "journey",
+              "purpose": "Connect the two intentions.",
+              "characters": ["lune", "piko"],
+              "intent": "Piko offers a plank; Lune shows the seed.",
+              "gaze": "They look from seed to bridge.",
+              "physics": "Piko lowers a carried plank; Lune turns its shoulders.",
+              "interaction": "They meet and compare their goals.",
+              "interactionKind": "meet",
+              "action": "Piko arrives with a plank, Lune shows the seed, then both face the gap.",
+              "framing": "medium",
+              "lens": 35,
+              "camera": "Slow tracking right, shallow focus",
+              "lighting": "Soft overcast key and warm rim",
+              "atmosphere": "Gentle drizzle",
+              "place": "bridge entrance",
+              "keyframe": "Blue felt mouse Lune with cream ears beside pale wooden hedgehog Piko with blunt quills and moss scarf, plank and seed at bridge, 35mm rainy light, no text.",
+              "motion": "Track right as Piko lowers the plank, Lune opens a paw with the seed and both turn toward the bridge gap.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -22 },
+                { "kind": "steps", "at": 1, "gain": -16 },
+                { "kind": "block", "at": 2, "gain": -14 }
+              ]
+            },
+            {
+              "id": 4,
+              "slug": "shared-repair",
+              "seconds": 4,
+              "beat": "journey",
+              "purpose": "Make progress through cooperation.",
+              "characters": ["lune", "piko"],
+              "intent": "Set the replacement plank.",
+              "gaze": "Both watch the plank ends.",
+              "physics": "Piko braces against the bridge; Lune pushes with one shoulder.",
+              "interaction": "Lune steadies the plank while Piko seats it.",
+              "interactionKind": "help",
+              "action": "Piko lifts the plank, Lune steadies its end, then they slide it into place.",
+              "framing": "medium close-up",
+              "lens": 50,
+              "camera": "Slow push-in, shallow focus",
+              "lighting": "Overcast key and warm reflected fill",
+              "atmosphere": "Drizzle on wood",
+              "place": "bridge",
+              "keyframe": "Pale wooden Piko with blunt quills and moss scarf lifts plank with blue felt Lune, cream ears and braided tail, wet bridge, 50mm soft rain light, no text.",
+              "motion": "Push in as Piko braces and Lune presses a shoulder against the plank until both ends settle onto the supports.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -22 },
+                { "kind": "block", "at": 1, "gain": -14 },
+                { "kind": "rustle", "at": 2, "gain": -18 }
+              ]
+            },
+            {
+              "id": 5,
+              "slug": "seed-slips",
+              "seconds": 4,
+              "beat": "turn",
+              "purpose": "Threaten the goal after progress.",
+              "characters": ["lune", "piko"],
+              "intent": "Recover the falling seed.",
+              "gaze": "Both track the seed toward a crack.",
+              "physics": "Lune lunges; Piko braces its wooden body.",
+              "interaction": "Piko catches Lune by the forearm as Lune reaches.",
+              "interactionKind": "rescue",
+              "action": "The seed rolls, Lune reaches too far, then Piko steadies Lune above the gap.",
+              "framing": "close-up",
+              "lens": 85,
+              "camera": "Quick push-in easing to a hold, shallow f/1.4",
+              "lighting": "Overcast key and warm edge light",
+              "atmosphere": "Drizzle and small droplets",
+              "place": "bridge",
+              "keyframe": "Blue felt Lune with cream ears reaches for seed near bridge crack while pale wooden Piko in moss scarf braces behind, 85mm rainy side light, no text.",
+              "motion": "Push in as the seed rolls right, Lune leans after it and Piko grips Lune's forearm before the mouse loses balance.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -22 },
+                { "kind": "tap", "at": 1, "gain": -12 },
+                { "kind": "rustle", "at": 2, "gain": -14 }
+              ]
+            },
+            {
+              "id": 6,
+              "slug": "seed-recovered",
+              "seconds": 4,
+              "beat": "turn",
+              "purpose": "Resolve the risk through mutual trust.",
+              "characters": ["lune", "piko"],
+              "intent": "Save the seed together.",
+              "gaze": "Lune watches the seed; Piko watches Lune's footing.",
+              "physics": "Piko counterbalances while Lune stretches one paw.",
+              "interaction": "Piko supports Lune's reach.",
+              "interactionKind": "help",
+              "action": "Piko leans back, Lune pinches the seed, then both settle onto the bridge.",
+              "framing": "medium",
+              "lens": 35,
+              "camera": "Slow lateral slide right, shallow focus",
+              "lighting": "Soft overcast key and warm rim",
+              "atmosphere": "Gentle mist",
+              "place": "bridge",
+              "keyframe": "Blue felt mouse Lune with cream ears and braided tail reaches from pale wooden Piko's steady grip, moss scarf, seed on bridge plank, 35mm rain light.",
+              "motion": "Slide right as Piko counterbalances, Lune closes a paw around the seed and both lower their weight safely onto the plank.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "drizzle", "gain": -22 },
+                { "kind": "rustle", "at": 1, "gain": -18 },
+                { "kind": "tap", "at": 3, "gain": -16 }
+              ]
+            },
+            {
+              "id": 7,
+              "slug": "planting-together",
+              "seconds": 4,
+              "beat": "payoff",
+              "purpose": "Fulfill both goals.",
+              "characters": ["lune", "piko"],
+              "intent": "Plant the seed beyond the repaired bridge.",
+              "gaze": "Both watch the soil hollow.",
+              "physics": "Lune kneels; Piko supports the pot rim.",
+              "interaction": "They lower and cover the seed together.",
+              "interactionKind": "hand-off",
+              "action": "Lune places the seed, Piko adds soil, then both gently pat the surface.",
+              "framing": "close-up",
+              "lens": 85,
+              "camera": "Slow dolly in, shallow f/1.4",
+              "lighting": "Warm planter practical key and overcast rim",
+              "atmosphere": "Light drizzle beyond shelter",
+              "place": "planter",
+              "keyframe": "Blue felt Lune with cream ears and pale wooden Piko with moss scarf beside terracotta planter, one seed above soil, 85mm warm practical and rainy rim, no text.",
+              "motion": "Dolly in as Lune lowers the seed, Piko slides soil over it and both press the soil with gentle paws.",
+              "transition": "dissolve",
+              "sound": [
+                { "kind": "drizzle", "gain": -24 },
+                { "kind": "rustle", "at": 1, "gain": -18 },
+                { "kind": "tap", "at": 3, "gain": -20 }
+              ]
+            },
+            {
+              "id": 8,
+              "slug": "shared-pride",
+              "seconds": 4,
+              "beat": "payoff",
+              "purpose": "Hold the earned beginning, without instant growth.",
+              "characters": ["lune", "piko"],
+              "intent": "Enjoy the completed planting.",
+              "gaze": "Lune looks from the soil to Piko.",
+              "physics": "Both relax their shoulders and settle beside the pot.",
+              "interaction": "Lune and Piko exchange a gentle shoulder nudge.",
+              "interactionKind": "celebrate",
+              "action": "Lune brushes soil from one paw, nudges Piko, then both rest beside the planter.",
+              "framing": "wide",
+              "lens": 24,
+              "camera": "Locked-off held final image, deep focus",
+              "lighting": "Warm practical key and soft overcast rim",
+              "atmosphere": "Fine rain beyond the planter",
+              "place": "planter",
+              "keyframe": "Blue felt mouse Lune with cream ears and braided tail beside pale carved Piko with blunt quills and moss scarf, newly planted terracotta pot and repaired bridge, 24mm rainy warm light.",
+              "motion": "Hold as Lune brushes one paw, nudges Piko's shoulder and both settle beside the still soil while rain continues beyond shelter.",
+              "transition": "dissolve",
+              "sound": [
+                { "kind": "drizzle", "gain": -24 },
+                { "kind": "rustle", "at": 1, "gain": -20 },
+                { "kind": "chime", "at": 2, "gain": -20 }
+              ]
+            }
           ]
         }
       },
       "assertions": [
-        {"path": ["treatment", "logline"], "includes": "Lune"},
-        {"path": ["treatment", "aspect"], "equals": "9:16"},
-        {"path": ["treatment", "lines", 0, "fr"], "includes": "graine"},
-        {"path": ["treatment", "arc", 2, "beat"], "equals": "turn"},
-        {"path": ["treatment", "music", "cues"], "type": "array"},
-        {"path": ["treatment", "shots", 7, "action"], "includes": "planter"}
+        { "path": ["treatment", "logline"], "includes": "Lune" },
+        { "path": ["treatment", "aspect"], "equals": "9:16" },
+        { "path": ["treatment", "lines", 0, "fr"], "includes": "graine" },
+        { "path": ["treatment", "arc", 2, "beat"], "equals": "turn" },
+        { "path": ["treatment", "music", "cues"], "type": "array" },
+        { "path": ["treatment", "shots", 7, "action"], "includes": "planter" }
       ]
     },
     {
@@ -149,46 +696,298 @@
           "style": "Original handmade tabletop miniatures, warm window key, cream background, walnut grain and hammered copper textures, restrained macro optics, no lettering or logos.",
           "keep": "The crab has a walnut body, six copper legs and rounded wooden claws; the snail has a small copper spiral shell and a cream felt foot; the marble is plain walnut.",
           "arc": [
-            {"beat": "hook", "purpose": "Trap the marble at the bridge.", "emotion": "curiosity", "intensity": 0.1},
-            {"beat": "journey", "purpose": "Bring two different approaches together.", "emotion": "determination", "intensity": 0.35},
-            {"beat": "turn", "purpose": "Replace force with a shared lever.", "emotion": "surprise", "intensity": 0.7},
-            {"beat": "payoff", "purpose": "Free the marble and celebrate together.", "emotion": "satisfaction", "intensity": 0.2}
+            { "beat": "hook", "purpose": "Trap the marble at the bridge.", "emotion": "curiosity", "intensity": 0.1 },
+            {
+              "beat": "journey",
+              "purpose": "Bring two different approaches together.",
+              "emotion": "determination",
+              "intensity": 0.35
+            },
+            {
+              "beat": "turn",
+              "purpose": "Replace force with a shared lever.",
+              "emotion": "surprise",
+              "intensity": 0.7
+            },
+            {
+              "beat": "payoff",
+              "purpose": "Free the marble and celebrate together.",
+              "emotion": "satisfaction",
+              "intensity": 0.2
+            }
           ],
           "characters": [
-            {"id": "crab", "description": "Original walnut wind-up crab with six short copper legs, rounded wooden claws and a plain brass key.", "promise": "The eager mover.", "intention": "Push the marble across the bridge."},
-            {"id": "snail", "description": "Original small snail with a hammered copper spiral shell, cream felt foot and two short felt feelers.", "promise": "The patient observer.", "intention": "Find a safe way to unjam the bridge."}
+            {
+              "id": "crab",
+              "description": "Original walnut wind-up crab with six short copper legs, rounded wooden claws and a plain brass key.",
+              "promise": "The eager mover.",
+              "intention": "Push the marble across the bridge."
+            },
+            {
+              "id": "snail",
+              "description": "Original small snail with a hammered copper spiral shell, cream felt foot and two short felt feelers.",
+              "promise": "The patient observer.",
+              "intention": "Find a safe way to unjam the bridge."
+            }
           ],
           "lines": [],
           "music": {
             "prompt": "Original instrumental wooden percussion, pizzicato strings and soft piano, playful tactile scale, no vocals.",
             "cues": [
-              {"beat": "hook", "intensity": 0.1, "prompt": "Sparse soft piano, 64 BPM, gentle curiosity, no vocals."},
-              {"beat": "journey", "intensity": 0.35, "prompt": "Wooden percussion and pizzicato strings, 84 BPM, measured effort, no vocals."},
-              {"beat": "turn", "intensity": 0.7, "prompt": "Rising pizzicato and marimba, 96 BPM, surprised discovery, no vocals."},
-              {"beat": "payoff", "intensity": 0.2, "prompt": "Soft piano and light marimba, 68 BPM, quiet satisfaction, no vocals."}
+              { "beat": "hook", "intensity": 0.1, "prompt": "Sparse soft piano, 64 BPM, gentle curiosity, no vocals." },
+              {
+                "beat": "journey",
+                "intensity": 0.35,
+                "prompt": "Wooden percussion and pizzicato strings, 84 BPM, measured effort, no vocals."
+              },
+              {
+                "beat": "turn",
+                "intensity": 0.7,
+                "prompt": "Rising pizzicato and marimba, 96 BPM, surprised discovery, no vocals."
+              },
+              {
+                "beat": "payoff",
+                "intensity": 0.2,
+                "prompt": "Soft piano and light marimba, 68 BPM, quiet satisfaction, no vocals."
+              }
             ]
           },
           "references": [],
-          "legal": {"never": []},
+          "legal": { "never": [] },
           "shots": [
-            {"id": 1, "slug": "blocked-marble", "seconds": 3, "beat": "hook", "purpose": "Establish the blocked journey.", "characters": [], "intent": "Show the marble's obstacle.", "gaze": "The composition directs attention to the bridge gap.", "physics": "The marble rolls then settles against a raised plank.", "interaction": "The marble meets the plank.", "interactionKind": "meet", "action": "The marble rolls right, bumps a raised plank, then rocks to a stop.", "framing": "wide", "lens": 24, "camera": "Slow dolly in, deep focus", "lighting": "Warm window key and cream bounce rim", "atmosphere": "Fine dust", "place": "tabletop bridge", "keyframe": "Plain walnut marble before original raised wooden toy bridge on cream tabletop, 24mm warm window light, tactile grain, no writing.", "motion": "Dolly slowly in as the walnut marble rolls right, touches the raised plank and settles.", "transition": "cut", "sound": [{"kind": "room", "gain": -24}, {"kind": "block", "at": 1, "gain": -14}]},
-            {"id": 2, "slug": "two-approaches", "seconds": 3, "beat": "hook", "purpose": "Introduce contrasting helpers through action.", "characters": ["crab", "snail"], "intent": "Both inspect the obstruction.", "gaze": "The crab follows the marble; the snail watches the hinge.", "physics": "The crab steps quickly; the snail glides steadily.", "interaction": "They meet beside the marble and pause for each other.", "interactionKind": "meet", "action": "The crab arrives, the snail glides in, then both angle toward the bridge.", "framing": "medium", "lens": 50, "camera": "Slow tracking right, shallow focus", "lighting": "Warm key and copper rim", "atmosphere": "Light dust", "place": "tabletop bridge", "keyframe": "Walnut crab with six copper legs and rounded claws meets copper-shell snail with cream felt foot beside walnut marble and toy bridge, 50mm warm window light, no text.", "motion": "Track right as the crab steps in, the snail glides alongside and both shift toward the raised plank.", "transition": "cut", "sound": [{"kind": "room", "gain": -24}, {"kind": "steps", "at": 1, "gain": -16}, {"kind": "rustle", "at": 2, "gain": -20}]},
-            {"id": 3, "slug": "push-fails", "seconds": 4, "beat": "journey", "purpose": "Test the eager approach.", "characters": ["crab", "snail"], "intent": "The crab pushes while the snail studies the hinge.", "gaze": "The crab watches the marble; the snail watches the stuck pin.", "physics": "The crab braces all six legs but slides slightly.", "interaction": "The snail steadies the crab's rear leg.", "interactionKind": "help", "action": "The crab pushes, slips, then steadies as the snail braces behind it.", "framing": "medium close-up", "lens": 50, "camera": "Locked-off, shallow focus", "lighting": "Warm side key and soft copper rim", "atmosphere": "Fine dust", "place": "tabletop bridge", "keyframe": "Walnut crab with copper legs pushes plain walnut marble while copper-shell snail with cream foot braces behind, raised wooden bridge, 50mm warm side light.", "motion": "Hold as the crab presses, its copper legs slide slightly and the snail glides into a supporting brace.", "transition": "cut", "sound": [{"kind": "room", "gain": -24}, {"kind": "steps", "at": 1, "gain": -16}, {"kind": "block", "at": 2, "gain": -14}]},
-            {"id": 4, "slug": "snail-finds-lever", "seconds": 4, "beat": "journey", "purpose": "Make observation useful.", "characters": ["crab", "snail"], "intent": "The snail proposes lifting rather than pushing.", "gaze": "Both follow the snail's feeler toward a loose wooden strip.", "physics": "The snail extends its foot; the crab lowers its claws.", "interaction": "The snail nudges the strip to the crab.", "interactionKind": "hand-off", "action": "The snail finds a strip, nudges it forward, then the crab grips one end.", "framing": "close-up", "lens": 85, "camera": "Slow push-in, shallow f/1.4", "lighting": "Warm key and cream bounce fill", "atmosphere": "Dust near hinge", "place": "bridge hinge", "keyframe": "Copper-shell snail with cream felt foot nudges plain wooden strip toward walnut crab's rounded claws, six copper legs and brass key visible, 85mm warm tabletop light.", "motion": "Push in as the snail nudges the strip, the crab lowers a rounded claw and both orient it toward the hinge.", "transition": "cut", "sound": [{"kind": "room", "gain": -24}, {"kind": "rustle", "at": 1, "gain": -20}, {"kind": "tap", "at": 3, "gain": -16}]},
-            {"id": 5, "slug": "shared-lever", "seconds": 4, "beat": "turn", "purpose": "Make the shared solution visible.", "characters": ["crab", "snail"], "intent": "Raise the blocked hinge gently.", "gaze": "Both watch the strip beneath the plank.", "physics": "The snail anchors the strip; the crab transfers weight onto its end.", "interaction": "They balance opposite ends of the lever.", "interactionKind": "help", "action": "The snail anchors the strip, the crab presses down, then the plank lifts.", "framing": "medium", "lens": 35, "camera": "Slow dolly in, shallow focus", "lighting": "Warm key and bright copper rim", "atmosphere": "Small dust release", "place": "bridge hinge", "keyframe": "Walnut crab with six copper legs and rounded claws presses wooden lever anchored by copper-shell snail with cream foot, original toy bridge, 35mm warm light, no text.", "motion": "Dolly in as the snail holds the strip, the crab shifts weight down and the bridge plank rises a little.", "transition": "cut", "sound": [{"kind": "room", "gain": -24}, {"kind": "block", "at": 1, "gain": -12}, {"kind": "tap", "at": 3, "gain": -14}]},
-            {"id": 6, "slug": "bridge-frees", "seconds": 4, "beat": "turn", "purpose": "Resolve the obstruction safely.", "characters": ["crab", "snail"], "intent": "Lower the freed bridge deck together.", "gaze": "The snail watches the hinge; the crab checks the deck.", "physics": "The crab releases pressure slowly; the snail braces the deck.", "interaction": "They guide the plank into a level position.", "interactionKind": "help", "action": "The hinge frees, the crab eases off, then the snail steadies the level deck.", "framing": "close-up", "lens": 85, "camera": "Slow lateral slide right, shallow f/1.4", "lighting": "Warm key and soft copper rim", "atmosphere": "Dust settling", "place": "bridge hinge", "keyframe": "Rounded walnut claws of original copper-legged crab beside copper-shell snail with cream felt foot, freed bridge hinge and level wood deck, 85mm warm window light.", "motion": "Slide right as the hinge moves freely, the crab eases its weight and the snail steadies the lowering deck.", "transition": "cut", "sound": [{"kind": "room", "gain": -24}, {"kind": "block", "at": 1, "gain": -14}, {"kind": "tap", "at": 3, "gain": -18}]},
-            {"id": 7, "slug": "marble-crosses", "seconds": 4, "beat": "payoff", "purpose": "Answer the blocked journey.", "characters": ["crab", "snail"], "intent": "Let the marble finish its crossing.", "gaze": "Both follow the marble rolling right.", "physics": "The crab nudges lightly; the snail holds still beside the deck.", "interaction": "The crab and snail share the final gentle push.", "interactionKind": "help", "action": "They touch the marble together, release it, then watch it cross the bridge.", "framing": "wide", "lens": 24, "camera": "Slow tracking right, deep focus", "lighting": "Warm window key and soft rim", "atmosphere": "Fine dust", "place": "tabletop bridge", "keyframe": "Plain walnut marble between walnut crab with copper legs and copper-shell snail with cream foot, repaired wooden bridge, 24mm warm cream tabletop, no text.", "motion": "Track right as both helpers nudge the marble, release it and watch it roll smoothly across the level deck.", "transition": "dissolve", "sound": [{"kind": "room", "gain": -24}, {"kind": "tap", "at": 1, "gain": -18}, {"kind": "block", "at": 3, "gain": -20}]},
-            {"id": 8, "slug": "quiet-celebration", "seconds": 4, "beat": "payoff", "purpose": "Hold the shared achievement.", "characters": ["crab", "snail"], "intent": "Rest beside the repaired bridge.", "gaze": "Both turn from the marble toward each other.", "physics": "The crab folds its claws; the snail settles its felt foot.", "interaction": "They exchange a gentle claw-to-feeler touch.", "interactionKind": "celebrate", "action": "The crab offers a rounded claw, the snail touches it, then both settle beside the bridge.", "framing": "medium", "lens": 50, "camera": "Locked-off held final image, shallow focus", "lighting": "Warm side key and copper rim", "atmosphere": "Quiet dust", "place": "tabletop bridge", "keyframe": "Walnut crab with six copper legs and rounded claws beside copper-shell snail with cream felt foot, repaired bridge and resting walnut marble, 50mm warm window light, no writing.", "motion": "Hold as the crab offers a claw, the snail touches it with a feeler and both settle while the marble rests beyond the bridge.", "transition": "dissolve", "sound": [{"kind": "room", "gain": -24}, {"kind": "tap", "at": 1, "gain": -20}, {"kind": "chime", "at": 2, "gain": -20}]}
+            {
+              "id": 1,
+              "slug": "blocked-marble",
+              "seconds": 3,
+              "beat": "hook",
+              "purpose": "Establish the blocked journey.",
+              "characters": [],
+              "intent": "Show the marble's obstacle.",
+              "gaze": "The composition directs attention to the bridge gap.",
+              "physics": "The marble rolls then settles against a raised plank.",
+              "interaction": "The marble meets the plank.",
+              "interactionKind": "meet",
+              "action": "The marble rolls right, bumps a raised plank, then rocks to a stop.",
+              "framing": "wide",
+              "lens": 24,
+              "camera": "Slow dolly in, deep focus",
+              "lighting": "Warm window key and cream bounce rim",
+              "atmosphere": "Fine dust",
+              "place": "tabletop bridge",
+              "keyframe": "Plain walnut marble before original raised wooden toy bridge on cream tabletop, 24mm warm window light, tactile grain, no writing.",
+              "motion": "Dolly slowly in as the walnut marble rolls right, touches the raised plank and settles.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "room", "gain": -24 },
+                { "kind": "block", "at": 1, "gain": -14 }
+              ]
+            },
+            {
+              "id": 2,
+              "slug": "two-approaches",
+              "seconds": 3,
+              "beat": "hook",
+              "purpose": "Introduce contrasting helpers through action.",
+              "characters": ["crab", "snail"],
+              "intent": "Both inspect the obstruction.",
+              "gaze": "The crab follows the marble; the snail watches the hinge.",
+              "physics": "The crab steps quickly; the snail glides steadily.",
+              "interaction": "They meet beside the marble and pause for each other.",
+              "interactionKind": "meet",
+              "action": "The crab arrives, the snail glides in, then both angle toward the bridge.",
+              "framing": "medium",
+              "lens": 50,
+              "camera": "Slow tracking right, shallow focus",
+              "lighting": "Warm key and copper rim",
+              "atmosphere": "Light dust",
+              "place": "tabletop bridge",
+              "keyframe": "Walnut crab with six copper legs and rounded claws meets copper-shell snail with cream felt foot beside walnut marble and toy bridge, 50mm warm window light, no text.",
+              "motion": "Track right as the crab steps in, the snail glides alongside and both shift toward the raised plank.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "room", "gain": -24 },
+                { "kind": "steps", "at": 1, "gain": -16 },
+                { "kind": "rustle", "at": 2, "gain": -20 }
+              ]
+            },
+            {
+              "id": 3,
+              "slug": "push-fails",
+              "seconds": 4,
+              "beat": "journey",
+              "purpose": "Test the eager approach.",
+              "characters": ["crab", "snail"],
+              "intent": "The crab pushes while the snail studies the hinge.",
+              "gaze": "The crab watches the marble; the snail watches the stuck pin.",
+              "physics": "The crab braces all six legs but slides slightly.",
+              "interaction": "The snail steadies the crab's rear leg.",
+              "interactionKind": "help",
+              "action": "The crab pushes, slips, then steadies as the snail braces behind it.",
+              "framing": "medium close-up",
+              "lens": 50,
+              "camera": "Locked-off, shallow focus",
+              "lighting": "Warm side key and soft copper rim",
+              "atmosphere": "Fine dust",
+              "place": "tabletop bridge",
+              "keyframe": "Walnut crab with copper legs pushes plain walnut marble while copper-shell snail with cream foot braces behind, raised wooden bridge, 50mm warm side light.",
+              "motion": "Hold as the crab presses, its copper legs slide slightly and the snail glides into a supporting brace.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "room", "gain": -24 },
+                { "kind": "steps", "at": 1, "gain": -16 },
+                { "kind": "block", "at": 2, "gain": -14 }
+              ]
+            },
+            {
+              "id": 4,
+              "slug": "snail-finds-lever",
+              "seconds": 4,
+              "beat": "journey",
+              "purpose": "Make observation useful.",
+              "characters": ["crab", "snail"],
+              "intent": "The snail proposes lifting rather than pushing.",
+              "gaze": "Both follow the snail's feeler toward a loose wooden strip.",
+              "physics": "The snail extends its foot; the crab lowers its claws.",
+              "interaction": "The snail nudges the strip to the crab.",
+              "interactionKind": "hand-off",
+              "action": "The snail finds a strip, nudges it forward, then the crab grips one end.",
+              "framing": "close-up",
+              "lens": 85,
+              "camera": "Slow push-in, shallow f/1.4",
+              "lighting": "Warm key and cream bounce fill",
+              "atmosphere": "Dust near hinge",
+              "place": "bridge hinge",
+              "keyframe": "Copper-shell snail with cream felt foot nudges plain wooden strip toward walnut crab's rounded claws, six copper legs and brass key visible, 85mm warm tabletop light.",
+              "motion": "Push in as the snail nudges the strip, the crab lowers a rounded claw and both orient it toward the hinge.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "room", "gain": -24 },
+                { "kind": "rustle", "at": 1, "gain": -20 },
+                { "kind": "tap", "at": 3, "gain": -16 }
+              ]
+            },
+            {
+              "id": 5,
+              "slug": "shared-lever",
+              "seconds": 4,
+              "beat": "turn",
+              "purpose": "Make the shared solution visible.",
+              "characters": ["crab", "snail"],
+              "intent": "Raise the blocked hinge gently.",
+              "gaze": "Both watch the strip beneath the plank.",
+              "physics": "The snail anchors the strip; the crab transfers weight onto its end.",
+              "interaction": "They balance opposite ends of the lever.",
+              "interactionKind": "help",
+              "action": "The snail anchors the strip, the crab presses down, then the plank lifts.",
+              "framing": "medium",
+              "lens": 35,
+              "camera": "Slow dolly in, shallow focus",
+              "lighting": "Warm key and bright copper rim",
+              "atmosphere": "Small dust release",
+              "place": "bridge hinge",
+              "keyframe": "Walnut crab with six copper legs and rounded claws presses wooden lever anchored by copper-shell snail with cream foot, original toy bridge, 35mm warm light, no text.",
+              "motion": "Dolly in as the snail holds the strip, the crab shifts weight down and the bridge plank rises a little.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "room", "gain": -24 },
+                { "kind": "block", "at": 1, "gain": -12 },
+                { "kind": "tap", "at": 3, "gain": -14 }
+              ]
+            },
+            {
+              "id": 6,
+              "slug": "bridge-frees",
+              "seconds": 4,
+              "beat": "turn",
+              "purpose": "Resolve the obstruction safely.",
+              "characters": ["crab", "snail"],
+              "intent": "Lower the freed bridge deck together.",
+              "gaze": "The snail watches the hinge; the crab checks the deck.",
+              "physics": "The crab releases pressure slowly; the snail braces the deck.",
+              "interaction": "They guide the plank into a level position.",
+              "interactionKind": "help",
+              "action": "The hinge frees, the crab eases off, then the snail steadies the level deck.",
+              "framing": "close-up",
+              "lens": 85,
+              "camera": "Slow lateral slide right, shallow f/1.4",
+              "lighting": "Warm key and soft copper rim",
+              "atmosphere": "Dust settling",
+              "place": "bridge hinge",
+              "keyframe": "Rounded walnut claws of original copper-legged crab beside copper-shell snail with cream felt foot, freed bridge hinge and level wood deck, 85mm warm window light.",
+              "motion": "Slide right as the hinge moves freely, the crab eases its weight and the snail steadies the lowering deck.",
+              "transition": "cut",
+              "sound": [
+                { "kind": "room", "gain": -24 },
+                { "kind": "block", "at": 1, "gain": -14 },
+                { "kind": "tap", "at": 3, "gain": -18 }
+              ]
+            },
+            {
+              "id": 7,
+              "slug": "marble-crosses",
+              "seconds": 4,
+              "beat": "payoff",
+              "purpose": "Answer the blocked journey.",
+              "characters": ["crab", "snail"],
+              "intent": "Let the marble finish its crossing.",
+              "gaze": "Both follow the marble rolling right.",
+              "physics": "The crab nudges lightly; the snail holds still beside the deck.",
+              "interaction": "The crab and snail share the final gentle push.",
+              "interactionKind": "help",
+              "action": "They touch the marble together, release it, then watch it cross the bridge.",
+              "framing": "wide",
+              "lens": 24,
+              "camera": "Slow tracking right, deep focus",
+              "lighting": "Warm window key and soft rim",
+              "atmosphere": "Fine dust",
+              "place": "tabletop bridge",
+              "keyframe": "Plain walnut marble between walnut crab with copper legs and copper-shell snail with cream foot, repaired wooden bridge, 24mm warm cream tabletop, no text.",
+              "motion": "Track right as both helpers nudge the marble, release it and watch it roll smoothly across the level deck.",
+              "transition": "dissolve",
+              "sound": [
+                { "kind": "room", "gain": -24 },
+                { "kind": "tap", "at": 1, "gain": -18 },
+                { "kind": "block", "at": 3, "gain": -20 }
+              ]
+            },
+            {
+              "id": 8,
+              "slug": "quiet-celebration",
+              "seconds": 4,
+              "beat": "payoff",
+              "purpose": "Hold the shared achievement.",
+              "characters": ["crab", "snail"],
+              "intent": "Rest beside the repaired bridge.",
+              "gaze": "Both turn from the marble toward each other.",
+              "physics": "The crab folds its claws; the snail settles its felt foot.",
+              "interaction": "They exchange a gentle claw-to-feeler touch.",
+              "interactionKind": "celebrate",
+              "action": "The crab offers a rounded claw, the snail touches it, then both settle beside the bridge.",
+              "framing": "medium",
+              "lens": 50,
+              "camera": "Locked-off held final image, shallow focus",
+              "lighting": "Warm side key and copper rim",
+              "atmosphere": "Quiet dust",
+              "place": "tabletop bridge",
+              "keyframe": "Walnut crab with six copper legs and rounded claws beside copper-shell snail with cream felt foot, repaired bridge and resting walnut marble, 50mm warm window light, no writing.",
+              "motion": "Hold as the crab offers a claw, the snail touches it with a feeler and both settle while the marble rests beyond the bridge.",
+              "transition": "dissolve",
+              "sound": [
+                { "kind": "room", "gain": -24 },
+                { "kind": "tap", "at": 1, "gain": -20 },
+                { "kind": "chime", "at": 2, "gain": -20 }
+              ]
+            }
           ]
         }
       },
       "assertions": [
-        {"path": ["treatment", "logline"], "includes": "marble"},
-        {"path": ["treatment", "lines"], "equals": []},
-        {"path": ["treatment", "aspect"], "equals": "16:9"},
-        {"path": ["treatment", "arc", 3, "beat"], "equals": "payoff"},
-        {"path": ["treatment", "shots", 7, "interactionKind"], "equals": "celebrate"},
-        {"path": ["treatment", "shots", 7, "motion"], "nonEmpty": true}
+        { "path": ["treatment", "logline"], "includes": "marble" },
+        { "path": ["treatment", "lines"], "equals": [] },
+        { "path": ["treatment", "aspect"], "equals": "16:9" },
+        { "path": ["treatment", "arc", 3, "beat"], "equals": "payoff" },
+        { "path": ["treatment", "shots", 7, "interactionKind"], "equals": "celebrate" },
+        { "path": ["treatment", "shots", 7, "motion"], "nonEmpty": true }
       ]
     }
   ]

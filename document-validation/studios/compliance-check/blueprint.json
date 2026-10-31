@@ -29,9 +29,7 @@
         "id": "classify",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "identify"
-        ],
+        "dependsOn": ["identify"],
         "condition": "{{steps.identification.needsClassify}} == true",
         "inputs": {
           "prompt": "{{steps.identification.classifyPrompt}}"
@@ -49,10 +47,7 @@
         "id": "resolve",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.validation.document.resolve",
-        "dependsOn": [
-          "identify",
-          "classify"
-        ],
+        "dependsOn": ["identify", "classify"],
         "inputs": {
           "identification": "{{steps.identification.identificationJson}}",
           "classification": "{{steps.classification.content:}}",
@@ -68,9 +63,7 @@
         "id": "lecture",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.research.grounded",
-        "dependsOn": [
-          "resolve"
-        ],
+        "dependsOn": ["resolve"],
         "condition": "{{steps.resolved.needsLecture}} == true",
         "inputs": {
           "sources": "{{steps.resolved.lectureSources}}",
@@ -94,9 +87,7 @@
         "id": "screen",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.validation.document.screen",
-        "dependsOn": [
-          "resolve"
-        ],
+        "dependsOn": ["resolve"],
         "inputs": {
           "document": "{{inputs.document}}",
           "resolved": "{{steps.resolved.resolvedJson}}"
@@ -111,9 +102,7 @@
         "id": "judge",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "screen"
-        ],
+        "dependsOn": ["screen"],
         "inputs": {
           "prompt": "{{steps.screened.judgmentPrompt}}"
         },
@@ -131,12 +120,7 @@
         "id": "report",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.validation.document.report",
-        "dependsOn": [
-          "resolve",
-          "screen",
-          "judge",
-          "lecture"
-        ],
+        "dependsOn": ["resolve", "screen", "judge", "lecture"],
         "inputs": {
           "resolved": "{{steps.resolved.resolvedJson}}",
           "screened": "{{steps.screened.screenedJson:}}",
@@ -151,46 +135,24 @@
         "timeout": "PT1M",
         "outputContract": {
           "type": "object",
-          "required": [
-            "report",
-            "reportJson",
-            "outcome",
-            "resultCacheable"
-          ],
+          "required": ["report", "reportJson", "outcome", "resultCacheable"],
           "properties": {
             "reportJson": {
               "type": "string",
               "minLength": 2
             },
             "outcome": {
-              "enum": [
-                "CHECKED",
-                "UNSUPPORTED_KIND",
-                "KIND_UNKNOWN"
-              ]
+              "enum": ["CHECKED", "UNSUPPORTED_KIND", "KIND_UNKNOWN"]
             },
             "report": {
               "type": "object",
-              "required": [
-                "contract",
-                "outcome",
-                "identification",
-                "asOf",
-                "summary",
-                "findings"
-              ],
+              "required": ["contract", "outcome", "identification", "asOf", "summary", "findings"],
               "properties": {
                 "contract": {
-                  "enum": [
-                    "2.0"
-                  ]
+                  "enum": ["2.0"]
                 },
                 "outcome": {
-                  "enum": [
-                    "CHECKED",
-                    "UNSUPPORTED_KIND",
-                    "KIND_UNKNOWN"
-                  ]
+                  "enum": ["CHECKED", "UNSUPPORTED_KIND", "KIND_UNKNOWN"]
                 },
                 "identification": {
                   "type": "object",
@@ -218,22 +180,13 @@
                       "type": "array"
                     },
                     "asOfSource": {
-                      "enum": [
-                        "INPUT",
-                        "DOCUMENT",
-                        "TODAY"
-                      ]
+                      "enum": ["INPUT", "DOCUMENT", "TODAY"]
                     }
                   }
                 },
                 "ruleset": {
                   "type": "object",
-                  "required": [
-                    "id",
-                    "version",
-                    "revision",
-                    "reviewStatus"
-                  ],
+                  "required": ["id", "version", "revision", "reviewStatus"],
                   "properties": {
                     "id": {
                       "type": "string"
@@ -248,11 +201,7 @@
                 },
                 "summary": {
                   "type": "object",
-                  "required": [
-                    "byVerdict",
-                    "blockingFailures",
-                    "rulesEvaluated"
-                  ]
+                  "required": ["byVerdict", "blockingFailures", "rulesEvaluated"]
                 },
                 "findings": {
                   "type": "array",
@@ -270,19 +219,11 @@
                     ],
                     "properties": {
                       "verdict": {
-                        "enum": [
-                          "PASS",
-                          "FAIL",
-                          "NOT_APPLICABLE",
-                          "INSUFFICIENT_EVIDENCE"
-                        ]
+                        "enum": ["PASS", "FAIL", "NOT_APPLICABLE", "INSUFFICIENT_EVIDENCE"]
                       },
                       "citation": {
                         "type": "object",
-                        "required": [
-                          "reference",
-                          "pinned"
-                        ],
+                        "required": ["reference", "pinned"],
                         "properties": {
                           "pinned": {
                             "type": "boolean"
@@ -291,26 +232,14 @@
                       },
                       "checks": {
                         "type": "object",
-                        "required": [
-                          "passage",
-                          "citation"
-                        ],
+                        "required": ["passage", "citation"],
                         "additionalProperties": false,
                         "properties": {
                           "passage": {
-                            "enum": [
-                              "VERIFIED",
-                              "ABSENT",
-                              "NOT_IN_DOCUMENT"
-                            ]
+                            "enum": ["VERIFIED", "ABSENT", "NOT_IN_DOCUMENT"]
                           },
                           "citation": {
-                            "enum": [
-                              "VERIFIED",
-                              "NOT_PINNED",
-                              "ARTICLE_NOT_HELD",
-                              "QUOTE_NOT_IN_ARTICLE"
-                            ]
+                            "enum": ["VERIFIED", "NOT_PINNED", "ARTICLE_NOT_HELD", "QUOTE_NOT_IN_ARTICLE"]
                           }
                         }
                       }
@@ -319,10 +248,7 @@
                 },
                 "kindDemand": {
                   "type": "object",
-                  "required": [
-                    "jurisdiction",
-                    "kindId"
-                  ],
+                  "required": ["jurisdiction", "kindId"],
                   "additionalProperties": false,
                   "properties": {
                     "jurisdiction": {
@@ -335,24 +261,15 @@
                 },
                 "lecture": {
                   "type": "object",
-                  "required": [
-                    "audit",
-                    "notice",
-                    "claims"
-                  ],
+                  "required": ["audit", "notice", "claims"],
                   "additionalProperties": false,
                   "properties": {
                     "audit": {
-                      "enum": [
-                        "UNAUDITED"
-                      ]
+                      "enum": ["UNAUDITED"]
                     },
                     "notice": {
                       "type": "object",
-                      "required": [
-                        "fr",
-                        "en"
-                      ],
+                      "required": ["fr", "en"],
                       "additionalProperties": false,
                       "properties": {
                         "fr": {
@@ -367,23 +284,14 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "required": [
-                          "text",
-                          "status",
-                          "article",
-                          "passage",
-                          "checks"
-                        ],
+                        "required": ["text", "status", "article", "passage", "checks"],
                         "additionalProperties": false,
                         "properties": {
                           "text": {
                             "type": "string"
                           },
                           "status": {
-                            "enum": [
-                              "VERIFIED",
-                              "TO_VALIDATE"
-                            ]
+                            "enum": ["VERIFIED", "TO_VALIDATE"]
                           },
                           "reason": {
                             "enum": [
@@ -395,11 +303,7 @@
                           },
                           "article": {
                             "type": "object",
-                            "required": [
-                              "url",
-                              "quote",
-                              "contentHash"
-                            ],
+                            "required": ["url", "quote", "contentHash"],
                             "additionalProperties": false,
                             "properties": {
                               "url": {
@@ -418,25 +322,14 @@
                           },
                           "checks": {
                             "type": "object",
-                            "required": [
-                              "article",
-                              "passage"
-                            ],
+                            "required": ["article", "passage"],
                             "additionalProperties": false,
                             "properties": {
                               "article": {
-                                "enum": [
-                                  "VERIFIED",
-                                  "ARTICLE_NOT_VERIFIED",
-                                  "QUOTE_NOT_IN_ARTICLE"
-                                ]
+                                "enum": ["VERIFIED", "ARTICLE_NOT_VERIFIED", "QUOTE_NOT_IN_ARTICLE"]
                               },
                               "passage": {
-                                "enum": [
-                                  "VERIFIED",
-                                  "ABSENT",
-                                  "NOT_IN_DOCUMENT"
-                                ]
+                                "enum": ["VERIFIED", "ABSENT", "NOT_IN_DOCUMENT"]
                               }
                             }
                           }
@@ -487,9 +380,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "document"
-    ],
+    "required": ["document"],
     "properties": {
       "document": {
         "type": "string",
@@ -511,11 +402,7 @@
       },
       "jurisdiction": {
         "type": "string",
-        "enum": [
-          "QC",
-          "FR",
-          "BE-WAL"
-        ],
+        "enum": ["QC", "FR", "BE-WAL"],
         "title": "Juridiction",
         "description": "Les règles applicables : le même document est conforme ici, pas là. Facultative : sinon elle est détectée.",
         "x-i18n": {
@@ -541,14 +428,7 @@
       },
       "declaredKind": {
         "type": "string",
-        "enum": [
-          "LEASE",
-          "NOTICE",
-          "CONDITION_REPORT",
-          "INVOICE",
-          "SERVICE_CONTRACT",
-          "OTHER"
-        ],
+        "enum": ["LEASE", "NOTICE", "CONDITION_REPORT", "INVOICE", "SERVICE_CONTRACT", "OTHER"],
         "title": "Type de document déclaré",
         "description": "Ce que vous dites que c'est. Comparé au type détecté : un écart est toujours montré.",
         "x-i18n": {
@@ -598,10 +478,7 @@
       },
       "ruleset": {
         "type": "string",
-        "enum": [
-          "qc-invoice",
-          "qc-service-contract"
-        ],
+        "enum": ["qc-invoice", "qc-service-contract"],
         "title": "Corpus nommé",
         "description": "Force un corpus de la juridiction, au-dessus du type détecté (appel 1.x). Vide : le type du document décide.",
         "x-i18n": {

@@ -10,10 +10,13 @@ const pack = YAML.parse(readFileSync(`${root}pack.yaml`, "utf8"));
 const blueprint = (key) => JSON.parse(readFileSync(`${root}studios/${key}/blueprint.json`, "utf8"));
 
 test("two Studios with the entitlement keys billing sells", () => {
-  assert.deepEqual(pack.studios.map((s) => [s.key, s.entitlementKey]), [
-    ["code-issue-to-pr", "studio.code-issue-to-pr"],
-    ["code-read-write", "studio.code-read-write"],
-  ]);
+  assert.deepEqual(
+    pack.studios.map((s) => [s.key, s.entitlementKey]),
+    [
+      ["code-issue-to-pr", "studio.code-issue-to-pr"],
+      ["code-read-write", "studio.code-read-write"],
+    ],
+  );
   for (const s of pack.studios) assert.equal(s.pricing, "PAID");
 });
 
@@ -34,6 +37,9 @@ test("not regulated; a versioned consent in French and English says nothing is w
   assert.notEqual(pack.regulatoryClass, "REGULATED");
   assert.match(pack.consent.version, /^\d+\.\d+$/);
   assert.match(pack.consent.statement, /sans votre approbation/);
-  assert.match(pack.consent.statements.en, /reads the repositories you grant and sends the excerpts it needs to the model your workspace routes to/);
+  assert.match(
+    pack.consent.statements.en,
+    /reads the repositories you grant and sends the excerpts it needs to the model your workspace routes to/,
+  );
   assert.match(pack.consent.statements.en, /without your approval/);
 });

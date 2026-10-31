@@ -11,7 +11,10 @@ const ci = parse(readFileSync(fileURLToPath(new URL("../.github/workflows/ci.yml
 
 /** The first line of a multi-line command stops the script on the first failure. */
 export const failsFast = (command) => {
-  const lines = command.trim().split("\n").filter((l) => l.trim() && !l.trim().startsWith("#"));
+  const lines = command
+    .trim()
+    .split("\n")
+    .filter((l) => l.trim() && !l.trim().startsWith("#"));
   return lines.length < 2 || /^set -[a-z]*e[a-z]*(\s|$)/.test(lines[0]) || /^set -o errexit/.test(lines[0]);
 };
 
@@ -22,7 +25,10 @@ test("every multi-line command passed to a reusable workflow stops at its first 
       const command = def.with?.[key];
       if (typeof command !== "string") continue;
       seen++;
-      assert.ok(failsFast(command), `${job}.${key}: starts with 'set -euo pipefail' (a later command would hide a failure)`);
+      assert.ok(
+        failsFast(command),
+        `${job}.${key}: starts with 'set -euo pipefail' (a later command would hide a failure)`,
+      );
     }
   }
   assert.ok(seen >= 7, `the Python worker jobs were found (${seen})`);

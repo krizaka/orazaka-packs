@@ -47,8 +47,9 @@ test("every {{steps.<name>…}} reference points at a step's `out`, and every de
     for (const [, name] of text.matchAll(/\{\{steps\.([A-Za-z0-9_-]+)\./g)) {
       assert.ok(outs.has(name), `${file.replace(root, "")}: {{steps.${name}…}} matches no step out`);
     }
-    for (const step of steps) for (const dep of step.dependsOn ?? []) {
-      assert.ok(ids.has(dep), `${file.replace(root, "")}: ${step.id} dependsOn « ${dep} », which is no step id`);
-    }
+    for (const step of steps)
+      for (const dep of step.dependsOn ?? []) {
+        assert.ok(ids.has(dep), `${file.replace(root, "")}: ${step.id} dependsOn « ${dep} », which is no step id`);
+      }
   }
 });

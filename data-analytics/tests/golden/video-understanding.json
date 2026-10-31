@@ -20,12 +20,12 @@
         "frame": "A blue square appears on an orange background in a synthetic geometric scene. No identifiable person or readable text is shown."
       },
       "assertions": [
-        {"path": ["reading", "summary"], "includes": "geometric shapes"},
-        {"path": ["reading", "summary"], "includes": "blue square"},
-        {"path": ["frame"], "includes": "orange background"},
-        {"path": ["reading", "tags"], "includes": "synthetic"},
-        {"path": ["reading", "safetyLabels"], "equals": ["none"]},
-        {"path": ["frame"], "nonEmpty": true}
+        { "path": ["reading", "summary"], "includes": "geometric shapes" },
+        { "path": ["reading", "summary"], "includes": "blue square" },
+        { "path": ["frame"], "includes": "orange background" },
+        { "path": ["reading", "tags"], "includes": "synthetic" },
+        { "path": ["reading", "safetyLabels"], "equals": ["none"] },
+        { "path": ["frame"], "nonEmpty": true }
       ]
     },
     {
@@ -47,10 +47,10 @@
         "frame": "A blue square appears on an orange background in a synthetic geometric scene. No identifiable person or readable text is shown."
       },
       "assertions": [
-        {"path": ["reading", "summary"], "includes": "affiche fictive"},
-        {"path": ["reading", "summary"], "includes": "carré bleu"},
-        {"path": ["reading", "tags"], "includes": "fond orange"},
-        {"path": ["reading", "safetyLabels"], "equals": ["none"]}
+        { "path": ["reading", "summary"], "includes": "affiche fictive" },
+        { "path": ["reading", "summary"], "includes": "carré bleu" },
+        { "path": ["reading", "tags"], "includes": "fond orange" },
+        { "path": ["reading", "safetyLabels"], "equals": ["none"] }
       ]
     },
     {
@@ -72,10 +72,10 @@
         "frame": "A blue square appears on an orange background in a synthetic geometric scene. No identifiable person or readable text is shown."
       },
       "assertions": [
-        {"path": ["reading", "language"], "equals": null},
-        {"path": ["reading", "summary"], "includes": "without an identifiable person"},
-        {"path": ["frame"], "includes": "blue square"},
-        {"path": ["reading", "safetyLabels"], "equals": ["none"]}
+        { "path": ["reading", "language"], "equals": null },
+        { "path": ["reading", "summary"], "includes": "without an identifiable person" },
+        { "path": ["frame"], "includes": "blue square" },
+        { "path": ["reading", "safetyLabels"], "equals": ["none"] }
       ]
     }
   ]

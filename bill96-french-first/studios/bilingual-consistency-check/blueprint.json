@@ -25,9 +25,7 @@
         "id": "summary",
         "kind": "CAPABILITY",
         "featureKey": "orazaka.core.chat.completion",
-        "dependsOn": [
-          "compare"
-        ],
+        "dependsOn": ["compare"],
         "inputs": {
           "prompt": "From this table of differences: {{steps.differences.content}}, write a three-line summary: how many differences, how many of high severity, and which section to review first. Do not decide which version prevails. The first line of your answer is exactly this sentence: fr « Traduction automatisée non certifiée — à faire réviser par un professionnel avant tout usage, surtout pour un document juridique. » en « Automated, uncertified translation — to be reviewed by a professional before any use, above all for a legal document. » (use the one that matches the output language). Mark anything you are unsure of as « À réviser » (fr) or « To review » (en). Name the terminology source of every term you choose (the usage recommended by the Office québécois de la langue française, OQLF, and its Grand dictionnaire terminologique, when one applies; otherwise say « usage courant »). Never invent a legal term: when no established Québec term exists, keep the source term in brackets and flag the passage. Never quote a statute; refer to it by name only."
         },
@@ -70,10 +68,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "english",
-      "french"
-    ],
+    "required": ["english", "french"],
     "properties": {
       "english": {
         "type": "string",

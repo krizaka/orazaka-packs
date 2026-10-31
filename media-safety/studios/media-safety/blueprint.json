@@ -66,7 +66,15 @@
         "timeout": "PT1M"
       }
     ],
-    "outputs": [{ "key": "report", "label": "Verdict, en codes", "from": "{{steps.assessment.reportJson}}", "type": "JSON", "x-i18n": {"en": {"label": "Verdict, as codes"}, "fr": {"label": "Verdict, en codes"}} }]
+    "outputs": [
+      {
+        "key": "report",
+        "label": "Verdict, en codes",
+        "from": "{{steps.assessment.reportJson}}",
+        "type": "JSON",
+        "x-i18n": { "en": { "label": "Verdict, as codes" }, "fr": { "label": "Verdict, en codes" } }
+      }
+    ]
   },
   "inputSchema": {
     "type": "object",
@@ -76,7 +84,13 @@
         "type": "array",
         "minItems": 0,
         "maxItems": 8,
-        "items": { "type": "string", "format": "asset-id", "contentMediaType": "image/*", "minLength": 8, "maxLength": 120 },
+        "items": {
+          "type": "string",
+          "format": "asset-id",
+          "contentMediaType": "image/*",
+          "minLength": 8,
+          "maxLength": 120
+        },
         "title": "Les images à examiner",
         "description": "Une photo, ou quelques images prises dans une vidéo.",
         "x-i18n": {
@@ -90,9 +104,47 @@
           }
         }
       },
-      "frameCount": { "type": "integer", "minimum": 0, "maximum": 8, "title": "Le nombre d'images", "description": "Le même nombre que la liste ci-dessus.", "x-i18n": {"en": {"title": "Number of images", "description": "The same number as the list above."}, "fr": {"title": "Le nombre d'images", "description": "Le même nombre que la liste ci-dessus."}} },
-      "audio": { "type": "string", "format": "asset-id", "contentMediaType": "audio/*", "minLength": 8, "maxLength": 120, "title": "Le son à juger (facultatif)", "x-i18n": {"en": {"title": "The sound to judge (optional)", "description": "An audio file whose speech is checked."}, "fr": {"title": "Le son à juger (facultatif)", "description": "Un fichier audio dont la parole est vérifiée."}} },
-      "expectsSpeech": { "type": "boolean", "default": false, "title": "Il y a du son à juger", "x-i18n": {"en": {"title": "There is sound to judge", "description": "Tick it when the video carries speech to check."}, "fr": {"title": "Il y a du son à juger", "description": "À cocher quand la vidéo contient de la parole à vérifier."}} }
+      "frameCount": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 8,
+        "title": "Le nombre d'images",
+        "description": "Le même nombre que la liste ci-dessus.",
+        "x-i18n": {
+          "en": { "title": "Number of images", "description": "The same number as the list above." },
+          "fr": { "title": "Le nombre d'images", "description": "Le même nombre que la liste ci-dessus." }
+        }
+      },
+      "audio": {
+        "type": "string",
+        "format": "asset-id",
+        "contentMediaType": "audio/*",
+        "minLength": 8,
+        "maxLength": 120,
+        "title": "Le son à juger (facultatif)",
+        "x-i18n": {
+          "en": { "title": "The sound to judge (optional)", "description": "An audio file whose speech is checked." },
+          "fr": {
+            "title": "Le son à juger (facultatif)",
+            "description": "Un fichier audio dont la parole est vérifiée."
+          }
+        }
+      },
+      "expectsSpeech": {
+        "type": "boolean",
+        "default": false,
+        "title": "Il y a du son à juger",
+        "x-i18n": {
+          "en": {
+            "title": "There is sound to judge",
+            "description": "Tick it when the video carries speech to check."
+          },
+          "fr": {
+            "title": "Il y a du son à juger",
+            "description": "À cocher quand la vidéo contient de la parole à vérifier."
+          }
+        }
+      }
     }
   },
   "configSchema": { "type": "object", "properties": {} }

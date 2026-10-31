@@ -7,9 +7,7 @@
     "en": "Residential lease (France)"
   },
   "family": "residential-lease",
-  "declaredAs": [
-    "LEASE"
-  ],
+  "declaredAs": ["LEASE"],
   "signals": [
     {
       "id": "title",
@@ -44,10 +42,7 @@
       "pattern": "€|(?i:\\beuros?\\b)"
     }
   ],
-  "excludes": [
-    "(?i)tribunal\\s+administratif\\s+du\\s+logement",
-    "(?i)d[ée]cret\\s+wallon|r[ée]gion\\s+wallonne"
-  ],
+  "excludes": ["(?i)tribunal\\s+administratif\\s+du\\s+logement", "(?i)d[ée]cret\\s+wallon|r[ée]gion\\s+wallonne"],
   "dateSignals": [
     {
       "id": "signature-date",

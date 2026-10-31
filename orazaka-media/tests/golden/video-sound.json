@@ -9,8 +9,11 @@
         "foley": "Very soft room tone; do not invent speech.",
         "seed": "173"
       },
-      "expected": {"video": "asset:video", "silent": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+      "expected": { "video": "asset:video", "silent": "asset:video" },
+      "assertions": [
+        { "path": ["video"], "nonEmpty": true },
+        { "path": ["silent"], "nonEmpty": true }
+      ]
     },
     {
       "id": "french-voice-track-with-quiet-music",
@@ -21,8 +24,11 @@
         "foley": "Ambiance discrète sans événement fort.",
         "seed": "179"
       },
-      "expected": {"video": "asset:video", "silent": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+      "expected": { "video": "asset:video", "silent": "asset:video" },
+      "assertions": [
+        { "path": ["video"], "nonEmpty": true },
+        { "path": ["silent"], "nonEmpty": true }
+      ]
     },
     {
       "id": "voice-only-no-generated-music",
@@ -33,8 +39,11 @@
         "foley": "",
         "seed": "0"
       },
-      "expected": {"video": "asset:video", "silent": "asset:video"},
-      "assertions": [{"path": ["video"], "nonEmpty": true}, {"path": ["silent"], "nonEmpty": true}]
+      "expected": { "video": "asset:video", "silent": "asset:video" },
+      "assertions": [
+        { "path": ["video"], "nonEmpty": true },
+        { "path": ["silent"], "nonEmpty": true }
+      ]
     }
   ]
 }

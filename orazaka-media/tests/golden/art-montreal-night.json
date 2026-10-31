@@ -8,8 +8,11 @@
         "size": "1360x768",
         "seed": "97"
       },
-      "expected": {"image": "asset:scene", "seed": "97", "model": "synthetic-image", "generationMs": "149"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "97"}]
+      "expected": { "image": "asset:scene", "seed": "97", "model": "synthetic-image", "generationMs": "149" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "97" }
+      ]
     },
     {
       "id": "french-fictional-cafe-window",
@@ -18,8 +21,11 @@
         "size": "1024x1280",
         "seed": "101"
       },
-      "expected": {"image": "asset:scene", "seed": "101", "model": "synthetic-image", "generationMs": "158"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}, {"path": ["seed"], "equals": "101"}]
+      "expected": { "image": "asset:scene", "seed": "101", "model": "synthetic-image", "generationMs": "158" },
+      "assertions": [
+        { "path": ["image"], "nonEmpty": true },
+        { "path": ["seed"], "equals": "101" }
+      ]
     },
     {
       "id": "square-empty-snowmelt-courtyard",
@@ -27,8 +33,8 @@
         "subject": "An invented empty courtyard after thawing snow and rain, a single teal doorway and magenta reflections in shallow puddles; no people, signs or logos.",
         "size": "1024x1024"
       },
-      "expected": {"image": "asset:scene", "seed": "113", "model": "synthetic-image", "generationMs": "142"},
-      "assertions": [{"path": ["image"], "nonEmpty": true}]
+      "expected": { "image": "asset:scene", "seed": "113", "model": "synthetic-image", "generationMs": "142" },
+      "assertions": [{ "path": ["image"], "nonEmpty": true }]
     }
   ]
 }

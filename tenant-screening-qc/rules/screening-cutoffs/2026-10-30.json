@@ -3,51 +3,27 @@
   "version": "2026-10-30",
   "revision": 1,
   "provider": "mock",
-  "operators": [
-    "equals",
-    "atLeast",
-    "in"
-  ],
+  "operators": ["equals", "atLeast", "in"],
   "documents": {
-    "majorLevels": [
-      "incohérent"
-    ],
-    "unusualLevels": [
-      "inhabituel"
-    ]
+    "majorLevels": ["incohérent"],
+    "unusualLevels": ["inhabituel"]
   },
   "stages": [
     {
       "id": "documents",
       "purpose": "DOCUMENTS",
       "credits": 10,
-      "facts": [
-        "majorSignals",
-        "unusualSignals",
-        "leaseFailures"
-      ],
+      "facts": ["majorSignals", "unusualSignals", "leaseFailures"],
       "cutoffs": []
     },
     {
       "id": "courts",
       "purpose": "COURT_RECORDS",
       "credits": 30,
-      "facts": [
-        "outcome",
-        "category"
-      ],
+      "facts": ["outcome", "category"],
       "values": {
-        "outcome": [
-          "MATCH",
-          "NO_MATCH"
-        ],
-        "category": [
-          "TAL_NON_PAYMENT",
-          "TAL_OTHER",
-          "CRIMINAL",
-          "CIVIL",
-          "NONE"
-        ]
+        "outcome": ["MATCH", "NO_MATCH"],
+        "category": ["TAL_NON_PAYMENT", "TAL_OTHER", "CRIMINAL", "CIVIL", "NONE"]
       },
       "cutoffs": [
         {
@@ -62,14 +38,9 @@
       "id": "credit",
       "purpose": "CREDIT",
       "credits": 20,
-      "facts": [
-        "outcome"
-      ],
+      "facts": ["outcome"],
       "values": {
-        "outcome": [
-          "MATCH",
-          "NO_MATCH"
-        ]
+        "outcome": ["MATCH", "NO_MATCH"]
       },
       "cutoffs": []
     }

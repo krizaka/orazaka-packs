@@ -27,9 +27,7 @@
       {
         "id": "sequence",
         "kind": "TRANSFORM",
-        "dependsOn": [
-          "angle"
-        ],
+        "dependsOn": ["angle"],
         "inputs": {
           "body": "{{steps.angles.content}}",
           "signature": "{{config.signature:}}",
@@ -43,9 +41,7 @@
       {
         "id": "approve",
         "kind": "APPROVAL",
-        "dependsOn": [
-          "sequence"
-        ],
+        "dependsOn": ["sequence"],
         "inputs": {
           "preview": "{{steps.emailSequence.body}}"
         },
@@ -57,9 +53,7 @@
         "id": "push",
         "kind": "CONNECTOR",
         "connectorType": "SLACK",
-        "dependsOn": [
-          "approve"
-        ],
+        "dependsOn": ["approve"],
         "inputs": {
           "action": "send",
           "subject": "{{steps.emailSequence.subject}}",
@@ -104,10 +98,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "prospects",
-      "offer"
-    ],
+    "required": ["prospects", "offer"],
     "properties": {
       "prospects": {
         "type": "array",
@@ -168,11 +159,7 @@
   },
   "configSchema": {
     "tone": {
-      "enum": [
-        "premium",
-        "chaleureux",
-        "direct"
-      ],
+      "enum": ["premium", "chaleureux", "direct"],
       "default": "direct"
     },
     "signature": {

@@ -41,9 +41,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "englishCopy"
-    ],
+    "required": ["englishCopy"],
     "properties": {
       "englishCopy": {
         "type": "string",

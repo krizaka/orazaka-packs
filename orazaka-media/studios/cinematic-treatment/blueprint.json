@@ -42,9 +42,7 @@
   },
   "inputSchema": {
     "type": "object",
-    "required": [
-      "brief"
-    ],
+    "required": ["brief"],
     "properties": {
       "brief": {
         "type": "string",
@@ -68,10 +66,7 @@
       },
       "aspect": {
         "type": "string",
-        "enum": [
-          "9:16",
-          "16:9"
-        ],
+        "enum": ["9:16", "16:9"],
         "default": "9:16",
         "title": "Format d'image",
         "description": "9:16 : Reels, TikTok, Shorts. 16:9 : YouTube, un écran.",
@@ -134,10 +129,7 @@
       },
       "language": {
         "type": "string",
-        "enum": [
-          "en",
-          "fr"
-        ],
+        "enum": ["en", "fr"],
         "default": "en",
         "title": "Langue des textes",
         "description": "La langue des titres, sous-titres et de la voix off.",
