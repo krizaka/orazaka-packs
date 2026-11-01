@@ -15,7 +15,12 @@ from typing import Optional
 HERE = os.path.dirname(os.path.abspath(__file__))
 RULESETS = os.path.join(HERE, "..", "rules", "media-safety")
 _FENCE_OPEN = re.compile(r"^```(?:json)?\s*", re.IGNORECASE)
-_FENCE_CLOSE = re.compile(r"\s*```$", re.IGNORECASE)
+
+
+def _strip_fences(text: str) -> str:
+    """Drop a leading ```json fence and a trailing ``` fence (no regex on the tail, it backtracks)."""
+    text = _FENCE_OPEN.sub("", text)
+    return text[:-3].rstrip() if text.endswith("```") else text
 
 
 def load_ruleset(as_of: Optional[str] = None) -> dict:
@@ -40,7 +45,7 @@ def parse(answer: object) -> Optional[dict]:
         return answer
     if not isinstance(answer, str):
         return None
-    text = _FENCE_CLOSE.sub("", _FENCE_OPEN.sub("", answer.strip()))
+    text = _strip_fences(answer.strip())
     start, end = text.find("{"), text.rfind("}")
     if start < 0 or end <= start:
         return None
