@@ -16,7 +16,8 @@
 #
 # Sold by billing: entitlement keys studio.code-issue-to-pr and studio.code-read-write (the schema's key shape has no second
 # dot, so ADR-093's « studio.code.issue-to-pr » is written with a hyphen). In dev, access comes from an operator grant
-# (studio_entitlement_grant). The price is Oussama's call and is not set here: pricing PAID, no plan row.
+# (studio_entitlement_grant). Default list price set by the pricing session (krizaka-internal#38, delegated 2026-11-01);
+# the administrator edits it in billing, this is only the seed.
 # ─────────────────────────────────────────────────────────────────────────────
 apiVersion: orazaka.dev/v1
 key: code-contributor
@@ -57,10 +58,11 @@ catalog:
     iconKey: code
     sortWeight: 120
 
-# The price is Oussama's call (orazaka#450): none is set. Until then, access comes from an operator grant.
+# A PAID Studio is never sold for nothing (tests/pricing-margin.test.mjs). Same grid as data-analytics: the volume of model
+# turns is billed in credits (AGENT), the pack opens the Studios.
 pricing:
-  priceCents: 0
-  includedCredits: 0
+  priceCents: 4900   # 49 $ CA — in billing.currency (CAD)
+  includedCredits: 300
 
 # A versioned consent (ADR-055 mechanism). The pack is not REGULATED: no age gate. A new version asks again.
 consent:
