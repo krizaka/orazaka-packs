@@ -45,7 +45,7 @@ def load_ruleset(as_of: Optional[str] = None) -> dict:
         return json.load(handle)
 
 
-_FENCE = re.compile(r"^```(?:json)?\s*|\s*```$", re.IGNORECASE)
+_FENCE = re.compile(r"(?:^```(?:json)?\s*)|(?:\s*```$)", re.IGNORECASE)
 
 
 def parse_look(answer: object) -> Optional[dict]:

@@ -14,7 +14,7 @@ from typing import Optional
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RULESETS = os.path.join(HERE, "..", "rules", "media-safety")
-_FENCE = re.compile(r"^```(?:json)?\s*|\s*```$", re.IGNORECASE)
+_FENCE = re.compile(r"(?:^```(?:json)?\s*)|(?:\s*```$)", re.IGNORECASE)
 
 
 def load_ruleset(as_of: Optional[str] = None) -> dict:
