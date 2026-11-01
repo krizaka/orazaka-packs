@@ -45,7 +45,8 @@ def load_ruleset(as_of: Optional[str] = None) -> dict:
         return json.load(handle)
 
 
-_FENCE = re.compile(r"(?:^```(?:json)?\s*)|(?:\s*```$)", re.IGNORECASE)
+_FENCE_OPEN = re.compile(r"^```(?:json)?\s*", re.IGNORECASE)
+_FENCE_CLOSE = re.compile(r"\s*```$", re.IGNORECASE)
 
 
 def parse_look(answer: object) -> Optional[dict]:
@@ -60,7 +61,7 @@ def parse_look(answer: object) -> Optional[dict]:
         return answer
     if not isinstance(answer, str):
         return None
-    text = _FENCE.sub("", answer.strip())
+    text = _FENCE_CLOSE.sub("", _FENCE_OPEN.sub("", answer.strip()))
     start, end = text.find("{"), text.rfind("}")
     if start < 0 or end <= start:
         return None
