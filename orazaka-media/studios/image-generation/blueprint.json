@@ -1,12 +1,12 @@
 {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "status": "PUBLISHED",
   "estimatedCredits": 200,
-  "changelog": "1.6.0 — le champ Modèle dit ce que chaque modèle sait faire (`aspectField: size`, `aspects`) : Stable Diffusion 3.5 (nuage) fait 1024×1024 et 512×512, Stable Diffusion 1.5 fait 512×512. Un format que le modèle ne sait pas faire est refusé avant toute retenue de crédits, au lieu d'échouer après (orazaka#307). 1.5.0 — libellés des sorties en anglais et français (x-i18n). 1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
+  "changelog": "1.7.0 — `references` : jusqu'à 4 images de référence (des assets : vos envois ou les sorties de vos runs) que l'image doit suivre, pour garder le même personnage, le même objet et le même lieu d'un plan à l'autre (krizaka-internal#158) ; `referenceWeight` (0 à 1) est gardé dans la recette — FLUX.2 [klein] suit les références pleinement et le dit quand une autre force est demandée. Un modèle qui ne prend pas de références (le catalogue n'en déclare pas) refuse par son nom, jamais en silence. 1.6.0 — le champ Modèle dit ce que chaque modèle sait faire (`aspectField: size`, `aspects`) : Stable Diffusion 3.5 (nuage) fait 1024×1024 et 512×512, Stable Diffusion 1.5 fait 512×512. Un format que le modèle ne sait pas faire est refusé avant toute retenue de crédits, au lieu d'échouer après (orazaka#307). 1.5.0 — libellés des sorties en anglais et français (x-i18n). 1.4.0 — chaque champ parle anglais et français (x-i18n : titre, aide, exemple). 1.3.0 — les listes sont de vraies listes : le catalogue alimente les modèles, et chaque libellé, chaque aide (140 caractères au plus) est écrit en français et en anglais (`x-i18n`) ; l'aide longue des modèles devient le comparateur du formulaire. 1.3.0 — les choix fermés ne se tapent plus : le modèle vient de la liste que le catalogue publie (étiquette, local ou infonuagique, vitesse, prix), la graine est un nombre avec « au hasard », le reste est rangé sous « Plus d'options ». 1.2.0 — la taille demandée est enfin respectée (le moteur l'ignorait et rendait du 512x512), et l'image peut se refaire : une graine (seed) facultative, toujours rapportée avec l'image, comme le modèle et le temps de génération. Formats 4:5 (réseaux) et 16:9 (bannière). Un prompt négatif, pris en compte par les modèles à guidage. Délai de l'étape porté à 15 minutes : un 1024x1280 demande ~105 s à FLUX.2 [klein] sur un M1 Max, plusieurs minutes à Z-Image Turbo. 1.1.0 — l'entrée que la barre du chat remplit déclare ce qu'elle porte (`format: prose`) : une phrase, un id d'asset et un document encodé sont tous `type: string`, et un composer qui devinerait collerait le prompt dans un champ que le serveur résout autrement. Une entrée qui ne déclare rien n'est pas remplie — le Studio garde sa page et perd son bouton (ADR-068 §3). Génération d'image — une étape, la capacité que la barre du chat appelait. Le schéma porte ce que portait payload_template : `size` par défaut 1024x1024, `model` résolu par le catalogue quand il n'est pas nommé (ADR-066).",
   "createdBy": "orazaka",
   "definition": {
     "studioKey": "image-generation",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "steps": [
       {
         "id": "image",
@@ -18,7 +18,9 @@
           "size": "{{inputs.size}}",
           "negativePrompt": "{{inputs.negativePrompt:}}",
           "seed": "{{inputs.seed:}}",
-          "model": "{{inputs.model:}}"
+          "model": "{{inputs.model:}}",
+          "references": "{{inputs.references:}}",
+          "referenceWeight": "{{inputs.referenceWeight:}}"
         },
         "out": "image",
         "onError": "FAIL",
@@ -254,6 +256,50 @@
                 "hint": "FLUX en quatre pas sur le Mac."
               }
             }
+          }
+        }
+      },
+      "references": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "format": "asset:image",
+          "contentMediaType": "image/*",
+          "maxLength": 64
+        },
+        "maxItems": 4,
+        "title": "Images de référence (facultatif)",
+        "description": "Jusqu'à 4 images à suivre : le même personnage, objet ou lieu d'un plan à l'autre. Un modèle qui ne les prend pas refuse.",
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Reference images (optional)",
+            "description": "Up to 4 pictures the result must follow: the same character, prop or place from shot to shot. Models that cannot take them refuse.",
+            "placeholder": "owl-sheet, cahier-sheet"
+          },
+          "fr": {
+            "title": "Images de référence (facultatif)",
+            "description": "Jusqu'à 4 images à suivre : le même personnage, objet ou lieu d'un plan à l'autre. Un modèle qui ne les prend pas refuse.",
+            "placeholder": "fiche-hibou, fiche-cahier"
+          }
+        }
+      },
+      "referenceWeight": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "default": 1,
+        "title": "Force des références",
+        "description": "1 = suivre les références pleinement. FLUX.2 [klein] les suit toujours pleinement : une autre valeur est notée avec l'image, pas appliquée.",
+        "x-advanced": true,
+        "x-i18n": {
+          "en": {
+            "title": "Reference strength",
+            "description": "1 = follow the references fully. FLUX.2 [klein] always follows them fully: another value is recorded with the image, not applied."
+          },
+          "fr": {
+            "title": "Force des références",
+            "description": "1 = suivre les références pleinement. FLUX.2 [klein] les suit toujours pleinement : une autre valeur est notée avec l'image, pas appliquée."
           }
         }
       }
