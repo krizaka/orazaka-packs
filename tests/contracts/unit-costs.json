@@ -1,0 +1,110 @@
+{
+  "$comment": "What one billable unit costs Krizaka, against the credit rate the billing pricebook (krizaka-billing, v2) charges for it. Read by tests/pricing-margin.test.mjs. Money in millicents of CAD (1000 = 1 cent), the pricebook's own anchor (ADR-047). `assumption: true` marks a figure not yet measured on a real run: it is replaced by the recorded cost of the run that measures it. The billing service's pricebook remains the source of truth for rates; this file is the default the margin guard checks.",
+  "currency": "CAD",
+  "readOn": "2026-10-31",
+  "creditListPriceMillicents": 100,
+  "marginFloor": 0.7,
+  "processor": {
+    "percentBps": 290,
+    "fixedCents": 30,
+    "source": "https://stripe.com/en-ca/pricing (domestic cards, read 2026-10-31); +0.8 % international cards, +2 % conversion not included"
+  },
+  "usdToCad": { "rate": 1.4, "assumption": true },
+  "rates": [
+    {
+      "capability": "VIDEO",
+      "model": null,
+      "unit": "OUTPUT_SECOND",
+      "creditsPerUnit": 900,
+      "costMillicentsPerUnit": 60000,
+      "source": "Wan 2.2 A14B I2V at cinema settings on an H100 80 GB (RunPod CA-MTL-1, 3.99 USD/h, krizaka-internal#138): about 20 GPU minutes per 5 s shot, plus 25 % warm-up and the 4K upscale",
+      "assumption": true
+    },
+    {
+      "capability": "VIDEO",
+      "model": "orazaka-compose",
+      "unit": "OUTPUT_SECOND",
+      "creditsPerUnit": 20,
+      "costMillicentsPerUnit": 100,
+      "source": "ffmpeg assembly on the CPU worker, no GPU",
+      "assumption": true
+    },
+    {
+      "capability": "VIDEO",
+      "model": "orazaka-video-analysis",
+      "unit": "AUDIO_MINUTE",
+      "creditsPerUnit": 45,
+      "costMillicentsPerUnit": 1000,
+      "source": "keyframe extraction and transcription in one pass on the CPU worker",
+      "assumption": true
+    },
+    {
+      "capability": "IMAGE",
+      "model": null,
+      "unit": "IMAGE_STEP",
+      "creditsPerUnit": 19.073,
+      "costMillicentsPerUnit": 1013,
+      "source": "measured: 26 key frames for 1.57 USD on an H100 80 GB, warm-up included (krizaka-internal#138, 2026-10-31); 2.09 MP x 4 steps per frame assumed",
+      "assumption": false
+    },
+    {
+      "capability": "CHAT",
+      "model": null,
+      "unit": "KILOTOKEN",
+      "creditsPerUnit": 10,
+      "costMillicentsPerUnit": 100,
+      "source": "local model on Krizaka's own node, hosting share; a cloud-routed model needs its own row priced from its provider's rate",
+      "assumption": true
+    },
+    {
+      "capability": "AGENT",
+      "model": null,
+      "unit": "CALL",
+      "creditsPerUnit": 50,
+      "costMillicentsPerUnit": 500,
+      "source": "orchestration call on the local node",
+      "assumption": true
+    },
+    {
+      "capability": "AUDIO",
+      "model": "piper-fr-medium",
+      "unit": "KILOCHAR",
+      "creditsPerUnit": 40,
+      "costMillicentsPerUnit": 200,
+      "source": "Piper TTS on the CPU worker",
+      "assumption": true
+    },
+    {
+      "capability": "AUDIO",
+      "model": "whisper-base",
+      "unit": "AUDIO_MINUTE",
+      "creditsPerUnit": 60,
+      "costMillicentsPerUnit": 500,
+      "source": "Whisper base on the CPU worker",
+      "assumption": true
+    },
+    {
+      "capability": "RESEARCH",
+      "model": "law-corpus",
+      "unit": "CALL",
+      "creditsPerUnit": 10,
+      "costMillicentsPerUnit": 100,
+      "source": "a read of the engine's own law corpus",
+      "assumption": true
+    }
+  ],
+  "belowFloor": [
+    {
+      "capability": "VIDEO",
+      "model": null,
+      "issue": "krizaka-internal#2050",
+      "fix": "bill GPU-heavy runs per GPU_SECOND (H100: 155 mc/s cost, 6.5 credits/s at a 76 % margin) and keep 900 credits/s for the distilled fast profile"
+    },
+    {
+      "capability": "IMAGE",
+      "model": null,
+      "issue": "krizaka-internal#2050",
+      "fix": "the measured cost carries one warm-up for 26 frames: bill the warm-up per GPU_SECOND, or raise the rate to 42 credits per megapixel-step"
+    }
+  ]
+}
