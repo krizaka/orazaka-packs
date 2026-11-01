@@ -71,10 +71,30 @@ def load_kinds() -> list:
 # --- Dates -----------------------------------------------------------------------------------------------------------
 
 _MONTHS = {
-    "janvier": 1, "fevrier": 2, "mars": 3, "avril": 4, "mai": 5, "juin": 6, "juillet": 7, "aout": 8,
-    "septembre": 9, "octobre": 10, "novembre": 11, "decembre": 12,
-    "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6, "july": 7, "august": 8,
-    "september": 9, "october": 10, "november": 11, "december": 12,
+    "janvier": 1,
+    "fevrier": 2,
+    "mars": 3,
+    "avril": 4,
+    "mai": 5,
+    "juin": 6,
+    "juillet": 7,
+    "aout": 8,
+    "septembre": 9,
+    "octobre": 10,
+    "novembre": 11,
+    "decembre": 12,
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
 }
 _ISO = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")
 _DAY_FIRST = re.compile(r"^(\d{1,2})(?:er)?\s+([^\W\d_]+)\s+(\d{4})$")
@@ -126,6 +146,7 @@ def languages(text: str) -> list:
 
 # --- Signals ---------------------------------------------------------------------------------------------------------
 
+
 def _quote(match) -> str:
     return match.group(0)[:MAX_QUOTE]
 
@@ -137,7 +158,9 @@ def _hits(signals: list, text: str) -> list:
         match = re.search(signal["pattern"], text)
         if match:
             quote = _quote(match)
-            found.append({"signal": signal["id"], "weight": signal["weight"], "quote": quote, "verified": quote in text})
+            found.append(
+                {"signal": signal["id"], "weight": signal["weight"], "quote": quote, "verified": quote in text}
+            )
     return found
 
 
@@ -146,7 +169,10 @@ def _score(kind: dict, text: str) -> dict:
     hints = _hits(kind["jurisdictionHints"], text)
     excluded = any(re.search(pattern, text) for pattern in kind["excludes"])
     return {
-        "kind": kind, "content": content, "hints": hints, "excluded": excluded,
+        "kind": kind,
+        "content": content,
+        "hints": hints,
+        "excluded": excluded,
         "contentWeight": sum(h["weight"] for h in content),
         "weight": sum(h["weight"] for h in content) + sum(h["weight"] for h in hints),
     }
@@ -170,14 +196,27 @@ def _evidence(scored: dict) -> list:
 
 def _candidate(scored: dict, min_weight: int) -> dict:
     return {
-        "kindId": scored["kind"]["kindId"], "weight": scored["weight"], "signals": [e["signal"] for e in scored["content"]],
-        "hints": [e["signal"] for e in scored["hints"]], "excluded": scored["excluded"],
+        "kindId": scored["kind"]["kindId"],
+        "weight": scored["weight"],
+        "signals": [e["signal"] for e in scored["content"]],
+        "hints": [e["signal"] for e in scored["hints"]],
+        "excluded": scored["excluded"],
         "eligible": not scored["excluded"] and scored["contentWeight"] >= min_weight,
     }
 
 
-def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as_of=None, ruleset=None,
-             classified=None, min_signal_weight: int = MIN_SIGNAL_WEIGHT, kinds=None) -> dict:
+def identify(
+    text: str,
+    *,
+    today: str,
+    declared_kind=None,
+    jurisdiction=None,
+    as_of=None,
+    ruleset=None,
+    classified=None,
+    min_signal_weight: int = MIN_SIGNAL_WEIGHT,
+    kinds=None,
+) -> dict:
     """Identify ``text``: the kind, the jurisdiction, the date and the language, compared with what was declared.
 
     ``today`` (ISO date) is given, never read: the caller owns the clock. ``as_of`` is validated as an ISO date
@@ -211,7 +250,9 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
     if ruleset:
         carrying = [k for k in scope if k["ruleset"] == ruleset]
         if not carrying:
-            raise UnknownRuleset(f"no kind uses the ruleset '{ruleset}'" + (f" in '{jurisdiction}'" if jurisdiction else ""))
+            raise UnknownRuleset(
+                f"no kind uses the ruleset '{ruleset}'" + (f" in '{jurisdiction}'" if jurisdiction else "")
+            )
         used, source = carrying[0], "RULESET_INPUT"
     elif detected:
         used, source = detected["kind"], "DETECTED"

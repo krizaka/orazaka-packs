@@ -33,6 +33,7 @@ def _by_id(report):
 # ── builders ─────────────────────────────────────────────────────────────────
 def _tiff(tags, exif_tags=None):
     """A big-endian TIFF block: IFD0 with ASCII tags, and an Exif IFD when ``exif_tags`` is given."""
+
     def ifd(entries, start, extra_pointer=None):
         items = sorted(entries.items())
         count = len(items) + (1 if extra_pointer is not None else 0)
@@ -82,7 +83,9 @@ def _png(chunks):
 
 
 def _webp(chunks):
-    body = b"WEBP" + b"".join(kind + struct.pack("<I", len(d)) + d + (b"\0" if len(d) & 1 else b"") for kind, d in chunks)
+    body = b"WEBP" + b"".join(
+        kind + struct.pack("<I", len(d)) + d + (b"\0" if len(d) & 1 else b"") for kind, d in chunks
+    )
     return b"RIFF" + struct.pack("<I", len(body)) + body
 
 
@@ -95,15 +98,17 @@ def _zip(files):
 
 
 def _docx(created, modified, revision="7"):
-    return _zip({
-        "[Content_Types].xml": "<Types/>",
-        "docProps/app.xml": "<Properties><Application>Microsoft Office Word</Application><AppVersion>16.0000</AppVersion></Properties>",
-        "docProps/core.xml": (
-            '<cp:coreProperties><dc:creator>Une Personne</dc:creator><cp:lastModifiedBy>Une Autre</cp:lastModifiedBy>'
-            f'<cp:revision>{revision}</cp:revision><dcterms:created xsi:type="dcterms:W3CDTF">{created}</dcterms:created>'
-            f'<dcterms:modified xsi:type="dcterms:W3CDTF">{modified}</dcterms:modified></cp:coreProperties>'
-        ),
-    })
+    return _zip(
+        {
+            "[Content_Types].xml": "<Types/>",
+            "docProps/app.xml": "<Properties><Application>Microsoft Office Word</Application><AppVersion>16.0000</AppVersion></Properties>",
+            "docProps/core.xml": (
+                "<cp:coreProperties><dc:creator>Une Personne</dc:creator><cp:lastModifiedBy>Une Autre</cp:lastModifiedBy>"
+                f'<cp:revision>{revision}</cp:revision><dcterms:created xsi:type="dcterms:W3CDTF">{created}</dcterms:created>'
+                f'<dcterms:modified xsi:type="dcterms:W3CDTF">{modified}</dcterms:modified></cp:coreProperties>'
+            ),
+        }
+    )
 
 
 CAMERA = {0x010F: "Apple", 0x0110: "iPhone 15", 0x0131: "17.5.1", 0x0132: "2026:01:03 14:15:00"}
@@ -160,10 +165,7 @@ def test_every_case_is_written_in_both_languages_with_the_same_facts():
 def _profile_schema_errors(schema, value, path="$"):
     types = {"object": dict, "array": list, "string": str, "integer": int}
     expected = schema.get("type")
-    if expected and (
-        not isinstance(value, types[expected])
-        or (expected == "integer" and isinstance(value, bool))
-    ):
+    if expected and (not isinstance(value, types[expected]) or (expected == "integer" and isinstance(value, bool))):
         return [f"{path}: expected {expected}"]
     errors = []
     if "enum" in schema and value not in schema["enum"]:
@@ -196,14 +198,14 @@ def test_document_profiles_match_their_schema_and_profile_goldens():
     schema = json.load(open(os.path.join(HERE, "document-profile.schema.json"), encoding="utf-8"))
     profile_dir = os.path.join(HERE, "document_profiles")
     fixture_dir = os.path.join(HERE, "fixtures", "document-profiles")
-    blueprint = json.load(open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8"))
+    blueprint = json.load(
+        open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8")
+    )
     profile_input = blueprint["inputSchema"]["properties"]["documentType"]
     assert profile_input["enum"] == ["pay-stub", "bank-statement", "employment-letter"]
     assert "documentType" not in blueprint["inputSchema"]["required"]
     signal_schema = {
-        output["key"]: output["schema"]
-        for output in blueprint["definition"]["outputs"]
-        if "schema" in output
+        output["key"]: output["schema"] for output in blueprint["definition"]["outputs"] if "schema" in output
     }["signals"]
     assert blueprint["definition"]["steps"][0]["inputs"]["documentType"] == "{{inputs.documentType:}}"
     profile_types = set()
@@ -216,7 +218,9 @@ def test_document_profiles_match_their_schema_and_profile_goldens():
         assert profile["fontCount"]["min"] <= profile["fontCount"]["max"], profile_file
         assert profile["documentType"] not in profile_types, profile_file
         profile_types.add(profile["documentType"])
-        golden = json.load(open(os.path.join(fixture_dir, f"{profile['documentType']}.expected.json"), encoding="utf-8"))
+        golden = json.load(
+            open(os.path.join(fixture_dir, f"{profile['documentType']}.expected.json"), encoding="utf-8")
+        )
         assert golden["documentType"] == profile["documentType"]
         for key in ("acceptedFixture", "mismatchFixture"):
             raw = _profile_fixture(golden[key])
@@ -308,7 +312,10 @@ def test_a_photo_reworked_in_an_editor_after_it_was_taken():
     xmp = _xmp(("saved", "Adobe Photoshop 25.0 (Macintosh)"))
     found = _by_id(a.analyse(_jpeg(_tiff(tags, TAKEN), xmp)))
     assert found["IMG-META-002"]["level"] == a.UNUSUAL
-    assert "2026-01-03 14:15" in found["IMG-META-003"]["observation"] and "2026-01-05 09:00" in found["IMG-META-003"]["observation"]
+    assert (
+        "2026-01-03 14:15" in found["IMG-META-003"]["observation"]
+        and "2026-01-05 09:00" in found["IMG-META-003"]["observation"]
+    )
     assert found["XMP-HIST-001"]["level"] == a.UNUSUAL
 
 
@@ -355,10 +362,15 @@ def test_a_word_file_reports_its_application_and_its_later_edit_never_a_person()
 
 
 def test_an_opendocument_file_is_read_from_its_meta():
-    meta = ("<office:document-meta><meta:generator>LibreOffice/24.2</meta:generator><meta:creation-date>2026-01-01T09:00:00"
-            "</meta:creation-date><dc:date>2026-02-01T09:00:00</dc:date><meta:editing-cycles>3</meta:editing-cycles></office:document-meta>")
+    meta = (
+        "<office:document-meta><meta:generator>LibreOffice/24.2</meta:generator><meta:creation-date>2026-01-01T09:00:00"
+        "</meta:creation-date><dc:date>2026-02-01T09:00:00</dc:date><meta:editing-cycles>3</meta:editing-cycles></office:document-meta>"
+    )
     found = _by_id(a.analyse(_zip({"mimetype": "application/vnd.oasis.opendocument.text", "meta.xml": meta})))
-    assert "LibreOffice/24.2" in found["OFF-META-001"]["observation"] and "révision 3" in found["OFF-META-002"]["observation"]
+    assert (
+        "LibreOffice/24.2" in found["OFF-META-001"]["observation"]
+        and "révision 3" in found["OFF-META-002"]["observation"]
+    )
 
 
 # ── what is refused, and the contract ────────────────────────────────────────
@@ -374,10 +386,17 @@ def test_an_unknown_type_is_refused_by_its_bytes_and_says_what_is_read():
 
 
 def test_every_new_report_meets_the_declared_signals_contract():
-    blueprint = json.load(open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8"))
+    blueprint = json.load(
+        open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8")
+    )
     schema = {o["key"]: o for o in blueprint["definition"]["outputs"]}["signals"]["schema"]
-    for raw in (_pdf_rewritten_with_history(), _jpeg(), _jpeg(_tiff(CAMERA, TAKEN), _xmp(("saved", "GIMP 2.10"))),
-                _png([(b"tEXt", b"Software\0x")]), _docx("2026-01-01T09:00:00Z", "2026-01-04T10:30:00Z")):
+    for raw in (
+        _pdf_rewritten_with_history(),
+        _jpeg(),
+        _jpeg(_tiff(CAMERA, TAKEN), _xmp(("saved", "GIMP 2.10"))),
+        _png([(b"tEXt", b"Software\0x")]),
+        _docx("2026-01-01T09:00:00Z", "2026-01-04T10:30:00Z"),
+    ):
         report = a.analyse(raw)
         assert _conforms(schema, report) == [], _conforms(schema, report)
         assert not re.search(r"\d\s*%(?!%)", a.render(report)), "no percentage"

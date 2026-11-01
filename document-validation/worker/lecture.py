@@ -95,11 +95,18 @@ def request(identification: dict, kinds=None) -> dict:
     """
     languages = identification.get("languages") or []
     language = "en" if languages[:1] == ["en"] else "fr"
-    kind = next((k for k in (kinds if kinds is not None else identify.load_kinds()) if k["kindId"] == identification.get("kindUsed")), None)
+    kind = next(
+        (
+            k
+            for k in (kinds if kinds is not None else identify.load_kinds())
+            if k["kindId"] == identification.get("kindUsed")
+        ),
+        None,
+    )
     if kind and kind.get("retrieval"):
         built = identify.retrieval_request(kind, language, identification["asOf"])
         built.pop("kindId", None)
-        built["question"] = f'{built["question"]} {_QUESTION[language]}'
+        built["question"] = f"{built['question']} {_QUESTION[language]}"
         return built
     return {
         "sources": [identify.LAW_CORPUS_SOURCE],

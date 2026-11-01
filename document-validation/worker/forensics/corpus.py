@@ -35,10 +35,25 @@ from reportlab.pdfgen import canvas
 SEED = 176
 KINDS = ("pay-stub", "bank-statement", "employment-letter", "invoice")
 
-EMPLOYERS = ("Maison Verdoyante (fictif)", "Atelier des Trois Rivières (fictif)", "Groupe Bellerive (fictif)", "Cuisines du Nord (fictif)",
-             "Studio Pivoine (fictif)", "Transports Lac-Argent (fictif)", "Boulangerie Soleil Levant (fictif)", "Clinique Étoile (fictif)")
+EMPLOYERS = (
+    "Maison Verdoyante (fictif)",
+    "Atelier des Trois Rivières (fictif)",
+    "Groupe Bellerive (fictif)",
+    "Cuisines du Nord (fictif)",
+    "Studio Pivoine (fictif)",
+    "Transports Lac-Argent (fictif)",
+    "Boulangerie Soleil Levant (fictif)",
+    "Clinique Étoile (fictif)",
+)
 BANKS = ("Banque des Cantons (fictif)", "Caisse du Plateau (fictif)", "Banque Rive-Sud (fictif)")
-PEOPLE = ("Alex Tremblay-Demo", "Camille Roy-Demo", "Sam Gagnon-Demo", "Jordan Lavoie-Demo", "Maxime Côté-Demo", "Charlie Bouchard-Demo")
+PEOPLE = (
+    "Alex Tremblay-Demo",
+    "Camille Roy-Demo",
+    "Sam Gagnon-Demo",
+    "Jordan Lavoie-Demo",
+    "Maxime Côté-Demo",
+    "Charlie Bouchard-Demo",
+)
 FIXED_DATE = datetime(2026, 1, 15, 9, 0, 0)
 
 # The ordinary workflows and the tools they need ("" = Python only). Tools: pikepdf and pypdf are libraries; gs is Ghostscript.
@@ -52,8 +67,15 @@ NEGATIVE_WORKFLOWS = {
     "printed-to-pdf": "gs",
     "compressed": "gs",
 }
-TAMPER_TYPES = ("incremental-amount", "rewritten-amount", "white-rectangle-text", "other-font-figure", "pasted-image",
-                "jpeg-copy-move", "jpeg-resaved-after-edit")
+TAMPER_TYPES = (
+    "incremental-amount",
+    "rewritten-amount",
+    "white-rectangle-text",
+    "other-font-figure",
+    "pasted-image",
+    "jpeg-copy-move",
+    "jpeg-resaved-after-edit",
+)
 
 
 def tools() -> dict:
@@ -74,17 +96,33 @@ def _lines(kind, person, issuer, rng):
     """``[(text, is_amount)]`` for one page; the amount line is the one a forger would change."""
     base = [(issuer, False), (f"{person}", False), ("Date: 2026-01-15", False)]
     if kind == "pay-stub":
-        body = [("Releve de paie - periode du 2026-01-01 au 2026-01-14", False), ("Heures: 80", False),
-                (f"Salaire brut: {_money(rng)} $", True), ("Retenues: voir detail", False)]
+        body = [
+            ("Releve de paie - periode du 2026-01-01 au 2026-01-14", False),
+            ("Heures: 80", False),
+            (f"Salaire brut: {_money(rng)} $", True),
+            ("Retenues: voir detail", False),
+        ]
     elif kind == "bank-statement":
-        body = [("Releve de compte - janvier 2026", False), ("Depot salaire", False),
-                (f"Solde de cloture: {_money(rng)} $", True), ("Frais mensuels: 0.00 $", False)]
+        body = [
+            ("Releve de compte - janvier 2026", False),
+            ("Depot salaire", False),
+            (f"Solde de cloture: {_money(rng)} $", True),
+            ("Frais mensuels: 0.00 $", False),
+        ]
     elif kind == "employment-letter":
-        body = [("Lettre d'emploi", False), ("Cette personne est employee depuis 2024-03-04.", False),
-                (f"Salaire annuel: {_money(rng)} $", True), ("Poste: a temps plein", False)]
+        body = [
+            ("Lettre d'emploi", False),
+            ("Cette personne est employee depuis 2024-03-04.", False),
+            (f"Salaire annuel: {_money(rng)} $", True),
+            ("Poste: a temps plein", False),
+        ]
     else:
-        body = [("Facture no. 2026-0042", False), ("Prestation de services", False),
-                (f"Total a payer: {_money(rng)} $", True), ("Echeance: 30 jours", False)]
+        body = [
+            ("Facture no. 2026-0042", False),
+            ("Prestation de services", False),
+            (f"Total a payer: {_money(rng)} $", True),
+            ("Echeance: 30 jours", False),
+        ]
     return base + body
 
 
@@ -169,11 +207,21 @@ def _incremental_amount(pdf_bytes, old, new):
         size = int(pdf.trailer["/Size"])
     changed = data.replace(f"({old})".encode("latin-1"), f"({new})".encode("latin-1"))
     previous = int(re.findall(rb"startxref\s+(\d+)", pdf_bytes)[-1])
-    body = b"\n%d %d obj\n<< /Length %d >>\nstream\n" % (objgen[0], objgen[1], len(changed)) + changed + b"\nendstream\nendobj\n"
+    body = (
+        b"\n%d %d obj\n<< /Length %d >>\nstream\n" % (objgen[0], objgen[1], len(changed))
+        + changed
+        + b"\nendstream\nendobj\n"
+    )
     offset = len(pdf_bytes) + 1
     xref_at = len(pdf_bytes) + len(body)
     xref = b"xref\n%d 1\n%010d %05d n \n" % (objgen[0], offset, objgen[1])
-    trailer = b"trailer\n<< /Size %d /Root %d %d R /Prev %d >>\nstartxref\n%d\n%%%%EOF\n" % (size, root_ref[0], root_ref[1], previous, xref_at)
+    trailer = b"trailer\n<< /Size %d /Root %d %d R /Prev %d >>\nstartxref\n%d\n%%%%EOF\n" % (
+        size,
+        root_ref[0],
+        root_ref[1],
+        previous,
+        xref_at,
+    )
     return pdf_bytes + body + xref + trailer
 
 
@@ -215,32 +263,102 @@ def tampered_set(per_type=10, seed=SEED):
             holder = io.BytesIO()
             image.save(holder, format="PNG")
             from reportlab.lib.utils import ImageReader
+
             pdf.drawImage(ImageReader(io.BytesIO(holder.getvalue())), 380, 640, width=160, height=50)
 
         tag = f"{index:02d}-{kind}"
-        items.append(_item(f"incremental-amount-{tag}", "tampered", "incremental-amount", "pdf", _incremental_amount(pdf_bytes, amount, forged), kind,
-                           {**truth, "tool": "append-only revision"}, issuer))
-        items.append(_item(f"rewritten-amount-{tag}", "tampered", "rewritten-amount", "pdf", _rewritten_amount(pdf_bytes, amount, forged), kind,
-                           {**truth, "tool": "pikepdf"}, issuer))
-        items.append(_item(f"white-rectangle-text-{tag}", "tampered", "white-rectangle-text", "pdf",
-                           _stamp_overlay(pdf_bytes, functools.partial(over, font="Helvetica")), kind, {**truth, "tool": OVERLAY_TOOL}, issuer))
-        items.append(_item(f"other-font-figure-{tag}", "tampered", "other-font-figure", "pdf",
-                           _stamp_overlay(pdf_bytes, functools.partial(over, font="Courier-Bold")), kind, {**truth, "tool": OVERLAY_TOOL}, issuer))
-        items.append(_item(f"pasted-image-{tag}", "tampered", "pasted-image", "pdf", _stamp_overlay(pdf_bytes, logo), kind,
-                           {"changed": "logo-or-signature", "page": 1, "box": [380, 640, 540, 690], "tool": OVERLAY_TOOL}, issuer))
+        items.append(
+            _item(
+                f"incremental-amount-{tag}",
+                "tampered",
+                "incremental-amount",
+                "pdf",
+                _incremental_amount(pdf_bytes, amount, forged),
+                kind,
+                {**truth, "tool": "append-only revision"},
+                issuer,
+            )
+        )
+        items.append(
+            _item(
+                f"rewritten-amount-{tag}",
+                "tampered",
+                "rewritten-amount",
+                "pdf",
+                _rewritten_amount(pdf_bytes, amount, forged),
+                kind,
+                {**truth, "tool": "pikepdf"},
+                issuer,
+            )
+        )
+        items.append(
+            _item(
+                f"white-rectangle-text-{tag}",
+                "tampered",
+                "white-rectangle-text",
+                "pdf",
+                _stamp_overlay(pdf_bytes, functools.partial(over, font="Helvetica")),
+                kind,
+                {**truth, "tool": OVERLAY_TOOL},
+                issuer,
+            )
+        )
+        items.append(
+            _item(
+                f"other-font-figure-{tag}",
+                "tampered",
+                "other-font-figure",
+                "pdf",
+                _stamp_overlay(pdf_bytes, functools.partial(over, font="Courier-Bold")),
+                kind,
+                {**truth, "tool": OVERLAY_TOOL},
+                issuer,
+            )
+        )
+        items.append(
+            _item(
+                f"pasted-image-{tag}",
+                "tampered",
+                "pasted-image",
+                "pdf",
+                _stamp_overlay(pdf_bytes, logo),
+                kind,
+                {"changed": "logo-or-signature", "page": 1, "box": [380, 640, 540, 690], "tool": OVERLAY_TOOL},
+                issuer,
+            )
+        )
 
         picture, _, image_box = page_image(kind, person, issuer, rng)
         x0, y0, x1, y1 = image_box
         copy = picture.copy()
         copy.paste(picture.crop((x0, y0 + 70, x1 + 40, y1 + 70)), (x0, y0))
-        items.append(_item(f"jpeg-copy-move-{tag}", "tampered", "jpeg-copy-move", "image", _jpeg(copy, _exif()), kind,
-                           {"changed": "region-copied", "box": [x0, y0, x1 + 40, y1], "tool": "Pillow"}, issuer))
+        items.append(
+            _item(
+                f"jpeg-copy-move-{tag}",
+                "tampered",
+                "jpeg-copy-move",
+                "image",
+                _jpeg(copy, _exif()),
+                kind,
+                {"changed": "region-copied", "box": [x0, y0, x1 + 40, y1], "tool": "Pillow"},
+                issuer,
+            )
+        )
         edited = picture.copy()
         ImageDraw.Draw(edited).rectangle([x0, y0, x1, y1], fill=(250, 250, 247))
         ImageDraw.Draw(edited).text((x0, y0 + 4), forged, fill=(20, 20, 20))
-        items.append(_item(f"jpeg-resaved-after-edit-{tag}", "tampered", "jpeg-resaved-after-edit", "image",
-                           _jpeg(edited, _exif(software="Editeur d'images 25.0", when="2026:02:20 18:30:00")), kind,
-                           {"changed": "amount", "box": [x0, y0, x1, y1], "tool": "Pillow"}, issuer))
+        items.append(
+            _item(
+                f"jpeg-resaved-after-edit-{tag}",
+                "tampered",
+                "jpeg-resaved-after-edit",
+                "image",
+                _jpeg(edited, _exif(software="Editeur d'images 25.0", when="2026:02:20 18:30:00")),
+                kind,
+                {"changed": "amount", "box": [x0, y0, x1, y1], "tool": "Pillow"},
+                issuer,
+            )
+        )
     return items
 
 
@@ -257,6 +375,7 @@ def _merged(pdf_bytes, other_bytes):
 
 def _annotated(pdf_bytes):
     from pypdf.annotations import FreeText
+
     writer = PdfWriter(clone_from=PdfReader(io.BytesIO(pdf_bytes)))
     writer.add_annotation(0, FreeText(text="Recu - signe", rect=(380, 60, 540, 90), font_size="10pt"))
     out = io.BytesIO()
@@ -274,7 +393,9 @@ def _form_filled(kind, person, issuer, rng):
     pdf.showPage()
     pdf.save()
     writer = PdfWriter(clone_from=PdfReader(io.BytesIO(buffer.getvalue())))
-    writer.update_page_form_field_values(writer.pages[0], {"nom": person, "montant": _money(rng)}, auto_regenerate=False)
+    writer.update_page_form_field_values(
+        writer.pages[0], {"nom": person, "montant": _money(rng)}, auto_regenerate=False
+    )
     out = io.BytesIO()
     writer.write(out)
     return out.getvalue()
@@ -288,14 +409,20 @@ def _qpdf_resaved(pdf_bytes):
 
 
 def _scanned(picture, rng):
-    tilted = picture.rotate(rng.uniform(-1.2, 1.2), fillcolor=(245, 245, 242), resample=Image.BICUBIC).filter(ImageFilter.GaussianBlur(0.8))
+    tilted = picture.rotate(rng.uniform(-1.2, 1.2), fillcolor=(245, 245, 242), resample=Image.BICUBIC).filter(
+        ImageFilter.GaussianBlur(0.8)
+    )
     out = io.BytesIO()
-    tilted.convert("L").save(out, format="PDF", resolution=150.0, creationDate=FIXED_DATE.timetuple(), modDate=FIXED_DATE.timetuple())
+    tilted.convert("L").save(
+        out, format="PDF", resolution=150.0, creationDate=FIXED_DATE.timetuple(), modDate=FIXED_DATE.timetuple()
+    )
     return out.getvalue()
 
 
 def _photographed(picture, rng, with_exif):
-    shot = picture.rotate(rng.uniform(-3, 3), fillcolor=(120, 118, 110), resample=Image.BICUBIC).filter(ImageFilter.GaussianBlur(1.1))
+    shot = picture.rotate(rng.uniform(-3, 3), fillcolor=(120, 118, 110), resample=Image.BICUBIC).filter(
+        ImageFilter.GaussianBlur(1.1)
+    )
     return _jpeg(shot, _exif() if with_exif else None, quality=72)
 
 
@@ -304,8 +431,24 @@ def _ghostscript(pdf_bytes, setting):
         source, target = f"{folder}/in.pdf", f"{folder}/out.pdf"
         with open(source, "wb") as handle:
             handle.write(pdf_bytes)
-        subprocess.run(["gs", "-q", "-dNOPAUSE", "-dBATCH", "-sDEVICE=pdfwrite", f"-dPDFSETTINGS={setting}", f"-sOutputFile={target}", source],
-                       check=True, capture_output=True, env={"PATH": os.environ["PATH"], "SOURCE_DATE_EPOCH": str(int(FIXED_DATE.replace(tzinfo=timezone.utc).timestamp()))})
+        subprocess.run(
+            [
+                "gs",
+                "-q",
+                "-dNOPAUSE",
+                "-dBATCH",
+                "-sDEVICE=pdfwrite",
+                f"-dPDFSETTINGS={setting}",
+                f"-sOutputFile={target}",
+                source,
+            ],
+            check=True,
+            capture_output=True,
+            env={
+                "PATH": os.environ["PATH"],
+                "SOURCE_DATE_EPOCH": str(int(FIXED_DATE.replace(tzinfo=timezone.utc).timestamp())),
+            },
+        )
         with open(target, "rb") as handle:
             return handle.read()
 
@@ -346,7 +489,16 @@ def negatives_set(per_workflow=35, seed=SEED + 1):
 
 
 def _item(identifier, role, variant, media, data, kind, truth, issuer):
-    return {"id": identifier, "role": role, "variant": variant, "media": media, "documentKind": kind, "issuer": issuer, "truth": truth, "bytes": data}
+    return {
+        "id": identifier,
+        "role": role,
+        "variant": variant,
+        "media": media,
+        "documentKind": kind,
+        "issuer": issuer,
+        "truth": truth,
+        "bytes": data,
+    }
 
 
 def build(per_type=10, per_workflow=35):

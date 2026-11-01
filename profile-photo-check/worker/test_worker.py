@@ -45,8 +45,16 @@ def test_compare_faces_false_or_the_text_false_means_no_comparison():
     for flag in (False, "false", "False"):
         out = worker._inspect({"photosBase64": photos("face-a", "face-b"), "compareFaces": flag}, engine=Engine())
         assert out["identity"]["status"] == "NOT_COMPARED", flag
-    assert worker._inspect({"photosBase64": photos("face-a", "face-b")}, engine=Engine())["identity"]["status"] == "MISMATCH"
-    assert worker._inspect({"photosBase64": photos("face-a", "face-b"), "compareFaces": "true"}, engine=Engine())["identity"]["status"] == "MISMATCH"
+    assert (
+        worker._inspect({"photosBase64": photos("face-a", "face-b")}, engine=Engine())["identity"]["status"]
+        == "MISMATCH"
+    )
+    assert (
+        worker._inspect({"photosBase64": photos("face-a", "face-b"), "compareFaces": "true"}, engine=Engine())[
+            "identity"
+        ]["status"]
+        == "MISMATCH"
+    )
     try:
         worker._inspect({"photosBase64": photos("face-a"), "compareFaces": "maybe"}, engine=Engine())
     except worker.InvalidJobPayload:
@@ -55,7 +63,13 @@ def test_compare_faces_false_or_the_text_false_means_no_comparison():
 
 
 def test_inspect_refuses_an_unusable_payload_by_name():
-    for payload in [{}, {"photosBase64": []}, {"photosBase64": "x"}, {"photosBase64": ["!!"]}, {"photosBase64": ["QQ=="] * 13}]:
+    for payload in [
+        {},
+        {"photosBase64": []},
+        {"photosBase64": "x"},
+        {"photosBase64": ["!!"]},
+        {"photosBase64": ["QQ=="] * 13},
+    ]:
         try:
             worker._inspect(payload, engine=Engine())
         except worker.InvalidJobPayload:
@@ -91,7 +105,13 @@ def test_assess_reads_counts_a_blueprint_rendered_as_text():
 
 def test_assess_refuses_counts_out_of_range():
     facts = json.dumps({"photos": [], "identity": {"status": "NOT_COMPARABLE", "mismatch": [], "compared": 0}})
-    for counts in [{"minPhotos": 0, "maxPhotos": 6, "minFacePhotos": 2}, {"minPhotos": "four", "maxPhotos": 6, "minFacePhotos": 2}, {"minPhotos": "-4", "maxPhotos": 6, "minFacePhotos": 2}, {"minPhotos": 4, "maxPhotos": 99, "minFacePhotos": 2}, {"minPhotos": True, "maxPhotos": 6, "minFacePhotos": 2}]:
+    for counts in [
+        {"minPhotos": 0, "maxPhotos": 6, "minFacePhotos": 2},
+        {"minPhotos": "four", "maxPhotos": 6, "minFacePhotos": 2},
+        {"minPhotos": "-4", "maxPhotos": 6, "minFacePhotos": 2},
+        {"minPhotos": 4, "maxPhotos": 99, "minFacePhotos": 2},
+        {"minPhotos": True, "maxPhotos": 6, "minFacePhotos": 2},
+    ]:
         try:
             worker._assess(dict(counts, facts=facts))
         except worker.InvalidJobPayload:
@@ -127,10 +147,20 @@ def test_protocol_conformance():
     assert declaration["bindings"] == ["job.photo.*"]  # bindings come from worker.yaml, not from source literals
     assert "job.photo.*" not in SOURCE
     assert declaration.get("concurrency") == 1  # prefetch 1 for CPU/GPU-bound work
-    assert not re.search(r"orazaka\.photo\.|featureKey", SOURCE.replace("`featureKey`", ""))  # never branches on a capability name
+    assert not re.search(
+        r"orazaka\.photo\.|featureKey", SOURCE.replace("`featureKey`", "")
+    )  # never branches on a capability name
     assert set(worker.HANDLERS) == {"job.photo.inspect", "job.photo.assess"}
-    assert {worker.GUARD_REFUSAL, worker.INPUT_INVALID, worker.EXECUTOR_FAULT, worker.PLATFORM_UNAVAILABLE, worker.TIMEOUT} == {"GUARD_REFUSAL", "INPUT_INVALID", "EXECUTOR_FAULT", "PLATFORM_UNAVAILABLE", "TIMEOUT"}
-    assert "INPUT_INVALID" in SOURCE and SOURCE.count("cause\": INPUT_INVALID") == 1  # only from the checked-payload branch
+    assert {
+        worker.GUARD_REFUSAL,
+        worker.INPUT_INVALID,
+        worker.EXECUTOR_FAULT,
+        worker.PLATFORM_UNAVAILABLE,
+        worker.TIMEOUT,
+    } == {"GUARD_REFUSAL", "INPUT_INVALID", "EXECUTOR_FAULT", "PLATFORM_UNAVAILABLE", "TIMEOUT"}
+    assert (
+        "INPUT_INVALID" in SOURCE and SOURCE.count('cause": INPUT_INVALID') == 1
+    )  # only from the checked-payload branch
 
 
 def test_the_embedding_vectors_are_not_in_any_output_key():

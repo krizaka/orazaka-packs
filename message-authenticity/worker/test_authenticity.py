@@ -24,13 +24,21 @@ class Fixed:
 
 def test_language_is_picked_from_the_words_or_not_at_all():
     assert language.detect(FR) == "fr" and language.detect(EN) == "en"
-    assert language.detect("ok ok ok") == "other" and language.detect("") == "other" and language.detect("12345 678") == "other"
+    assert (
+        language.detect("ok ok ok") == "other"
+        and language.detect("") == "other"
+        and language.detect("12345 678") == "other"
+    )
     assert language.detect("Das ist ein Satz über Wandern und Kochen mit Freunden am Wochenende") == "other"
 
 
 def test_levels_follow_the_thresholds_of_the_language():
     t = RULESET["languages"]["fr"]
-    assert rules.level(t["high"], t) == "HIGH" and rules.level(t["mid"], t) == "MID" and rules.level(t["mid"] - 0.01, t) == "LOW"
+    assert (
+        rules.level(t["high"], t) == "HIGH"
+        and rules.level(t["mid"], t) == "MID"
+        and rules.level(t["mid"] - 0.01, t) == "LOW"
+    )
 
 
 def test_a_short_text_or_an_unknown_language_is_unavailable_never_guessed():
@@ -71,7 +79,9 @@ def test_a_payload_that_is_not_a_text_is_refused_by_name():
 
 
 def test_the_log_never_carries_the_text_or_the_level():
-    for line in re.findall(r"print\(f?\"\[authenticity\][^\n]*", open(os.path.join(worker.HERE, "authenticity_worker.py")).read()):
+    for line in re.findall(
+        r"print\(f?\"\[authenticity\][^\n]*", open(os.path.join(worker.HERE, "authenticity_worker.py")).read()
+    ):
         assert not re.search(r"text|detector|level|score|result|payload", line), line
 
 
@@ -85,7 +95,10 @@ def test_protocol_conformance():
 
 
 def test_the_worker_writes_nothing_for_anyone():
-    src = open(os.path.join(worker.HERE, "authenticity_worker.py")).read() + open(os.path.join(worker.HERE, "classifier.py")).read()
+    src = (
+        open(os.path.join(worker.HERE, "authenticity_worker.py")).read()
+        + open(os.path.join(worker.HERE, "classifier.py")).read()
+    )
     assert not re.search(r"\.generate\(|AutoModelForCausalLM|AutoModelForSeq2SeqLM|chat\.completions", src)
 
 

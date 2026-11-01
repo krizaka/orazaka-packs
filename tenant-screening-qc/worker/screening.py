@@ -129,7 +129,11 @@ def _validate_rule_value(where: str, stage: dict, rule: dict) -> None:
 
 def _validate_rule(ruleset: dict, stage: dict, rule: object) -> dict:
     where = f"cutoffs.{stage['id']}"
-    if not isinstance(rule, dict) or set(rule) - {"id", "fact", "op", "value"} or not {"id", "fact", "op", "value"} <= set(rule):
+    if (
+        not isinstance(rule, dict)
+        or set(rule) - {"id", "fact", "op", "value"}
+        or not {"id", "fact", "op", "value"} <= set(rule)
+    ):
         raise InvalidInput(f"{where}: a rule is exactly {{id, fact, op, value}}")
     if not isinstance(rule["id"], str) or not RULE_ID.match(rule["id"]):
         raise InvalidInput(f"{where}: a rule id is 3 to 40 upper-case letters, digits or dashes")
@@ -203,7 +207,14 @@ def plan(payload: dict) -> dict:
         raise InvalidInput("'creditCap' cannot pay the first stage")
     applicant_pays = _bool(payload.get("applicantPaysFees"), "applicantPaysFees")
     stages = [
-        {"id": s["id"], "purpose": s["purpose"], "credits": s["credits"], "facts": s["facts"], "cutoffs": cutoffs[s["id"]], "cutoffSource": "MANAGER" if s["id"] in (payload.get("cutoffs") or {}) else "PACK"}
+        {
+            "id": s["id"],
+            "purpose": s["purpose"],
+            "credits": s["credits"],
+            "facts": s["facts"],
+            "cutoffs": cutoffs[s["id"]],
+            "cutoffSource": "MANAGER" if s["id"] in (payload.get("cutoffs") or {}) else "PACK",
+        }
         for s in ruleset["stages"]
     ]
     result = {
@@ -226,10 +237,16 @@ def consent(payload: dict) -> dict:
     if purpose not in ("DOCUMENTS", "COURT_RECORDS", "CREDIT"):
         raise InvalidInput("'purpose' is DOCUMENTS, COURT_RECORDS or CREDIT")
     granted = consent_granted(purpose, payload.get("consentedPurposes"))
-    return {"purpose": purpose, "status": GRANTED if granted else REFUSED_CONSENT, "reason": None if granted else "NO_CONSENT"}
+    return {
+        "purpose": purpose,
+        "status": GRANTED if granted else REFUSED_CONSENT,
+        "reason": None if granted else "NO_CONSENT",
+    }
 
 
-def _stage_result(stage: dict, subject_ref: str, outcome: str, facts: dict, credits: int, refusal: Optional[str] = None) -> dict:
+def _stage_result(
+    stage: dict, subject_ref: str, outcome: str, facts: dict, credits: int, refusal: Optional[str] = None
+) -> dict:
     charged = credits > 0 and outcome not in UNAVAILABLE
     result = {
         "stage": stage["id"],
@@ -257,9 +274,13 @@ def documents(payload: dict) -> dict:
     facts = {
         "majorSignals": sum(1 for level in levels if level in ruleset["documents"]["majorLevels"]),
         "unusualSignals": sum(1 for level in levels if level in ruleset["documents"]["unusualLevels"]),
-        "leaseFailures": 0 if lease is None else sum(1 for f in lease["findings"] if isinstance(f, dict) and f.get("verdict") == "FAIL"),
+        "leaseFailures": 0
+        if lease is None
+        else sum(1 for f in lease["findings"] if isinstance(f, dict) and f.get("verdict") == "FAIL"),
     }
-    return _stage_result(stage, plan_["subjectRef"], "SIGNALS" if facts["majorSignals"] else "CLEAR", facts, stage["credits"])
+    return _stage_result(
+        stage, plan_["subjectRef"], "SIGNALS" if facts["majorSignals"] else "CLEAR", facts, stage["credits"]
+    )
 
 
 def engine_stage_result(stage: dict, subject_ref: str, answer: dict) -> dict:
@@ -274,7 +295,9 @@ def engine_stage_result(stage: dict, subject_ref: str, answer: dict) -> dict:
     if outcome not in ENGINE_OUTCOMES:
         raise InvalidInput(f"'{where}.outcome' is one of {', '.join(ENGINE_OUTCOMES)}")
     if (refusal is None) == (outcome == "REFUSED") or (refusal is not None and refusal not in ENGINE_REFUSALS):
-        raise InvalidInput(f"'{where}.refusal' is one of {', '.join(ENGINE_REFUSALS)} exactly when the outcome is REFUSED")
+        raise InvalidInput(
+            f"'{where}.refusal' is one of {', '.join(ENGINE_REFUSALS)} exactly when the outcome is REFUSED"
+        )
     if category not in ENGINE_CATEGORIES or (category != "NONE" and outcome != "MATCH"):
         raise InvalidInput(f"'{where}.category' is one of {', '.join(ENGINE_CATEGORIES)}, and NONE unless it matched")
     if isinstance(calls, bool) or calls not in (0, 1) or (calls == 1) != (outcome in ENGINE_ANSWERED):
@@ -310,14 +333,22 @@ def cutoff(payload: dict) -> dict:
         stops["code"] = REFUSAL_CODES.get(result.get("refusal"), result["outcome"])
     else:
         spent += result["credits"]
-        hit = next((rule for rule in stage["cutoffs"] if rule_holds(rule, dict(result["facts"], outcome=result["outcome"]))), None)
+        hit = next(
+            (rule for rule in stage["cutoffs"] if rule_holds(rule, dict(result["facts"], outcome=result["outcome"]))),
+            None,
+        )
         if hit:
             stops.update(code="CUTOFF", ruleId=hit["id"], ruleSource=stage.get("cutoffSource", "PACK"))
         elif following and plan_["creditCap"] and spent + following["credits"] > plan_["creditCap"]:
             stops["code"] = "BUDGET"
         else:
             stops = {"decision": CONTINUE, "code": "NONE", "ruleId": None, "ruleSource": None}
-    decision = dict(stops, stage=stage_id, spentCredits=spent, next=None if stops["decision"] == STOP or not following else following["id"])
+    decision = dict(
+        stops,
+        stage=stage_id,
+        spentCredits=spent,
+        next=None if stops["decision"] == STOP or not following else following["id"],
+    )
     return dict(decision, decisionJson=json.dumps(decision))
 
 
@@ -345,16 +376,18 @@ def report(payload: dict) -> dict:
                 state = "RAN"
             if gate["decision"] == STOP and stop is None:
                 stop = dict(gate, stage=sid)
-        entries.append({
-            "stage": sid,
-            "purpose": stage["purpose"],
-            "state": state,
-            "outcome": outcome,
-            "facts": facts,
-            "consent": consented if consented else None,
-            "charged": bool(result and result["charged"]),
-            "credits": result["credits"] if result and result["charged"] else 0,
-        })
+        entries.append(
+            {
+                "stage": sid,
+                "purpose": stage["purpose"],
+                "state": state,
+                "outcome": outcome,
+                "facts": facts,
+                "consent": consented if consented else None,
+                "charged": bool(result and result["charged"]),
+                "credits": result["credits"] if result and result["charged"] else 0,
+            }
+        )
     total = sum(e["credits"] for e in entries)
     if stop is None:
         status = "COMPLETED"
@@ -367,7 +400,9 @@ def report(payload: dict) -> dict:
         limits.append("APPLICANT_PAYS_FEES_MAY_CONTRAVENE_CCQ_1904")
     # Law 25 s. 12.1: a stop that rests on a document signal is the manager's own rule (never the pack's): the report says so
     # and tells the applicant a person may review it. The evidence is named by stage, the record itself is not copied.
-    signal_stop = bool(stop and stop["code"] == "CUTOFF" and stop.get("ruleSource") == "MANAGER" and stop["stage"] == SIGNAL_STAGE)
+    signal_stop = bool(
+        stop and stop["code"] == "CUTOFF" and stop.get("ruleSource") == "MANAGER" and stop["stage"] == SIGNAL_STAGE
+    )
     if signal_stop:
         limits.append("MANAGER_RULE_ON_A_SIGNAL_APPLICANT_MAY_ASK_HUMAN_REVIEW_LAW_25_S12_1")
     body = {
@@ -381,8 +416,21 @@ def report(payload: dict) -> dict:
         "ruleId": stop["ruleId"] if stop else None,
         "ruleSource": stop.get("ruleSource") if stop else None,
         "stages": entries,
-        "ledger": {"unit": "credits", "payer": plan_["payer"], "creditCap": plan_["creditCap"], "total": total, "byStage": {e["stage"]: e["credits"] for e in entries}},
+        "ledger": {
+            "unit": "credits",
+            "payer": plan_["payer"],
+            "creditCap": plan_["creditCap"],
+            "total": total,
+            "byStage": {e["stage"]: e["credits"] for e in entries},
+        },
         "limits": limits,
-        **({"decisionBy": "MANAGER", "humanReview": {"available": True, "basis": "LAW_25_S12_1", "evidence": SIGNAL_STAGE}} if signal_stop else {}),
+        **(
+            {
+                "decisionBy": "MANAGER",
+                "humanReview": {"available": True, "basis": "LAW_25_S12_1", "evidence": SIGNAL_STAGE},
+            }
+            if signal_stop
+            else {}
+        ),
     }
     return {"report": body, "reportJson": json.dumps(body), "status": status}

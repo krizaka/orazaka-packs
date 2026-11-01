@@ -97,8 +97,17 @@ def _td3_or_td2(lines: list, fmt: str) -> dict:
         _check("dateOfExpiry", second[21:27], second[27]),
     ]
     if fmt == "TD3":
-        checks.append(_check("optionalData", optional, second[42]) if optional.strip(FILLER) else
-                      {"field": "optionalData", "value": optional, "expected": None, "found": None, "valid": second[42] in (FILLER, "0")})
+        checks.append(
+            _check("optionalData", optional, second[42])
+            if optional.strip(FILLER)
+            else {
+                "field": "optionalData",
+                "value": optional,
+                "expected": None,
+                "found": None,
+                "valid": second[42] in (FILLER, "0"),
+            }
+        )
         composite = second[0:10] + second[13:20] + second[21:43]
         checks.append(_check("composite", composite, second[43]))
     else:

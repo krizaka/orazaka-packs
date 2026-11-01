@@ -114,7 +114,10 @@ def test_unreadable_input_is_a_named_error():
 
 
 def _models_present():
-    return all(os.path.isfile(os.path.join(faces.models_dir(), n)) for n in ("face_detection_yunet_2023mar.onnx", "face_recognition_sface_2021dec.onnx"))
+    return all(
+        os.path.isfile(os.path.join(faces.models_dir(), n))
+        for n in ("face_detection_yunet_2023mar.onnx", "face_recognition_sface_2021dec.onnx")
+    )
 
 
 def _real_engine():
@@ -139,7 +142,11 @@ def test_real_models_find_the_face_and_the_same_person_in_a_mirrored_photo():
 
     original = open(os.path.join(HERE, "fixtures", "astronaut.jpg"), "rb").read()
     mirrored = cv2.imencode(".jpg", cv2.flip(cv2.imdecode(np.frombuffer(original, np.uint8), 1), 1))[1].tobytes()
-    facts = faces.inspect_photos([base64.b64encode(original).decode(), base64.b64encode(mirrored).decode(), _file_b64("gradient.jpg")], engine, RULESET)
+    facts = faces.inspect_photos(
+        [base64.b64encode(original).decode(), base64.b64encode(mirrored).decode(), _file_b64("gradient.jpg")],
+        engine,
+        RULESET,
+    )
     assert [p["kind"] for p in facts["photos"]] == ["FACE", "FACE", "NO_FACE"]
     assert facts["identity"]["status"] == "CONSISTENT" and facts["identity"]["compared"] == 2
 

@@ -67,7 +67,11 @@ def classify(faces: Sequence[Face], detector: dict) -> tuple[str, Optional[Face]
     least ``dominanceRatio`` times the area of the next one; otherwise the photo is a group.
     """
     counted = sorted(
-        (f for f in faces if f.score >= detector["scoreThreshold"] and f.height_ratio >= detector["minFaceHeightRatio"]),
+        (
+            f
+            for f in faces
+            if f.score >= detector["scoreThreshold"] and f.height_ratio >= detector["minFaceHeightRatio"]
+        ),
         key=lambda f: f.area,
         reverse=True,
     )
@@ -149,7 +153,11 @@ def inspect_photos(photos_base64: Sequence[object], engine: FaceEngine, ruleset:
         image = engine.decode(decode_base64(encoded))
         faces = engine.detect(image)
         kind, subject = classify(faces, detector)
-        counted = sum(1 for f in faces if f.score >= detector["scoreThreshold"] and f.height_ratio >= detector["minFaceHeightRatio"])
+        counted = sum(
+            1
+            for f in faces
+            if f.score >= detector["scoreThreshold"] and f.height_ratio >= detector["minFaceHeightRatio"]
+        )
         facts.append(PhotoFacts(index=index, kind=kind, face_count=counted))
         if subject is not None and compare:
             vectors[index] = engine.embed(image, subject)
@@ -194,7 +202,9 @@ class OpenCvEngine:
     def detect(self, image: object) -> Sequence[Face]:
         cfg = self._detector_config
         h, w = image.shape[:2]  # type: ignore[attr-defined]
-        detector = self._cv2.FaceDetectorYN.create(self._yunet_path, "", (w, h), cfg["scoreThreshold"] - 0.1, cfg["nmsThreshold"], cfg["topK"])
+        detector = self._cv2.FaceDetectorYN.create(
+            self._yunet_path, "", (w, h), cfg["scoreThreshold"] - 0.1, cfg["nmsThreshold"], cfg["topK"]
+        )
         _, rows = detector.detect(image)
         if rows is None:
             return []

@@ -12,6 +12,7 @@ CA is trusted when ``RABBITMQ_SSL_CA_FILE`` (or ``SPRING_RABBITMQ_SSL_CA_FILE``)
 checked against the certificate is ``RABBITMQ_SSL_SERVER_NAME``, else the host. The context always
 verifies the certificate and the host name — there is no "insecure" switch.
 """
+
 from __future__ import annotations
 
 import os

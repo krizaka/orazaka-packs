@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """The shared job loop (worker_loop.py). Run: python3 test_worker_loop.py — a fake channel, no broker."""
+
 import json
 import os
 import sys
@@ -27,7 +28,12 @@ class FakeChannel:
 def _deliver(handle, body, seen=None, message_id=None):
     channel = FakeChannel()
     on_message = loop.make_on_message("test", handle, set() if seen is None else seen)
-    on_message(channel, SimpleNamespace(delivery_tag=7, routing_key="job.test.do"), SimpleNamespace(message_id=message_id), body)
+    on_message(
+        channel,
+        SimpleNamespace(delivery_tag=7, routing_key="job.test.do"),
+        SimpleNamespace(message_id=message_id),
+        body,
+    )
     return channel
 
 
@@ -43,8 +49,12 @@ def test_the_routing_key_chooses_the_handler_and_an_unknown_key_is_refused():
 
 
 def test_a_handled_job_publishes_done_with_its_consumption_and_is_acknowledged():
-    channel = _deliver(lambda key, job: ({"ok": True}, {"tokens": 0}), json.dumps({"jobId": "j1", "payload": {}}).encode())
-    assert channel.published == [("orazaka.events", "job.j1.done", {"jobId": "j1", "result": {"ok": True}, "consumption": {"tokens": 0}})]
+    channel = _deliver(
+        lambda key, job: ({"ok": True}, {"tokens": 0}), json.dumps({"jobId": "j1", "payload": {}}).encode()
+    )
+    assert channel.published == [
+        ("orazaka.events", "job.j1.done", {"jobId": "j1", "result": {"ok": True}, "consumption": {"tokens": 0}})
+    ]
     assert channel.acked == [7] and channel.nacked == []
 
 

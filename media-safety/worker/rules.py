@@ -62,7 +62,10 @@ def _judge(checks: list, answer: object) -> Optional[list]:
     codes = []
     for check in checks:
         value = parsed.get(check["field"])
-        if not (isinstance(value, bool) or (isinstance(value, str) and value.strip().lower() in {"true", "false", "yes", "no", "oui", "non"})):
+        if not (
+            isinstance(value, bool)
+            or (isinstance(value, str) and value.strip().lower() in {"true", "false", "yes", "no", "oui", "non"})
+        ):
             return None
         if _yes(value):
             codes.append(check["id"])

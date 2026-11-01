@@ -7,6 +7,7 @@ Run: python3 test_identify.py   (or: python3 -m pytest test_identify.py -q)
 `kinds/*.json`: no model, no broker, no clock of its own. Every document below is fictional and written for this
 suite; no real template, form or agreement is quoted.
 """
+
 import json
 import os
 import re
@@ -36,11 +37,18 @@ def all_kinds():
 
 # --- The kinds, as data ------------------------------------------------------------------------------------------
 
+
 def test_the_kinds_the_adr_names_are_shipped():
     ids = {k["kindId"] for k in all_kinds()}
     assert ids >= {
-        "qc-residential-lease", "qc-visit-notice", "qc-condition-report", "qc-lease-modification-notice",
-        "qc-invoice", "qc-service-contract", "fr-residential-lease", "be-residential-lease",
+        "qc-residential-lease",
+        "qc-visit-notice",
+        "qc-condition-report",
+        "qc-lease-modification-notice",
+        "qc-invoice",
+        "qc-service-contract",
+        "fr-residential-lease",
+        "be-residential-lease",
     }
 
 
@@ -50,22 +58,30 @@ def test_each_kind_file_is_named_by_its_kind_and_is_coherent():
             continue
         kind = json.loads(path.read_text(encoding="utf-8"))
         assert path.stem == kind["kindId"], f"{path.name}: the file is named by its kindId"
-        assert kind["kindId"].startswith(kind["jurisdiction"].split("-")[0].lower() + "-"), f"{path.name}: kindId starts with its jurisdiction"
+        assert kind["kindId"].startswith(kind["jurisdiction"].split("-")[0].lower() + "-"), (
+            f"{path.name}: kindId starts with its jurisdiction"
+        )
         ids = [s["id"] for s in kind["signals"] + kind["jurisdictionHints"]]
         assert len(ids) == len(set(ids)), f"{path.name}: signal ids are unique"
-        for pattern in [s["pattern"] for s in kind["signals"] + kind["jurisdictionHints"] + kind["dateSignals"]] + kind["excludes"]:
+        for pattern in [s["pattern"] for s in kind["signals"] + kind["jurisdictionHints"] + kind["dateSignals"]] + kind[
+            "excludes"
+        ]:
             re.compile(pattern)  # a pattern that does not compile fails here, not on a user's document
         for date_signal in kind["dateSignals"]:
             assert re.compile(date_signal["pattern"]).groups >= 1, f"{path.name}: {date_signal['id']} captures the date"
         if kind["asOfFrom"] is not None:
-            assert kind["asOfFrom"] in [d["id"] for d in kind["dateSignals"]], f"{path.name}: asOfFrom names a date signal"
+            assert kind["asOfFrom"] in [d["id"] for d in kind["dateSignals"]], (
+                f"{path.name}: asOfFrom names a date signal"
+            )
 
 
 def test_a_promoted_kind_has_a_ruleset_that_exists_and_a_known_kind_has_none():
     for kind in all_kinds():
         if kind["status"] == "PROMOTED":
             assert kind["ruleset"], kind["kindId"]
-            assert (Path(rules.RULESETS_DIR) / kind["ruleset"]).is_dir(), f"{kind['kindId']}: no ruleset {kind['ruleset']}"
+            assert (Path(rules.RULESETS_DIR) / kind["ruleset"]).is_dir(), (
+                f"{kind['kindId']}: no ruleset {kind['ruleset']}"
+            )
             assert rules.rulesets_by_jurisdiction()[kind["jurisdiction"]].count(kind["ruleset"]) == 1
         elif kind["status"] == "KNOWN":
             assert kind["ruleset"] is None, f"{kind['kindId']} is only KNOWN: no ruleset yet"
@@ -79,6 +95,7 @@ def test_no_ruleset_is_orphaned_by_the_kinds():
 
 # --- ADR-072 applied to kinds: every kind's own fixtures, and every signal's pass/fail pair ------------------------
 
+
 def test_every_declared_fixture_gives_its_recorded_identification():
     seen = 0
     for kind in all_kinds():
@@ -87,7 +104,9 @@ def test_every_declared_fixture_gives_its_recorded_identification():
             got = ident(text)
             where = f"{kind['kindId']} / {fixture['file']}"
             if fixture["expect"] == "MATCH":
-                assert got["detectedKind"] == kind["kindId"], f"{where}: detected {got['detectedKind']} ({got['candidates']})"
+                assert got["detectedKind"] == kind["kindId"], (
+                    f"{where}: detected {got['detectedKind']} ({got['candidates']})"
+                )
                 assert got["jurisdiction"] == kind["jurisdiction"], where
                 assert got["documentDate"] == fixture["documentDate"], f"{where}: date {got['documentDate']}"
                 assert got["asOfSource"] == ("DOCUMENT" if fixture["documentDate"] else "TODAY"), where
@@ -111,14 +130,21 @@ def test_every_signal_hits_a_fixture_of_its_kind_and_misses_another_document():
         own = [corpus[f["file"]] for f in kind["fixtures"] if f["expect"] == "MATCH"]
         for signal in kind["signals"]:
             compiled = re.compile(signal["pattern"])
-            assert any(compiled.search(t) for t in own), f"{kind['kindId']}.{signal['id']}: no fixture of the kind carries it"
-            assert not all(compiled.search(t) for t in corpus.values()), f"{kind['kindId']}.{signal['id']}: carried by every document, it tells nothing"
+            assert any(compiled.search(t) for t in own), (
+                f"{kind['kindId']}.{signal['id']}: no fixture of the kind carries it"
+            )
+            assert not all(compiled.search(t) for t in corpus.values()), (
+                f"{kind['kindId']}.{signal['id']}: carried by every document, it tells nothing"
+            )
             foreign = [t for f, t in corpus.items() if f in owner and owner[f] != kind["kindId"]]
             if signal["weight"] >= 2:
-                assert not any(compiled.search(t) for t in foreign), f"{kind['kindId']}.{signal['id']}: a title found in another kind's document"
+                assert not any(compiled.search(t) for t in foreign), (
+                    f"{kind['kindId']}.{signal['id']}: a title found in another kind's document"
+                )
 
 
 # --- The documents of the issue ----------------------------------------------------------------------------------
+
 
 def test_a_filled_visit_notice_is_a_visit_notice_in_both_languages_and_never_a_lease():
     for name, lang in (("fr-filled.txt", "fr"), ("en-filled.txt", "en")):
@@ -131,13 +157,21 @@ def test_a_filled_visit_notice_is_a_visit_notice_in_both_languages_and_never_a_l
 
 
 def test_the_blank_forms_are_their_kind_not_a_lease_and_have_no_date():
-    blanks = [("qc-visit-notice", "fr-blank.txt"), ("qc-visit-notice", "en-blank.txt"),
-              ("qc-condition-report", "fr-blank.txt"), ("qc-condition-report", "en-blank.txt"),
-              ("qc-residential-lease", "fr-blank.txt"), ("qc-invoice", "fr-blank.txt"), ("qc-service-contract", "fr-blank.txt")]
+    blanks = [
+        ("qc-visit-notice", "fr-blank.txt"),
+        ("qc-visit-notice", "en-blank.txt"),
+        ("qc-condition-report", "fr-blank.txt"),
+        ("qc-condition-report", "en-blank.txt"),
+        ("qc-residential-lease", "fr-blank.txt"),
+        ("qc-invoice", "fr-blank.txt"),
+        ("qc-service-contract", "fr-blank.txt"),
+    ]
     for kind_id, name in blanks:
         got = ident(read(kind_id, name))
         assert got["kindUsed"] == kind_id, f"{kind_id}/{name}: {got['kindUsed']}"
-        assert got["documentDate"] is None and got["asOfSource"] == "TODAY" and got["asOf"] == TODAY, f"{kind_id}/{name}: an unfilled date is not a date"
+        assert got["documentDate"] is None and got["asOfSource"] == "TODAY" and got["asOf"] == TODAY, (
+            f"{kind_id}/{name}: an unfilled date is not a date"
+        )
 
 
 def test_a_notice_or_a_condition_report_is_judged_by_its_own_ruleset_never_the_lease():
@@ -145,7 +179,9 @@ def test_a_notice_or_a_condition_report_is_judged_by_its_own_ruleset_never_the_l
     for kind_id in ("qc-visit-notice", "qc-condition-report"):
         for name in ("fr-filled.txt", "en-filled.txt", "fr-blank.txt", "en-blank.txt"):
             got = ident(read(kind_id, name), declared_kind="LEASE", jurisdiction="QC")
-            assert got["kindUsed"] == kind_id and got["ruleset"] == kind_id and got["outcome"] == "CHECK", f"{kind_id}/{name}"
+            assert got["kindUsed"] == kind_id and got["ruleset"] == kind_id and got["outcome"] == "CHECK", (
+                f"{kind_id}/{name}"
+            )
             assert got["ruleset"] != "qc-residential-lease"
 
 
@@ -153,7 +189,11 @@ def test_a_kind_with_no_ruleset_still_says_it_is_unsupported():
     # The notice of modification (art. 1942) is known and has no promoted ruleset: the run says so (ADR-089 §6).
     for name in ("fr-filled.txt", "en-filled.txt"):
         got = ident(read("qc-lease-modification-notice", name), jurisdiction="QC")
-        assert got["kindUsed"] == "qc-lease-modification-notice" and got["ruleset"] is None and got["outcome"] == "UNSUPPORTED_KIND", name
+        assert (
+            got["kindUsed"] == "qc-lease-modification-notice"
+            and got["ruleset"] is None
+            and got["outcome"] == "UNSUPPORTED_KIND"
+        ), name
 
 
 def test_a_condition_report_is_a_condition_report_in_both_languages():
@@ -163,12 +203,19 @@ def test_a_condition_report_is_a_condition_report_in_both_languages():
 
 
 def test_a_filled_lease_invoice_and_service_contract_are_found_and_promoted():
-    cases = [("qc-residential-lease", "fr-filled.txt", "2026-06-12"), ("qc-residential-lease", "en-filled.txt", "2026-06-12"),
-             ("qc-invoice", "fr-filled.txt", "2026-10-14"), ("qc-invoice", "en-filled.txt", "2026-10-14"),
-             ("qc-service-contract", "fr-filled.txt", "2026-10-14"), ("qc-service-contract", "en-filled.txt", "2026-10-14")]
+    cases = [
+        ("qc-residential-lease", "fr-filled.txt", "2026-06-12"),
+        ("qc-residential-lease", "en-filled.txt", "2026-06-12"),
+        ("qc-invoice", "fr-filled.txt", "2026-10-14"),
+        ("qc-invoice", "en-filled.txt", "2026-10-14"),
+        ("qc-service-contract", "fr-filled.txt", "2026-10-14"),
+        ("qc-service-contract", "en-filled.txt", "2026-10-14"),
+    ]
     for kind_id, name, day in cases:
         got = ident(read(kind_id, name))
-        assert got["kindUsed"] == kind_id and got["outcome"] == "CHECK" and got["ruleset"] == kind_id, f"{kind_id}/{name}"
+        assert got["kindUsed"] == kind_id and got["outcome"] == "CHECK" and got["ruleset"] == kind_id, (
+            f"{kind_id}/{name}"
+        )
         assert got["documentDate"] == day and got["asOf"] == day
 
 
@@ -176,7 +223,11 @@ def test_the_other_jurisdictions_leases_are_their_own_kind():
     fr = ident(read("fr-residential-lease", "filled.txt"))
     be = ident(read("be-residential-lease", "filled.txt"))
     assert (fr["kindUsed"], fr["jurisdiction"], fr["ruleset"]) == ("fr-residential-lease", "FR", "fr-residential-lease")
-    assert (be["kindUsed"], be["jurisdiction"], be["ruleset"]) == ("be-residential-lease", "BE-WAL", "be-residential-lease")
+    assert (be["kindUsed"], be["jurisdiction"], be["ruleset"]) == (
+        "be-residential-lease",
+        "BE-WAL",
+        "be-residential-lease",
+    )
 
 
 def test_the_existing_ruleset_fixtures_are_identified_as_the_kind_their_ruleset_judges():
@@ -184,10 +235,13 @@ def test_the_existing_ruleset_fixtures_are_identified_as_the_kind_their_ruleset_
     for ruleset_dir in sorted(p for p in fixtures.iterdir() if p.is_dir() and p.name != "document-profiles"):
         for doc in sorted(ruleset_dir.glob("*.txt")):
             got = ident(doc.read_text(encoding="utf-8"))
-            assert got["kindUsed"] == ruleset_dir.name, f"{ruleset_dir.name}/{doc.name}: {got['kindUsed']} {got['candidates']}"
+            assert got["kindUsed"] == ruleset_dir.name, (
+                f"{ruleset_dir.name}/{doc.name}: {got['kindUsed']} {got['candidates']}"
+            )
 
 
 # --- The declared kind -------------------------------------------------------------------------------------------
+
 
 def test_a_declared_lease_on_a_visit_notice_is_a_surfaced_mismatch_and_judges_as_a_notice():
     got = ident(read("qc-visit-notice", "en-filled.txt"), declared_kind="LEASE")
@@ -222,6 +276,7 @@ def test_the_evidence_is_the_passage_of_the_document():
 
 # --- Ambiguity and unknown ---------------------------------------------------------------------------------------
 
+
 def test_a_document_matching_two_kinds_equally_is_kind_unknown_not_a_guess():
     got = ident(read("_unknown", "ambiguous.txt"))
     assert got["outcome"] == "KIND_UNKNOWN" and got["kindUsed"] is None and got["detectedKind"] is None
@@ -236,11 +291,15 @@ def test_an_ambiguous_document_takes_the_declared_kind_when_it_names_exactly_one
     assert got["kindUsed"] == "qc-service-contract" and got["kindSource"] == "DECLARED" and got["outcome"] == "CHECK"
     assert got["kindMismatch"] is False
     assert ident(text, declared_kind="OTHER")["outcome"] == "KIND_UNKNOWN", "OTHER names no single kind"
-    assert ident(text, declared_kind="LEASE")["outcome"] == "KIND_UNKNOWN", "LEASE names three kinds when no jurisdiction is declared"
+    assert ident(text, declared_kind="LEASE")["outcome"] == "KIND_UNKNOWN", (
+        "LEASE names three kinds when no jurisdiction is declared"
+    )
     # The declared kind breaks a tie only when it names one of the TIED kinds (packs#129, point 1): a lease declared on
     # a text that ties an invoice and a service contract is never judged as a lease.
     assert ident(text, declared_kind="LEASE", jurisdiction="QC")["outcome"] == "KIND_UNKNOWN"
-    assert ident("Bail.", declared_kind="LEASE", jurisdiction="QC")["kindUsed"] == "qc-residential-lease", "no candidate: the declared kind"
+    assert ident("Bail.", declared_kind="LEASE", jurisdiction="QC")["kindUsed"] == "qc-residential-lease", (
+        "no candidate: the declared kind"
+    )
 
 
 def test_a_text_that_is_none_of_the_kinds_is_kind_unknown():
@@ -276,9 +335,12 @@ def test_a_lease_that_mentions_a_visit_is_still_a_lease():
 
 # --- Jurisdiction ------------------------------------------------------------------------------------------------
 
+
 def test_a_declared_jurisdiction_restricts_the_kinds_and_is_reported_as_declared():
     got = ident(read("qc-visit-notice", "fr-filled.txt"), jurisdiction="QC")
-    assert got["jurisdiction"] == "QC" and got["jurisdictionSource"] == "DECLARED" and got["kindUsed"] == "qc-visit-notice"
+    assert (
+        got["jurisdiction"] == "QC" and got["jurisdictionSource"] == "DECLARED" and got["kindUsed"] == "qc-visit-notice"
+    )
 
 
 def test_a_declared_jurisdiction_never_borrows_another_countrys_kinds():
@@ -294,6 +356,7 @@ def test_the_jurisdiction_hints_name_the_jurisdiction_of_a_text_no_kind_decided(
 
 
 # --- asOf --------------------------------------------------------------------------------------------------------
+
 
 def test_an_as_of_given_by_the_caller_wins_over_the_document_date():
     got = ident(read("qc-visit-notice", "fr-filled.txt"), as_of="2026-01-15")
@@ -317,6 +380,7 @@ def test_the_date_comes_with_its_passage():
 
 # --- Language ----------------------------------------------------------------------------------------------------
 
+
 def test_the_language_is_a_fact_french_english_or_both():
     assert ident(read("qc-invoice", "fr-filled.txt"))["languages"] == ["fr"]
     assert ident(read("qc-invoice", "en-filled.txt"))["languages"] == ["en"]
@@ -332,9 +396,17 @@ def test_an_english_lease_is_reported_in_english_so_the_language_rules_can_see_i
 
 # --- An explicit ruleset, determinism, no model --------------------------------------------------------------------
 
+
 def test_an_explicit_ruleset_overrides_everything_and_is_reported_as_such():
-    got = ident(read("qc-visit-notice", "fr-filled.txt"), declared_kind="LEASE", ruleset="qc-residential-lease", jurisdiction="QC")
-    assert got["kindSource"] == "RULESET_INPUT" and got["kindUsed"] == "qc-residential-lease" and got["outcome"] == "CHECK"
+    got = ident(
+        read("qc-visit-notice", "fr-filled.txt"),
+        declared_kind="LEASE",
+        ruleset="qc-residential-lease",
+        jurisdiction="QC",
+    )
+    assert (
+        got["kindSource"] == "RULESET_INPUT" and got["kindUsed"] == "qc-residential-lease" and got["outcome"] == "CHECK"
+    )
     assert got["ruleset"] == "qc-residential-lease" and got["kindMismatch"] is False
     assert got["detectedKind"] == "qc-visit-notice", "what the text is stays reported"
 
@@ -363,16 +435,20 @@ def test_identify_calls_no_model_and_reads_no_clock_without_being_asked():
 
 # --- The worker's capability ---------------------------------------------------------------------------------------
 
+
 def test_the_worker_serves_identify_under_its_routing_key_and_the_pack_declares_it():
     import yaml
     import validation_worker
+
     assert validation_worker.HANDLERS["job.validation.identify"] is validation_worker._identify
     pack = yaml.safe_load((KINDS.parent / "pack.yaml").read_text(encoding="utf-8"))
     capability = next(c for c in pack["requires"]["capabilities"] if c["key"] == "orazaka.validation.document.identify")
     assert capability["routingKey"] == "job.validation.identify" and capability["handlerKey"] == "validation.identify"
     assert capability["inputSchema"]["required"] == ["document"]
     produced = set(capability["outputSchema"]["properties"])
-    result = validation_worker._identify({"document": read("qc-visit-notice", "en-filled.txt"), "declaredKind": "LEASE", "asOf": ""})
+    result = validation_worker._identify(
+        {"document": read("qc-visit-notice", "en-filled.txt"), "declaredKind": "LEASE", "asOf": ""}
+    )
     assert produced >= set(result), set(result) - produced
     assert json.loads(result["identificationJson"])["kindMismatch"] is True
     assert set(capability["outputSchema"]["required"]) <= set(result)
@@ -380,6 +456,7 @@ def test_the_worker_serves_identify_under_its_routing_key_and_the_pack_declares_
 
 def test_the_worker_refuses_an_empty_document_and_a_malformed_date_by_name():
     import validation_worker
+
     for payload in ({"document": ""}, {"document": "x", "asOf": "yesterday"}):
         try:
             validation_worker._identify(payload)
@@ -389,6 +466,7 @@ def test_the_worker_refuses_an_empty_document_and_a_malformed_date_by_name():
 
 
 # --- Stage 2: the retrieval a kind asks for (ADR-089 §2, orazaka-ai-engine#81) -------------------------------------
+
 
 def _kind(kind_id):
     return next(k for k in all_kinds() if k["kindId"] == kind_id)
@@ -411,9 +489,9 @@ def test_the_question_is_in_the_language_asked():
 
 def test_a_retrieval_is_refused_by_name_not_guessed():
     for kind, language, as_of in (
-        (_kind("qc-invoice"), "fr", "2026-10-20"),                  # no retrieval block
-        (_kind("qc-visit-notice"), "de", "2026-10-20"),             # not fr/en
-        (_kind("qc-visit-notice"), "fr", "yesterday"),              # not ISO
+        (_kind("qc-invoice"), "fr", "2026-10-20"),  # no retrieval block
+        (_kind("qc-visit-notice"), "de", "2026-10-20"),  # not fr/en
+        (_kind("qc-visit-notice"), "fr", "yesterday"),  # not ISO
         (_kind("qc-visit-notice"), "fr", ""),
     ):
         try:

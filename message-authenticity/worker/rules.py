@@ -45,4 +45,9 @@ def report(ruleset: dict, language: str, words: int, score: Optional[float]) -> 
         detector = "UNAVAILABLE"
     else:
         detector = level(score, thresholds)
-    return {"detector": detector, "language": language, "rulesetVersion": ruleset["version"], "limits": ruleset["limits"]}
+    return {
+        "detector": detector,
+        "language": language,
+        "rulesetVersion": ruleset["version"],
+        "limits": ruleset["limits"],
+    }

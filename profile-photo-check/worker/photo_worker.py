@@ -95,7 +95,11 @@ def _assess(payload: dict) -> dict:
         facts = json.loads(raw) if isinstance(raw, str) else raw
     except json.JSONDecodeError as bad:
         raise InvalidJobPayload(f"'facts' is not JSON ({bad}); received: {str(raw)[:120]!r}") from bad
-    if not isinstance(facts, dict) or not isinstance(facts.get("photos"), list) or not isinstance(facts.get("identity"), dict):
+    if (
+        not isinstance(facts, dict)
+        or not isinstance(facts.get("photos"), list)
+        or not isinstance(facts.get("identity"), dict)
+    ):
         raise InvalidJobPayload("'facts' is not the output of the inspection step")
     counts = {
         "minPhotos": _count(payload, "minPhotos", 1, 12),
@@ -159,7 +163,11 @@ def _on_message(channel, method, properties, body) -> None:
 
 
 def _broker_credentials() -> "pika.PlainCredentials":
-    password = os.environ.get("RABBITMQ_PASS") or os.environ.get("RABBITMQ_PASSWORD") or os.environ.get("SPRING_RABBITMQ_PASSWORD")
+    password = (
+        os.environ.get("RABBITMQ_PASS")
+        or os.environ.get("RABBITMQ_PASSWORD")
+        or os.environ.get("SPRING_RABBITMQ_PASSWORD")
+    )
     return pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest")
 
 
@@ -171,7 +179,11 @@ def main() -> None:
     channel.exchange_declare(exchange=JOBS_EXCHANGE, exchange_type="topic", durable=True)
     channel.exchange_declare(exchange=EVENTS_EXCHANGE, exchange_type="topic", durable=True)
     channel.exchange_declare(exchange=DLX_EXCHANGE, exchange_type="direct", durable=True)
-    channel.queue_declare(queue=QUEUE, durable=True, arguments={"x-dead-letter-exchange": DLX_EXCHANGE, "x-dead-letter-routing-key": QUEUE})
+    channel.queue_declare(
+        queue=QUEUE,
+        durable=True,
+        arguments={"x-dead-letter-exchange": DLX_EXCHANGE, "x-dead-letter-routing-key": QUEUE},
+    )
     for binding in DECLARATION["bindings"]:
         channel.queue_bind(queue=QUEUE, exchange=JOBS_EXCHANGE, routing_key=binding)
     channel.queue_declare(queue=DLQ, durable=True)

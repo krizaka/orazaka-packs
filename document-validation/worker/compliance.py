@@ -63,7 +63,9 @@ def resolve(identification: dict, classification: str, text: str) -> dict:
             text,
             today=identification["asOf"],
             declared_kind=identification.get("declaredKind"),
-            jurisdiction=identification["jurisdiction"] if identification.get("jurisdictionSource") == "DECLARED" else None,
+            jurisdiction=identification["jurisdiction"]
+            if identification.get("jurisdictionSource") == "DECLARED"
+            else None,
             as_of=identification["asOf"] if identification.get("asOfSource") == "INPUT" else None,
             classified=answer,
         )
@@ -130,11 +132,23 @@ def _checked(finding: dict, rule: dict, text: str, articles: dict) -> dict:
     checked = dict(finding, citation=citation, checks={"passage": passage, "citation": cited})
     verdict = finding["verdict"]
     if verdict == rules.PASS and passage != PASSAGE_VERIFIED:
-        return dict(checked, verdict=rules.INSUFFICIENT_EVIDENCE, explanation="Aucun passage du document ne fonde ce verdict : il n'est pas retenu.")
+        return dict(
+            checked,
+            verdict=rules.INSUFFICIENT_EVIDENCE,
+            explanation="Aucun passage du document ne fonde ce verdict : il n'est pas retenu.",
+        )
     if verdict in (rules.PASS, rules.FAIL) and passage == PASSAGE_NOT_IN_DOCUMENT:
-        return dict(checked, verdict=rules.INSUFFICIENT_EVIDENCE, explanation="Le passage cité n'est pas dans le document : le verdict n'est pas retenu.")
+        return dict(
+            checked,
+            verdict=rules.INSUFFICIENT_EVIDENCE,
+            explanation="Le passage cité n'est pas dans le document : le verdict n'est pas retenu.",
+        )
     if verdict in (rules.PASS, rules.FAIL) and cited not in (citations.VERIFIED, citations.NOT_PINNED):
-        return dict(checked, verdict=rules.INSUFFICIENT_EVIDENCE, explanation="La citation de l'article ne se vérifie pas dans le texte que le corpus fixe : le verdict n'est pas retenu.")
+        return dict(
+            checked,
+            verdict=rules.INSUFFICIENT_EVIDENCE,
+            explanation="La citation de l'article ne se vérifie pas dans le texte que le corpus fixe : le verdict n'est pas retenu.",
+        )
     return checked
 
 

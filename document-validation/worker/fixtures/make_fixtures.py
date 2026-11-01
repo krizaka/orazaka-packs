@@ -62,12 +62,14 @@ def _modified(clean_path, path):
     writer = PdfWriter()
     for page in reader.pages:
         writer.add_page(page)
-    writer.add_metadata({
-        "/Producer": "PDFescape Online",
-        "/Creator": "PDFescape Online",
-        "/CreationDate": CREATED,
-        "/ModDate": MODIFIED,
-    })
+    writer.add_metadata(
+        {
+            "/Producer": "PDFescape Online",
+            "/Creator": "PDFescape Online",
+            "/CreationDate": CREATED,
+            "/ModDate": MODIFIED,
+        }
+    )
     revised = io.BytesIO()
     writer.write(revised)
     # Appended, not replaced: the first %%EOF stays, and the file records both writings.

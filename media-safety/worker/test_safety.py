@@ -24,11 +24,23 @@ def test_clean_pictures_are_approved():
 
 def test_one_bad_picture_rejects_and_names_the_code_and_the_frame():
     r = rules.assess(R, [CLEAN, DIRTY, CLEAN], 3, None, False)
-    assert r["verdict"] == "REJECTED" and r["blockers"] == ["SEXUAL_CONTENT"] and r["findings"] == [{"code": "SEXUAL_CONTENT", "frame": 1}]
+    assert (
+        r["verdict"] == "REJECTED"
+        and r["blockers"] == ["SEXUAL_CONTENT"]
+        and r["findings"] == [{"code": "SEXUAL_CONTENT", "frame": 1}]
+    )
 
 
 def test_an_answer_that_cannot_be_read_is_never_a_pass():
-    for bad in ["I think it is fine", "", None, 3, "{nope", json.dumps({"sexual_or_nudity": False}), json.dumps({"sexual_or_nudity": "maybe", "graphic_violence": False, "minor_in_unsafe_context": False})]:
+    for bad in [
+        "I think it is fine",
+        "",
+        None,
+        3,
+        "{nope",
+        json.dumps({"sexual_or_nudity": False}),
+        json.dumps({"sexual_or_nudity": "maybe", "graphic_violence": False, "minor_in_unsafe_context": False}),
+    ]:
         r = rules.assess(R, [CLEAN, bad], 2, None, False)
         assert r["verdict"] == "UNREADABLE" and r["unreadable"] == 1, bad
 
@@ -53,14 +65,22 @@ def test_a_rejection_wins_over_an_unreadable_one():
 
 
 def test_fenced_and_wrapped_answers_are_read():
-    assert rules.assess(R, ["```json\n" + CLEAN + "\n```", {"analysis": "Sure: " + CLEAN}], 2, None, False)["verdict"] == "APPROVED"
+    assert (
+        rules.assess(R, ["```json\n" + CLEAN + "\n```", {"analysis": "Sure: " + CLEAN}], 2, None, False)["verdict"]
+        == "APPROVED"
+    )
 
 
 def test_the_worker_checks_its_payload_by_name():
     out = worker._assess({"looks": [CLEAN], "frames": 1, "expectsSpeech": "false"})
     assert out["verdict"] == "APPROVED" and json.loads(out["reportJson"]) == out["report"]
     assert worker._assess({"looks": [CLEAN, CLEAN], "frames": "2", "expectsSpeech": False})["verdict"] == "APPROVED"
-    for payload in [{"frames": 99, "expectsSpeech": False}, {"frames": "one", "expectsSpeech": False}, {"frames": 1}, {"frames": 1, "expectsSpeech": "maybe"}]:
+    for payload in [
+        {"frames": 99, "expectsSpeech": False},
+        {"frames": "one", "expectsSpeech": False},
+        {"frames": 1},
+        {"frames": 1, "expectsSpeech": "maybe"},
+    ]:
         try:
             worker._assess(payload)
         except worker.InvalidJobPayload:
@@ -83,7 +103,9 @@ def test_one_picture_arrives_as_one_answer_not_a_list():
     assert rules.assess(R, one, 1, None, False)["verdict"] == "APPROVED"
     assert rules.assess(R, {"analysis": DIRTY}, 1, None, False)["blockers"] == ["SEXUAL_CONTENT"]
     assert rules.assess(R, {"analysis": "no idea"}, 1, None, False)["verdict"] == "UNREADABLE"
-    assert rules.assess(R, "\n\n" + CLEAN + "\n", 1, None, False)["verdict"] == "APPROVED"  # what the dev engine hands over: the text
+    assert (
+        rules.assess(R, "\n\n" + CLEAN + "\n", 1, None, False)["verdict"] == "APPROVED"
+    )  # what the dev engine hands over: the text
     assert rules.assess(R, DIRTY, 1, None, False)["blockers"] == ["SEXUAL_CONTENT"]
     # with several pictures a bare answer is still not a list: the missing ones stay unread
     assert rules.assess(R, one, 2, None, False)["verdict"] == "UNREADABLE"

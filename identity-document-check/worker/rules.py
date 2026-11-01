@@ -76,6 +76,7 @@ def parse_reading(raw) -> dict:
 
 # --- helpers -----------------------------------------------------------------------------------------------------
 
+
 def _clamp(value, default=_DEFAULT_CONFIDENCE) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return default
@@ -104,7 +105,17 @@ def _iso(text) -> Optional[str]:
 
 
 def _finding(code, severity, field, basis, evidence, confidence, **extra) -> dict:
-    return dict({"code": code, "severity": severity, "field": field, "basis": basis, "evidence": evidence, "confidence": confidence}, **extra)
+    return dict(
+        {
+            "code": code,
+            "severity": severity,
+            "field": field,
+            "basis": basis,
+            "evidence": evidence,
+            "confidence": confidence,
+        },
+        **extra,
+    )
 
 
 def _years_between(born: str, as_of: str) -> int:
@@ -114,19 +125,27 @@ def _years_between(born: str, as_of: str) -> int:
 
 # --- the barcode (AAMVA data elements, as a driver's licence prints them) ------------------------------------------
 
+
 def parse_barcode(text: str) -> dict:
     """The data elements the checks need, read from the decoded text of a PDF417 (AAMVA ``DAQ`` ``DCS`` ``DAC`` ``DBB`` ``DBA``)."""
     fields = {}
     for line in re.split(r"[\r\n]+", text or ""):
         line = line.strip("\x1e\x1d@ ")
-        for tag, name in (("DAQ", "documentNumber"), ("DCS", "surname"), ("DAC", "givenNames"), ("DBB", "dateOfBirth"), ("DBA", "dateOfExpiry")):
+        for tag, name in (
+            ("DAQ", "documentNumber"),
+            ("DCS", "surname"),
+            ("DAC", "givenNames"),
+            ("DBB", "dateOfBirth"),
+            ("DBA", "dateOfExpiry"),
+        ):
             if line.startswith(tag) and name not in fields:
-                value = line[len(tag):].strip()
+                value = line[len(tag) :].strip()
                 fields[name] = _iso(value) if name.startswith("dateOf") else value
     return {k: v for k, v in fields.items() if v}
 
 
 # --- the assessment ------------------------------------------------------------------------------------------------
+
 
 def _object_of(reading: dict, key: str, kind: type, message: str):
     value = reading.get(key)
@@ -140,12 +159,30 @@ def _object_of(reading: dict, key: str, kind: type, message: str):
 def _zone(lines: list, mrz_conf: float, findings: list):
     """The parsed zone (or ``None``), after adding what its absence or its shape says."""
     if not [line for line in lines if str(line).strip()]:
-        findings.append(_finding("MRZ_ABSENT", INFO, "mrz", DETERMINISTIC, {"source": "mrz", "field": "mrz", "value": None, "region": "mrz"}, mrz_conf))
+        findings.append(
+            _finding(
+                "MRZ_ABSENT",
+                INFO,
+                "mrz",
+                DETERMINISTIC,
+                {"source": "mrz", "field": "mrz", "value": None, "region": "mrz"},
+                mrz_conf,
+            )
+        )
         return None
     try:
         return mrz.parse(lines)
     except mrz.MrzError as bad:
-        findings.append(_finding("MRZ_UNREADABLE", WARN, "mrz", DETERMINISTIC, {"source": "mrz", "field": "mrz", "value": str(bad), "region": "mrz"}, mrz_conf))
+        findings.append(
+            _finding(
+                "MRZ_UNREADABLE",
+                WARN,
+                "mrz",
+                DETERMINISTIC,
+                {"source": "mrz", "field": "mrz", "value": str(bad), "region": "mrz"},
+                mrz_conf,
+            )
+        )
         return None
 
 
@@ -156,11 +193,22 @@ def _age(fields: dict, as_of: str, minimum_age, source: str, conf: float, findin
     years = _years_between(born, as_of)
     age = {"years": years, "minimum": minimum_age, "meets": minimum_age is None or years >= minimum_age}
     if not age["meets"]:
-        findings.append(_finding("AGE_BELOW_MINIMUM", WARN, "dateOfBirth", DETERMINISTIC, {"source": source, "field": "dateOfBirth", "value": born, "region": "dateOfBirth"}, conf))
+        findings.append(
+            _finding(
+                "AGE_BELOW_MINIMUM",
+                WARN,
+                "dateOfBirth",
+                DETERMINISTIC,
+                {"source": source, "field": "dateOfBirth", "value": born, "region": "dateOfBirth"},
+                conf,
+            )
+        )
     return age
 
 
-def assess(ruleset: dict, reading, as_of: str, minimum_age: Optional[int] = None, barcode_text: Optional[str] = None) -> dict:
+def assess(
+    ruleset: dict, reading, as_of: str, minimum_age: Optional[int] = None, barcode_text: Optional[str] = None
+) -> dict:
     if not isinstance(reading, dict):
         raise InvalidReading(NOT_AN_OBJECT)
     lines = _object_of(reading, "mrzLines", list, "'mrzLines' must be a list of strings")
@@ -176,7 +224,12 @@ def assess(ruleset: dict, reading, as_of: str, minimum_age: Optional[int] = None
     doubtful = mrz_conf < thresholds["lowReadConfidence"]
     mrz_info: dict = {"present": False}
     if parsed:
-        mrz_info = {"present": True, "format": parsed["format"], "checksumsValid": all(c["valid"] for c in parsed["checks"]), "uncovered": parsed["uncovered"]}
+        mrz_info = {
+            "present": True,
+            "format": parsed["format"],
+            "checksumsValid": all(c["valid"] for c in parsed["checks"]),
+            "uncovered": parsed["uncovered"],
+        }
         findings.extend(_checksum_findings(parsed, mrz_conf, doubtful))
         fields.update(_mrz_fields(parsed, as_of))
 
@@ -192,7 +245,9 @@ def assess(ruleset: dict, reading, as_of: str, minimum_age: Optional[int] = None
     if barcode_text and barcode_text.strip():
         extracted = parse_barcode(barcode_text)
         barcode = {"present": True, "fields": sorted(extracted)}
-        findings.extend(_compare("barcode", extracted, printed_fields or fields, printed_conf, "BARCODE_MISMATCH", False))
+        findings.extend(
+            _compare("barcode", extracted, printed_fields or fields, printed_conf, "BARCODE_MISMATCH", False)
+        )
 
     # 4. the calendar, and the age
     document_conf = mrz_conf if parsed else printed_conf
@@ -225,9 +280,27 @@ def assess(ruleset: dict, reading, as_of: str, minimum_age: Optional[int] = None
 
 def _region(parsed: dict, name: str) -> str:
     layouts = {
-        "TD3": {"documentNumber": "mrz.line2[0:9]", "dateOfBirth": "mrz.line2[13:19]", "dateOfExpiry": "mrz.line2[21:27]", "optionalData": "mrz.line2[28:42]", "composite": "mrz.line2[0:10]+[13:20]+[21:43]"},
-        "TD2": {"documentNumber": "mrz.line2[0:9]", "dateOfBirth": "mrz.line2[13:19]", "dateOfExpiry": "mrz.line2[21:27]", "optionalData": "mrz.line2[28:35]", "composite": "mrz.line2[0:10]+[13:20]+[21:35]"},
-        "TD1": {"documentNumber": "mrz.line1[5:14]", "dateOfBirth": "mrz.line2[0:6]", "dateOfExpiry": "mrz.line2[8:14]", "optionalData": "mrz.line1[15:30]+line2[18:29]", "composite": "mrz.line1[5:30]+line2[0:7]+[8:15]+[18:29]"},
+        "TD3": {
+            "documentNumber": "mrz.line2[0:9]",
+            "dateOfBirth": "mrz.line2[13:19]",
+            "dateOfExpiry": "mrz.line2[21:27]",
+            "optionalData": "mrz.line2[28:42]",
+            "composite": "mrz.line2[0:10]+[13:20]+[21:43]",
+        },
+        "TD2": {
+            "documentNumber": "mrz.line2[0:9]",
+            "dateOfBirth": "mrz.line2[13:19]",
+            "dateOfExpiry": "mrz.line2[21:27]",
+            "optionalData": "mrz.line2[28:35]",
+            "composite": "mrz.line2[0:10]+[13:20]+[21:35]",
+        },
+        "TD1": {
+            "documentNumber": "mrz.line1[5:14]",
+            "dateOfBirth": "mrz.line2[0:6]",
+            "dateOfExpiry": "mrz.line2[8:14]",
+            "optionalData": "mrz.line1[15:30]+line2[18:29]",
+            "composite": "mrz.line1[5:30]+line2[0:7]+[8:15]+[18:29]",
+        },
     }
     return layouts[parsed["format"]].get(name, "mrz")
 
@@ -237,8 +310,25 @@ def _checksum_findings(parsed: dict, mrz_conf: float, doubtful: bool) -> list:
     for check in parsed["checks"]:
         if check["valid"]:
             continue
-        evidence = {"source": "mrz", "field": check["field"], "value": check["value"], "region": _region(parsed, check["field"]), "expectedCheckDigit": check["expected"], "foundCheckDigit": check["found"]}
-        out.append(_finding("MRZ_CHECKSUM_FAILED", WARN if doubtful else FAIL, check["field"], DETERMINISTIC, evidence, mrz_conf, maybeTranscription=doubtful))
+        evidence = {
+            "source": "mrz",
+            "field": check["field"],
+            "value": check["value"],
+            "region": _region(parsed, check["field"]),
+            "expectedCheckDigit": check["expected"],
+            "foundCheckDigit": check["found"],
+        }
+        out.append(
+            _finding(
+                "MRZ_CHECKSUM_FAILED",
+                WARN if doubtful else FAIL,
+                check["field"],
+                DETERMINISTIC,
+                evidence,
+                mrz_conf,
+                maybeTranscription=doubtful,
+            )
+        )
     return out
 
 
@@ -279,7 +369,9 @@ def _printed_fields(printed: dict) -> dict:
 def _same(name: str, a, b) -> bool:
     if name in ("surname", "givenNames"):
         left, right = _ascii_name(a), _ascii_name(b)
-        return left == right or (min(len(left), len(right)) >= 20 and (left.startswith(right) or right.startswith(left)))  # the zone truncates long names
+        return left == right or (
+            min(len(left), len(right)) >= 20 and (left.startswith(right) or right.startswith(left))
+        )  # the zone truncates long names
     if name == "documentNumber":
         return _compact(a) == _compact(b)
     return str(a).upper() == str(b).upper()
@@ -294,7 +386,9 @@ def _compare(source: str, values: dict, reference: dict, conf: float, code: str,
             continue
         if not _same(name, value, reference[name]):
             evidence = {"source": source, "field": name, "value": value, "against": reference[name], "region": name}
-            if doubtful:  # the zone itself is a doubtful transcription: the difference may be the reading's, not the document's
+            if (
+                doubtful
+            ):  # the zone itself is a doubtful transcription: the difference may be the reading's, not the document's
                 out.append(_finding(code, WARN, name, DETERMINISTIC, evidence, conf, maybeTranscription=True))
             else:
                 out.append(_finding(code, FAIL, name, DETERMINISTIC, evidence, conf))
@@ -310,17 +404,59 @@ def _date_findings(fields: dict, as_of: str, conf: float) -> list:
         if isinstance(value, str) and value.startswith(INVALID):
             invalid.add(name)
     for name in sorted(invalid):
-        out.append(_finding("DATE_INVALID", FAIL, name, DETERMINISTIC, {"source": "document", "field": name, "value": None, "region": name}, conf))
+        out.append(
+            _finding(
+                "DATE_INVALID",
+                FAIL,
+                name,
+                DETERMINISTIC,
+                {"source": "document", "field": name, "value": None, "region": name},
+                conf,
+            )
+        )
     fields.pop("_invalidDates", None)
     for name in invalid:
         fields.pop(name, None)
     birth, expiry = fields.get("dateOfBirth"), fields.get("dateOfExpiry")
     if birth and dt.date.fromisoformat(birth) > today:
-        out.append(_finding("BIRTH_IN_FUTURE", FAIL, "dateOfBirth", DETERMINISTIC, {"source": "document", "field": "dateOfBirth", "value": birth, "region": "dateOfBirth"}, conf))
+        out.append(
+            _finding(
+                "BIRTH_IN_FUTURE",
+                FAIL,
+                "dateOfBirth",
+                DETERMINISTIC,
+                {"source": "document", "field": "dateOfBirth", "value": birth, "region": "dateOfBirth"},
+                conf,
+            )
+        )
     if birth and expiry and dt.date.fromisoformat(expiry) <= dt.date.fromisoformat(birth):
-        out.append(_finding("EXPIRY_BEFORE_BIRTH", FAIL, "dateOfExpiry", DETERMINISTIC, {"source": "document", "field": "dateOfExpiry", "value": expiry, "against": birth, "region": "dateOfExpiry"}, conf))
+        out.append(
+            _finding(
+                "EXPIRY_BEFORE_BIRTH",
+                FAIL,
+                "dateOfExpiry",
+                DETERMINISTIC,
+                {
+                    "source": "document",
+                    "field": "dateOfExpiry",
+                    "value": expiry,
+                    "against": birth,
+                    "region": "dateOfExpiry",
+                },
+                conf,
+            )
+        )
     elif expiry and dt.date.fromisoformat(expiry) < today:
-        out.append(_finding("DOCUMENT_EXPIRED", WARN, "dateOfExpiry", DETERMINISTIC, {"source": "document", "field": "dateOfExpiry", "value": expiry, "region": "dateOfExpiry"}, conf))
+        out.append(
+            _finding(
+                "DOCUMENT_EXPIRED",
+                WARN,
+                "dateOfExpiry",
+                DETERMINISTIC,
+                {"source": "document", "field": "dateOfExpiry", "value": expiry, "region": "dateOfExpiry"},
+                conf,
+            )
+        )
     return out
 
 
@@ -333,7 +469,16 @@ def _signal_findings(signals, thresholds: dict, ruleset: dict):
         conf = _clamp(signal.get("confidence"), 0.0)
         severity = WARN if conf >= thresholds["tamperReview"] else INFO
         region = str(signal.get("region") or "document")[:60]
-        out.append(_finding("TAMPERING_SIGNAL", severity, signal["kind"], MODEL, {"source": "vision", "field": signal["kind"], "value": signal["kind"], "region": region}, conf))
+        out.append(
+            _finding(
+                "TAMPERING_SIGNAL",
+                severity,
+                signal["kind"],
+                MODEL,
+                {"source": "vision", "field": signal["kind"], "value": signal["kind"], "region": region},
+                conf,
+            )
+        )
     return out, ignored
 
 
@@ -342,7 +487,16 @@ def _quality_findings(quality, ruleset: dict) -> list:
     if isinstance(quality, dict):
         for kind in ruleset["qualityKinds"]:
             if quality.get(kind) is True:
-                out.append(_finding("QUALITY_POOR", WARN, kind, MODEL, {"source": "vision", "field": kind, "value": True, "region": "document"}, 1.0))
+                out.append(
+                    _finding(
+                        "QUALITY_POOR",
+                        WARN,
+                        kind,
+                        MODEL,
+                        {"source": "vision", "field": kind, "value": True, "region": "document"},
+                        1.0,
+                    )
+                )
     return out
 
 

@@ -11,6 +11,7 @@ revision or the parser shows as a diff of verdicts. Deterministic only: no model
 Layout: worker/fixtures/<ruleset>/<case>.txt — the document (fictional, never a real one);
         worker/fixtures/<ruleset>/<case>.expected.json — {"asOf", "findings": {ruleId: verdict}, "judgments": [ruleId]}.
 """
+
 import json
 import os
 import sys
@@ -33,16 +34,24 @@ def cases():
 
 def verdicts(ruleset_id: str, text: str, as_of: str) -> dict:
     findings, judgments = rules.screen(rules.resolve(ruleset_id, as_of), text)
-    return {"asOf": as_of, "findings": {f["ruleId"]: f["verdict"] for f in findings}, "judgments": [j["ruleId"] for j in judgments]}
+    return {
+        "asOf": as_of,
+        "findings": {f["ruleId"]: f["verdict"] for f in findings},
+        "judgments": [j["ruleId"] for j in judgments],
+    }
 
 
 def test_every_golden_case_gives_its_recorded_verdicts():
     seen = 0
     for ruleset_id, doc, expected_file in cases():
-        assert expected_file.exists(), f"{doc.relative_to(FIXTURES)} has no expected file: run test_golden.py --update and review it"
+        assert expected_file.exists(), (
+            f"{doc.relative_to(FIXTURES)} has no expected file: run test_golden.py --update and review it"
+        )
         expected = json.loads(expected_file.read_text(encoding="utf-8"))
         actual = verdicts(ruleset_id, doc.read_text(encoding="utf-8"), expected.get("asOf", DEFAULT_AS_OF))
-        assert actual == expected, f"{doc.relative_to(FIXTURES)}: the verdicts changed\n  expected {expected}\n  actual   {actual}"
+        assert actual == expected, (
+            f"{doc.relative_to(FIXTURES)}: the verdicts changed\n  expected {expected}\n  actual   {actual}"
+        )
         seen += 1
     assert seen >= 9, f"only {seen} golden cases: every ruleset ships its own"
 

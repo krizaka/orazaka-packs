@@ -11,13 +11,20 @@ import rules  # noqa: E402
 
 RULESET = rules.load_ruleset()
 COUNTS = {"minPhotos": 4, "maxPhotos": 6, "minFacePhotos": 2}
-GOOD_LOOK = json.dumps({"appears_under_18": False, "text_or_contact_overlay": False, "screenshot_or_photo_of_screen": False})
+GOOD_LOOK = json.dumps(
+    {"appears_under_18": False, "text_or_contact_overlay": False, "screenshot_or_photo_of_screen": False}
+)
 
 
 def facts(kinds, mismatch=(), status=None):
-    photos = [{"index": i, "kind": k, "faceCount": {"FACE": 1, "GROUP": 3, "NO_FACE": 0}[k]} for i, k in enumerate(kinds)]
+    photos = [
+        {"index": i, "kind": k, "faceCount": {"FACE": 1, "GROUP": 3, "NO_FACE": 0}[k]} for i, k in enumerate(kinds)
+    ]
     verdict = status or ("MISMATCH" if mismatch else "CONSISTENT")
-    return {"photos": photos, "identity": {"status": verdict, "mismatch": list(mismatch), "compared": sum(k == "FACE" for k in kinds)}}
+    return {
+        "photos": photos,
+        "identity": {"status": verdict, "mismatch": list(mismatch), "compared": sum(k == "FACE" for k in kinds)},
+    }
 
 
 def codes(report):
@@ -70,7 +77,9 @@ def test_the_vision_model_can_block_for_a_minor_a_contact_overlay_or_a_screensho
 
 def test_an_answer_in_the_wrong_shape_is_unverified_and_never_blocks():
     for answer in ["I think it is fine!", "", None, 7, "{not json", json.dumps({"appears_under_18": True})]:
-        report = rules.assess(RULESET, facts(["FACE", "FACE", "NO_FACE", "NO_FACE"]), [answer, GOOD_LOOK, GOOD_LOOK, GOOD_LOOK], COUNTS)
+        report = rules.assess(
+            RULESET, facts(["FACE", "FACE", "NO_FACE", "NO_FACE"]), [answer, GOOD_LOOK, GOOD_LOOK, GOOD_LOOK], COUNTS
+        )
         assert report["passes"] is True, answer
         assert report["photos"][0]["findings"] == [{"code": "UNVERIFIED", "severity": "INFO"}], answer
 

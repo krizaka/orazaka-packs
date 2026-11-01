@@ -304,8 +304,18 @@ def _numeric_ratio_max(rule: dict, source) -> dict:
 
 
 _WORDED_NUMBERS = {
-    "un": 1, "une": 1, "deux": 2, "trois": 3, "quatre": 4, "cinq": 5, "six": 6,
-    "sept": 7, "huit": 8, "neuf": 9, "dix": 10, "douze": 12,
+    "un": 1,
+    "une": 1,
+    "deux": 2,
+    "trois": 3,
+    "quatre": 4,
+    "cinq": 5,
+    "six": 6,
+    "sept": 7,
+    "huit": 8,
+    "neuf": 9,
+    "dix": 10,
+    "douze": 12,
 }
 
 
@@ -378,9 +388,7 @@ def screen(ruleset: dict, text: str) -> tuple:
     doc = _Document(text, ruleset.get("textLayout"))
     for rule in ruleset["rules"]:
         if rule["method"] == "JUDGMENT":
-            judgments.append(
-                {"ruleId": rule["ruleId"], "question": rule["question"], "severity": rule["severity"]}
-            )
+            judgments.append({"ruleId": rule["ruleId"], "question": rule["question"], "severity": rule["severity"]})
             continue
         evaluator = CHECKS.get(rule["check"]["type"])
         if evaluator is None:
@@ -450,11 +458,7 @@ def merge_judgments(ruleset: dict, deterministic: list, model_answer: str, text:
     for rule_id, rule in by_id.items():
         answer = answers.get(rule_id)
         if answer is None:
-            out.append(
-                _without_passage(
-                    rule, doc, "Le modèle n'a pas rendu de verdict exploitable pour cette règle."
-                )
-            )
+            out.append(_without_passage(rule, doc, "Le modèle n'a pas rendu de verdict exploitable pour cette règle."))
             continue
         verdict = answer["verdict"]
         span = _quoted_passage(str(answer.get("quote") or ""), doc)
