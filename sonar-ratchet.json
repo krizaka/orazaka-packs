@@ -1,0 +1,13 @@
+{
+  "project": "krizaka_orazaka-packs",
+  "counts": {
+    "bugs": 3,
+    "vulnerabilities": 0,
+    "hotspots": 0,
+    "smells_blocker": 0,
+    "smells_critical": 19,
+    "smells_major": 10,
+    "smells_minor": 4,
+    "smells_info": 0
+  }
+}
