@@ -66,7 +66,8 @@ def parse_look(answer: object) -> Optional[dict]:
         return answer
     if not isinstance(answer, str):
         return None
-    text = _strip_fences(answer.strip())
+    trimmed = answer.strip()
+    text = _strip_fences(trimmed)
     start, end = text.find("{"), text.rfind("}")
     if start < 0 or end <= start:
         return None

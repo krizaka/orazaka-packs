@@ -7,8 +7,8 @@ import { spawnSync } from "node:child_process";
 const root = new URL("../", import.meta.url).pathname;
 
 const strip = (pack, text) => {
-  const code = `import importlib.util,sys\ns=importlib.util.spec_from_file_location('r','${root}${pack}/worker/rules.py')\nm=importlib.util.module_from_spec(s);s.loader.exec_module(m)\nsys.stdout.write(m._strip_fences(sys.argv[1]))`;
-  const run = spawnSync("python3", ["-c", code, text], { encoding: "utf8" });
+  const code = `import importlib.util,sys\ns=importlib.util.spec_from_file_location('r','${root}${pack}/worker/rules.py')\nm=importlib.util.module_from_spec(s);s.loader.exec_module(m)\nsys.stdout.write(m._strip_fences(sys.stdin.read()))`;
+  const run = spawnSync("python3", ["-c", code], { encoding: "utf8", input: text });
   assert.equal(run.status, 0, run.stderr);
   return run.stdout;
 };
