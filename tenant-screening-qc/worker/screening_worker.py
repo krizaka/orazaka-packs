@@ -14,7 +14,9 @@ import broker
 import handlers
 import screening
 
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "worker.yaml"), encoding="utf-8") as declaration_file:
+with open(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "worker.yaml"), encoding="utf-8"
+) as declaration_file:
     DECLARATION = yaml.safe_load(declaration_file)
 EXCHANGES = {"orazaka.jobs": "topic", "orazaka.events": "topic", "orazaka.dlx": "direct"}
 QUEUE = f"orazaka.jobs.{DECLARATION['family']}"
@@ -32,7 +34,9 @@ class Consumer:
 
     def tell(self, job_id: str, verdict: str, body: dict) -> None:
         properties = pika.BasicProperties(content_type="application/json", delivery_mode=2)
-        self.channel.basic_publish("orazaka.events", f"job.{job_id}.{verdict}", json.dumps(dict(body, jobId=job_id)).encode(), properties)
+        self.channel.basic_publish(
+            "orazaka.events", f"job.{job_id}.{verdict}", json.dumps(dict(body, jobId=job_id)).encode(), properties
+        )
 
     def work(self, key: str, job: dict) -> None:
         job_id = job.get("jobId")
@@ -41,7 +45,9 @@ class Consumer:
             result, used = handlers.handle(key, job.get("payload"))
             self.tell(job_id, "done", {"result": result, "consumption": used})
         except REFUSALS as bad:
-            self.tell(job_id, "error", {"error": str(bad), "cause": CAUSES["refused"]})  # names a field and a rule, never a value
+            self.tell(
+                job_id, "error", {"error": str(bad), "cause": CAUSES["refused"]}
+            )  # names a field and a rule, never a value
         except Exception as failure:  # noqa: BLE001 — any failure must reach the saga, not the log alone
             print(f"[screening] job {job_id} failed: {type(failure).__name__}", flush=True)
             self.tell(job_id, "error", {"error": type(failure).__name__, "cause": CAUSES["fault"]})
@@ -59,8 +65,14 @@ class Consumer:
 
 
 def connect() -> "pika.adapters.blocking_connection.BlockingChannel":
-    password = os.environ.get("RABBITMQ_PASS") or os.environ.get("RABBITMQ_PASSWORD") or os.environ.get("SPRING_RABBITMQ_PASSWORD")
-    params = broker.connection_parameters(pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest"))
+    password = (
+        os.environ.get("RABBITMQ_PASS")
+        or os.environ.get("RABBITMQ_PASSWORD")
+        or os.environ.get("SPRING_RABBITMQ_PASSWORD")
+    )
+    params = broker.connection_parameters(
+        pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest")
+    )
     print(f"[screening] broker {broker.describe(params)}", flush=True)
     channel = pika.BlockingConnection(params).channel()
     for name, kind in EXCHANGES.items():

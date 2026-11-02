@@ -29,6 +29,7 @@ def _by_id(report):
 
 # ── the three documents ───────────────────────────────────────────────────────
 
+
 def test_a_clean_pdf_raises_nothing_and_says_so_without_ambiguity():
     report = a.analyse(_fixture("clean"))
     actionable = [s for s in report["signals"] if s["level"] != a.OBSERVED]
@@ -154,14 +155,14 @@ def test_no_pack_template_contains_a_verdict():
                 content = handle.read().lower()
             for word in VERDICT_WORDS:
                 for match in re.finditer(re.escape(word), content):
-                    window = content[max(0, match.start() - 220): match.end() + 220]
+                    window = content[max(0, match.start() - 220) : match.end() + 220]
                     if any(fragment and fragment in DISCLAIMER_TEXT for fragment in [window[:60]]):
                         continue
                     # A verdict word survives only inside the disclaimer blocks, which are compared
                     # by content rather than by line number so moving them changes nothing.
                     if window.strip() in DISCLAIMER_TEXT:
                         continue
-                    snippet = content[max(0, match.start() - 70): match.end() + 70].replace("\n", " ")
+                    snippet = content[max(0, match.start() - 70) : match.end() + 70].replace("\n", " ")
                     if any(part in DISCLAIMER_TEXT for part in (snippet.strip(),)):
                         continue
                     offenders.append(f"{os.path.relpath(path, PACK_ROOT)}: …{snippet.strip()}…")
@@ -175,10 +176,22 @@ def test_no_pack_template_contains_a_verdict():
 def _is_denial(line: str) -> bool:
     """Whether the occurrence sits in a sentence that denies rather than asserts."""
     lowered = line.lower()
-    return any(marker in lowered for marker in (
-        "ne dit pas", "n'est pas", "ne l'est pas", "aucun", "jamais", "ni ", "pas de verdict",
-        "verdict_words", "sans conclure", "ne conclut", "n'affirme",
-    ))
+    return any(
+        marker in lowered
+        for marker in (
+            "ne dit pas",
+            "n'est pas",
+            "ne l'est pas",
+            "aucun",
+            "jamais",
+            "ni ",
+            "pas de verdict",
+            "verdict_words",
+            "sans conclure",
+            "ne conclut",
+            "n'affirme",
+        )
+    )
 
 
 def test_the_structured_signals_reach_the_blueprint_as_json_text():
@@ -195,7 +208,9 @@ def test_the_structured_signals_reach_the_blueprint_as_json_text():
     clean = open(os.path.join(FIXTURES, "clean.pdf"), "rb").read()
     out = w._signals({"documentBase64": base64.b64encode(clean).decode()})
     assert json.loads(out["reportJson"]) == out["report"]
-    blueprint = json.load(open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8"))
+    blueprint = json.load(
+        open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8")
+    )
     sources = {o["key"]: o["from"] for o in blueprint["definition"]["outputs"]}
     assert sources["signals"] == "{{steps.signals.reportJson}}"
 
@@ -242,14 +257,24 @@ def test_every_real_report_meets_the_declared_signals_contract():
     scanned — all meet it, and a flattened one (what the live run returned) does not."""
     import json
 
-    blueprint = json.load(open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8"))
+    blueprint = json.load(
+        open(os.path.join(HERE, "..", "studios", "document-authenticity", "blueprint.json"), encoding="utf-8")
+    )
     schema = {o["key"]: o for o in blueprint["definition"]["outputs"]}["signals"]["schema"]
     for name in ("clean", "modified", "scanned"):
         report = a.analyse(_fixture(name))
         assert _conforms(schema, report) == [], (name, _conforms(schema, report))
     assert _conforms(schema, "pages: 3, header: …") == ["$: expected object"]
-    assert any("level" in p for p in _conforms(schema, {**a.analyse(_fixture("clean")), "signals": [{"signalId": "X", "level": "faux", "observation": "o", "mayIndicate": "m", "where": "w"}]}))
-
+    assert any(
+        "level" in p
+        for p in _conforms(
+            schema,
+            {
+                **a.analyse(_fixture("clean")),
+                "signals": [{"signalId": "X", "level": "faux", "observation": "o", "mayIndicate": "m", "where": "w"}],
+            },
+        )
+    )
 
 
 if __name__ == "__main__":

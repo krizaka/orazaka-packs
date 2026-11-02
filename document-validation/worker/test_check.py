@@ -11,6 +11,7 @@ to the ``outputContract`` the blueprint declares, with the keywords the platform
 Every document is fictional. The two leases are yomizaka#305's recordings: the demo generator's text and the report
 dev returned under 1.x, kept here as they were recorded.
 """
+
 import copy
 import json
 import os
@@ -31,7 +32,10 @@ PACK = Path(__file__).resolve().parent.parent
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 KIND_FIXTURES = PACK / "kinds" / "fixtures"
 BLUEPRINT = json.loads((PACK / "studios" / "compliance-check" / "blueprint.json").read_text(encoding="utf-8"))
-ROUTES = {c["key"]: c["routingKey"] for c in yaml.safe_load((PACK / "pack.yaml").read_text(encoding="utf-8"))["requires"]["capabilities"]}
+ROUTES = {
+    c["key"]: c["routingKey"]
+    for c in yaml.safe_load((PACK / "pack.yaml").read_text(encoding="utf-8"))["requires"]["capabilities"]
+}
 CHAT = "orazaka.core.chat.completion"
 GROUNDED = "orazaka.core.research.grounded"
 TEST_ARTICLES = citations.load_articles(str(FIXTURES / "law"))
@@ -74,7 +78,9 @@ def run(document: str, *, judge=None, classify=None, grounded=None, **inputs) ->
         payload = {name: _value(t, inputs, steps) for name, t in step["inputs"].items()}
         if step["featureKey"] == GROUNDED:
             calls.append(step["id"])
-            steps[step["out"]] = {"claims": json.dumps(grounded(payload) if callable(grounded) else (grounded or []), ensure_ascii=False)}
+            steps[step["out"]] = {
+                "claims": json.dumps(grounded(payload) if callable(grounded) else (grounded or []), ensure_ascii=False)
+            }
             continue
         if step["featureKey"] == CHAT:
             calls.append(step["id"])
@@ -119,9 +125,13 @@ def recording(name: str) -> dict:
 def recorded_judge(report: dict) -> str:
     """The judge's answer that gave the recorded report: its JUDGMENT findings, as the model's JSON."""
     answer = [
-        {"ruleId": f["ruleId"], "verdict": f["verdict"] if f["verdict"] != rules.NOT_APPLICABLE else rules.INSUFFICIENT_EVIDENCE,
-         "quote": (f["evidenceSpan"] or {}).get("quote", "")}
-        for f in report["findings"] if f["method"] == "JUDGMENT"
+        {
+            "ruleId": f["ruleId"],
+            "verdict": f["verdict"] if f["verdict"] != rules.NOT_APPLICABLE else rules.INSUFFICIENT_EVIDENCE,
+            "quote": (f["evidenceSpan"] or {}).get("quote", ""),
+        }
+        for f in report["findings"]
+        if f["method"] == "JUDGMENT"
     ]
     return json.dumps(answer, ensure_ascii=False)
 
@@ -136,12 +146,15 @@ def verdicts(report: dict) -> dict:
 
 # --- yomizaka#305: the recordings stay green ------------------------------------------------------------------------
 
+
 def test_the_clean_lease_raises_only_014_and_the_errors_lease_exactly_004_005_006_014_020():
     # The reports were re-recorded against revision 5 (fixtures/compliance-check/rerecord.py, 2026-10-26; no model). The
     # rule added since, QC-LEASE-014 (the Tribunal administratif du logement's mandatory form, art. 1895), correctly
     # fails yomizaka's demo "clean" text, which never mentions that form: the text stays as generated (yomizaka follow-up).
-    for name, expected in (("clean", {"QC-LEASE-014"}),
-                           ("errors", {"QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-014", "QC-LEASE-020"})):
+    for name, expected in (
+        ("clean", {"QC-LEASE-014"}),
+        ("errors", {"QC-LEASE-004", "QC-LEASE-005", "QC-LEASE-006", "QC-LEASE-014", "QC-LEASE-020"}),
+    ):
         rec = recording(name)
         report, _ = run(rec["document"], judge=recorded_judge(rec["report"]), **rec["inputs"])
         assert report["outcome"] == compliance.CHECKED, name
@@ -170,14 +183,21 @@ def test_the_errors_lease_fails_on_the_passages_yomizaka_expects():
 
 # --- A 1.x call ---------------------------------------------------------------------------------------------------
 
+
 def test_a_1x_request_answers_the_1x_shape_exactly_as_recorded():
     # The 1.x blueprint calls screen then assemble with the jurisdiction: the same worker answers it as before.
     for name in ("clean", "errors"):
         rec = recording(name)
         screened = worker._screen({"document": rec["document"], **rec["inputs"]})
-        report = worker._assemble({"screened": screened["screenedJson"], "judgment": recorded_judge(rec["report"])})["report"]
+        report = worker._assemble({"screened": screened["screenedJson"], "judgment": recorded_judge(rec["report"])})[
+            "report"
+        ]
         assert report == rec["report"], f"{name}: the 1.x report changed"
-        assert "contract" not in report and "identification" not in report and isinstance(report["findings"][0]["citation"], str)
+        assert (
+            "contract" not in report
+            and "identification" not in report
+            and isinstance(report["findings"][0]["citation"], str)
+        )
 
 
 def test_a_2x_lease_report_exposes_the_rents_it_read_for_section_g():
@@ -198,7 +218,10 @@ def test_2x_has_no_default_kind_the_lease_by_jurisdiction_is_legacy_1x_only():
     text = "Entre le locateur Monsieur Marc Tremblay, domicilié à Montréal, et la locataire Madame Léa Roy."
     report, calls = run(text, jurisdiction="QC", asOf="2026-10-22")
     assert report["outcome"] == "KIND_UNKNOWN" and report["findings"] == [] and calls == []
-    assert worker._screen({"document": text, "jurisdiction": "QC", "asOf": "2026-10-22"})["rulesetId"] == "qc-residential-lease"
+    assert (
+        worker._screen({"document": text, "jurisdiction": "QC", "asOf": "2026-10-22"})["rulesetId"]
+        == "qc-residential-lease"
+    )
     # A recognised notice is never the lease's: the mismatch with a declared lease shows.
     notice, _ = run(kind_text("qc-visit-notice", "fr-filled.txt"), jurisdiction="QC", declaredKind="LEASE")
     assert notice["outcome"] == compliance.CHECKED and notice["identification"]["kindMismatch"] is True
@@ -217,16 +240,24 @@ def test_a_citation_that_pins_no_article_says_so_on_every_finding():
 def test_the_2x_blueprint_is_versioned_so_pinned_1x_installations_keep_their_steps():
     assert BLUEPRINT["version"] == BLUEPRINT["definition"]["version"] == "2.1.0"
     assert ROUTES["orazaka.validation.document.screen"] == "job.validation.screen"
-    assert ROUTES["orazaka.validation.document.assemble"] == "job.validation.assemble", "1.x installations still call it"
+    assert ROUTES["orazaka.validation.document.assemble"] == "job.validation.assemble", (
+        "1.x installations still call it"
+    )
 
 
 # --- Each outcome -------------------------------------------------------------------------------------------------
+
 
 def test_checked_carries_identification_outcome_and_ruleset():
     rec = recording("clean")
     report, _ = run(rec["document"], judge=recorded_judge(rec["report"]), **rec["inputs"])
     assert report["contract"] == "2.0"
-    assert report["ruleset"] == {"id": "qc-residential-lease", "version": "2024-02-21", "revision": 5, "reviewStatus": "TO_REVIEW_BY_LAWYER"}
+    assert report["ruleset"] == {
+        "id": "qc-residential-lease",
+        "version": "2024-02-21",
+        "revision": 5,
+        "reviewStatus": "TO_REVIEW_BY_LAWYER",
+    }
     assert report["identification"]["kindSource"] == "DETECTED" and report["identification"]["asOfSource"] == "INPUT"
 
 
@@ -260,9 +291,16 @@ def test_a_tie_asks_the_model_and_keeps_its_answer_only_with_a_quote_from_the_do
         def answer(prompt):
             prompts.append(prompt)
             return json.dumps({"kindId": kind_id, "quote": quote})
+
         return answer
 
-    kept, calls = run(text, classify=choose("qc-service-contract", "Contrat de services"), judge="[]", jurisdiction="QC", asOf="2026-10-22")
+    kept, calls = run(
+        text,
+        classify=choose("qc-service-contract", "Contrat de services"),
+        judge="[]",
+        jurisdiction="QC",
+        asOf="2026-10-22",
+    )
     assert calls[0] == "classify" and "qc-invoice" in prompts[0] and "OTHER" in prompts[0]
     assert kept["outcome"] == compliance.CHECKED and kept["identification"]["kindSource"] == "CLASSIFIED"
     assert kept["ruleset"]["id"] == "qc-service-contract"
@@ -287,9 +325,14 @@ def test_a_declared_kind_breaks_a_tie_only_when_it_names_one_of_the_tied_kinds()
 
 # --- No passage, no PASS; both quotes checked ---------------------------------------------------------------------
 
+
 def test_no_report_has_a_pass_without_a_passage_of_the_document():
     documents = [recording("clean")["document"], recording("errors")["document"]]
-    documents += [kind_text(k, n) for k in ("qc-residential-lease", "qc-invoice", "qc-service-contract") for n in ("fr-blank.txt",)]
+    documents += [
+        kind_text(k, n)
+        for k in ("qc-residential-lease", "qc-invoice", "qc-service-contract")
+        for n in ("fr-blank.txt",)
+    ]
     for text in documents:
         report, _ = run(text, judge="[]", jurisdiction="QC", asOf="2026-10-22")
         for finding in report["findings"]:
@@ -311,10 +354,15 @@ def _pinned(quote: str, content_hash=None) -> dict:
     block = {k: article[k] for k in ("instrument", "ref", "language", "inForceFrom", "officialUrl")}
     block.update(contentHash=content_hash or article["contentHash"], quote=quote)
     rule = {
-        "ruleId": "TEST-001", "title": "Préavis écrit", "severity": "BLOCKING", "method": "DETERMINISTIC",
-        "citation": "TEST-1, art. 9999", "law": [block],
+        "ruleId": "TEST-001",
+        "title": "Préavis écrit",
+        "severity": "BLOCKING",
+        "method": "DETERMINISTIC",
+        "citation": "TEST-1, art. 9999",
+        "law": [block],
         "check": {"type": "REQUIRED_PATTERN", "pattern": "(?i)avis\\s+écrit"},
-        "onPass": "Un avis écrit est donné.", "onFail": "Aucun avis écrit.",
+        "onPass": "Un avis écrit est donné.",
+        "onFail": "Aucun avis écrit.",
     }
     return {"rulesetId": "test", "version": "2020-01-01", "jurisdiction": "QC", "source": "fictional", "rules": [rule]}
 
@@ -332,11 +380,16 @@ def test_a_citation_is_verified_against_the_article_text_the_ruleset_pins():
     assert good["verdict"] == rules.PASS and good["checks"] == {"passage": "VERIFIED", "citation": "VERIFIED"}
     assert good["citation"]["contentHash"] == next(iter(TEST_ARTICLES)) and good["citation"]["ref"] == "9999"
     # Typography is not a difference: a straight apostrophe and other spacing still verify.
-    assert _report_with(_pinned("Le bailleur d'un  logement imaginaire"), text)["findings"][0]["checks"]["citation"] == "VERIFIED"
+    assert (
+        _report_with(_pinned("Le bailleur d'un  logement imaginaire"), text)["findings"][0]["checks"]["citation"]
+        == "VERIFIED"
+    )
 
 
 def test_a_citation_quote_altered_by_one_word_gives_insufficient_evidence():
-    finding = _report_with(_pinned("remet à son locataire, après la visite, un avis écrit"), "Un avis écrit est remis.")["findings"][0]
+    finding = _report_with(
+        _pinned("remet à son locataire, après la visite, un avis écrit"), "Un avis écrit est remis."
+    )["findings"][0]
     assert finding["verdict"] == rules.INSUFFICIENT_EVIDENCE and finding["checks"]["citation"] == "QUOTE_NOT_IN_ARTICLE"
 
 
@@ -364,10 +417,13 @@ def test_every_law_block_the_pack_ships_pins_an_article_it_holds_and_quotes_it()
         for version in sorted(ruleset_dir.glob("*.json")):
             for rule in json.loads(version.read_text(encoding="utf-8"))["rules"]:
                 for block in rule.get("law") or []:
-                    assert citations.check(block, held) == citations.VERIFIED, f"{version.name} {rule['ruleId']} {block.get('ref')}"
+                    assert citations.check(block, held) == citations.VERIFIED, (
+                        f"{version.name} {rule['ruleId']} {block.get('ref')}"
+                    )
 
 
 # --- Two identical runs -------------------------------------------------------------------------------------------
+
 
 def test_two_identical_runs_give_the_same_report():
     # The premise of the result cache (orazaka-studio#61): the run is a function of its inputs and its version.
@@ -381,8 +437,18 @@ def _report_step(document: str, **inputs) -> dict:
     """The output of the report step itself (what the platform reads ``resultCacheable`` from)."""
     ident = worker._identify({"document": document, **inputs})
     resolved = worker._resolve({"identification": ident["identificationJson"], "document": document})
-    screened = worker._screen({"resolved": resolved["resolvedJson"], "document": document}) if resolved["outcome"] == "CHECK" else None
-    return worker._report({"resolved": resolved["resolvedJson"], "screened": screened["screenedJson"] if screened else "", "judgment": "[]"})
+    screened = (
+        worker._screen({"resolved": resolved["resolvedJson"], "document": document})
+        if resolved["outcome"] == "CHECK"
+        else None
+    )
+    return worker._report(
+        {
+            "resolved": resolved["resolvedJson"],
+            "screened": screened["screenedJson"] if screened else "",
+            "judgment": "[]",
+        }
+    )
 
 
 def test_a_run_whose_day_came_from_the_clock_is_never_cacheable():
@@ -419,8 +485,15 @@ def test_the_shipped_snapshot_matches_the_corpus_when_it_is_reachable():
     import urllib.request
 
     def lookup(article):
-        query = urllib.parse.urlencode({"jurisdiction": "QC", "instrument": article["instrument"], "ref": article["ref"],
-                                        "language": article["language"], "asOf": article["inForceFrom"]})
+        query = urllib.parse.urlencode(
+            {
+                "jurisdiction": "QC",
+                "instrument": article["instrument"],
+                "ref": article["ref"],
+                "language": article["language"],
+                "asOf": article["inForceFrom"],
+            }
+        )
         try:
             request = urllib.request.Request(f"{os.environ['AI_LAW_LOOKUP_URL']}?{query}")
             if os.environ.get("AI_LAW_LOOKUP_KEY"):
@@ -443,8 +516,10 @@ def test_the_corpus_lookup_asks_the_read_api_by_ref_with_its_key():
     import urllib.parse
 
     # The pack holds no article yet on every branch: one known article stands in for the snapshot.
-    held = {"a" * 64: {"instrument": "CCQ-1991", "ref": "1931", "language": "fr", "inForceFrom": "1994-01-01"},
-            "b" * 64: {"instrument": "CCQ-1991", "ref": "9999", "language": "fr", "inForceFrom": "1994-01-01"}}
+    held = {
+        "a" * 64: {"instrument": "CCQ-1991", "ref": "1931", "language": "fr", "inForceFrom": "1994-01-01"},
+        "b" * 64: {"instrument": "CCQ-1991", "ref": "9999", "language": "fr", "inForceFrom": "1994-01-01"},
+    }
     by_key = {(a["instrument"], a["ref"], a["language"], a["inForceFrom"]): h for h, a in held.items()}
     asked = []
 
@@ -469,8 +544,13 @@ def test_the_corpus_lookup_asks_the_read_api_by_ref_with_its_key():
     citations.load_articles = lambda directory=None: held
     saved = {k: os.environ.get(k) for k in ("AI_LAW_CORPUS_ENABLED", "AI_LAW_LOOKUP_URL", "AI_LAW_LOOKUP_KEY")}
     try:
-        os.environ.update({"AI_LAW_CORPUS_ENABLED": "true", "AI_LAW_LOOKUP_KEY": "oz_test",
-                           "AI_LAW_LOOKUP_URL": f"http://127.0.0.1:{server.server_port}/api/v1/law/articles"})
+        os.environ.update(
+            {
+                "AI_LAW_CORPUS_ENABLED": "true",
+                "AI_LAW_LOOKUP_KEY": "oz_test",
+                "AI_LAW_LOOKUP_URL": f"http://127.0.0.1:{server.server_port}/api/v1/law/articles",
+            }
+        )
         try:
             test_the_shipped_snapshot_matches_the_corpus_when_it_is_reachable()
             raise AssertionError("the unknown article must be reported")

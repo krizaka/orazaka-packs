@@ -111,9 +111,13 @@ def assess(ruleset: dict, faces: dict, looks: Optional[list], counts: dict) -> d
             findings.append({"code": "FACE_MISMATCH", "severity": BLOCK})
         if fact["kind"] == "GROUP":
             findings.append({"code": "GROUP_PHOTO", "severity": INFO})
-        report_photos.append({"index": fact["index"], "kind": fact["kind"], "faceCount": fact["faceCount"], "findings": findings})
+        report_photos.append(
+            {"index": fact["index"], "kind": fact["kind"], "faceCount": fact["faceCount"], "findings": findings}
+        )
 
-    face_photos = [p for p in report_photos if p["kind"] == "FACE" and not any(f["code"] == "FACE_MISMATCH" for f in p["findings"])]
+    face_photos = [
+        p for p in report_photos if p["kind"] == "FACE" and not any(f["code"] == "FACE_MISMATCH" for f in p["findings"])
+    ]
     blockers: list[dict] = []
     if n < counts["minPhotos"]:
         blockers.append({"code": "TOO_FEW_PHOTOS", "photos": []})
@@ -122,7 +126,12 @@ def assess(ruleset: dict, faces: dict, looks: Optional[list], counts: dict) -> d
     if len(face_photos) < counts["minFacePhotos"]:
         blockers.append({"code": "TOO_FEW_FACE_PHOTOS", "photos": []})
     for code in sorted({f["code"] for p in report_photos for f in p["findings"] if f["severity"] == BLOCK}):
-        blockers.append({"code": code, "photos": [p["index"] for p in report_photos if any(f["code"] == code for f in p["findings"])]})
+        blockers.append(
+            {
+                "code": code,
+                "photos": [p["index"] for p in report_photos if any(f["code"] == code for f in p["findings"])],
+            }
+        )
 
     return {
         "rulesetId": ruleset["rulesetId"],

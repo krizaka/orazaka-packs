@@ -7,16 +7,16 @@ and their ``worker.yaml`` declaration, nothing else.
 ``handle`` raises :class:`InvalidJobPayload` when it checked the payload and found it unusable (the one cause that
 bills); any other exception is an executor fault. The log lines are the job id and the routing key — never a payload.
 """
+
 from __future__ import annotations
 
 import json
-import os
 import time
 from typing import Callable
 
 import pika
 
-from worker_broker import connection_parameters, describe
+from worker_broker import connection_parameters, credentials_from_environment, describe
 
 JOBS_EXCHANGE = "orazaka.jobs"
 EVENTS_EXCHANGE = "orazaka.events"
@@ -84,11 +84,6 @@ def make_on_message(label: str, handle: Callable[[str, dict], tuple], seen: set)
     return on_message
 
 
-def credentials_from_environment() -> "pika.PlainCredentials":
-    password = os.environ.get("RABBITMQ_PASS") or os.environ.get("RABBITMQ_PASSWORD") or os.environ.get("SPRING_RABBITMQ_PASSWORD")
-    return pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest")
-
-
 def run(label: str, declaration: dict, handle: Callable[[str, dict], tuple]) -> None:
     """Connect, declare ``orazaka.jobs.<family>`` with its dead-letter queue, and consume until stopped."""
     queue = f"orazaka.jobs.{declaration['family']}"
@@ -99,7 +94,11 @@ def run(label: str, declaration: dict, handle: Callable[[str, dict], tuple]) -> 
     channel.exchange_declare(exchange=JOBS_EXCHANGE, exchange_type="topic", durable=True)
     channel.exchange_declare(exchange=EVENTS_EXCHANGE, exchange_type="topic", durable=True)
     channel.exchange_declare(exchange=DLX_EXCHANGE, exchange_type="direct", durable=True)
-    channel.queue_declare(queue=queue, durable=True, arguments={"x-dead-letter-exchange": DLX_EXCHANGE, "x-dead-letter-routing-key": queue})
+    channel.queue_declare(
+        queue=queue,
+        durable=True,
+        arguments={"x-dead-letter-exchange": DLX_EXCHANGE, "x-dead-letter-routing-key": queue},
+    )
     for binding in declaration["bindings"]:
         channel.queue_bind(queue=queue, exchange=JOBS_EXCHANGE, routing_key=binding)
     channel.queue_declare(queue=dead, durable=True)

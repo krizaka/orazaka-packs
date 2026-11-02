@@ -28,7 +28,9 @@ def test_plain_amqp_by_default_on_5672():
 
 
 def test_tls_on_5671_verifies_the_certificate_and_the_host_name():
-    params = broker.connection_parameters(CREDS, {"RABBITMQ_HOST": "broker-dev.orazaka.com", "SPRING_RABBITMQ_SSL_ENABLED": "true"})
+    params = broker.connection_parameters(
+        CREDS, {"RABBITMQ_HOST": "broker-dev.orazaka.com", "SPRING_RABBITMQ_SSL_ENABLED": "true"}
+    )
     assert params.port == 5671
     context = params.ssl_options.context
     assert context.verify_mode == ssl.CERT_REQUIRED
@@ -40,8 +42,13 @@ def test_tls_on_5671_verifies_the_certificate_and_the_host_name():
 
 
 def test_the_own_name_wins_over_springs_and_an_explicit_port_is_kept():
-    env = {"RABBITMQ_HOST": "10.0.0.5", "RABBITMQ_PORT": "15671", "RABBITMQ_SSL_ENABLED": "true",
-           "SPRING_RABBITMQ_SSL_ENABLED": "false", "RABBITMQ_SSL_SERVER_NAME": "broker-dev.orazaka.com"}
+    env = {
+        "RABBITMQ_HOST": "10.0.0.5",
+        "RABBITMQ_PORT": "15671",
+        "RABBITMQ_SSL_ENABLED": "true",
+        "SPRING_RABBITMQ_SSL_ENABLED": "false",
+        "RABBITMQ_SSL_SERVER_NAME": "broker-dev.orazaka.com",
+    }
     params = broker.connection_parameters(CREDS, env)
     assert params.port == 15671
     assert params.ssl_options.server_hostname == "broker-dev.orazaka.com"
@@ -50,10 +57,34 @@ def test_the_own_name_wins_over_springs_and_an_explicit_port_is_kept():
 def test_a_private_ca_named_by_the_deployment_is_trusted():
     with tempfile.TemporaryDirectory() as tmp:
         key, ca = os.path.join(tmp, "ca.key"), os.path.join(tmp, "ca.pem")
-        subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-keyout", key, "-out", ca,
-                        "-days", "1", "-subj", "/CN=Orazaka Dev Test CA"], check=True, capture_output=True)
-        params = broker.connection_parameters(CREDS, {"RABBITMQ_HOST": "broker-dev.orazaka.com", "SPRING_RABBITMQ_SSL_ENABLED": "true",
-                                                      "SPRING_RABBITMQ_SSL_CA_FILE": ca})
+        subprocess.run(
+            [
+                "openssl",
+                "req",
+                "-x509",
+                "-newkey",
+                "rsa:2048",
+                "-nodes",
+                "-keyout",
+                key,
+                "-out",
+                ca,
+                "-days",
+                "1",
+                "-subj",
+                "/CN=Orazaka Dev Test CA",
+            ],
+            check=True,
+            capture_output=True,
+        )
+        params = broker.connection_parameters(
+            CREDS,
+            {
+                "RABBITMQ_HOST": "broker-dev.orazaka.com",
+                "SPRING_RABBITMQ_SSL_ENABLED": "true",
+                "SPRING_RABBITMQ_SSL_CA_FILE": ca,
+            },
+        )
         subjects = [dict(x[0] for x in cert["subject"]) for cert in params.ssl_options.context.get_ca_certs()]
         assert {"commonName": "Orazaka Dev Test CA"} in subjects
 

@@ -9,6 +9,7 @@ call that the blueprint makes (so the inference is metered like any other — th
     decides what can be decided by arithmetic: the check digits, the calendar, the agreement between the printed fields,
     the zone and the barcode (:mod:`rules`, :mod:`mrz`). It never receives the image and keeps nothing.
 """
+
 import datetime as dt
 import json
 import os
@@ -66,7 +67,9 @@ def _verify(payload: dict) -> dict:
         raise InvalidJobPayload(f"'barcodeText' must be text of at most {MAX_BARCODE_CHARS} characters")
     as_of = _as_of(payload)
     try:
-        report = rules.assess(rules.load_ruleset(), reading, as_of, minimum_age=_minimum_age(payload), barcode_text=barcode)
+        report = rules.assess(
+            rules.load_ruleset(), reading, as_of, minimum_age=_minimum_age(payload), barcode_text=barcode
+        )
     except rules.InvalidReading as bad:
         raise InvalidJobPayload(str(bad)) from bad
     return {"report": report, "reportJson": json.dumps(report), "status": report["status"]}

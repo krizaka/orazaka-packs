@@ -8,11 +8,15 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+
 # The worker itself (it imports pika, hence here, after the CI installs it): a ruleset awaiting a lawyer says so.
 def test_a_quebec_report_carries_its_review_status():
     import test_rules
     import validation_worker
-    screened = validation_worker._screen({"document": test_rules.QC_DEFECTIVE, "jurisdiction": "QC", "asOf": "2026-10-15"})
+
+    screened = validation_worker._screen(
+        {"document": test_rules.QC_DEFECTIVE, "jurisdiction": "QC", "asOf": "2026-10-15"}
+    )
     assert screened["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
     report = validation_worker._assemble({"screened": screened["screenedJson"], "judgment": "[]"})["report"]
     assert report["reviewStatus"] == "TO_REVIEW_BY_LAWYER"
@@ -21,12 +25,24 @@ def test_a_quebec_report_carries_its_review_status():
 def test_a_named_ruleset_is_applied_only_within_its_jurisdiction():
     import test_rules
     import validation_worker
-    named = validation_worker._screen({"document": test_rules.QC_INVOICE_CLEAN, "jurisdiction": "QC", "ruleset": "qc-invoice", "asOf": "2026-10-19"})
+
+    named = validation_worker._screen(
+        {"document": test_rules.QC_INVOICE_CLEAN, "jurisdiction": "QC", "ruleset": "qc-invoice", "asOf": "2026-10-19"}
+    )
     assert named["rulesetId"] == "qc-invoice" and named["judgmentCount"] == 0
     assert "JSON vide" in named["judgmentPrompt"]  # no question for a model: nothing to read
-    contract = validation_worker._screen({"document": test_rules.QC_CONTRACT_CLEAN, "jurisdiction": "QC", "ruleset": "qc-service-contract", "asOf": "2026-10-19"})
+    contract = validation_worker._screen(
+        {
+            "document": test_rules.QC_CONTRACT_CLEAN,
+            "jurisdiction": "QC",
+            "ruleset": "qc-service-contract",
+            "asOf": "2026-10-19",
+        }
+    )
     assert contract["rulesetId"] == "qc-service-contract"
-    default = validation_worker._screen({"document": test_rules.QC_DEFECTIVE, "jurisdiction": "QC", "ruleset": "", "asOf": "2026-10-19"})
+    default = validation_worker._screen(
+        {"document": test_rules.QC_DEFECTIVE, "jurisdiction": "QC", "ruleset": "", "asOf": "2026-10-19"}
+    )
     assert default["rulesetId"] == "qc-residential-lease"
     for jurisdiction in ("FR", "BE-WAL"):
         try:
@@ -39,11 +55,14 @@ def test_a_named_ruleset_is_applied_only_within_its_jurisdiction():
 def test_the_visit_notice_and_the_condition_report_are_named_and_assembled_as_their_own_kind():
     # orazaka-packs#125, #126: named by the run, judged by their own ruleset, reported with the article each rule cites.
     import validation_worker
+
     fixtures = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures")
     for kind in ("qc-visit-notice", "qc-condition-report"):
         with open(os.path.join(fixtures, kind, "defective.txt"), encoding="utf-8") as handle:
             document = handle.read()
-        screened = validation_worker._screen({"document": document, "jurisdiction": "QC", "ruleset": kind, "asOf": "2026-10-22"})
+        screened = validation_worker._screen(
+            {"document": document, "jurisdiction": "QC", "ruleset": kind, "asOf": "2026-10-22"}
+        )
         assert screened["rulesetId"] == kind and screened["rulesetVersion"] == "2023-06-01"
         assert screened["judgmentCount"] == 0
         report = validation_worker._assemble({"screened": screened["screenedJson"], "judgment": "[]"})["report"]
@@ -54,6 +73,7 @@ def test_the_visit_notice_and_the_condition_report_are_named_and_assembled_as_th
 def test_screen_carries_the_facts_into_the_screened_report():
     import test_rules
     import validation_worker
+
     screened = validation_worker._screened(test_rules._qc_lease(), "Loyer mensuel : 1 450 $", "2026-10-15")
     assert screened["facts"]["rentCents"]["cents"] == 145000
 

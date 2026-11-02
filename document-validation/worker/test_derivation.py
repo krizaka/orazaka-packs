@@ -11,6 +11,7 @@ The engine derives proposed rules and vets them (orazaka-ai-engine ``RuleProposa
 
 Pure data and pure functions: no model, no network, no clock. Run: python3 test_derivation.py
 """
+
 import json
 import os
 import re
@@ -28,8 +29,17 @@ HELD = citations.load_articles(os.path.join(DERIVATION, "law"))
 RENT_ARTICLES = {"1855", "1896", "1903", "1904"}
 
 #: Numbers as the engine reads them (RuleFigures): digits, and the words it maps; « un » / « one » are left out.
-_WORDS = {"vingt-quatre": "24", "quarante-huit": "48", "twenty-four": "24", "deux": "2", "trois": "3", "sept": "7",
-          "neuf": "9", "dix": "10", "douze": "12"}
+_WORDS = {
+    "vingt-quatre": "24",
+    "quarante-huit": "48",
+    "twenty-four": "24",
+    "deux": "2",
+    "trois": "3",
+    "sept": "7",
+    "neuf": "9",
+    "dix": "10",
+    "douze": "12",
+}
 
 
 def _load(*parts):
@@ -123,7 +133,9 @@ def _compiles(pattern):
 
 def test_the_held_articles_are_the_visit_notice_articles_by_reference_only():
     assert sorted(a["ref"] for a in HELD.values()) == ["1931", "1932", "1933"]
-    assert all("text" not in a and a["officialUrl"].startswith("https://www.legisquebec.gouv.qc.ca/") for a in HELD.values())
+    assert all(
+        "text" not in a and a["officialUrl"].startswith("https://www.legisquebec.gouv.qc.ca/") for a in HELD.values()
+    )
     assert all(re.fullmatch(r"[0-9a-f]{64}", h) for h in HELD)
 
 
@@ -167,6 +179,7 @@ def test_an_answer_citing_an_article_the_corpus_does_not_hold_is_not_verified():
 
 # ── the planted cases: each fails here for the engine's reason ────────────────────────────────────────────────────
 
+
 def _fails_for(reason, rule, planted):
     if reason == "SCHEMA_INVALID":
         return rule["method"] == "JUDGMENT" and rule["severity"] != "ADVISORY"
@@ -184,7 +197,8 @@ def _fails_for(reason, rule, planted):
         # Without a subject the worker can never say PASS: every document without the wording is INSUFFICIENT_EVIDENCE.
         return not rule.get("subject") and all(
             rules.evaluate(_ruleset(rule), rule, t)["verdict"] == rules.INSUFFICIENT_EVIDENCE
-            for t in _as_list(rule["fixtures"]["pass"]))
+            for t in _as_list(rule["fixtures"]["pass"])
+        )
     if reason == "LAW_VERSION_UNKNOWN":
         return any(citations.check(b, HELD, _text_of) == citations.ARTICLE_NOT_HELD for b in rule["law"])
     if reason == "OVER_RULE_LIMIT":
@@ -198,9 +212,17 @@ def test_each_planted_proposal_fails_in_this_worker_for_its_reason():
         rule = next(r for r in planted["rules"] if r["ruleId"] == planted["plantedRuleId"])
         assert _fails_for(planted["reason"], rule, planted), planted["name"]
         seen.add(planted["reason"])
-    assert seen == {"SCHEMA_INVALID", "REGEX_INVALID", "REGEX_MATCHES_EMPTY", "QUOTE_NOT_IN_ARTICLE",
-                    "UNSUPPORTED_NUMBER", "FIXTURES_INDISTINCT", "SUBJECT_MISSING", "LAW_VERSION_UNKNOWN",
-                    "OVER_RULE_LIMIT"}
+    assert seen == {
+        "SCHEMA_INVALID",
+        "REGEX_INVALID",
+        "REGEX_MATCHES_EMPTY",
+        "QUOTE_NOT_IN_ARTICLE",
+        "UNSUPPORTED_NUMBER",
+        "FIXTURES_INDISTINCT",
+        "SUBJECT_MISSING",
+        "LAW_VERSION_UNKNOWN",
+        "OVER_RULE_LIMIT",
+    }
 
 
 def test_a_planted_proposal_fails_for_its_reason_only():
@@ -210,9 +232,21 @@ def test_a_planted_proposal_fails_for_its_reason_only():
         reason = planted["reason"]
         if reason in ("SCHEMA_INVALID", "OVER_RULE_LIMIT"):
             continue  # the engine reads nothing else of such a rule
-        others = [r for r in ("REGEX_INVALID", "REGEX_MATCHES_EMPTY", "QUOTE_NOT_IN_ARTICLE", "UNSUPPORTED_NUMBER",
-                              "LAW_VERSION_UNKNOWN") if r != reason]
-        if reason not in ("REGEX_INVALID", "REGEX_MATCHES_EMPTY", "FIXTURES_INDISTINCT") and rule["method"] == "DETERMINISTIC":
+        others = [
+            r
+            for r in (
+                "REGEX_INVALID",
+                "REGEX_MATCHES_EMPTY",
+                "QUOTE_NOT_IN_ARTICLE",
+                "UNSUPPORTED_NUMBER",
+                "LAW_VERSION_UNKNOWN",
+            )
+            if r != reason
+        ]
+        if (
+            reason not in ("REGEX_INVALID", "REGEX_MATCHES_EMPTY", "FIXTURES_INDISTINCT")
+            and rule["method"] == "DETERMINISTIC"
+        ):
             others.append("FIXTURES_INDISTINCT")
         for other in others:
             if other == "FIXTURES_INDISTINCT" and reason == "SUBJECT_MISSING":

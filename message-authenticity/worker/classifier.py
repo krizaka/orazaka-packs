@@ -20,7 +20,9 @@ class TransformersClassifier:
 
         self._torch = torch
         self._tokenizer = AutoTokenizer.from_pretrained(spec["model"], revision=spec["revision"])
-        self._model = AutoModelForSequenceClassification.from_pretrained(spec["model"], revision=spec["revision"]).eval()
+        self._model = AutoModelForSequenceClassification.from_pretrained(
+            spec["model"], revision=spec["revision"]
+        ).eval()
         labels = {str(v).lower(): int(k) for k, v in self._model.config.id2label.items()}
         self._ai = labels[spec["aiLabel"].lower()]
         self._max = spec["maxTokens"]

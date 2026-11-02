@@ -118,6 +118,8 @@ def corpus_mismatches(articles: dict, lookup) -> list:
         row = lookup(article)
         if row is None or row.get("contentHash") != content_hash:
             corpus = row["contentHash"][:12] if row and row.get("contentHash") else "LAW_VERSION_UNKNOWN"
-            found.append(f"{article['instrument']} art. {article['ref']} ({article['language']}, {article['inForceFrom']}): "
-                         f"held {content_hash[:12]}, corpus {corpus}")
+            found.append(
+                f"{article['instrument']} art. {article['ref']} ({article['language']}, {article['inForceFrom']}): "
+                f"held {content_hash[:12]}, corpus {corpus}"
+            )
     return found

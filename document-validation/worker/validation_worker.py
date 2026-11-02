@@ -88,8 +88,7 @@ def _screen(payload: dict) -> dict:
         # A jurisdiction this pack does not carry is refused by name. Falling back to another
         # country's law would produce a confident report against rules that do not apply.
         raise InvalidJobPayload(
-            f"aucun corpus de règles pour la juridiction '{jurisdiction}'; "
-            f"disponibles: {', '.join(sorted(known))}"
+            f"aucun corpus de règles pour la juridiction '{jurisdiction}'; disponibles: {', '.join(sorted(known))}"
         )
     ruleset_id = known[jurisdiction]
     named = str(payload.get("ruleset") or "").strip()
@@ -112,10 +111,7 @@ def _screened(ruleset: dict, text: str, as_of: str) -> dict:
 
     if judgments:
         questions = "\n".join(f"- {j['ruleId']}: {j['question']}" for j in judgments)
-        prompt = (
-            f"{JUDGMENT_INSTRUCTIONS}\n\nRègles à évaluer:\n{questions}\n\n"
-            f"Document:\n---\n{text}\n---"
-        )
+        prompt = f"{JUDGMENT_INSTRUCTIONS}\n\nRègles à évaluer:\n{questions}\n\nDocument:\n---\n{text}\n---"
     else:
         # A ruleset with no question for a model (the invoice rules are all deterministic): 1.x still runs the
         # judge step, so it is given nothing to read and an empty answer to give. 2.0 skips it (needsJudgment).
@@ -224,9 +220,7 @@ def _signals(payload: dict) -> dict:
         # A blueprint step addresses FIELDS, not a nested value: the structured report is also given as JSON text (like the compliance report).
         "reportJson": json.dumps(report, ensure_ascii=False, indent=2),
         "signalCount": len(report["signals"]),
-        "actionableCount": sum(
-            1 for s in report["signals"] if s["level"] != authenticity.OBSERVED
-        ),
+        "actionableCount": sum(1 for s in report["signals"] if s["level"] != authenticity.OBSERVED),
     }
 
 
@@ -389,12 +383,10 @@ def _on_message(channel, method, properties, body) -> None:
         # A jurisdiction this pack does not carry, or a date no ruleset covers: the pack checked
         # and says so. This is the one category that bills for the steps that already ran.
         print(f"[validation] job {job_id} rejected: {bad}", flush=True)
-        _emit(channel, job_id, "error",
-              {"jobId": job_id, "error": str(bad), "cause": INPUT_INVALID})
+        _emit(channel, job_id, "error", {"jobId": job_id, "error": str(bad), "cause": INPUT_INVALID})
     except Exception as failure:  # noqa: BLE001 — any failure must reach the saga, not the log alone
         print(f"[validation] job {job_id} failed: {failure}", flush=True)
-        _emit(channel, job_id, "error",
-              {"jobId": job_id, "error": str(failure), "cause": EXECUTOR_FAULT})
+        _emit(channel, job_id, "error", {"jobId": job_id, "error": str(failure), "cause": EXECUTOR_FAULT})
     SEEN.add(message_id)
     channel.basic_ack(delivery_tag=method.delivery_tag)
 
@@ -417,14 +409,11 @@ def _broker_credentials() -> "pika.PlainCredentials":
             password = os.environ.get(legacy)
             if password:
                 print(
-                    f"[warn] {legacy} is deprecated and will stop being read after 1.1.0; "
-                    "rename it to RABBITMQ_PASS.",
+                    f"[warn] {legacy} is deprecated and will stop being read after 1.1.0; rename it to RABBITMQ_PASS.",
                     flush=True,
                 )
                 break
-    return pika.PlainCredentials(
-        os.environ.get("RABBITMQ_USER", "guest"), password or "guest"
-    )
+    return pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest")
 
 
 def main() -> None:

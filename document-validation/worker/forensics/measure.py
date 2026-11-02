@@ -49,6 +49,7 @@ def _fired(report):
 
 def measure(data):
     """Runs ``analyse`` over ``data`` (``corpus.build()``) and returns the results structure."""
+
     def run(item):
         started = time.process_time()
         report = a.analyse(item["bytes"], locale="en")
@@ -76,20 +77,35 @@ def measure(data):
     signals = []
     for key in sorted(set(negative_hits) | set(tamper_hits)):
         count = len(negative_hits.get(key, []))
-        signals.append({
-            "signalId": key[0], "level": key[1],
-            "falsePositives": count, "negatives": total,
-            "falsePositiveRate": round(count / total, 4) if total else None,
-            "upperBound95": round(upper_bound(count, total), 4),
-            "recallByTamperType": tamper_hits.get(key, {}),
-        })
+        signals.append(
+            {
+                "signalId": key[0],
+                "level": key[1],
+                "falsePositives": count,
+                "negatives": total,
+                "falsePositiveRate": round(count / total, 4) if total else None,
+                "upperBound95": round(upper_bound(count, total), 4),
+                "recallByTamperType": tamper_hits.get(key, {}),
+            }
+        )
     ordered = sorted(cpu)
     return {
-        "corpus": {"seed": corpus.SEED, "negatives": total, "tampered": len(tampered), "tools": data["tools"],
-                   "negativeWorkflows": sorted({i["variant"] for i in negatives}), "tamperTypes": list(corpus.TAMPER_TYPES)},
+        "corpus": {
+            "seed": corpus.SEED,
+            "negatives": total,
+            "tampered": len(tampered),
+            "tools": data["tools"],
+            "negativeWorkflows": sorted({i["variant"] for i in negatives}),
+            "tamperTypes": list(corpus.TAMPER_TYPES),
+        },
         "signals": signals,
-        "recallPerTamperType": {t: {**v, "recall": round(v["flagged"] / v["documents"], 3)} for t, v in sorted(per_type_any.items())},
-        "cpuSeconds": {"median": round(statistics.median(ordered), 5), "p95": round(ordered[int(0.95 * (len(ordered) - 1))], 5)},
+        "recallPerTamperType": {
+            t: {**v, "recall": round(v["flagged"] / v["documents"], 3)} for t, v in sorted(per_type_any.items())
+        },
+        "cpuSeconds": {
+            "median": round(statistics.median(ordered), 5),
+            "p95": round(ordered[int(0.95 * (len(ordered) - 1))], 5),
+        },
     }
 
 
@@ -127,7 +143,9 @@ def gate(results, disabled=None, known=None):
     known = baseline() if known is None else known
     failures = []
     if results["corpus"]["negatives"] < MIN_NEGATIVES:
-        failures.append(f"only {results['corpus']['negatives']} ordinary negatives, at least {MIN_NEGATIVES} are needed")
+        failures.append(
+            f"only {results['corpus']['negatives']} ordinary negatives, at least {MIN_NEGATIVES} are needed"
+        )
     for signal in results["signals"]:
         if signal["signalId"] in disabled or not signal["negatives"]:
             continue
@@ -140,14 +158,21 @@ def gate(results, disabled=None, known=None):
 def main(argv):
     def option(name, default):
         return int(argv[argv.index(name) + 1]) if name in argv else default
+
     results = measure(corpus.build(option("--per-type", 10), option("--per-workflow", 35)))
     if "--write" in argv:
         with open(RESULTS, "w", encoding="utf-8") as handle:
             json.dump(results, handle, ensure_ascii=False, indent=2)
             handle.write("\n")
-    print(json.dumps({k: results[k] for k in ("corpus", "recallPerTamperType", "cpuSeconds")}, ensure_ascii=False, indent=1))
+    print(
+        json.dumps(
+            {k: results[k] for k in ("corpus", "recallPerTamperType", "cpuSeconds")}, ensure_ascii=False, indent=1
+        )
+    )
     for signal in results["signals"]:
-        print(f"{signal['signalId']:18} {signal['level']:11} FP {signal['falsePositives']:3}/{signal['negatives']} ub95 {signal['upperBound95']:.3f}  {signal['recallByTamperType']}")
+        print(
+            f"{signal['signalId']:18} {signal['level']:11} FP {signal['falsePositives']:3}/{signal['negatives']} ub95 {signal['upperBound95']:.3f}  {signal['recallByTamperType']}"
+        )
     failures = gate(results)
     for failure in failures:
         print("GATE:", failure)

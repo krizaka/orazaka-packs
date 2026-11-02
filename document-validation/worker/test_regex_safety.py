@@ -4,6 +4,7 @@ The patterns are data (kinds/*.json, rulesets/**/*.json) and they run on the tex
 pattern with a repeated group that itself repeats — « (a+)+ », « (\\w*\\s?)* » — can take exponential time on a crafted
 text. This test refuses them before they ship. Run: python3 test_regex_safety.py
 """
+
 import json
 import os
 import re

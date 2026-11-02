@@ -4,6 +4,7 @@
 Run: python3 test_rules.py. Pure functions: no broker, no model. The specimens are ICAO Doc 9303's fictional Anna Maria
 Eriksson of « Utopia »; the tampered variants are generated from them.
 """
+
 import copy
 import os
 import sys
@@ -21,7 +22,14 @@ READ = {
     "documentType": "PASSPORT",
     "issuer": "UTO",
     "mrzLines": TD3,
-    "printed": {"surname": "Eriksson", "givenNames": "Anna Maria", "documentNumber": "L898902C3", "dateOfBirth": "1974-08-12", "dateOfExpiry": "2012-04-15", "sex": "F"},
+    "printed": {
+        "surname": "Eriksson",
+        "givenNames": "Anna Maria",
+        "documentNumber": "L898902C3",
+        "dateOfBirth": "1974-08-12",
+        "dateOfExpiry": "2012-04-15",
+        "sex": "F",
+    },
     "signals": [],
     "quality": {"blur": False, "glare": False, "cropped": False, "lowResolution": False},
     "confidence": {"mrz": 0.95, "printed": 0.9},
@@ -65,7 +73,9 @@ def test_a_changed_mrz_digit_fails_with_the_value_and_the_region_as_evidence():
     lines = [TD3[0], TD3[1][:3] + "9" + TD3[1][4:]]
     report = _report(_read(mrzLines=lines))
     assert report["status"] == "INCONSISTENT"
-    finding = next(f for f in report["findings"] if f["code"] == "MRZ_CHECKSUM_FAILED" and f["field"] == "documentNumber")
+    finding = next(
+        f for f in report["findings"] if f["code"] == "MRZ_CHECKSUM_FAILED" and f["field"] == "documentNumber"
+    )
     assert finding["severity"] == "FAIL" and finding["basis"] == "DETERMINISTIC"
     assert finding["evidence"]["source"] == "mrz" and finding["evidence"]["value"] == "L899902C3"
     assert finding["evidence"]["region"] == "mrz.line2[0:9]"
@@ -76,7 +86,9 @@ def test_the_same_failure_on_a_doubtful_transcription_asks_for_a_new_capture_ins
     lines = [TD3[0], TD3[1][:3] + "9" + TD3[1][4:]]
     report = _report(_read(mrzLines=lines, confidence={"mrz": 0.3, "printed": 0.9}))
     assert report["status"] == "REVIEW"
-    finding = next(f for f in report["findings"] if f["code"] == "MRZ_CHECKSUM_FAILED" and f["field"] == "documentNumber")
+    finding = next(
+        f for f in report["findings"] if f["code"] == "MRZ_CHECKSUM_FAILED" and f["field"] == "documentNumber"
+    )
     assert finding["severity"] == "WARN" and finding["maybeTranscription"] is True
 
 
@@ -107,7 +119,9 @@ def test_date_logic_expired_future_birth_and_impossible_days():
     assert _report(as_of="2013-01-01")["status"] == "REVIEW"
     future_birth = _read(mrzLines=None, printed=dict(READ["printed"], dateOfBirth="2030-01-01"))
     assert "BIRTH_IN_FUTURE" in _codes(_report(future_birth), "FAIL")
-    reversed_dates = _read(mrzLines=None, printed=dict(READ["printed"], dateOfBirth="2012-01-01", dateOfExpiry="2005-01-01"))
+    reversed_dates = _read(
+        mrzLines=None, printed=dict(READ["printed"], dateOfBirth="2012-01-01", dateOfExpiry="2005-01-01")
+    )
     assert "EXPIRY_BEFORE_BIRTH" in _codes(_report(reversed_dates), "FAIL")
     impossible = _read(mrzLines=None, printed=dict(READ["printed"], dateOfBirth="1974-02-30"))
     assert "DATE_INVALID" in _codes(_report(impossible), "FAIL")
@@ -133,7 +147,11 @@ def test_a_vision_signal_asks_for_a_look_and_never_convicts_alone():
 
 
 def test_unknown_signal_kinds_and_malformed_signals_are_dropped_and_counted():
-    mixed = [{"kind": "ALIEN", "region": "x", "confidence": 1}, "nonsense", {"kind": "TEXT_OVERLAY", "region": "dob", "confidence": 2}]
+    mixed = [
+        {"kind": "ALIEN", "region": "x", "confidence": 1},
+        "nonsense",
+        {"kind": "TEXT_OVERLAY", "region": "dob", "confidence": 2},
+    ]
     report = _report(_read(signals=mixed))
     assert [f["evidence"]["region"] for f in report["findings"] if f["code"] == "TAMPERING_SIGNAL"] == ["dob"]
     assert next(f for f in report["findings"] if f["code"] == "TAMPERING_SIGNAL")["confidence"] == 1.0  # clamped
@@ -169,7 +187,9 @@ def test_the_barcode_is_compared_with_the_printed_fields():
 
 
 def test_nothing_readable_is_unreadable_never_consistent():
-    report = _report({"documentType": "OTHER", "mrzLines": [], "printed": {}, "signals": [], "quality": {}, "confidence": {}})
+    report = _report(
+        {"documentType": "OTHER", "mrzLines": [], "printed": {}, "signals": [], "quality": {}, "confidence": {}}
+    )
     assert report["status"] == "UNREADABLE"
 
 
@@ -196,7 +216,16 @@ def test_the_report_carries_no_image_and_no_more_than_the_fields_it_needs():
     report = _report()
     dumped = __import__("json").dumps(report)
     assert "base64" not in dumped
-    assert set(report) >= {"rulesetId", "rulesetVersion", "rulesetRevision", "status", "fields", "findings", "mrz", "limits"}
+    assert set(report) >= {
+        "rulesetId",
+        "rulesetVersion",
+        "rulesetRevision",
+        "status",
+        "fields",
+        "findings",
+        "mrz",
+        "limits",
+    }
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 """document-validation worker: the broker connection is the shared one (../../worker-common/worker_broker.py)."""
+
 import sys
 from pathlib import Path
 

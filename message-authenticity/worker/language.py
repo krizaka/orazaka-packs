@@ -2,8 +2,12 @@
 
 import re
 
-EN = frozenset("the and you your are was were have has with that this for not but what where when who how can will would about just really love like from they them there their been being than then too very also".split())
-FR = frozenset("le la les un une des et est sont que qui quoi dans pour pas mais avec sur tu toi ton ta tes vous vos je j' il elle nous on ce cette ces au aux du de d' en y plus très aussi comme ça c' qu' t' m' l'".split())
+EN = frozenset(
+    "the and you your are was were have has with that this for not but what where when who how can will would about just really love like from they them there their been being than then too very also".split()
+)
+FR = frozenset(
+    "le la les un une des et est sont que qui quoi dans pour pas mais avec sur tu toi ton ta tes vous vos je j' il elle nous on ce cette ces au aux du de d' en y plus très aussi comme ça c' qu' t' m' l'".split()
+)
 
 _TOKEN = re.compile(r"[a-zà-ÿ’']+", re.IGNORECASE)
 

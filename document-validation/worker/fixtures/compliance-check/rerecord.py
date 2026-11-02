@@ -5,6 +5,7 @@ No model and no network: the document and the judge's answers are the recordings
 report already there), the deterministic rules run in this worker. Run from document-validation/worker:
 ``python3 fixtures/compliance-check/rerecord.py`` and read the diff — a verdict that changed is the new rules' doing.
 """
+
 import json
 import sys
 from datetime import date
@@ -18,10 +19,18 @@ import validation_worker as worker  # noqa: E402
 
 
 def judge(report: dict) -> str:
-    return json.dumps([
-        {"ruleId": f["ruleId"], "verdict": f["verdict"] if f["verdict"] != rules.NOT_APPLICABLE else rules.INSUFFICIENT_EVIDENCE,
-         "quote": (f["evidenceSpan"] or {}).get("quote", "")}
-        for f in report["findings"] if f["method"] == "JUDGMENT"], ensure_ascii=False)
+    return json.dumps(
+        [
+            {
+                "ruleId": f["ruleId"],
+                "verdict": f["verdict"] if f["verdict"] != rules.NOT_APPLICABLE else rules.INSUFFICIENT_EVIDENCE,
+                "quote": (f["evidenceSpan"] or {}).get("quote", ""),
+            }
+            for f in report["findings"]
+            if f["method"] == "JUDGMENT"
+        ],
+        ensure_ascii=False,
+    )
 
 
 for name in ("clean", "errors"):
@@ -30,7 +39,9 @@ for name in ("clean", "errors"):
     screened = worker._screen({"document": rec["document"], **rec["inputs"]})
     report = worker._assemble({"screened": screened["screenedJson"], "judgment": judge(rec["report"])})["report"]
     rec["report"] = report
-    rec["source"] = (rec["source"].split("; re-recorded")[0] + f"; report re-recorded {date.today().isoformat()} against ruleset "
-                     f"revision {report['rulesetRevision']} with the recorded judge answers (no model, no paid call)")
+    rec["source"] = (
+        rec["source"].split("; re-recorded")[0] + f"; report re-recorded {date.today().isoformat()} against ruleset "
+        f"revision {report['rulesetRevision']} with the recorded judge answers (no model, no paid call)"
+    )
     path.write_text(json.dumps(rec, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(name, report["summary"])

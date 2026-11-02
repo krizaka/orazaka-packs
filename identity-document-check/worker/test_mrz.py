@@ -4,6 +4,7 @@
 Run: python3 test_mrz.py  (or python3 -m pytest test_mrz.py -q). The specimens are the ones ICAO prints in Doc 9303 itself
 (the fictional Anna Maria Eriksson of Utopia, « UTO »): public, no real person.
 """
+
 import os
 import sys
 
@@ -23,7 +24,7 @@ def _failed(parsed):
 
 def _swap(lines, line, index, char):
     out = list(lines)
-    out[line] = out[line][:index] + char + out[line][index + 1:]
+    out[line] = out[line][:index] + char + out[line][index + 1 :]
     return out
 
 
@@ -51,7 +52,13 @@ def test_the_icao_td3_specimen_parses_and_every_checksum_holds():
     assert parsed["dateOfBirth"] == "740812" and parsed["dateOfExpiry"] == "120415"
     assert parsed["optionalData"] == "ZE184226B"
     assert _failed(parsed) == []
-    assert {c["field"] for c in parsed["checks"]} == {"documentNumber", "dateOfBirth", "dateOfExpiry", "optionalData", "composite"}
+    assert {c["field"] for c in parsed["checks"]} == {
+        "documentNumber",
+        "dateOfBirth",
+        "dateOfExpiry",
+        "optionalData",
+        "composite",
+    }
 
 
 def test_the_icao_td2_and_td1_specimens_parse_and_every_checksum_holds():

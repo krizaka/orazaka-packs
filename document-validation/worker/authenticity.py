@@ -119,8 +119,7 @@ DISABLED_SIGNALS = frozenset(
 DOCUMENT_PROFILES = {
     profile["documentType"]: profile
     for profile in (
-        json.loads(path.read_text(encoding="utf-8"))
-        for path in (Path(HERE) / "document_profiles").glob("*.json")
+        json.loads(path.read_text(encoding="utf-8")) for path in (Path(HERE) / "document_profiles").glob("*.json")
     )
 }
 
@@ -154,13 +153,16 @@ def _document_profile_signal(profile, locale, producer_names=(), pages=None, fon
         accepted = [name.lower() for name in profile["acceptedProducers"]]
         classes = profile["acceptedProducerClasses"]
         if not any(
-            any(pattern in name.lower() for pattern in accepted) or producer_class(name) in classes
-            for name in declared
+            any(pattern in name.lower() for pattern in accepted) or producer_class(name) in classes for name in declared
         ):
             mismatches.append(words["producer"])
     if pages is not None and not profile["pageCount"]["min"] <= pages <= profile["pageCount"]["max"]:
         mismatches.append(words["pages"].format(pages=pages))
-    if font_count is not None and font_count > 0 and not profile["fontCount"]["min"] <= font_count <= profile["fontCount"]["max"]:
+    if (
+        font_count is not None
+        and font_count > 0
+        and not profile["fontCount"]["min"] <= font_count <= profile["fontCount"]["max"]
+    ):
         mismatches.append(words["fonts"].format(fonts=font_count))
     if not mismatches:
         return None
@@ -281,7 +283,11 @@ def _pdf_ids_differ(reader) -> bool:
     """The trailer's /ID pair: the first is set when the file is created, the second each time it is rewritten."""
     try:
         ids = reader.trailer.get("/ID")
-        return bool(ids) and len(ids) == 2 and bytes(str(ids[0]), "latin-1", "replace") != bytes(str(ids[1]), "latin-1", "replace")
+        return (
+            bool(ids)
+            and len(ids) == 2
+            and bytes(str(ids[0]), "latin-1", "replace") != bytes(str(ids[1]), "latin-1", "replace")
+        )
     except Exception:  # noqa: BLE001
         return False
 
@@ -317,8 +323,15 @@ def _analyse_pdf(pdf_bytes: bytes, expected_issuer: str, locale: str, profile=No
         signals.append(_emit("PDF-META-004", locale, software=editor))
 
     if created and modified and modified > created:
-        signals.append(_emit("PDF-META-003", locale, created=_stamp(created), modified=_stamp(modified),
-                             days=(modified - created).days))
+        signals.append(
+            _emit(
+                "PDF-META-003",
+                locale,
+                created=_stamp(created),
+                modified=_stamp(modified),
+                days=(modified - created).days,
+            )
+        )
 
     revisions = _count_revisions(pdf_bytes)
     if revisions > 1:
@@ -359,7 +372,11 @@ def _analyse_pdf(pdf_bytes: bytes, expected_issuer: str, locale: str, profile=No
     declared = len(set(re.findall(rb"(?m)^\s*(\d+)\s+\d+\s+obj\b", pdf_bytes)))
     referenced = len(set(re.findall(rb"\b(\d+)\s+\d+\s+R\b", pdf_bytes)))
     limits = THRESHOLDS["PDF-OBJ-001"]
-    if declared and referenced and declared - referenced > max(limits["minUnreferenced"], int(declared * limits["unreferencedShare"])):
+    if (
+        declared
+        and referenced
+        and declared - referenced > max(limits["minUnreferenced"], int(declared * limits["unreferencedShare"]))
+    ):
         signals.append(_emit("PDF-OBJ-001", locale, declared=declared, unreferenced=declared - referenced))
 
     return len(pages), signals
@@ -423,14 +440,14 @@ def _tiff_tags(tiff: bytes) -> dict:
             if offset in seen or offset + 2 > len(tiff):
                 continue
             seen.add(offset)
-            (count,) = struct.unpack(order + "H", tiff[offset:offset + 2])
+            (count,) = struct.unpack(order + "H", tiff[offset : offset + 2])
             for n in range(count):
                 entry = offset + 2 + 12 * n
-                tag, kind, length, value = struct.unpack(order + "HHII", tiff[entry:entry + 12])
+                tag, kind, length, value = struct.unpack(order + "HHII", tiff[entry : entry + 12])
                 if tag == EXIF_IFD_POINTER and kind == LONG:
                     pending.append(value)
                 elif tag in EXIF_TAGS and kind == ASCII:
-                    data = tiff[entry + 8:entry + 8 + length] if length <= 4 else tiff[value:value + length]
+                    data = tiff[entry + 8 : entry + 8 + length] if length <= 4 else tiff[value : value + length]
                     text = data.split(b"\0")[0].decode("utf-8", "replace").strip()
                     if text:
                         found[EXIF_TAGS[tag]] = text
@@ -445,8 +462,8 @@ def _jpeg_parts(raw: bytes):
         marker = raw[at + 1]
         if marker in (0xD9, 0xDA):  # end of image, start of scan: no metadata after this
             break
-        (length,) = struct.unpack(">H", raw[at + 2:at + 4])
-        segment = raw[at + 4:at + 2 + length]
+        (length,) = struct.unpack(">H", raw[at + 2 : at + 4])
+        segment = raw[at + 4 : at + 2 + length]
         if marker == 0xE1 and segment.startswith(b"Exif\0\0"):
             exif = segment[6:]
         elif marker == 0xE1 and segment.startswith(b"http://ns.adobe.com/xap/1.0/\0"):
@@ -458,8 +475,8 @@ def _jpeg_parts(raw: bytes):
 def _png_parts(raw: bytes):
     exif, xmp, text, at = b"", b"", {}, 8
     while at + 8 <= len(raw):
-        length, kind = struct.unpack(">I4s", raw[at:at + 8])
-        data = raw[at + 8:at + 8 + length]
+        length, kind = struct.unpack(">I4s", raw[at : at + 8])
+        data = raw[at + 8 : at + 8 + length]
         if kind == b"eXIf":
             exif = data
         elif kind in (b"tEXt", b"iTXt"):
@@ -479,8 +496,8 @@ def _png_parts(raw: bytes):
 def _webp_parts(raw: bytes):
     exif, xmp, at = b"", b"", 12
     while at + 8 <= len(raw):
-        kind, length = struct.unpack("<4sI", raw[at:at + 8])
-        data = raw[at + 8:at + 8 + length]
+        kind, length = struct.unpack("<4sI", raw[at : at + 8])
+        data = raw[at + 8 : at + 8 + length]
         if kind == b"EXIF":
             exif = data[6:] if data.startswith(b"Exif\0\0") else data
         elif kind == b"XMP ":
@@ -493,7 +510,7 @@ def _isobmff_exif(raw: bytes) -> bytes:
     """HEIC/AVIF keep EXIF as an item whose data starts with the TIFF header: found by its signature."""
     marker = raw.find(b"Exif\0\0")
     if marker >= 0:
-        return raw[marker + 6:]
+        return raw[marker + 6 :]
     for signature in (b"MM\0*", b"II*\0"):
         found = raw.find(signature)
         if found >= 0:
@@ -579,12 +596,17 @@ def _analyse_office(archive, locale: str, profile=None):
     else:  # Office Open XML
         app, core = read("docProps/app.xml"), read("docProps/core.xml")
         application = " ".join(p for p in (_xml_value(app, "Application"), _xml_value(app, "AppVersion")) if p)
-        created, modified = _iso_date(_xml_value(core, "dcterms:created")), _iso_date(_xml_value(core, "dcterms:modified"))
+        created, modified = (
+            _iso_date(_xml_value(core, "dcterms:created")),
+            _iso_date(_xml_value(core, "dcterms:modified")),
+        )
         revision = _xml_value(core, "cp:revision")
 
     signals = [_emit("OFF-META-001", locale, application=application or "—")]
     if created and modified and (modified - created).total_seconds() > THRESHOLDS["OFF-META-002"]["minSeconds"]:
-        signals.append(_emit("OFF-META-002", locale, created=_stamp(created), modified=_stamp(modified), revision=revision or "—"))
+        signals.append(
+            _emit("OFF-META-002", locale, created=_stamp(created), modified=_stamp(modified), revision=revision or "—")
+        )
     if profile:
         profile_signal = _document_profile_signal(profile, locale, (application,))
         if profile_signal:
@@ -690,9 +712,7 @@ def render(report: dict) -> str:
                 f"{len(signals) - len(actionable)} autre(s) fait(s) sont rapportés pour information."
             )
         else:
-            lines.append(
-                f"Aucun point ne ressort. {len(signals)} fait(s) sont rapportés pour information."
-            )
+            lines.append(f"Aucun point ne ressort. {len(signals)} fait(s) sont rapportés pour information.")
         lines.append("")
         for signal in signals:
             lines.append(f"[{signal['level'].upper()}] {signal['signalId']}")

@@ -25,8 +25,16 @@ def _results(negatives=210, hits=None):
     """A results structure with the given false-positive counts: ``{(signalId, level): count}``."""
     return {
         "corpus": {"negatives": negatives},
-        "signals": [{"signalId": k[0], "level": k[1], "falsePositives": n, "negatives": negatives,
-                     "falsePositiveRate": round(n / negatives, 4)} for k, n in (hits or {}).items()],
+        "signals": [
+            {
+                "signalId": k[0],
+                "level": k[1],
+                "falsePositives": n,
+                "negatives": negatives,
+                "falsePositiveRate": round(n / negatives, 4),
+            }
+            for k, n in (hits or {}).items()
+        ],
     }
 
 
@@ -86,7 +94,9 @@ def test_gate_refuses_an_unusual_signal_over_five_percent_and_accepts_under():
 def test_gate_accepts_a_switched_off_signal_never_a_loosened_one():
     results = _results(hits={("X-003", "incohérent"): 9})
     assert measure.gate(results, disabled={"X-003"}, known={}) == []
-    assert measure.gate(results, disabled=set(), known={"X-003": {"level": "incohérent", "maxRate": 0.0}}), "a baseline never excuses an incohérent that got worse"
+    assert measure.gate(results, disabled=set(), known={"X-003": {"level": "incohérent", "maxRate": 0.0}}), (
+        "a baseline never excuses an incohérent that got worse"
+    )
 
 
 def test_baseline_only_goes_down():
@@ -119,7 +129,9 @@ def test_the_baseline_lists_only_signals_the_catalogue_knows():
 def test_the_cases_over_the_bar_are_flagged_in_the_catalogue_and_in_the_report():
     """The CTO decision: an over-the-bar signal stays (the baseline only goes down) and says so, so a consumer hides it."""
     pinned = measure.baseline()
-    flagged = {(entry["signalId"], entry["level"]) for entry in a.CATALOGUE["signals"].values() if entry.get("overTheBar")}
+    flagged = {
+        (entry["signalId"], entry["level"]) for entry in a.CATALOGUE["signals"].values() if entry.get("overTheBar")
+    }
     assert flagged == {(signal, pin["level"]) for signal, pin in pinned.items()}
     assert a._emit("PDF-ID-001")["overTheBar"] is True
     assert "overTheBar" not in a._emit("PDF-META-001.producer", producer="x")

@@ -95,11 +95,9 @@ def _on_message(channel, method, properties, body) -> None:
         # what this reference worker did on its first run, and why it says so here.
         _emit(channel, job_id, "done", {"jobId": job_id, "result": result, "consumption": consumption})
     except InvalidJobPayload as bad:
-        _emit(channel, job_id, "error",
-              {"jobId": job_id, "error": str(bad), "cause": INPUT_INVALID})
+        _emit(channel, job_id, "error", {"jobId": job_id, "error": str(bad), "cause": INPUT_INVALID})
     except Exception as failure:  # noqa: BLE001 — any failure must reach the saga, not the log alone
-        _emit(channel, job_id, "error",
-              {"jobId": job_id, "error": str(failure), "cause": EXECUTOR_FAULT})
+        _emit(channel, job_id, "error", {"jobId": job_id, "error": str(failure), "cause": EXECUTOR_FAULT})
     SEEN.add(message_id)
     channel.basic_ack(delivery_tag=method.delivery_tag)
 
@@ -122,23 +120,18 @@ def _broker_credentials() -> "pika.PlainCredentials":
             password = os.environ.get(legacy)
             if password:
                 print(
-                    f"[warn] {legacy} is deprecated and will stop being read after 1.1.0; "
-                    "rename it to RABBITMQ_PASS.",
+                    f"[warn] {legacy} is deprecated and will stop being read after 1.1.0; rename it to RABBITMQ_PASS.",
                     flush=True,
                 )
                 break
-    return pika.PlainCredentials(
-        os.environ.get("RABBITMQ_USER", "guest"), password or "guest"
-    )
+    return pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest")
 
 
 def main() -> None:
     host = os.environ.get("RABBITMQ_HOST", "localhost")
     port = int(os.environ.get("RABBITMQ_PORT", "5672"))
     credentials = _broker_credentials()
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=host, port=port, credentials=credentials)
-    )
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=host, port=port, credentials=credentials))
     channel = connection.channel()
 
     # (1) Declare your own topology. This is what makes a Tier-W pack installable

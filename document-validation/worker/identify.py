@@ -71,10 +71,30 @@ def load_kinds() -> list:
 # --- Dates -----------------------------------------------------------------------------------------------------------
 
 _MONTHS = {
-    "janvier": 1, "fevrier": 2, "mars": 3, "avril": 4, "mai": 5, "juin": 6, "juillet": 7, "aout": 8,
-    "septembre": 9, "octobre": 10, "novembre": 11, "decembre": 12,
-    "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6, "july": 7, "august": 8,
-    "september": 9, "october": 10, "november": 11, "december": 12,
+    "janvier": 1,
+    "fevrier": 2,
+    "mars": 3,
+    "avril": 4,
+    "mai": 5,
+    "juin": 6,
+    "juillet": 7,
+    "aout": 8,
+    "septembre": 9,
+    "octobre": 10,
+    "novembre": 11,
+    "decembre": 12,
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
 }
 _ISO = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")
 _DAY_FIRST = re.compile(r"^(\d{1,2})(?:er)?\s+([^\W\d_]+)\s+(\d{4})$")
@@ -126,6 +146,7 @@ def languages(text: str) -> list:
 
 # --- Signals ---------------------------------------------------------------------------------------------------------
 
+
 def _quote(match) -> str:
     return match.group(0)[:MAX_QUOTE]
 
@@ -137,7 +158,9 @@ def _hits(signals: list, text: str) -> list:
         match = re.search(signal["pattern"], text)
         if match:
             quote = _quote(match)
-            found.append({"signal": signal["id"], "weight": signal["weight"], "quote": quote, "verified": quote in text})
+            found.append(
+                {"signal": signal["id"], "weight": signal["weight"], "quote": quote, "verified": quote in text}
+            )
     return found
 
 
@@ -146,7 +169,10 @@ def _score(kind: dict, text: str) -> dict:
     hints = _hits(kind["jurisdictionHints"], text)
     excluded = any(re.search(pattern, text) for pattern in kind["excludes"])
     return {
-        "kind": kind, "content": content, "hints": hints, "excluded": excluded,
+        "kind": kind,
+        "content": content,
+        "hints": hints,
+        "excluded": excluded,
         "contentWeight": sum(h["weight"] for h in content),
         "weight": sum(h["weight"] for h in content) + sum(h["weight"] for h in hints),
     }
@@ -170,14 +196,61 @@ def _evidence(scored: dict) -> list:
 
 def _candidate(scored: dict, min_weight: int) -> dict:
     return {
-        "kindId": scored["kind"]["kindId"], "weight": scored["weight"], "signals": [e["signal"] for e in scored["content"]],
-        "hints": [e["signal"] for e in scored["hints"]], "excluded": scored["excluded"],
+        "kindId": scored["kind"]["kindId"],
+        "weight": scored["weight"],
+        "signals": [e["signal"] for e in scored["content"]],
+        "hints": [e["signal"] for e in scored["hints"]],
+        "excluded": scored["excluded"],
         "eligible": not scored["excluded"] and scored["contentWeight"] >= min_weight,
     }
 
 
-def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as_of=None, ruleset=None,
-             classified=None, min_signal_weight: int = MIN_SIGNAL_WEIGHT, kinds=None) -> dict:
+def _as_of(as_of, document_date, today: str) -> tuple:
+    """The date the check is made for and where it comes from: the input, the document, or today."""
+    if as_of:
+        return as_of, "INPUT"
+    if document_date:
+        return document_date, "DOCUMENT"
+    return today, "TODAY"
+
+
+def _pick_kind(*, detected, tied, scope, declared, ruleset, jurisdiction, classified, text) -> tuple:
+    """The kind used, where it comes from and the model's classification: ruleset, detected, declared, classified."""
+    if ruleset:
+        carrying = [k for k in scope if k["ruleset"] == ruleset]
+        if not carrying:
+            raise UnknownRuleset(
+                f"no kind uses the ruleset '{ruleset}'" + (f" in '{jurisdiction}'" if jurisdiction else "")
+            )
+        return carrying[0], "RULESET_INPUT", None
+    if detected:
+        return detected["kind"], "DETECTED", None
+    # A tie is broken by the declared kind only when it names exactly one of the TIED kinds (packs#129, point 1);
+    # with no candidate at all, by the declared kind that names exactly one kind of the scope.
+    agreeing = [k for k in (tied or scope) if declared and declared in k["declaredAs"]]
+    if len(agreeing) == 1:
+        return agreeing[0], "DECLARED", None
+    if not (tied and classified):
+        return None, None, None
+    classification = _classification(classified, tied, text)
+    chosen = next((k for k in tied if k["kindId"] == classification["kindId"]), None)
+    if classification["accepted"] and chosen:
+        return chosen, "CLASSIFIED", classification
+    return None, None, classification
+
+
+def identify(
+    text: str,
+    *,
+    today: str,
+    declared_kind=None,
+    jurisdiction=None,
+    as_of=None,
+    ruleset=None,
+    classified=None,
+    min_signal_weight: int = MIN_SIGNAL_WEIGHT,
+    kinds=None,
+) -> dict:
     """Identify ``text``: the kind, the jurisdiction, the date and the language, compared with what was declared.
 
     ``today`` (ISO date) is given, never read: the caller owns the clock. ``as_of`` is validated as an ISO date
@@ -189,10 +262,7 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
     lease is 1.x behaviour, kept only by the 1.x blueprint (legacy, ADR-089 cut 5).
     """
     text = unicodedata.normalize("NFC", text or "")
-    declared = (declared_kind or "").strip() or None
-    jurisdiction = (jurisdiction or "").strip() or None
-    as_of = (as_of or "").strip() or None
-    ruleset = (ruleset or "").strip() or None
+    declared, jurisdiction, as_of, ruleset = (_clean(v) for v in (declared_kind, jurisdiction, as_of, ruleset))
     if as_of:
         date.fromisoformat(as_of)
     date.fromisoformat(today)
@@ -207,67 +277,31 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
     detected = leaders[0] if len(leaders) == 1 else None
 
     tied = [s["kind"] for s in leaders] if len(leaders) > 1 else []
-    used, source, classification = None, None, None
-    if ruleset:
-        carrying = [k for k in scope if k["ruleset"] == ruleset]
-        if not carrying:
-            raise UnknownRuleset(f"no kind uses the ruleset '{ruleset}'" + (f" in '{jurisdiction}'" if jurisdiction else ""))
-        used, source = carrying[0], "RULESET_INPUT"
-    elif detected:
-        used, source = detected["kind"], "DETECTED"
-    else:
-        # A tie is broken by the declared kind only when it names exactly one of the TIED kinds (packs#129, point 1);
-        # with no candidate at all, by the declared kind that names exactly one kind of the scope.
-        agreeing = [k for k in (tied or scope) if declared and declared in k["declaredAs"]]
-        if len(agreeing) == 1:
-            used, source = agreeing[0], "DECLARED"
-        elif tied and classified:
-            classification = _classification(classified, tied, text)
-            chosen = next((k for k in tied if k["kindId"] == classification["kindId"]), None)
-            if classification["accepted"] and chosen:
-                used, source = chosen, "CLASSIFIED"
+    used, source, classification = _pick_kind(
+        detected=detected,
+        tied=tied,
+        scope=scope,
+        declared=declared,
+        ruleset=ruleset,
+        jurisdiction=jurisdiction,
+        classified=classified,
+        text=text,
+    )
 
-    mismatch = bool(detected and declared and not ruleset and declared not in detected["kind"]["declaredAs"])
-
-    if used is None:
-        outcome = KIND_UNKNOWN
-    elif used["status"] == PROMOTED:
-        outcome = CHECK
-    else:
-        outcome = UNSUPPORTED_KIND
-
-    evidence = []
-    if source in ("RULESET_INPUT", "DETECTED"):
-        used_scored = next(s for s in scored if s["kind"] is used)
-        evidence = _evidence(used_scored)
-    elif source == "CLASSIFIED":
-        evidence = [{"signal": "classify", "quote": classification["quote"], "verified": True}]
-
-    if jurisdiction:
-        jurisdiction_out, jurisdiction_source = jurisdiction, "DECLARED"
-    elif used:
-        jurisdiction_out, jurisdiction_source = used["jurisdiction"], "DETECTED"
-    else:
-        jurisdiction_out, jurisdiction_source = _jurisdiction_from_hints(scored, min_signal_weight)
-
+    outcome = _outcome(used)
+    jurisdiction_out, jurisdiction_source = _jurisdiction_of(jurisdiction, used, scored, min_signal_weight)
     document_date, date_evidence = _date_of(used, text) if used else (None, None)
-    if as_of:
-        as_of_out, as_of_source = as_of, "INPUT"
-    elif document_date:
-        as_of_out, as_of_source = document_date, "DOCUMENT"
-    else:
-        as_of_out, as_of_source = today, "TODAY"
-
+    as_of_out, as_of_source = _as_of(as_of, document_date, today)
     return {
         "declaredKind": declared,
-        "detectedKind": detected["kind"]["kindId"] if detected else None,
-        "kindUsed": used["kindId"] if used else None,
-        "kindLabel": used["label"] if used else None,
-        "kindStatus": used["status"] if used else None,
+        "detectedKind": _field(detected and detected["kind"], "kindId"),
+        "kindUsed": _field(used, "kindId"),
+        "kindLabel": _field(used, "label"),
+        "kindStatus": _field(used, "status"),
         "kindSource": source,
-        "kindEvidence": evidence,
-        "kindMismatch": mismatch,
-        "ruleset": used["ruleset"] if used and outcome == CHECK else None,
+        "kindEvidence": _kind_evidence(used, source, scored, classification),
+        "kindMismatch": bool(detected and declared and not ruleset and declared not in detected["kind"]["declaredAs"]),
+        "ruleset": _field(used, "ruleset") if outcome == CHECK else None,
         "jurisdiction": jurisdiction_out,
         "jurisdictionSource": jurisdiction_source,
         "documentDate": document_date,
@@ -281,6 +315,41 @@ def identify(text: str, *, today: str, declared_kind=None, jurisdiction=None, as
         "classifyAmong": [k["kindId"] for k in tied] if used is None and not ruleset else [],
         "classification": classification,
     }
+
+
+def _clean(value):
+    """The stripped string, or None when empty."""
+    return (value or "").strip() or None
+
+
+def _field(kind, key):
+    """``kind[key]``, or None when there is no kind."""
+    return kind[key] if kind else None
+
+
+def _outcome(used) -> str:
+    """CHECK for a promoted kind, UNSUPPORTED_KIND for another, KIND_UNKNOWN when no kind was chosen."""
+    if used is None:
+        return KIND_UNKNOWN
+    return CHECK if used["status"] == PROMOTED else UNSUPPORTED_KIND
+
+
+def _kind_evidence(used, source, scored: list, classification: dict) -> list:
+    """What backs the kind used: its signals when detected or given a ruleset, the verified quote when classified."""
+    if source in ("RULESET_INPUT", "DETECTED"):
+        return _evidence(next(s for s in scored if s["kind"] is used))
+    if source == "CLASSIFIED":
+        return [{"signal": "classify", "quote": classification["quote"], "verified": True}]
+    return []
+
+
+def _jurisdiction_of(declared, used, scored: list, min_signal_weight: int) -> tuple:
+    """The jurisdiction and where it comes from: declared, the kind used, or the hints."""
+    if declared:
+        return declared, "DECLARED"
+    if used:
+        return used["jurisdiction"], "DETECTED"
+    return _jurisdiction_from_hints(scored, min_signal_weight)
 
 
 def _classification(answer: dict, tied: list, text: str) -> dict:
