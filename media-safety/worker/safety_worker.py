@@ -83,17 +83,8 @@ def _on_message(channel, method, properties, body) -> None:
     channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
-def _broker_credentials() -> "pika.PlainCredentials":
-    password = (
-        os.environ.get("RABBITMQ_PASS")
-        or os.environ.get("RABBITMQ_PASSWORD")
-        or os.environ.get("SPRING_RABBITMQ_PASSWORD")
-    )
-    return pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest")
-
-
 def main() -> None:
-    params = broker.connection_parameters(_broker_credentials())
+    params = broker.connection_parameters(broker.credentials_from_environment())
     print(f"[safety] broker {broker.describe(params)}", flush=True)
     channel = pika.BlockingConnection(params).channel()
     channel.exchange_declare(exchange=JOBS_EXCHANGE, exchange_type="topic", durable=True)

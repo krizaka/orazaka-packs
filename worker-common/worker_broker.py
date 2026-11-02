@@ -33,6 +33,16 @@ def _first(source: Mapping[str, str], *names: str) -> Optional[str]:
     return None
 
 
+def credentials_from_environment() -> "pika.PlainCredentials":
+    """The broker user and password: ``RABBITMQ_PASS`` first, the two older names still read."""
+    password = (
+        os.environ.get("RABBITMQ_PASS")
+        or os.environ.get("RABBITMQ_PASSWORD")
+        or os.environ.get("SPRING_RABBITMQ_PASSWORD")
+    )
+    return pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest")
+
+
 def tls_enabled(env: Optional[Mapping[str, str]] = None) -> bool:
     """Whether the deployment asked for TLS."""
     source = os.environ if env is None else env

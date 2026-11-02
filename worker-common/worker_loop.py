@@ -17,7 +17,7 @@ from typing import Callable
 
 import pika
 
-from worker_broker import connection_parameters, describe
+from worker_broker import connection_parameters, credentials_from_environment, describe
 
 JOBS_EXCHANGE = "orazaka.jobs"
 EVENTS_EXCHANGE = "orazaka.events"
@@ -83,15 +83,6 @@ def make_on_message(label: str, handle: Callable[[str, dict], tuple], seen: set)
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
     return on_message
-
-
-def credentials_from_environment() -> "pika.PlainCredentials":
-    password = (
-        os.environ.get("RABBITMQ_PASS")
-        or os.environ.get("RABBITMQ_PASSWORD")
-        or os.environ.get("SPRING_RABBITMQ_PASSWORD")
-    )
-    return pika.PlainCredentials(os.environ.get("RABBITMQ_USER", "guest"), password or "guest")
 
 
 def run(label: str, declaration: dict, handle: Callable[[str, dict], tuple]) -> None:
