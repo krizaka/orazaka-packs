@@ -16,7 +16,6 @@ A fixture nobody can rebuild is a fixture nobody can check. Run:
 
 import io
 import os
-import zlib
 
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.pagesizes import A4

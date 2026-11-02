@@ -1,6 +1,6 @@
 """Builds the generated half of the set: first messages on a dating app, written through Orazaka (chat), in EN and FR, varied tone/length/style."""
 
-import json, os, random, re, subprocess, urllib.request, uuid, time
+import json, os, random, re, urllib.request, uuid, time
 
 random.seed(5)
 U = os.environ["AI_ENGINE_URL"]
