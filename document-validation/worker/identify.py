@@ -262,10 +262,7 @@ def identify(
     lease is 1.x behaviour, kept only by the 1.x blueprint (legacy, ADR-089 cut 5).
     """
     text = unicodedata.normalize("NFC", text or "")
-    declared = (declared_kind or "").strip() or None
-    jurisdiction = (jurisdiction or "").strip() or None
-    as_of = (as_of or "").strip() or None
-    ruleset = (ruleset or "").strip() or None
+    declared, jurisdiction, as_of, ruleset = (_clean(v) for v in (declared_kind, jurisdiction, as_of, ruleset))
     if as_of:
         date.fromisoformat(as_of)
     date.fromisoformat(today)
@@ -291,23 +288,20 @@ def identify(
         text=text,
     )
 
-    mismatch = bool(detected and declared and not ruleset and declared not in detected["kind"]["declaredAs"])
     outcome = _outcome(used)
-    evidence = _kind_evidence(used, source, scored, classification)
     jurisdiction_out, jurisdiction_source = _jurisdiction_of(jurisdiction, used, scored, min_signal_weight)
     document_date, date_evidence = _date_of(used, text) if used else (None, None)
     as_of_out, as_of_source = _as_of(as_of, document_date, today)
-
     return {
         "declaredKind": declared,
-        "detectedKind": detected["kind"]["kindId"] if detected else None,
-        "kindUsed": used["kindId"] if used else None,
-        "kindLabel": used["label"] if used else None,
-        "kindStatus": used["status"] if used else None,
+        "detectedKind": _field(detected and detected["kind"], "kindId"),
+        "kindUsed": _field(used, "kindId"),
+        "kindLabel": _field(used, "label"),
+        "kindStatus": _field(used, "status"),
         "kindSource": source,
-        "kindEvidence": evidence,
-        "kindMismatch": mismatch,
-        "ruleset": used["ruleset"] if used and outcome == CHECK else None,
+        "kindEvidence": _kind_evidence(used, source, scored, classification),
+        "kindMismatch": bool(detected and declared and not ruleset and declared not in detected["kind"]["declaredAs"]),
+        "ruleset": _field(used, "ruleset") if outcome == CHECK else None,
         "jurisdiction": jurisdiction_out,
         "jurisdictionSource": jurisdiction_source,
         "documentDate": document_date,
@@ -321,6 +315,16 @@ def identify(
         "classifyAmong": [k["kindId"] for k in tied] if used is None and not ruleset else [],
         "classification": classification,
     }
+
+
+def _clean(value):
+    """The stripped string, or None when empty."""
+    return (value or "").strip() or None
+
+
+def _field(kind, key):
+    """``kind[key]``, or None when there is no kind."""
+    return kind[key] if kind else None
 
 
 def _outcome(used) -> str:
