@@ -48,7 +48,7 @@ for off in range(0, 3000, 100):
     if len(out["en"]) > 400:
         break
 for k in out:
-    random.shuffle(out[k])
+    random.shuffle(out[k])  # NOSONAR S2245: seeded on purpose, a reproducible calibration split with no security role
     out[k] = out[k][:80]
     print(k, len(out[k]))
 json.dump(out, open("human.json", "w"), ensure_ascii=False, indent=1)

@@ -205,6 +205,40 @@ def _candidate(scored: dict, min_weight: int) -> dict:
     }
 
 
+def _as_of(as_of, document_date, today: str) -> tuple:
+    """The date the check is made for and where it comes from: the input, the document, or today."""
+    if as_of:
+        return as_of, "INPUT"
+    if document_date:
+        return document_date, "DOCUMENT"
+    return today, "TODAY"
+
+
+def _pick_kind(*, detected, tied, scope, declared, ruleset, jurisdiction, classified, text) -> tuple:
+    """The kind used, where it comes from and the model's classification: ruleset, detected, declared, classified."""
+    if ruleset:
+        carrying = [k for k in scope if k["ruleset"] == ruleset]
+        if not carrying:
+            raise UnknownRuleset(
+                f"no kind uses the ruleset '{ruleset}'" + (f" in '{jurisdiction}'" if jurisdiction else "")
+            )
+        return carrying[0], "RULESET_INPUT", None
+    if detected:
+        return detected["kind"], "DETECTED", None
+    # A tie is broken by the declared kind only when it names exactly one of the TIED kinds (packs#129, point 1);
+    # with no candidate at all, by the declared kind that names exactly one kind of the scope.
+    agreeing = [k for k in (tied or scope) if declared and declared in k["declaredAs"]]
+    if len(agreeing) == 1:
+        return agreeing[0], "DECLARED", None
+    if not (tied and classified):
+        return None, None, None
+    classification = _classification(classified, tied, text)
+    chosen = next((k for k in tied if k["kindId"] == classification["kindId"]), None)
+    if classification["accepted"] and chosen:
+        return chosen, "CLASSIFIED", classification
+    return None, None, classification
+
+
 def identify(
     text: str,
     *,
@@ -246,27 +280,16 @@ def identify(
     detected = leaders[0] if len(leaders) == 1 else None
 
     tied = [s["kind"] for s in leaders] if len(leaders) > 1 else []
-    used, source, classification = None, None, None
-    if ruleset:
-        carrying = [k for k in scope if k["ruleset"] == ruleset]
-        if not carrying:
-            raise UnknownRuleset(
-                f"no kind uses the ruleset '{ruleset}'" + (f" in '{jurisdiction}'" if jurisdiction else "")
-            )
-        used, source = carrying[0], "RULESET_INPUT"
-    elif detected:
-        used, source = detected["kind"], "DETECTED"
-    else:
-        # A tie is broken by the declared kind only when it names exactly one of the TIED kinds (packs#129, point 1);
-        # with no candidate at all, by the declared kind that names exactly one kind of the scope.
-        agreeing = [k for k in (tied or scope) if declared and declared in k["declaredAs"]]
-        if len(agreeing) == 1:
-            used, source = agreeing[0], "DECLARED"
-        elif tied and classified:
-            classification = _classification(classified, tied, text)
-            chosen = next((k for k in tied if k["kindId"] == classification["kindId"]), None)
-            if classification["accepted"] and chosen:
-                used, source = chosen, "CLASSIFIED"
+    used, source, classification = _pick_kind(
+        detected=detected,
+        tied=tied,
+        scope=scope,
+        declared=declared,
+        ruleset=ruleset,
+        jurisdiction=jurisdiction,
+        classified=classified,
+        text=text,
+    )
 
     mismatch = bool(detected and declared and not ruleset and declared not in detected["kind"]["declaredAs"])
 
@@ -292,12 +315,7 @@ def identify(
         jurisdiction_out, jurisdiction_source = _jurisdiction_from_hints(scored, min_signal_weight)
 
     document_date, date_evidence = _date_of(used, text) if used else (None, None)
-    if as_of:
-        as_of_out, as_of_source = as_of, "INPUT"
-    elif document_date:
-        as_of_out, as_of_source = document_date, "DOCUMENT"
-    else:
-        as_of_out, as_of_source = today, "TODAY"
+    as_of_out, as_of_source = _as_of(as_of, document_date, today)
 
     return {
         "declaredKind": declared,

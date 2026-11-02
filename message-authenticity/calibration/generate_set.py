@@ -94,7 +94,7 @@ for lang in ("en", "fr"):
             print("err", e)
             time.sleep(3)
             continue
-        t = re.sub(r'^["«»\s]+|["«»\s]+$', "", t)
+        t = re.sub(r'["«»\s]+$', "", re.sub(r'^["«»\s]+', "", t))
         if 10 <= len(t.split()) <= 90:
             out[lang].append({"source": "orazaka-chat (do-inference default model)", "text": t, "prompt": p})
         if len(out[lang]) % 20 == 0:

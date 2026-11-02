@@ -18,8 +18,8 @@ out = {}
 for lang in ("en", "fr"):
     h = scores[lang]["human"][:]
     g = scores[lang]["generated"][:]
-    random.shuffle(h)
-    random.shuffle(g)
+    random.shuffle(h)  # NOSONAR S2245: seeded on purpose, a reproducible calibration split with no security role
+    random.shuffle(g)  # NOSONAR S2245: seeded on purpose, a reproducible calibration split with no security role
     th, eh = h[: len(h) // 2], h[len(h) // 2 :]
     tg, eg = g[: len(g) // 2], g[len(g) // 2 :]
     # HIGH: just above the highest human of the tuning half; MID: the 95th percentile of the tuning humans
