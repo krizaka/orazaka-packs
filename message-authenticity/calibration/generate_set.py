@@ -1,6 +1,9 @@
 """Builds the generated half of the set: first messages on a dating app, written through Orazaka (chat), in EN and FR, varied tone/length/style."""
 
-import json, os, random, re, urllib.request, uuid, time
+import json, os, random, string, urllib.request, uuid, time
+
+# Quotes and whitespace (incl. no-break spaces) trimmed from a generated message, both ends.
+_TRIM = '"«»' + string.whitespace + "\u00a0\u202f"
 
 random.seed(5)
 U = os.environ["AI_ENGINE_URL"]
@@ -94,7 +97,7 @@ for lang in ("en", "fr"):
             print("err", e)
             time.sleep(3)
             continue
-        t = re.sub(r'["«»\s]+$', "", re.sub(r'^["«»\s]+', "", t))
+        t = t.strip(_TRIM)
         if 10 <= len(t.split()) <= 90:
             out[lang].append({"source": "orazaka-chat (do-inference default model)", "text": t, "prompt": p})
         if len(out[lang]) % 20 == 0:

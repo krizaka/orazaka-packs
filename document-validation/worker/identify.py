@@ -292,28 +292,9 @@ def identify(
     )
 
     mismatch = bool(detected and declared and not ruleset and declared not in detected["kind"]["declaredAs"])
-
-    if used is None:
-        outcome = KIND_UNKNOWN
-    elif used["status"] == PROMOTED:
-        outcome = CHECK
-    else:
-        outcome = UNSUPPORTED_KIND
-
-    evidence = []
-    if source in ("RULESET_INPUT", "DETECTED"):
-        used_scored = next(s for s in scored if s["kind"] is used)
-        evidence = _evidence(used_scored)
-    elif source == "CLASSIFIED":
-        evidence = [{"signal": "classify", "quote": classification["quote"], "verified": True}]
-
-    if jurisdiction:
-        jurisdiction_out, jurisdiction_source = jurisdiction, "DECLARED"
-    elif used:
-        jurisdiction_out, jurisdiction_source = used["jurisdiction"], "DETECTED"
-    else:
-        jurisdiction_out, jurisdiction_source = _jurisdiction_from_hints(scored, min_signal_weight)
-
+    outcome = _outcome(used)
+    evidence = _kind_evidence(used, source, scored, classification)
+    jurisdiction_out, jurisdiction_source = _jurisdiction_of(jurisdiction, used, scored, min_signal_weight)
     document_date, date_evidence = _date_of(used, text) if used else (None, None)
     as_of_out, as_of_source = _as_of(as_of, document_date, today)
 
@@ -340,6 +321,31 @@ def identify(
         "classifyAmong": [k["kindId"] for k in tied] if used is None and not ruleset else [],
         "classification": classification,
     }
+
+
+def _outcome(used) -> str:
+    """CHECK for a promoted kind, UNSUPPORTED_KIND for another, KIND_UNKNOWN when no kind was chosen."""
+    if used is None:
+        return KIND_UNKNOWN
+    return CHECK if used["status"] == PROMOTED else UNSUPPORTED_KIND
+
+
+def _kind_evidence(used, source, scored: list, classification: dict) -> list:
+    """What backs the kind used: its signals when detected or given a ruleset, the verified quote when classified."""
+    if source in ("RULESET_INPUT", "DETECTED"):
+        return _evidence(next(s for s in scored if s["kind"] is used))
+    if source == "CLASSIFIED":
+        return [{"signal": "classify", "quote": classification["quote"], "verified": True}]
+    return []
+
+
+def _jurisdiction_of(declared, used, scored: list, min_signal_weight: int) -> tuple:
+    """The jurisdiction and where it comes from: declared, the kind used, or the hints."""
+    if declared:
+        return declared, "DECLARED"
+    if used:
+        return used["jurisdiction"], "DETECTED"
+    return _jurisdiction_from_hints(scored, min_signal_weight)
 
 
 def _classification(answer: dict, tied: list, text: str) -> dict:
