@@ -34,7 +34,7 @@ jobs:
     with:
       component: orazaka-packs
       duplication: true
-      sonar: true            # CI analysis with coverage.xml of the worker suites (krizaka/.github#377); automatic analysis is switched off
+      sonar: true # CI analysis with coverage.xml of the worker suites (krizaka/.github#377); automatic analysis is switched off
     secrets: inherit # zizmor: ignore[secrets-inherit] the org's own pinned pipeline; it reads SONAR_TOKEN and nothing else of the repository's secrets
 
   schema-tests:
