@@ -30,7 +30,7 @@ jobs:
       # The shared component pipeline publishes npm packages with provenance (OIDC): a reusable
       # workflow cannot be granted more than its caller holds, so its absence fails at startup.
       id-token: write
-    uses: krizaka/sovkora/.github/workflows/component.yml@7811f56c86053a9dfd68cd871d8e7102c9b527bb # main
+    uses: krizaka/sovkora/.github/workflows/component.yml@4ef2ce425420447f693e3ca8afdfa7a774133cdf # main
     with:
       component: orazaka-packs
       duplication: true
