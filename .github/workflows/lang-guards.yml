@@ -19,7 +19,7 @@ jobs:
   python:
     permissions:
       contents: read
-    uses: krizaka/.github/.github/workflows/python-quality.yml@79f6ff6292edefebc59fc968dbc2c203da81c3ea # main
+    uses: krizaka/.github/.github/workflows/python-quality.yml@a888de63a6049d329d7a8522c8d50af62a0f6350 # main
     with:
       paths: "."
       timeout-minutes: 15
