@@ -2,7 +2,7 @@
 
 The first pack on the **Data & Analytics** shelf ([orazaka-packs#16](https://github.com/krizaka/orazaka-packs/issues/16),
 [RFC #174](https://github.com/krizaka/orazaka/discussions/174)). It packages the recommender of
-[ADR-078](../docs/adr/ADR-078-recommendations.md): a product sends what its users do, Orazaka serves a feed per person
+ADR-078: a product sends what its users do, Orazaka serves a feed per person
 and analytics per creator, and every item it returns says why it is there.
 
 ## What you get
@@ -11,8 +11,8 @@ and analytics per creator, and every item it returns says why it is there.
 |---|---|---|
 | **Serving** — events, items, erasures in; for-you, similar, insights out | `orazaka-knowledge-service` (pgvector), synchronous, < 150 ms p95 | your product's **service key** with the scopes below, server to server |
 | **Video understanding** (Studio) | a run: a keyframe through the vision model, then a JSON reading — summary, topics, tags, language, safety labels | the Studios tab, or a run through the API |
-| **Product analytics** — a product's own events in; KPIs, series, top items, cohorts, funnels out ([ADR-081](../docs/adr/ADR-081-analytics-service.md)) | `orazaka-knowledge-service`, same database, computed on read | the service key with `analytics:sync` / `analytics:read` |
-| **Data-driven UI** (Studio, [ADR-082](../docs/adr/ADR-082-data-driven-ui.md)) | a run: a CSV or JSON and a question → prose and an A2UI v0.9 dashboard (KpiStat, ChartCard, Table, Callout…) drawn by `@krizaka/ui/genui` | the Studios tab or the chat |
+| **Product analytics** — a product's own events in; KPIs, series, top items, cohorts, funnels out (ADR-081) | `orazaka-knowledge-service`, same database, computed on read | the service key with `analytics:sync` / `analytics:read` |
+| **Data-driven UI** (Studio, ADR-082) | a run: a CSV or JSON and a question → prose and an A2UI v0.9 dashboard (KpiStat, ChartCard, Table, Callout…) drawn by `@krizaka/ui/genui` | the Studios tab or the chat |
 | **Creator suggestions** (Studio) | a run: three titles, a description and tags from the creator's own words | the Studios tab |
 
 Pricing: 49 $ CA, 300 credits included (the Studios' runs are metered; the serving API is covered by the key's daily
