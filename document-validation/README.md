@@ -117,7 +117,7 @@ A ruleset may declare `facts`: `{ id, kind: "money", pattern, label }`, the patt
 ## Kinds and `identify` — what a document is, before any ruleset (ADR-089 §1)
 
 Until now the jurisdiction's default ruleset (the lease) judged every document. A visit notice or an état des lieux came
-back with rent failures it can never satisfy. The first stage of [ADR-089](https://github.com/krizaka/orazaka/blob/main/docs/adr/ADR-089-rules-from-the-law.md)
+back with rent failures it can never satisfy. The first stage of ADR-089
 reads **what the document is** and only then picks the ruleset.
 
 **Kinds are pack data**: `kinds/<kindId>.json`, validated by `kinds/kind.schema.json`, beside the document profiles. One file per
