@@ -33,17 +33,17 @@ Reference **packs** for the Orazaka Studio marketplace. A pack is a directory wi
 manifest validated against [`pack.schema.json`](pack.schema.json): i18n, studios (semver'd blueprint
 DAGs) and, optionally, its own worker.
 
-| Pack | Content |
-|:---|:---|
-| `data-analytics` | Recommendations & insights — the recommender of ADR-078 (API scopes `reco:sync` / `reco:read`) and product analytics (ADR-081), served by the knowledge service; Data-driven UI (ADR-082), Video understanding and Creator suggestions Studios |
-| `document-validation` | Document Verification — Compliance Check (rules, sources, passages) and Document Authenticity (a PDF's signals of tampering), with its worker |
-| `echo-toolkit` | The Tier-W reference used by the platform tests — `DRAFT`, never on the marketplace shelf |
-| `orazaka-media` | Media generation studios |
-| `outbound-prospection` | Prospection workflows |
-| `realestate-studio` | Real-estate reels |
-| `tenant-screening-qc` | Tenant screening, Québec — a gated saga (documents, then court records, then credit) whose cut-offs are manager rules and whose credits are debited per stage; mocks only, `DRAFT` |
-| `trade-showcase` | Trade showcase studio |
-| `wellbeing` | Wellbeing — guided journaling, session preparation, mood tracking (`REGULATED`; never "therapy": what a person brings to a professional, not a care); `wellbeing/listening/` holds the listening moment's data — presences, voices, the ear — and the risk fixtures the crisis guard is tested with) |
+| Pack                   | Content                                                                                                                                                                                                                                                                                              |
+| :--------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data-analytics`       | Recommendations & insights — the recommender of ADR-078 (API scopes `reco:sync` / `reco:read`) and product analytics (ADR-081), served by the knowledge service; Data-driven UI (ADR-082), Video understanding and Creator suggestions Studios                                                       |
+| `document-validation`  | Document Verification — Compliance Check (rules, sources, passages) and Document Authenticity (a PDF's signals of tampering), with its worker                                                                                                                                                        |
+| `echo-toolkit`         | The Tier-W reference used by the platform tests — `DRAFT`, never on the marketplace shelf                                                                                                                                                                                                            |
+| `orazaka-media`        | Media generation studios                                                                                                                                                                                                                                                                             |
+| `outbound-prospection` | Prospection workflows                                                                                                                                                                                                                                                                                |
+| `realestate-studio`    | Real-estate reels                                                                                                                                                                                                                                                                                    |
+| `tenant-screening-qc`  | Tenant screening, Québec — a gated saga (documents, then court records, then credit) whose cut-offs are manager rules and whose credits are debited per stage; mocks only, `DRAFT`                                                                                                                   |
+| `trade-showcase`       | Trade showcase studio                                                                                                                                                                                                                                                                                |
+| `wellbeing`            | Wellbeing — guided journaling, session preparation, mood tracking (`REGULATED`; never "therapy": what a person brings to a professional, not a care); `wellbeing/listening/` holds the listening moment's data — presences, voices, the ear — and the risk fixtures the crisis guard is tested with) |
 
 ```bash
 orazaka pack validate ./orazaka-packs/<bundle> --offline
@@ -54,11 +54,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) to write a pack.
 
 ## Position in the platform
 
-| | |
-|:---|:---|
-| Depends on | _none — this repository is a root of the dependency graph._ |
-| Used by | _no other Orazaka repository._ |
-| Workspace path | `orazaka-packs` |
+|                |                                                             |
+| :------------- | :---------------------------------------------------------- |
+| Depends on     | _none — this repository is a root of the dependency graph._ |
+| Used by        | _no other Orazaka repository._                              |
+| Workspace path | `orazaka-packs`                                             |
 
 ## Build
 
@@ -109,6 +109,22 @@ or via workflow dispatch; it never runs untrusted PR code.
 
 This repository follows the Orazaka governance contract — [AGENTS.md](https://github.com/krizaka/orazaka/blob/main/AGENTS.md)
 in the workspace is normative; the local [AGENTS.md](AGENTS.md) only scopes it to this repository.
+
+<!-- krizaka:workflows:start -->
+
+## Workflows
+
+What runs in the Actions tab of this repository.
+
+- **CI** (`ci.yml`): Lint, tests and build of the repository. Runs on push, on every pull request, on demand.
+- **Dependabot auto-merge** (`dependabot-automerge.yml`): Auto-merges safe Dependabot updates. Runs on every pull request.
+- **Language guards** (`lang-guards.yml`): Rust guards: rustfmt, clippy, cargo-deny, tests. Runs on every pull request, in the merge queue, on push.
+- **Merge resolution** (`merge-resolution.yml`): Fails a PR that drops what main added without a deletion-explained line. Runs on every pull request.
+- **Release notes** (`release-notes.yml`): Writes the release notes. Runs on push.
+- **Scorecard** (`scorecard.yml`): OpenSSF Scorecard of the repository. Runs when branch rules change, on a schedule, on demand.
+- **Security scan** (`security.yml`): Secret scan (gitleaks) and workflow scan (zizmor); both are required checks. Runs on every pull request, in the merge queue, on push.
+
+<!-- krizaka:workflows:end -->
 
 ## License
 
